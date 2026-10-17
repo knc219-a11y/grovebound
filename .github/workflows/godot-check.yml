@@ -1,0 +1,37 @@
+name: Godot 4.7 checks
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Godot 4.7 Standard
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/godot"
+          curl --fail --location --retry 3 --max-time 180 \
+            'https://downloads.godotengine.org/?flavor=stable&platform=linux.64&slug=linux.x86_64.zip&version=4.7' \
+            -o "$RUNNER_TEMP/godot/engine.zip"
+          unzip -q "$RUNNER_TEMP/godot/engine.zip" -d "$RUNNER_TEMP/godot"
+          chmod +x "$RUNNER_TEMP/godot/Godot_v4.7-stable_linux.x86_64"
+          echo "$RUNNER_TEMP/godot" >> "$GITHUB_PATH"
+      - name: Import and check scripts
+        shell: bash
+        run: |
+          set -euo pipefail
+          Godot_v4.7-stable_linux.x86_64 --version
+          timeout 120s Godot_v4.7-stable_linux.x86_64 --headless --path . --editor --import --quit 2>&1 | tee import.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:' import.log; then exit 1; fi
+      - name: Gameplay regression checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . -- --self-test 2>&1 | tee test.log
+          grep -q 'SELF TEST PASS:' test.log
