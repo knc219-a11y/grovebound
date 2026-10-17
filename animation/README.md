@@ -26,3 +26,9 @@ Godot에서 `boar_preview.tscn`을 열고 F6으로 6가지 동작을 비교할 �
 `boar_comparison.tscn`은 같은 속도와 크기로 v1/v2를 함께 보여줍니다. 원화도 수정했으므로 이 비교는 동일 원화에서 메시 기술만 비교하는 실험은 아닙니다. 메시를 그릴 때는 실제 렌더가 끝날 때까지 리소스 참조를 유지합니다.
 
 내장 이미지 생성 도구 사용. 추가 프롬프트: "Make one connected upper-body game sprite of this exact cute brown wild boar, matching atlas identity, colors, outline and shading. Assemble torso and head seamlessly, no neck cut line or shoulder seam, head facing right. Remove all four legs completely, smooth furry belly at hip level, include attached tail. Separate legs will be placed behind the belly. Transparent background, no floor, no shadow or text."
+
+## 승인된 기본 자세 원화
+
+`assets/boar-stance-proposal.png`는 다리가 몸통에서 이어지는 전체 정지 원화입니다. 사용자가 이 자세를 가장 자연스럽다고 평가했습니다. 앞다리의 수직 지지와 엉덩이에서 이어지는 뒷다리 비율을 다음 보행의 기준으로 유지합니다. 현재 게임 보행에는 아직 연결하지 않았습니다. `boar_stance_review.tscn`으로 이전 조립 방식과 정지 비교를 볼 수 있습니다.
+
+내장 이미지 생성 도구, 기존 연결 상체 원화 참조. 프롬프트: "Edit the same boar upper-body sprite into a full-body neutral standing pose. Preserve face, ears, tusks, snout, connected neck, torso, tail and style. Four short stout legs, straight load-bearing forelegs beneath shoulders, hind thighs integrated into rump with compact knees/hocks, flat cloven hooves on a consistent perspective ground plane. No pasted seams, detached lobes, long arms or dangling feet. Transparent background; no text, floor or shadow."

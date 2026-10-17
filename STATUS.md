@@ -19,7 +19,10 @@
 - 구현: `animation/boar_rig.gd`, 이전 비교용: `animation/boar_rig_before.gd`.
 - 비교 장면: `animation/boar_comparison.tscn`. 다양한 동작 확인: `animation/boar_preview.tscn`.
 - GIF/영상: `docs/boar-seam-comparison.gif`, `docs/boar-seam-comparison.mp4`.
-- 이 버전의 미술 방향은 아직 사용자 승인 전. 다른 동물로 확장하기 전에 비교 피드백을 받을 것.
+- v2 피드백: 머리는 개선됐지만 앞/뒷다리가 정지 화면에서도 부자연스럽다는 지적.
+- 새 기준 원화 `assets/boar-stance-proposal.png`: 네 다리가 몸통에서 이어지는 정지 자세. 사용자가 가장 자연스럽다고 평가해 기본 자세로 채택.
+- 정지 전후 비교: `animation/boar_stance_review.tscn`, `docs/boar-stance-review.png`. 새 원화는 검토용이며 실제 게임의 보행 렌더러에는 아직 적용하지 않음.
+- 다음 작업: 승인된 정지 자세의 비율/어깨/엉덩이 실루엣을 유지한 작은 보폭의 보행. 기존 분리 다리를 그대로 재조립하는 방식으로 되돌리지 않기. 다른 동물로 확장하기 전에 보행 피드백을 받을 것.
 - 공격 판정은 그대로 유지. 별도 공격 원화, 정밀 발 접지 IK, 다른 종 개선은 아직 구현하지 않음.
 
 ## 작업 방식
