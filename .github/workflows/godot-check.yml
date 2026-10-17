@@ -35,3 +35,22 @@ jobs:
           set -euo pipefail
           timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . -- --self-test 2>&1 | tee test.log
           grep -q 'SELF TEST PASS:' test.log
+  windows-launcher:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: game with spaces
+      - name: Run the actual Windows launcher with a spaced path
+        shell: cmd
+        run: call "game with spaces\play.bat" --check-only
+      - name: Verify repeat launch without downloading again
+        shell: cmd
+        run: call "game with spaces\play.bat" --check-only
+      - name: Preserve diagnostic logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-launcher-logs
+          path: game with spaces/.tools/*.log
