@@ -1,189 +1,171 @@
-extends Node3D
-# Procedural 3D locomotion study. Joint positions use a planar two-link IK solve.
-const CYCLE=0.8
-const STRIDE=0.8
-const DUTY=0.64
-const UPPER=0.46
-const LOWER=0.45
-var animal: Node3D
-var trunk: Node3D
-var head: Node3D
-var camera: Camera3D
-var legs=[]
-var brown
-var dark
-var hoof_material
-var outline_material
-var sphere: SphereMesh
-var cylinder: CylinderMesh
-var elapsed=0.0
-var automatic=false
+extends "res://experiments/boar3d/boar_model_blockout.gd"
+# Fused implicit surface, skinned continuously to the existing analytic gait.
+var surface_node: MeshInstance3D
+var rest_vertices=PackedVector3Array()
+var rest_normals=PackedVector3Array()
+var surface_colors=PackedColorArray()
+var surface_indices=PackedInt32Array()
+var influences=[]
+var weights=[]
+var bind_origins=[]
+var bind_directions=[]
 
 func _ready():
-	brown=material(Color("a46835"))
-	dark=material(Color("754728"))
-	hoof_material=material(Color("30251f"))
-	outline_material=ShaderMaterial.new()
-	var shader=Shader.new()
-	shader.code="shader_type spatial; render_mode unshaded,cull_front; void vertex(){VERTEX+=NORMAL*0.018;} void fragment(){ALBEDO=vec3(0.11,0.065,0.04);}"
-	outline_material.shader=shader
-	sphere=SphereMesh.new()
-	sphere.radius=1.0
-	sphere.height=2.0
-	sphere.radial_segments=20
-	sphere.rings=12
-	cylinder=CylinderMesh.new()
-	cylinder.top_radius=1.0
-	cylinder.bottom_radius=1.0
-	cylinder.height=1.0
-	cylinder.radial_segments=10
-	animal=Node3D.new()
-	add_child(animal)
-	trunk=Node3D.new()
-	animal.add_child(trunk)
-	ellipsoid(trunk,Vector3(0,1.12,0),Vector3(1.03,0.64,0.54),brown)
-	ellipsoid(trunk,Vector3(-0.56,1.10,0),Vector3(0.64,0.62,0.56),brown)
-	ellipsoid(trunk,Vector3(0.47,1.16,0),Vector3(0.58,0.66,0.55),brown)
-	for i in range(8):
-		var bristle=cone(trunk,Vector3(-0.90+i*0.20,1.73,0),0.13,0.26,dark)
-		bristle.rotation.z=0.45
-	head=Node3D.new()
-	trunk.add_child(head)
-	head.position=Vector3(0.77,1.14,0)
-	ellipsoid(head,Vector3(0.12,0,0),Vector3(0.58,0.49,0.41),brown)
-	ellipsoid(head,Vector3(0.53,-0.16,0),Vector3(0.43,0.27,0.30),brown)
-	var pink=material(Color("d78b79"))
-	ellipsoid(head,Vector3(0.87,-0.16,0),Vector3(0.075,0.21,0.28),pink)
+	super()
+	for child in trunk.get_children(): child.hide()
+	for leg in legs:
+		for key in ["upper","lower","knee","thigh"]: leg[key].hide()
+	var raw=FileAccess.get_file_as_bytes("res://experiments/boar3d/boar_surface.json.gz")
+	var data=JSON.parse_string(raw.decompress_dynamic(-1,FileAccess.COMPRESSION_GZIP).get_string_from_utf8())
+	for v in data.vertices: rest_vertices.append(Vector3(v[0],v[1],v[2]))
+	for n in data.normals: rest_normals.append(Vector3(n[0],n[1],n[2]))
+	for c in data.colors: surface_colors.append(Color(c[0],c[1],c[2]))
+	for i in data.indices: surface_indices.append(int(i))
+	influences=data.bones
+	weights=data.weights
+	bind_origins.append(Vector3.ZERO)
+	bind_directions.append(Vector3.UP)
+	for bone in data.rest_bones:
+		var a=Vector3(bone[0][0],bone[0][1],bone[0][2])
+		var b=Vector3(bone[1][0],bone[1][1],bone[1][2])
+		bind_origins.append(a)
+		bind_directions.append((b-a).normalized())
+	var skin_material=material(Color.WHITE)
+	skin_material.vertex_color_use_as_albedo=true
+	skin_material.diffuse_mode=BaseMaterial3D.DIFFUSE_BURLEY
+	surface_node=mesh_node(animal,make_surface(rest_vertices,rest_normals),skin_material)
+	# Soft, irregular back tufts replace the line of repeated triangular cones.
+	for i in range(data.back.size()):
+		var p=data.back[i]
+		var root=Vector3(p[0],p[1]-0.025,p[2])
+		fur_tuft(trunk,root,0.12+float(i%3)*0.025,brown)
+	# Face details sit on the sculpted skull; no separate head/body cut.
+	head.show()
+	for child in head.get_children(): child.hide()
+	var nose=material(Color("db8b75"))
+	ellipsoid(head,Vector3(1.05,-0.18,0),Vector3(0.075,0.245,0.33),nose)
 	for side in [-1.0,1.0]:
-		ellipsoid(head,Vector3(0.941,-0.13,side*0.12),Vector3(0.018,0.065,0.045),hoof_material)
-		var ear=cone(head,Vector3(-0.02,0.48,side*0.29),0.23,0.50,dark)
-		ear.rotation.z=-0.30
-		ellipsoid(head,Vector3(0.32,0.14,side*0.363),Vector3(0.085,0.095,0.055),hoof_material)
-		ellipsoid(head,Vector3(0.34,0.17,side*0.409),Vector3(0.025,0.025,0.015),material(Color("fff0cf")))
-		var ivory=material(Color("f0e0ae"))
-		var points=[Vector3(0.49,-0.30,side*0.27),Vector3(0.63,-0.23,side*0.33),Vector3(0.65,-0.05,side*0.34)]
-		for n in range(2): segment(head,points[n],points[n+1],0.065-n*0.022,ivory)
-		ellipsoid(head,points[2],Vector3(0.032,0.045,0.032),ivory)
-	var tail_points=[Vector3(-1.0,1.22,0),Vector3(-1.25,1.30,0),Vector3(-1.36,1.46,0),Vector3(-1.26,1.54,0)]
-	for i in range(3): segment(trunk,tail_points[i],tail_points[i+1],0.047,dark)
-	for side in [-1.0,1.0]:
-		for front in [true,false]:
-			var root=Vector3(0.53 if front else -0.68,0.91,side*0.38)
-			var thigh=ellipsoid(animal,root,Vector3(0.23,0.29,0.22),brown)
-			var upper=mesh_node(animal,cylinder,brown)
-			var lower=mesh_node(animal,cylinder,brown)
-			var knee=ellipsoid(animal,Vector3.ZERO,Vector3(0.17,0.17,0.17),brown)
-			var foot=Node3D.new()
-			animal.add_child(foot)
-			for toe in [-1.0,1.0]:
-				ellipsoid(foot,Vector3(0.06,-0.025,toe*0.058),Vector3(0.145,0.095,0.055),hoof_material)
-			var beat=(0.25 if front else 0.0)+(0.5 if side<0 else 0.0)
-			legs.append({"root":root,"upper":upper,"lower":lower,"knee":knee,"thigh":thigh,"foot":foot,"beat":beat,"bend":-1.0 if front else 1.0})
-	var environment=WorldEnvironment.new()
-	environment.environment=Environment.new()
-	environment.environment.background_mode=Environment.BG_COLOR
-	environment.environment.background_color=Color(0,0,0,0)
-	environment.environment.ambient_light_source=Environment.AMBIENT_SOURCE_COLOR
-	environment.environment.ambient_light_color=Color("ffe2bc")
-	environment.environment.ambient_light_energy=0.5
-	add_child(environment)
-	var light=DirectionalLight3D.new()
-	light.rotation_degrees=Vector3(-42,-35,0)
-	light.light_energy=1.0
-	add_child(light)
-	camera=Camera3D.new()
-	camera.projection=Camera3D.PROJECTION_ORTHOGONAL
-	camera.size=3.2
-	camera.near=0.05
-	add_child(camera)
-	camera.current=true
+		ellipsoid(head,Vector3(1.122,-0.15,side*0.125),Vector3(0.018,0.065,0.043),hoof_material)
+		ellipsoid(head,Vector3(0.48,0.22,side*0.49),Vector3(0.078,0.108,0.052),hoof_material)
+		ellipsoid(head,Vector3(0.50,0.255,side*0.542),Vector3(0.024,0.027,0.014),material(Color("fff1d9")))
+		ear_leaf(head,Vector3(-0.02,0.46,side*0.33),side)
+		tusk_curve(head,side)
+	# A curved, tapered tail with a fur tip, rather than straight linked bars.
+	var points=[Vector3(-1.12,1.20,0),Vector3(-1.40,1.22,0),Vector3(-1.47,1.48,0),Vector3(-1.29,1.52,0)]
+	curved_tube(trunk,points,0.055,dark)
+	fur_tuft(trunk,Vector3(-1.32,1.47,0),0.16,dark)
+	camera.size=3.45
 	set_pose(0.0)
 
-func material(color):
-	var result=StandardMaterial3D.new()
-	result.albedo_color=color
-	result.diffuse_mode=BaseMaterial3D.DIFFUSE_TOON
-	result.specular_mode=BaseMaterial3D.SPECULAR_DISABLED
-	result.roughness=1.0
-	return result
-
-func mesh_node(parent,mesh,mat):
-	var node=MeshInstance3D.new()
-	node.mesh=mesh
-	node.material_override=mat
-	parent.add_child(node)
-	var outline=MeshInstance3D.new()
-	outline.mesh=mesh
-	outline.material_override=outline_material
-	node.add_child(outline)
-	return node
-
-func ellipsoid(parent,position_value,scale_value,mat):
-	var node=mesh_node(parent,sphere,mat)
-	node.position=position_value
-	node.scale=scale_value
-	return node
-
-func cone(parent,position_value,radius,height_value,mat):
-	var mesh=CylinderMesh.new()
-	mesh.top_radius=0.0
-	mesh.bottom_radius=radius
-	mesh.height=height_value
-	mesh.radial_segments=3
-	var node=mesh_node(parent,mesh,mat)
-	node.position=position_value
-	return node
-
-func fit_segment(node,a,b,radius):
-	node.position=(a+b)/2.0
-	node.quaternion=Quaternion(Vector3.UP,(b-a).normalized())
-	node.scale=Vector3(radius,a.distance_to(b),radius)
-
-func segment(parent,a,b,radius,mat):
-	var node=mesh_node(parent,cylinder,mat)
-	fit_segment(node,a,b,radius)
-	return node
-
-static func foot_offset(time: float,beat: float):
-	var phase=fposmod(time/CYCLE+beat,1.0)
-	var half=STRIDE*DUTY/2.0
-	if phase<DUTY: return Vector2(lerpf(half,-half,phase/DUTY),0.0)
-	var swing=(phase-DUTY)/(1.0-DUTY)
-	# Hermite endpoints match stance velocity; squared sine lifts smoothly.
-	var s2=swing*swing
-	var s3=s2*swing
-	var tangent=-STRIDE*(1.0-DUTY)
-	var x=(2*s3-3*s2+1)*(-half)+(s3-2*s2+swing)*tangent+(-2*s3+3*s2)*half+(s3-s2)*tangent
-	return Vector2(x,pow(sin(swing*PI),2.0)*0.15)
-
-static func solve_knee(root: Vector3,foot: Vector3,bend: float):
-	var delta=foot-root
-	var distance=clampf(delta.length(),0.01,UPPER+LOWER-0.001)
-	var direction=delta.normalized()
-	var along=(UPPER*UPPER-LOWER*LOWER+distance*distance)/(2.0*distance)
-	var perpendicular=Vector3(-direction.y,direction.x,0).normalized()*bend
-	return root+direction*along+perpendicular*sqrt(maxf(0.0,UPPER*UPPER-along*along))
+func make_surface(vertices,normals):
+	var arrays=[]
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX]=vertices
+	arrays[Mesh.ARRAY_NORMAL]=normals
+	arrays[Mesh.ARRAY_COLOR]=surface_colors
+	arrays[Mesh.ARRAY_INDEX]=surface_indices
+	var mesh=ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,arrays)
+	return mesh
 
 func set_pose(time: float):
-	var travel=time*STRIDE/CYCLE
-	animal.position.x=travel
+	super(time)
+	if rest_vertices.is_empty(): return
+	head.rotation=Vector3.ZERO
 	var bob=sin(time/CYCLE*TAU*2.0)*0.018
-	trunk.position.y=bob
-	head.rotation.z=sin(time/CYCLE*TAU)*0.018
-	for leg in legs:
-		var offset=foot_offset(time,leg.beat)
+	var origins=[Vector3(0,bob,0)]
+	var rotations=[Quaternion.IDENTITY]
+	for i in range(legs.size()):
+		var leg=legs[i]
 		var root=leg.root+Vector3(0,bob,0)
-		var target=Vector3(leg.root.x+offset.x,0.12+offset.y,leg.root.z)
-		var joint=solve_knee(root,target,leg.bend)
-		leg.thigh.position=root
-		leg.knee.position=joint
-		leg.foot.position=target
-		fit_segment(leg.upper,root,joint,0.15)
-		fit_segment(leg.lower,joint,target,0.10)
-	camera.position=Vector3(travel+2.7,2.65,6.0)
-	camera.look_at(Vector3(travel+0.12,0.92,0),Vector3.UP)
+		var joint=leg.knee.position
+		var ankle=leg.foot.position
+		origins.append(root)
+		origins.append(joint)
+		rotations.append(Quaternion(bind_directions[i*2+1],(joint-root).normalized()))
+		rotations.append(Quaternion(bind_directions[i*2+2],(ankle-joint).normalized()))
+	var vertices=PackedVector3Array()
+	var normals=PackedVector3Array()
+	vertices.resize(rest_vertices.size())
+	normals.resize(rest_vertices.size())
+	for i in range(rest_vertices.size()):
+		var p=Vector3.ZERO
+		var n=Vector3.ZERO
+		for j in range(4):
+			var bone=int(influences[i][j])
+			var weight=weights[i][j]
+			p+=(origins[bone]+rotations[bone]*(rest_vertices[i]-bind_origins[bone]))*weight
+			n+=(rotations[bone]*rest_normals[i])*weight
+		vertices[i]=p
+		normals[i]=n.normalized()
+	var mesh=make_surface(vertices,normals)
+	surface_node.mesh=mesh
+	surface_node.get_child(0).mesh=mesh
+	camera.position=Vector3(time*STRIDE/CYCLE+3.3,2.6,6.0)
+	camera.look_at(Vector3(time*STRIDE/CYCLE+0.15,1.0,0),Vector3.UP)
 
-func _process(dt):
-	if automatic:
-		elapsed+=dt
-		set_pose(elapsed)
+func flat_shape(parent,points,color,normal=Vector3(0,0,1)):
+	var vertices=PackedVector3Array(points)
+	var normals=PackedVector3Array()
+	var indices=PackedInt32Array()
+	for point in points: normals.append(normal)
+	for i in range(1,points.size()-1):
+		var a=0; var b=i; var c=i+1
+		if (vertices[b]-vertices[a]).cross(vertices[c]-vertices[a]).dot(normal)>0:
+			var old=b; b=c; c=old
+		indices.append_array(PackedInt32Array([a,b,c]))
+	var arrays=[]; arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX]=vertices; arrays[Mesh.ARRAY_NORMAL]=normals; arrays[Mesh.ARRAY_INDEX]=indices
+	var mesh=ArrayMesh.new(); mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,arrays)
+	var mat=material(color); mat.cull_mode=BaseMaterial3D.CULL_DISABLED
+	return mesh_node(parent,mesh,mat)
+
+func ear_leaf(parent,root,side):
+	var contour=[Vector2(-0.15,0),Vector2(-0.19,0.22),Vector2(-0.13,0.49),Vector2(0.01,0.59),Vector2(0.12,0.42),Vector2(0.13,0.16),Vector2(0.08,0.0)]
+	var curved=[]
+	for i in range(contour.size()):
+		var a=contour[posmod(i-1,contour.size())]; var b=contour[i]
+		var c=contour[(i+1)%contour.size()]; var d=contour[(i+2)%contour.size()]
+		for step in range(4):
+			var t=float(step)/4.0
+			curved.append(0.5*((2*b)+(-a+c)*t+(2*a-5*b+4*c-d)*t*t+(-a+3*b-3*c+d)*t*t*t))
+	contour=curved
+	var points=[]
+	for p in contour: points.append(root+Vector3(p.x,p.y,side*0.035*sin(p.y/0.59*PI)))
+	flat_shape(parent,points,Color("4b2d1d"),Vector3(0,0,side))
+	points=[]
+	for p in contour: points.append(root+Vector3(p.x*0.70,p.y*0.78+0.05,side*0.045))
+	flat_shape(parent,points,Color("9c6350"),Vector3(0,0,side))
+
+func fur_tuft(parent,root,size_value,mat):
+	var color=mat.albedo_color
+	var points=[root+Vector3(-size_value,0,0.035),root+Vector3(-size_value*1.35,size_value*0.80,0),root+Vector3(-size_value*0.25,size_value*0.50,-0.035),root+Vector3(size_value*0.60,0,0)]
+	flat_shape(parent,points,color,Vector3(0,0,1))
+
+func tusk_curve(parent,side):
+	var points=[Vector3(0.62,-0.28,side*0.29),Vector3(0.83,-0.29,side*0.39),Vector3(0.90,-0.02,side*0.42),Vector3(0.79,0.16,side*0.39)]
+	curved_tube(parent,points,0.09,material(Color("f4e5bb")))
+
+func curved_tube(parent,control,radius,mat):
+	var vertices=PackedVector3Array(); var normals=PackedVector3Array(); var indices=PackedInt32Array()
+	var segments=16; var sides=10
+	for i in range(segments+1):
+		var t=float(i)/segments; var omt=1.0-t
+		var p=control[0]*pow(omt,3)+control[1]*3*omt*omt*t+control[2]*3*omt*t*t+control[3]*pow(t,3)
+		var tangent=((control[1]-control[0])*3*omt*omt+(control[2]-control[1])*6*omt*t+(control[3]-control[2])*3*t*t).normalized()
+		var u=tangent.cross(Vector3.FORWARD).normalized(); var v=tangent.cross(u).normalized()
+		var width=radius*pow(1.0-t,0.55)+0.002
+		for j in range(sides):
+			var n=u*cos(float(j)/sides*TAU)+v*sin(float(j)/sides*TAU)
+			vertices.append(p+n*width); normals.append(n)
+	for i in range(segments):
+		for j in range(sides):
+			var a=i*sides+j; var b=i*sides+(j+1)%sides; var c=(i+1)*sides+j; var d=(i+1)*sides+(j+1)%sides
+			for triangle in [[a,b,c],[b,d,c]]:
+				if (vertices[triangle[1]]-vertices[triangle[0]]).cross(vertices[triangle[2]]-vertices[triangle[0]]).dot(normals[triangle[0]])>0:
+					indices.append_array(PackedInt32Array([triangle[0],triangle[2],triangle[1]]))
+				else: indices.append_array(PackedInt32Array(triangle))
+	var arrays=[]; arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX]=vertices; arrays[Mesh.ARRAY_NORMAL]=normals; arrays[Mesh.ARRAY_INDEX]=indices
+	var mesh=ArrayMesh.new(); mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,arrays)
+	return mesh_node(parent,mesh,mat)

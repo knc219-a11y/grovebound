@@ -31,7 +31,10 @@
 - 사용자가 3D 애니메이션을 먼저 만들고 2D 프레임으로 출력하는 제작 방식의 시험을 승인.
 - `experiments/boar3d/`: 절차적 3D 기본 모델 + 두 링크 다리 IK + 투명 16프레임 자동 출력. 본편 멧돼지 렌더러는 아직 v4 원화 프레임 방식.
 - 비교: `experiments/boar3d/review.tscn`, `docs/boar3d-comparison.gif` / `.mp4`. 기존 2D 원화 / 실시간 3D / 3D 출력 2D 프레임을 같은 주기로 재생.
-- 3D 외형은 움직임 검토용 기본 도형 모델이며 최종 그림체를 재현한 버전이 아님. `test_kinematics.gd`에서 발 지지 중 월드 위치 고정·뼈 길이·루프·투명 시트를 검사.
+- 3D 첫 도형 모델은 사용자가 부자연스럽다고 평가해 외형 보정을 승인. 현재 `boar_model.gd`는 몸통/목/다리를 하나의 닫힌 표면으로 합치고 연속 스킨 변형, 곡선 귀/엄니, 털 색 변화를 적용. 이전 도형은 `boar_model_blockout.gd`와 별도 시트에 보존.
+- 외형 보정 비교: `style_review.tscn`, `docs/boar3d-style.png` / `.gif` / `.mp4`. 원화와 동일한 화풍을 달성한 상태는 아니며 사용자 확인 전.
+- 재사용 도구: `tools/build_boar_surface.py` → `boar_surface.json.gz` → Godot `export_frames.tscn` → 16프레임 시트 → `tools/preview.py` 녹화.
+- 표면/관절 검사에 더해 열린 경계 없음과 스킨 가중치 합을 검사. `test_kinematics.gd`에서 발 지지 중 월드 위치 고정·뼈 길이·루프·투명 시트를 검사.
 - 다음 작업: 3D 출력 방식과 v4 원화 프레임 보행에 대한 사용자 피드백. 기존 분리 다리를 그대로 재조립하는 방식으로 되돌리지 않기. 다른 동물로 확장하기 전에 보행을 확인받을 것.
 - 공격 판정은 그대로 유지. 별도 공격 원화, 정밀 발 접지 IK, 다른 종 개선은 아직 구현하지 않음.
 

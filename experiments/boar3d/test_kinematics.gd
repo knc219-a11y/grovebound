@@ -28,6 +28,21 @@ func _initialize():
 	var image=Image.load_from_file(data.texture)
 	if data.count!=16 or image.get_size()!=Vector2i(2048,1536) or image.get_pixel(0,0).a!=0.0:
 		failures.append("transparent sheet")
+	# The sculpted body must be a closed continuous surface with normalized skin weights.
+	var surface=JSON.parse_string(FileAccess.get_file_as_bytes("res://experiments/boar3d/boar_surface.json.gz").decompress_dynamic(-1,FileAccess.COMPRESSION_GZIP).get_string_from_utf8())
+	var edges={}
+	for triangle in range(0,surface.indices.size(),3):
+		for pair in [[0,1],[1,2],[2,0]]:
+			var a=int(surface.indices[triangle+pair[0]])
+			var b=int(surface.indices[triangle+pair[1]])
+			var edge=Vector2i(mini(a,b),maxi(a,b))
+			edges[edge]=edges.get(edge,0)+1
+	for edge in edges:
+		if edges[edge]!=2: failures.append("open body surface"); break
+	for weights in surface.weights:
+		var total=0.0
+		for weight in weights: total+=weight
+		if absf(total-1.0)>0.00001: failures.append("unnormalized skin weight"); break
 	if failures.is_empty(): print("3D STUDY PASS: stance foot lock, invariant bone lengths, periodic gait, transparent 16-frame export")
 	else: push_error(str(failures))
 	quit(0 if failures.is_empty() else 1)
