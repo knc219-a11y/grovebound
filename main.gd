@@ -1161,6 +1161,13 @@ func run_tests():
 			var c=verts[boar_rig.indices[triangle+2]]
 			if (b-a).cross(c-a)<=0.0: flipped=true
 	if flipped: failures.append("boar skin fold")
+	# Painted walk frames must loop and remain entirely within the sheet.
+	if boar_rig.walk_frames.size()!=8: failures.append("boar walk frame count")
+	if boar_rig.frame_for_phase(0.0)!=0 or boar_rig.frame_for_phase(TAU)!=0 or boar_rig.frame_for_phase(TAU-0.001)!=7:
+		failures.append("boar frame loop")
+	for region in boar_rig.walk_frames:
+		if region.size.x<=0 or region.size.y<=0 or not Rect2(Vector2.ZERO,Vector2(boar_rig.walk_texture.get_size())).encloses(region):
+			failures.append("boar atlas bounds")
 	if failures.is_empty(): print("SELF TEST PASS: party limits, reserve XP, overflow capture, wild level, revive, failure retention, fixed traits, tutorial flow, boss tells/dodge/swept charge, touch release")
 	else: push_error(str(failures))
 	get_tree().quit(0 if failures.is_empty() else 1)

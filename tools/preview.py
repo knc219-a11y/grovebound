@@ -30,10 +30,14 @@ def main():
     p.add_argument("--fps", type=int, default=30)
     p.add_argument("--gif-fps", type=int, default=12)
     p.add_argument("--width", type=int, default=768)
+    p.add_argument("--gif-width", type=int, default=640)
+    p.add_argument("--gif-seconds", type=float, default=0.0, help="0 keeps the entire clip")
     p.add_argument("--skip-import", action="store_true")
     args = p.parse_args()
     if not (0 < args.seconds <= 30 and 1 <= args.fps <= 60 and 1 <= args.gif_fps <= 30
-            and 320 <= args.width <= 1920 and args.width % 2 == 0):
+            and 320 <= args.width <= 1920 and args.width % 2 == 0
+            and 320 <= args.gif_width <= 1920 and args.gif_width % 2 == 0
+            and 0 <= args.gif_seconds <= args.seconds):
         p.error("Use 0 < seconds <= 30, fps <= 60, GIF fps <= 30, even width 320..1920")
     project = Path(__file__).resolve().parent.parent
     if not args.scene.startswith("res://") or not (project / args.scene[6:]).is_file():
@@ -75,10 +79,11 @@ def main():
             run(base + ["-an", "-vf", f"scale={args.width}:-2", "-c:v", "libx264", "-crf", "23",
                         "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(video)], cwd=project)
             gif = output.with_suffix(".gif")
-            filters = (f"[0:v]fps={args.gif_fps},scale={args.width}:-2:flags=lanczos,split[a][b];"
+            filters = (f"[0:v]fps={args.gif_fps},scale={args.gif_width}:-2:flags=lanczos,split[a][b];"
                        "[a]palettegen=max_colors=80:stats_mode=diff[p];"
                        "[b][p]paletteuse=dither=none:diff_mode=rectangle")
-            run(base + ["-filter_complex", filters, str(gif)], cwd=project)
+            gif_limit = ["-t", str(args.gif_seconds)] if args.gif_seconds else []
+            run(base + gif_limit + ["-filter_complex", filters, str(gif)], cwd=project)
             run([ffmpeg, "-v", "error", "-i", str(video), "-f", "null", "-"], cwd=project)
             outputs.extend([gif, video])
         for item in outputs:

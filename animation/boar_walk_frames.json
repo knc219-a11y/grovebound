@@ -1,0 +1,105 @@
+{
+	"alignment": "connected opaque silhouettes; bottom-center; uniform displayed height",
+	"columns": 4,
+	"frames": [
+		{
+			"pivot": [
+				218.5,
+				303
+			],
+			"region": [
+				19,
+				97,
+				437,
+				303
+			]
+		},
+		{
+			"pivot": [
+				212.0,
+				306
+			],
+			"region": [
+				458,
+				96,
+				424,
+				306
+			]
+		},
+		{
+			"pivot": [
+				216.0,
+				303
+			],
+			"region": [
+				898,
+				95,
+				432,
+				303
+			]
+		},
+		{
+			"pivot": [
+				214.5,
+				309
+			],
+			"region": [
+				1337,
+				94,
+				429,
+				309
+			]
+		},
+		{
+			"pivot": [
+				216.0,
+				303
+			],
+			"region": [
+				24,
+				495,
+				432,
+				303
+			]
+		},
+		{
+			"pivot": [
+				211.0,
+				302
+			],
+			"region": [
+				460,
+				493,
+				422,
+				302
+			]
+		},
+		{
+			"pivot": [
+				216.5,
+				304
+			],
+			"region": [
+				896,
+				493,
+				433,
+				304
+			]
+		},
+		{
+			"pivot": [
+				214.0,
+				309
+			],
+			"region": [
+				1337,
+				494,
+				428,
+				309
+			]
+		}
+	],
+	"normalized_height": 100,
+	"rows": 2,
+	"texture": "res://assets/boar-walk-sheet.png"
+}
