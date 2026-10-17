@@ -18,3 +18,11 @@ Godot에서 `boar_preview.tscn`을 열고 F6으로 6가지 동작을 비교할 �
 내장 이미지 생성 도구로 `assets/boar.png`를 참조해 `assets/boar-parts.png`를 새로 만들었습니다. 투명도는 원본 그대로 사용하며, 부위의 실제 픽셀 영역을 Godot에서 참조합니다. 정해진 격자 경계는 사용하지 않습니다.
 
 사용 프롬프트: "Create a production 2D cutout animation parts atlas for the reference cute brown wild boar, same painted cartoon style, simple early-game beast, cream tusks, pink snout, dark brown outlines. Transparent background, facing right. Isolated torso, head, near front/hind legs, far front/hind legs, tail and optional forelock. No text, grid lines, ground or shadows. Rounded upper leg joints concealed by the torso; consistent identity and palette."
+
+## 이음새 개선 v2
+
+`boar-body-connected.png`는 목과 몸통을 이어 그린 상체 원화입니다. 동일한 삼각형 메시의 연속 가중치로 목을 휘게 하며, 다리 네 개의 윗부분은 이 상체 뒤에 숨깁니다. 머리를 별도 절단면으로 회전하던 v1은 `boar_rig_before.gd`에 비교용으로 남깁니다.
+
+`boar_comparison.tscn`은 같은 속도와 크기로 v1/v2를 함께 보여줍니다. 원화도 수정했으므로 이 비교는 동일 원화에서 메시 기술만 비교하는 실험은 아닙니다. 메시를 그릴 때는 실제 렌더가 끝날 때까지 리소스 참조를 유지합니다.
+
+내장 이미지 생성 도구 사용. 추가 프롬프트: "Make one connected upper-body game sprite of this exact cute brown wild boar, matching atlas identity, colors, outline and shading. Assemble torso and head seamlessly, no neck cut line or shoulder seam, head facing right. Remove all four legs completely, smooth furry belly at hip level, include attached tail. Separate legs will be placed behind the belly. Transparent background, no floor, no shadow or text."
