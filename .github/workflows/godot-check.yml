@@ -35,6 +35,12 @@ jobs:
           set -euo pipefail
           timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . -- --self-test 2>&1 | tee test.log
           grep -q 'SELF TEST PASS:' test.log
+      - name: 3D boar study kinematics and exported sheet
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://experiments/boar3d/test_kinematics.gd 2>&1 | tee boar3d-test.log
+          grep -q '3D STUDY PASS:' boar3d-test.log
   windows-launcher:
     runs-on: windows-latest
     timeout-minutes: 10

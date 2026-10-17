@@ -1,0 +1,21 @@
+{
+	"cell": [
+		512,
+		384
+	],
+	"columns": 4,
+	"count": 16,
+	"crop": [
+		88,
+		67,
+		353,
+		254
+	],
+	"cycle_seconds": 0.8,
+	"ground": [
+		154.771209716797,
+		230.263061523438
+	],
+	"rows": 4,
+	"texture": "res://assets/boar3d-walk-sheet.png"
+}
