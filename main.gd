@@ -1148,6 +1148,19 @@ func run_tests():
 	rig_actor.hp=30
 	boar_rig.advance(rig_actor,0.3)
 	if not is_zero_approx(rig_actor.rig_down): failures.append("rig revive pose")
+	# A zero-weight gait must reproduce the approved rest pose exactly.
+	var rest_pose=boar_rig.pose_vertices(0.0,0.0,0.0,0.0,0.0)
+	if rest_pose!=boar_rig.rest: failures.append("approved boar rest silhouette")
+	# Mesh triangles must not invert during the small-step cycle.
+	var flipped=false
+	for pose in range(12):
+		var verts=boar_rig.pose_vertices(float(pose)/12.0*TAU,1.0,0.0,0.0,0.0)
+		for triangle in range(0,boar_rig.indices.size(),3):
+			var a=verts[boar_rig.indices[triangle]]
+			var b=verts[boar_rig.indices[triangle+1]]
+			var c=verts[boar_rig.indices[triangle+2]]
+			if (b-a).cross(c-a)<=0.0: flipped=true
+	if flipped: failures.append("boar skin fold")
 	if failures.is_empty(): print("SELF TEST PASS: party limits, reserve XP, overflow capture, wild level, revive, failure retention, fixed traits, tutorial flow, boss tells/dodge/swept charge, touch release")
 	else: push_error(str(failures))
 	get_tree().quit(0 if failures.is_empty() else 1)

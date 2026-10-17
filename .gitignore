@@ -5,3 +5,6 @@ export_credentials.cfg
 .tools/
 build/
 *.log
+
+__pycache__/
+docs/*.import

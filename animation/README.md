@@ -1,34 +1,39 @@
-# 멧돼지 관절 애니메이션
+# 멧돼지 애니메이션
 
-캡처 프로그램이나 매 동작별 이미지 재생성 없이, 부위 원화 한 장을 재사용합니다.
-`boar_rig.gd`는 몸통·머리·네 다리·꼬리를 겹쳐 그립니다. 기존 `boar.png`는 메뉴 아이콘용으로 보존합니다.
+## 현재 방식: 승인된 전체 원화의 연속 메시 변형
 
-- 실제 이동 거리로 발걸음 위상을 진행하고, 정지할 때 보행 가중치를 부드럽게 줄입니다.
-- 대기는 호흡, 이동은 대각 다리 교차, 공격은 머리 들이받기, 공격 예고는 고개 숙이기입니다.
-- 피격 색상/짧은 반응, 쓰러짐/소생, 좌우 반전을 지원합니다.
-- 일반/아군/우두머리 멧돼지에 적용됩니다. 다른 종은 기존 방식입니다.
-- 공격 판정과 피해 발생 시점은 기존 게임 로직을 유지합니다. 현재 짧은 공격 포즈는 피해 발생 직후 시작하는 피드백입니다. 긴 선행동작으로 변경하려면 전투 판정도 별도로 조정해야 합니다.
-- 발 접지를 정밀하게 푸는 IK나 손으로 그린 프레임 방식은 아닙니다. 우선 동작과 외형을 검토할 수 있는 첫 관절 버전입니다.
+`boar_rig.gd`는 `assets/boar-stance-proposal.png` 한 장을 사용합니다. 사용자가 가장 자연스럽다고 평가한 정지 자세의 비율과 몸통/다리 연결을 그대로 유지합니다. 부위 이미지를 별도로 겹쳐 그리지 않습니다.
 
-Godot에서 `boar_preview.tscn`을 열고 F6으로 6가지 동작을 비교할 수 있습니다.
-실제 게임은 평소처럼 `play.bat`으로 실행합니다.
+- 32×24 격자의 원래 정점·UV·다리 가중치는 초기화 시 준비합니다.
+- 다리 뿌리는 거의 고정하고 발 쪽으로 갈수록 작은 수평 이동과 들어 올리기를 적용합니다.
+- 네 다리의 위상을 달리하고, 64% 지지/36% 복귀 구간으로 움직입니다.
+- 실제 이동 거리로 위상을 진행합니다. 정지 시 가중치를 줄여 승인된 정지 자세로 복귀합니다.
+- 호흡은 상체에만 작게 적용해 발 전체가 위아래로 흔들리지 않게 합니다.
+- 머리는 같은 메시 안에서 연속 가중치로 움직입니다. 좌우 반전, 공격 반응, 공격 예고, 쓰러짐/소생을 유지합니다.
+- 렌더가 지연 실행되므로 액터가 현재 메시 참조를 유지합니다.
 
-## 원화
+정밀한 지면 고정 IK는 아닙니다. 빠른 이동에서는 발 미끄러짐이 남을 수 있습니다. 별도 공격 원화와 다른 종의 개선은 아직 없습니다. 모바일 기기의 성능 검증도 별도 과제입니다.
 
-내장 이미지 생성 도구로 `assets/boar.png`를 참조해 `assets/boar-parts.png`를 새로 만들었습니다. 투명도는 원본 그대로 사용하며, 부위의 실제 픽셀 영역을 Godot에서 참조합니다. 정해진 격자 경계는 사용하지 않습니다.
+## 검토와 반복 출력
 
-사용 프롬프트: "Create a production 2D cutout animation parts atlas for the reference cute brown wild boar, same painted cartoon style, simple early-game beast, cream tusks, pink snout, dark brown outlines. Transparent background, facing right. Isolated torso, head, near front/hind legs, far front/hind legs, tail and optional forelock. No text, grid lines, ground or shadows. Rounded upper leg joints concealed by the torso; consistent identity and palette."
+- `boar_walk_review.tscn`: 승인된 정지 자세 / 작은 보폭 / 좌우 반전 / 정지 전환.
+- `boar_preview.tscn`: 대기, 이동, 공격, 돌진 준비, 피격, 쓰러짐/소생.
+- `boar_stance_review.tscn`: 이전 다리 조립과 승인된 정지 원화 비교.
+- `boar_comparison.tscn`: 초기 분리 부위 버전과 현재 버전 비교.
+- 출력: `docs/boar-small-step.gif`, `docs/boar-small-step.mp4`.
+- `tools/preview.py`: 임포트 → 장면 녹화 → 오류 검사 → GIF/MP4 또는 PNG 출력. 사용법은 `tools/README.md`.
 
-## 이음새 개선 v2
+회귀 검사는 정지 자세 정점 일치, 12개 보행 위상에서 메시 삼각형 뒤집힘 없음, 거리 기반 위상, 정지 전환, 쓰러짐/소생 복귀를 확인합니다.
 
-`boar-body-connected.png`는 목과 몸통을 이어 그린 상체 원화입니다. 동일한 삼각형 메시의 연속 가중치로 목을 휘게 하며, 다리 네 개의 윗부분은 이 상체 뒤에 숨깁니다. 머리를 별도 절단면으로 회전하던 v1은 `boar_rig_before.gd`에 비교용으로 남깁니다.
+## 이전 버전과 원화 기록
 
-`boar_comparison.tscn`은 같은 속도와 크기로 v1/v2를 함께 보여줍니다. 원화도 수정했으므로 이 비교는 동일 원화에서 메시 기술만 비교하는 실험은 아닙니다. 메시를 그릴 때는 실제 렌더가 끝날 때까지 리소스 참조를 유지합니다.
+- v1 `boar_rig_before.gd`: 부위별 컷아웃. 목/어깨 절단선이 부자연스럽다는 피드백.
+- v2 `boar_rig_v2.gd`: 연결 상체 + 분리 다리. 머리는 개선됐지만 다리의 비율과 붙는 위치가 부자연스럽다는 피드백.
+- v3 `boar_rig.gd`: 승인된 전체 정지 원화 재사용. 추가 이미지 생성 없이 코드로 보행 적용.
+- 기존 `assets/boar.png`는 메뉴 아이콘으로 보존.
 
-내장 이미지 생성 도구 사용. 추가 프롬프트: "Make one connected upper-body game sprite of this exact cute brown wild boar, matching atlas identity, colors, outline and shading. Assemble torso and head seamlessly, no neck cut line or shoulder seam, head facing right. Remove all four legs completely, smooth furry belly at hip level, include attached tail. Separate legs will be placed behind the belly. Transparent background, no floor, no shadow or text."
+원화는 내장 이미지 생성 도구로 만들었습니다. 요약 프롬프트:
 
-## 승인된 기본 자세 원화
-
-`assets/boar-stance-proposal.png`는 다리가 몸통에서 이어지는 전체 정지 원화입니다. 사용자가 이 자세를 가장 자연스럽다고 평가했습니다. 앞다리의 수직 지지와 엉덩이에서 이어지는 뒷다리 비율을 다음 보행의 기준으로 유지합니다. 현재 게임 보행에는 아직 연결하지 않았습니다. `boar_stance_review.tscn`으로 이전 조립 방식과 정지 비교를 볼 수 있습니다.
-
-내장 이미지 생성 도구, 기존 연결 상체 원화 참조. 프롬프트: "Edit the same boar upper-body sprite into a full-body neutral standing pose. Preserve face, ears, tusks, snout, connected neck, torso, tail and style. Four short stout legs, straight load-bearing forelegs beneath shoulders, hind thighs integrated into rump with compact knees/hocks, flat cloven hooves on a consistent perspective ground plane. No pasted seams, detached lobes, long arms or dangling feet. Transparent background; no text, floor or shadow."
+1. `boar-parts.png`: "A transparent right-facing cutout atlas matching the cute brown wild boar: isolated torso, head, near/far fore and hind legs, tail, optional forelock. Consistent palette and painted cartoon outlines, no ground, text or grid."
+2. `boar-body-connected.png`: "Assemble matching torso and head seamlessly into one upper-body silhouette. No neck cut or shoulder seam; remove all legs and retain attached tail. Transparent background."
+3. `boar-stance-proposal.png`: "Preserve face and connected upper body, add four short stout legs in a stable neutral standing pose. Straight forelegs under shoulders; hind thighs integrated into rump, compact knees/hocks, flat cloven hooves on a consistent perspective ground plane. No pasted seams, detached lobes, long arms or dangling feet. Transparent background."

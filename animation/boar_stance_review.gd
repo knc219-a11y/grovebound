@@ -1,6 +1,6 @@
 extends Node2D
 # Static art review only. The proposal is intentionally not wired into gameplay.
-const CurrentRig = preload("res://animation/boar_rig.gd")
+const CurrentRig = preload("res://animation/boar_rig_v2.gd")
 var current
 var proposal: Texture2D
 var proposal_region=Rect2(0,0,1,1)
