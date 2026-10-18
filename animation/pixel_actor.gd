@@ -13,6 +13,8 @@ var run_cell: Vector2
 var run_ground: Vector2
 var run_stride=50.0
 var run_minimum_cycle=0.18
+var run_enter_speed=90.0
+var run_exit_speed=65.0
 func _init(manifest,run_manifest=""):
 	var data=JSON.parse_string(FileAccess.get_file_as_string(manifest))
 	texture=load(data.texture)
@@ -30,6 +32,8 @@ func _init(manifest,run_manifest=""):
 		run_ground=Vector2(run.ground[0],run.ground[1])
 		run_stride=run.stride_pixels
 		run_minimum_cycle=run.minimum_cycle_seconds
+		run_enter_speed=run.get("run_enter_speed",90.0)
+		run_exit_speed=run.get("run_exit_speed",65.0)
 		for i in int(run.count):
 			run_frames.append(Rect2(Vector2(i%int(run.columns),i/int(run.columns)).floor()*run_cell,run_cell))
 func frame_for_phase(phase):
@@ -37,14 +41,15 @@ func frame_for_phase(phase):
 func advance(actor,dt):
 	var distance=actor.pos.distance_to(actor.get("pixel_last",actor.pos))
 	actor.pixel_last=actor.pos
-	var moving=actor.get("walk",false) and actor.hp>0 and distance>0.001 and distance<100
+	var moving=actor.get("walk",false) and actor.hp>0 and distance>0.001 and distance<100 and actor.get("swing",0.0)<=0 and actor.get("wind",0.0)<=0
 	if moving:
-		var speed=distance/maxf(dt,0.001)
+		var scale_value=2.0 if actor.get("boss",false) else 1.0
+		var speed=distance/maxf(dt,0.001)/scale_value
 		# Hysteresis prevents walk/run flicker near the speed threshold.
-		actor.pixel_running=run_texture!=null and speed>(65.0 if actor.get("pixel_running",false) else 90.0)
+		actor.pixel_running=run_texture!=null and speed>(run_exit_speed if actor.get("pixel_running",false) else run_enter_speed)
 		var travel_stride=run_stride if actor.pixel_running else stride
 		var cycle_limit=run_minimum_cycle if actor.pixel_running else minimum_cycle
-		var cycles=minf(distance/travel_stride,maxf(0,dt)/cycle_limit)
+		var cycles=minf(distance/(travel_stride*scale_value),maxf(0,dt)/cycle_limit)
 		actor.pixel_phase=fposmod(actor.get("pixel_phase",0.0)+cycles,1.0)
 	actor.pixel_moving=moving
 	if not moving:
@@ -53,7 +58,7 @@ func advance(actor,dt):
 func draw(canvas,position,height,face,tint,actor,idle):
 	var scale_value=maxf(1.0,roundf(height/native_height))
 	var down=actor.hp<=0
-	var moving=actor.get("pixel_moving",false) and not down and actor.get("swing",0.0)<=0
+	var moving=actor.get("pixel_moving",false) and not down and actor.get("swing",0.0)<=0 and actor.get("wind",0.0)<=0
 	var tilt=-0.75*face if down else 0.0
 	canvas.draw_set_transform_matrix(Transform2D(tilt,position.round()).scaled_local(Vector2(face,1)*scale_value))
 	if moving:

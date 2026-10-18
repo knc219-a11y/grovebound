@@ -12,7 +12,7 @@ Validation: Godot 4.7 import, gameplay self-test and save repair regression pass
 
 The druid now has eight baked walk frames at native resolution. A continuous build-time mesh moves the boots in alternating support/swing phases, the lower cloak, the free hand and the staff. Shared mesh vertices avoid open cutout seams. The original idle art remains unchanged. `animation/pixel_actor.gd` plays the padded atlas at runtime with nearest filtering, integer scales and a shared foot anchor. Stopping, teleporting and being downed reset walking. No runtime mesh or frame generation is required.
 
-Rebuild on a graphical display: `godot --audio-driver Dummy --path . --script res://tools/bake_druid_walk.gd`. Review: `res://animation/druid_walk_review.tscn`; actual combat/movement review: `res://animation/druid_gameplay_preview.tscn` (isolated from player saves). The enlarged review travels at 30 px/s. Gameplay uses its existing 210 px/s movement speed; the v1 walk-only study exposed foot sliding at this speed. See the run update below. The five other new beasts remain static; the generic frame player can accept their future manifests.
+Rebuild on a graphical display: `godot --audio-driver Dummy --path . --script res://tools/bake_druid_walk.gd`. Review: `res://animation/druid_walk_review.tscn`; actual combat/movement review: `res://animation/druid_gameplay_preview.tscn` (isolated from player saves). The enlarged review travels at 30 px/s. Gameplay uses its existing 210 px/s movement speed; the v1 walk-only study exposed foot sliding at this speed. See the run update below. The remaining beasts were static at that point; wolf and fox now use the update below.
 
 Regression checks now cover eight distinct unclipped frames, phase wrap, distance-driven advancement, stop/teleport, down/revive, gameplay and save repair.
 
@@ -23,3 +23,13 @@ Fast travel now selects a separate 12-frame run cycle: longer steps, higher swin
 Bake: `godot --audio-driver Dummy --path . --script res://tools/bake_druid_walk.gd -- --run`. Review: `res://animation/druid_run_review.tscn` compares walk-only vs run at the same speed, then slows/stops/resumes. Test coverage includes run cadence at 210 px/s, gait hysteresis, 12 unique unclipped frames and support-foot travel. The original walk atlas remains unchanged. Runtime atlas is 320x288 px, binary alpha, 19 opaque palette colors.
 
 Recording now disables encoder stdin and validates a temporary MP4 before exposing it as a finished deliverable.
+
+## Wolf and fox gait v1
+
+Both beasts now have a 12-frame four-beat walk and a 12-frame diagonal trot (48 frames in four atlases). The same continuous skin baker uses species-specific leg roots/feet, step sizes and tail motion, preserving the approved idle sprites. Source leg influence has a rigid central band to avoid stretching the paws, and the tail mask excludes hind paws. There are no new attack paintings: attacks and windups hold the original standing stance while existing hit/effect feedback remains.
+
+Both allied and enemy wolves/foxes use the shared native-pixel player. Per-actor state keeps duplicate animals independent. Slow travel walks; above 60 px/s it trots, returning to walk below 45 px/s. Stride comes from the source support curve; doubled actor scale doubles its world stride. All movement still uses the original game stats. Very fast catch-up travel remains subject to a cadence cap, so the single-view skin is an interim motion solution rather than a full anatomical redraw.
+
+Rebuild all four atlases on a graphical display: `godot --audio-driver Dummy --path . --script res://tools/bake_quadrupeds.gd`. Review `res://animation/quadruped_review.tscn` shows both directions, walk/trot/stop/resume and attack stance. `res://animation/quadruped_gameplay_preview.tscn` uses two wolves and two foxes plus enemy versions, without loading or writing player saves. Each atlas is 384x216 px, binary alpha; wolf uses 13 opaque colors, fox uses 21.
+
+Regression checks cover all frame bounds/uniqueness, species gait selection, independent duplicate state, attack and windup hold, resume, doubled stride and source support travel. Gameplay and save repair checks also passed.

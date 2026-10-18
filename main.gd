@@ -14,6 +14,7 @@ const BoarRig = preload("res://animation/boar_pixel.gd")
 var boar_rig
 const PixelActor = preload("res://animation/pixel_actor.gd")
 var druid_rig
+var animal_rigs={}
 const PIXEL_KINDS = ["druid","marten","fox","turtle","deer","wolf"]
 var textures = {}
 var font: Font
@@ -81,6 +82,8 @@ func _ready():
 		textures[key] = load("res://assets/party-pixel/"+key+".png" if key in PIXEL_KINDS else "res://assets/"+key+".png")
 	boar_rig=BoarRig.new()
 	druid_rig=PixelActor.new("res://animation/druid_walk_frames.json","res://animation/druid_run_frames.json")
+	for species in ["wolf","fox"]:
+		animal_rigs[species]=PixelActor.new("res://animation/"+species+"_walk_frames.json","res://animation/"+species+"_trot_frames.json")
 	textures["boar"]=boar_rig.portrait()
 	build_terrain()
 	build_ui()
@@ -347,7 +350,9 @@ func _process(dt):
 			update_game(minf(dt,0.05))
 			druid_rig.advance(player,minf(dt,0.05))
 			for actor in units+enemies:
-				if actor.get("kind",actor.get("data",{}).get("kind",""))=="boar": boar_rig.advance(actor,minf(dt,0.05))
+				var species=actor.get("kind",actor.get("data",{}).get("kind",""))
+				if species=="boar": boar_rig.advance(actor,minf(dt,0.05))
+				elif animal_rigs.has(species): animal_rigs[species].advance(actor,minf(dt,0.05))
 	cam = (player.pos-Vector2(720,400)).clamp(Vector2(-40,0),Vector2(1500,840))
 	update_hud()
 	queue_redraw()
@@ -993,6 +998,8 @@ func _draw():
 			boar_rig.draw(self,p+offset,a.size,a.face,col,state)
 		elif a.kind=="druid":
 			druid_rig.draw(self,p+offset,a.size,a.face,col,state,textures["druid"])
+		elif animal_rigs.has(a.kind):
+			animal_rigs[a.kind].draw(self,p+offset,a.size,a.face,col,state,textures[a.kind])
 		else:
 			draw_sprite(a.kind,p+Vector2(0,bob)+offset,a.size,a.face,col,tilt,deformation)
 		var bar=Rect2(p+Vector2(-27,-a.size-10),Vector2(54,6))
