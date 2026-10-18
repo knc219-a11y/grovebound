@@ -1,8 +1,39 @@
-# Project working notes
+# Grovebound 공통 작업 규칙
 
-- Read `STATUS.md` and the affected source before continuing work. Keep `STATUS.md` current at task boundaries.
-- Target Godot 4.7 Standard and landscape mobile. GDScript uses tabs; preserve consistent indentation.
-- When recurring work is clearly cheaper or more reliable as a program, build or extend a small reusable tool and use it. Avoid unnecessary frameworks for one-off tasks.
-- Reuse `tools/preview.py` for review captures. For motion changes, provide a short actual Godot GIF and an MP4 link. Do not describe mockups as gameplay recordings.
-- Preserve the approved boar stance in `assets/boar-stance-proposal.png`; the user rejected detached-looking leg assemblies.
-- Validate changed behavior meaningfully and report limitations. Keep simultaneous edits to the same files in one working conversation.
+이 저장소에서 작업하는 모든 에이전트는 먼저 이 파일과 `STATUS.md`, 수정 대상 소스를 읽는다. 현재 사용자의 명시적 지시가 문서보다 우선한다. 결정이 바뀌면 이전 결정을 현재 규칙으로 남겨두지 말고 함께 갱신한다.
+
+## 대화와 작업 방식
+- 한국어로 간결하고 솔직하게 설명한다. 진행한다고 말한 작업은 구현·검증·결과 공유까지 이어간다. 실행하지 않은 작업을 진행 중이거나 완료됐다고 말하지 않는다.
+- 이미 승인된 범위의 일상적인 수정·검증·GitHub 반영은 반복 확인 없이 진행한다. 의도가 결과를 크게 바꾸는 경우에는 핵심만 확인한다.
+- 오래 걸리는 작업은 현재 상태·발견·남은 일을 짧게 알린다. 예상 소요량이나 토큰 비용을 근거 없이 단정하지 않는다.
+- 반복 작업이 프로그램으로 더 효율적이거나 정확하면 작은 재사용 도구를 만들거나 기존 도구를 확장한다. 일회성 작업에 불필요한 프레임워크를 추가하지 않는다.
+- 같은 파일을 여러 대화에서 동시에 수정하지 않는다. 미완료 작업과 사용자의 기존 수정은 보존하고 인계한다.
+
+## 제품 범위
+- Godot 4.7 Standard, 모바일 가로화면, 1인 개발 가능한 스테이지형 몬스터 수집 RPG를 목표로 한다.
+- 주인공은 지원 역할, 활동 동료 4마리. 출발 준비는 총 6마리, 비전투 중 교체. 중복 편성 허용.
+- 기본은 자동전투이며 이동·회복·강화·소생·동료 스킬로 개입한다. 역할 시너지를 살리되 탱커/힐러 숫자를 강제하지 않는다.
+- 첫 검증은 드루이드와 동물부터. 직업별 수집 계열은 고정 방향. 진화·알·다른 직업 확장은 후순위로 둔다.
+- 포획 개체의 고정 특성 1개와 남는 개체 활용 방향을 유지한다. 최신 세부 사항은 소스를 확인하며, 대화에 숫자만 남은 선택지를 추측해서 확정 규칙으로 만들지 않는다.
+
+## 그래픽과 비율 — 중요
+- 승인된 차분한 쿼터뷰 도트풍을 유지한다. 다른 게임의 원본 에셋을 복사하지 않는다. 배경·캐릭터·UI·폰트의 픽셀 경계와 팔레트를 함께 맞춘다.
+- **작은 캐릭터와 넓게 보이는 기존 시야를 유지한다. 배경의 나무·돌·수풀 등이 크면 배경 소품을 줄인다. 캐릭터 확대나 카메라 줌으로 대체하지 않는다.**
+- 화면 전체를 함께 비교해 비율을 판단한다. 드루이드 기본 높이 72px, 일반 멧돼지 48px 등 현재 원래 표시 크기를 기준으로 한다. 크기나 카메라 변경은 별도 명시적 요청이 있을 때만 한다.
+- 초급 사냥터는 낮은 풀·작은 돌·작은 수풀·평탄한 흙길과 열린 전투 공간을 유지한다. 거대한 계단·석조 유적은 현재 초급 맵 방향과 맞지 않는다.
+- 선명함은 잔무늬나 해상도 숫자를 늘리는 것으로 대체하지 않는다. 명료한 실루엣·절제된 명암·조용한 바닥·선명한 픽셀 경계를 우선한다. 업스케일이 원본 디테일을 늘린다고 설명하지 않는다.
+- 기존 승인 원화와 실험 결과는 보존한다. 3D 실험을 현재 제작 방향으로 임의 재도입하지 않는다. 부위 분리 애니메이션은 이음새와 발 접지를 검토한다.
+
+## 모션과 검증
+- 그림체·비율·모션을 한 번에 크게 바꾸지 않는다. 현재는 비율 수정 확인이 먼저이며 모션 개선은 보관된 작업부터 재검토한다.
+- 위치 변화와 보폭, 방향 전환, 정지/이동/공격 연결, 피격과 쓰러짐을 실제 속도로 확인한다. 전체 이미지 떨기만으로 애니메이션을 대신하지 않는다.
+- `tools/preview.py`를 재사용한다. 모션을 변경했으면 짧은 **실제 Godot GIF와 MP4**를 제공한다. 정적 UI·배경 수정은 인게임 스크린샷을 제공한다. 생성 시안과 실제 실행 캡처를 구별한다.
+- Godot 임포트와 변경에 맞는 의미 있는 검사를 실행한다. 종료 코드뿐 아니라 Parse/SCRIPT ERROR와 PASS 결과를 확인한다. 통과하지 않은 CI·실기기·전체 플레이를 검증했다고 말하지 않는다.
+- GDScript는 탭 들여쓰기를 일관되게 사용한다. 탭/공백 혼용 파서 오류를 재발시키지 않는다.
+- 사용자 세이브와 진행도를 보존한다. 녹화·재현 장면은 사용자 저장을 읽거나 덮어쓰지 않는다. 복구 전 원본 백업 원칙을 유지한다.
+
+## GitHub와 인계
+- 저장소는 https://github.com/knc219-a11y/grovebound . 범위에 해당하는 파일만 반영하고, 관련 없는 기존 변경이나 실험물을 섞지 않는다.
+- 완료 보고에는 변경 내용, 확인 결과, 남은 제한과 실행/갱신 방법을 간단히 적는다. 원격 반영 여부는 실제 결과로 확인한다.
+- 작업 경계마다 `STATUS.md`를 갱신한다. 현재 적용 상태·기각된 접근·미완료 작업·다음 단계·주요 검증을 기록해 새 대화가 같은 작업을 반복하지 않게 한다.
+- 이 규칙은 프로젝트 규칙이다. 계정 전체의 모든 새 채팅에 자동 적용됐다고 주장하지 않는다. 새 대화에서는 저장소와 이 파일, `STATUS.md`를 읽도록 안내한다.

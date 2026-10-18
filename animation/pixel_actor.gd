@@ -43,7 +43,7 @@ func advance(actor,dt):
 	actor.pixel_last=actor.pos
 	var moving=actor.get("walk",false) and actor.hp>0 and distance>0.001 and distance<100 and actor.get("swing",0.0)<=0 and actor.get("wind",0.0)<=0
 	if moving:
-		var scale_value=(2.0 if actor.get("boss",false) else 1.0)*actor.get("visual_scale",1.0)
+		var scale_value=2.0 if actor.get("boss",false) else 1.0
 		var speed=distance/maxf(dt,0.001)/scale_value
 		# Hysteresis prevents walk/run flicker near the speed threshold.
 		actor.pixel_running=run_texture!=null and speed>(run_exit_speed if actor.get("pixel_running",false) else run_enter_speed)

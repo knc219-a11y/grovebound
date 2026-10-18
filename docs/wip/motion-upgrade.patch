@@ -1,0 +1,152 @@
+diff --git a/animation/action_player.gd b/animation/action_player.gd
+index 1fa79d6..01f4bfb 100644
+--- a/animation/action_player.gd
++++ b/animation/action_player.gd
+@@ -10,6 +10,7 @@ func start(actor,kind,key):
+ 	# A routine strike must not cancel an explicit heal/guard/support gesture.
+ 	if key in ["attack","support","cast"] and actor.get("action_remaining",0.0)>0 and actor.get("action_key","") in ["heal","guard"]: return false
+ 	var duration=catalog[kind].actions[key].duration
++	actor.action_face=actor.get("face",1.0)
+ 	actor.action_key=key
+ 	actor.action_duration=duration
+ 	actor.action_remaining=duration
+@@ -32,6 +33,8 @@ func selection(kind,actor):
+ 		key="guard"
+ 	else: return {}
+ 	if not catalog[kind].actions.has(key): return {}
++	# Full-body stationary poses cannot replace travelling feet. Channeling is stationary.
++	if actor.get("walk",false) and not actor.get("channeling",false): return {}
+ 	var frames=catalog[kind].actions[key].frames
+ 	return {"key":key,"region":frames[clampi(floori(phase*frames.size()),0,frames.size()-1)]}
+ func draw(canvas,position,height,face,tint,kind,actor):
+@@ -41,7 +44,7 @@ func draw(canvas,position,height,face,tint,kind,actor):
+ 	var r=chosen.region
+ 	var region=Rect2(r[0],r[1],r[2],r[3])
+ 	var scale_value=maxf(1,roundf(float(height)/data.height))
+-	canvas.draw_set_transform_matrix(Transform2D(0,position.round()).scaled_local(Vector2(face,1)*scale_value))
++	canvas.draw_set_transform_matrix(Transform2D(0,position.round()).scaled_local(Vector2(actor.get("action_face",face) if not actor.get("channeling",false) else face,1)*scale_value))
+ 	canvas.draw_texture_rect_region(textures[kind],Rect2(-Vector2(data.ground[0],data.ground[1]),region.size),region,tint)
+ 	canvas.draw_set_transform(Vector2.ZERO)
+ 	return true
+diff --git a/animation/boar_pixel.gd b/animation/boar_pixel.gd
+index f28bcb2..72177d4 100644
+--- a/animation/boar_pixel.gd
++++ b/animation/boar_pixel.gd
+@@ -49,9 +49,9 @@ func draw(canvas: Node2D, position: Vector2, height: float, face: float, tint: C
+ 	var scale_value = display_scale(height)
+ 	var down = actor.get("rig_down",0.0)
+ 	var swing = actor.get("swing",0.0)
+-	var acting = swing>0 or actor.get("wind",0.0)>0
++	var acting = actor.get("wind",0.0)>0
+ 	var moving = actor.get("walk",false) and actor.get("rig_move",0.0)>0.25 and down<0.01 and not acting
+-	var nudge = roundf(sin(clampf(swing/0.22,0,1)*PI)*2)*scale_value if swing>0 else 0.0
++	var nudge = roundf(sin(clampf(swing/0.22,0,1)*PI)*2)*scale_value if swing>0 and not actor.get("walk",false) else 0.0
+ 	var p = position.round()+Vector2(face*nudge,0)
+ 	canvas.draw_set_transform_matrix(Transform2D(-0.7*face*down,p).scaled_local(Vector2(face,1)*scale_value))
+ 	var old_filter = canvas.texture_filter
+diff --git a/animation/pixel_actor.gd b/animation/pixel_actor.gd
+index 350625a..bac00be 100644
+--- a/animation/pixel_actor.gd
++++ b/animation/pixel_actor.gd
+@@ -39,9 +39,10 @@ func _init(manifest,run_manifest=""):
+ func frame_for_phase(phase):
+ 	return posmod(floori(phase*frames.size()),frames.size())
+ func advance(actor,dt):
++	actor.pixel_down=move_toward(actor.get("pixel_down",0.0),1.0 if actor.hp<=0 else 0.0,maxf(0,dt)/0.22)
+ 	var distance=actor.pos.distance_to(actor.get("pixel_last",actor.pos))
+ 	actor.pixel_last=actor.pos
+-	var moving=actor.get("walk",false) and actor.hp>0 and distance>0.001 and distance<100 and actor.get("swing",0.0)<=0 and actor.get("wind",0.0)<=0
++	var moving=actor.get("walk",false) and actor.hp>0 and distance>0.001 and distance<100 and actor.get("wind",0.0)<=0
+ 	if moving:
+ 		var scale_value=(2.0 if actor.get("boss",false) else 1.0)*actor.get("visual_scale",1.0)
+ 		var speed=distance/maxf(dt,0.001)/scale_value
+@@ -58,8 +59,8 @@ func advance(actor,dt):
+ func draw(canvas,position,height,face,tint,actor,idle):
+ 	var scale_value=maxf(1.0,roundf(height/native_height))
+ 	var down=actor.hp<=0
+-	var moving=actor.get("pixel_moving",false) and not down and actor.get("swing",0.0)<=0 and actor.get("wind",0.0)<=0
+-	var tilt=-0.75*face if down else 0.0
++	var moving=actor.get("pixel_moving",false) and not down and actor.get("wind",0.0)<=0
++	var tilt=-0.75*face*smoothstep(0.0,1.0,actor.get("pixel_down",1.0 if down else 0.0))
+ 	canvas.draw_set_transform_matrix(Transform2D(tilt,position.round()).scaled_local(Vector2(face,1)*scale_value))
+ 	if moving:
+ 		if actor.get("pixel_running",false) and run_texture!=null:
+diff --git a/main.gd b/main.gd
+index 713cf6a..4371da9 100644
+--- a/main.gd
++++ b/main.gd
+@@ -382,9 +382,12 @@ func move_entity(u, target, speed, dt, stop=0.0):
+ 	var delta = target-u.pos
+ 	if delta.length()>stop:
+ 		u["walk"]=true
+-		var v = delta.normalized()*minf(speed*dt,maxf(0,delta.length()-stop))
++		# Ease into motion and brake near the requested stopping distance.
++		var desired=speed*clampf((delta.length()-stop)/40.0,0.2,1.0)
++		u.move_speed=move_toward(u.get("move_speed",0.0),desired,speed*6.0*dt)
++		var v = delta.normalized()*minf(u.move_speed*dt,maxf(0,delta.length()-stop))
+ 		u.pos = (u.pos+v).clamp(Vector2(150,345),Vector2(2750,1130))
+-		if absf(v.x)>0.1: u.face=signf(v.x)
++		if absf(delta.x)>14: u.face=signf(delta.x)
+ 		if u.has("walk"): u.walk=true
+ 
+ func _process(dt):
+@@ -411,6 +414,7 @@ func update_game(dt):
+ 	stage_time += dt
+ 	combat_feedback.advance(dt)
+ 	for a in [player]+units+enemies:
++		if not a.get("walk",false): a.move_speed=0.0
+ 		motion_actions.advance(a,dt)
+ 		a["hit"]=maxf(0,a.get("hit",0.0)-dt)
+ 		a["swing"]=maxf(0,a.get("swing",0.0)-dt)
+@@ -1070,7 +1074,7 @@ func _draw():
+ 			bob=0.0
+ 			tilt=0.0
+ 			deformation=Vector2.ONE
+-		var offset=state.get("recoil",Vector2.ZERO)*(hit/0.18)
++		var offset=state.get("recoil",Vector2.ZERO)*sin(clampf(hit/0.18,0.0,1.0)*PI)
+ 		if a.hp<=0:
+ 			tilt=-0.75*a.face
+ 			if not a.ally: col.a=state.get("death",0.0)/0.32
+diff --git a/tools/test_action_events.gd b/tools/test_action_events.gd
+index ef1193b..28defd9 100644
+--- a/tools/test_action_events.gd
++++ b/tools/test_action_events.gd
+@@ -57,7 +57,14 @@ func check_events():
+ 	game.holding_revive=false
+ 	game.update_game(0.1)
+ 	if game.player.get("channeling",false): failures.append("interrupt ends channel")
+-	var probe={"hp":100.0}
++	var probe={"hp":100.0,"face":-1.0,"walk":false}
++	actions.start(probe,"wolf","attack")
++	probe.face=1.0
++	if probe.action_face!=-1.0: failures.append("attack keeps event facing")
++	probe.walk=true
++	if not actions.selection("wolf",probe).is_empty(): failures.append("travel does not slide in stationary attack pose")
++	probe.walk=false
++	if actions.selection("wolf",probe).is_empty(): failures.append("stationary attack pose remains available")
+ 	actions.start(probe,"wolf","attack")
+ 	actions.advance(probe,1.0)
+ 	if not actions.selection("wolf",probe).is_empty(): failures.append("action expires")
+diff --git a/tools/test_pixel_actor.gd b/tools/test_pixel_actor.gd
+index ad6fe3f..9a1b7eb 100644
+--- a/tools/test_pixel_actor.gd
++++ b/tools/test_pixel_actor.gd
+@@ -83,7 +83,7 @@ func _initialize():
+ 		qa.swing=0.15
+ 		qa.pos.x+=1
+ 		quad.advance(qa,0.05)
+-		if qa.pixel_moving: failures.append(kind+" attack holds stance")
++		if not qa.pixel_moving: failures.append(kind+" moving strike keeps feet animated")
+ 		qa.swing=0.0
+ 		qa.wind=0.3
+ 		qa.pos.x+=1
+@@ -93,6 +93,9 @@ func _initialize():
+ 		qa.pos.x+=6.5
+ 		quad.advance(qa,0.05)
+ 		if not qa.pixel_moving or not qa.pixel_running: failures.append(kind+" resumes trot")
++		qa.pixel_phase=0.0
++		qa.pos.x+=6.5
++		quad.advance(qa,0.05)
+ 		var scaled={"pos":Vector2.ZERO,"hp":100,"walk":true,"boss":true}
+ 		quad.advance(scaled,0.05)
+ 		scaled.pos.x+=13.0

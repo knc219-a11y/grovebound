@@ -35,7 +35,7 @@ func advance(actor,dt):
 	var distance = actor.pos.distance_to(last)
 	actor.rig_last = actor.pos
 	var moving = actor.get("walk",false) and actor.hp>0 and distance>0.001 and distance<100
-	var height = (96.0 if actor.get("boss",false) else 48.0)*actor.get("visual_scale",1.0)
+	var height = 96.0 if actor.get("boss",false) else 48.0
 	var stride = stride_pixels*display_scale(height)
 	if moving:
 		# Fast combat travel exceeds a walk's speed: cap cadence instead of flickering.

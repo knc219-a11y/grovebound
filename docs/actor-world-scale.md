@@ -1,3 +1,7 @@
+# Superseded experiment: actor/world scale
+
+The 2x actor enlargement described below was reverted after user review. Characters must retain the distant native size; background props are reduced instead. This document records the abandoned experiment, not current runtime behavior.
+
 # Actor/world scale
 
 The beginner map stays unchanged. Runtime actors now render at a shared 2× native pixel scale (druid 144px; boar 96px; wolf 96px; deer 128px; fox 80px; marten/turtle 64px). Bosses keep their existing extra 2× multiplier. Integer scaling preserves crisp pixels in idle, walk and action playback.

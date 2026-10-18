@@ -1,0 +1,11 @@
+# Background prop scale correction
+
+User intent: retain small native-size actors and distant framing. Reverted the 2x actor enlargement and formation/ring changes from 840a16b; camera and HUD remain unchanged. Redrew v2's background props at a substantially smaller scale rather than enlarging actors. The winding trail and broad clearings retain their layout and pixel style. Size reductions are visual art targets, not exact measured geometry; this remains an opaque map plate without prop collision.
+
+Runtime map: `assets/maps/greenwater-beginner-v3.webp` (2900x1650, lossless). Source: built-in imagegen, `generated_images/exec-6d900af2-8e4e-41a5-862d-daa78750cd50.png`. Pack tool verifies lossless RGB round-trip; resampling adds no detail. V1/v2 remain available.
+
+## Exact prompt
+
+Use case: precise-object-edit. Edit this pixel-art RPG background. Preserve EXACT full-map camera framing, path layout and width, clearings, flat ground elevation, earthy palette, crisp clean stepped pixel style, and broad quiet grass color patches. The important correction is ONLY WORLD PROP SCALE: redraw EVERY tree, bush, grass tuft, flower and rock at approximately HALF its current width and HALF its current height, around its existing ground contact point. Thus each individual prop occupies about one quarter of its former area. Fill released area naturally with matching flat grass/soil. Border forest should consist of visibly small individual saplings, not one huge fused hedge. Scatter small objects sparsely in the same zones; do not fill gaps with dense noise. The original eventual player is only40px tall in this1672px-wide source plate: rocks should now be3-6px high, tufts2-4px high, bushes5-10px high, flowers2-3px high, trees45-65px high. A tiny wandering adventurer should be taller than bushes and almost as tall as the young trees. No giant flowers or knee-high grass. Do not zoom camera, do not crop, do not enlarge map or path, do not enlarge any objects. Map center remains wide open and walkable. Do not add characters, UI, text, grids, buildings, stairs, cliffs, water or ruins. This is an asset-scale correction, not a change to the nice existing art style. Approximately16:9 opaque landscape map.
+
+Motion upgrade work is paused and retained as `docs/wip/motion-upgrade.patch`; it is not active in runtime.
