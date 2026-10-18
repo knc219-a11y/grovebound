@@ -57,7 +57,7 @@ func check_feedback():
 		var found=false
 		for event in game.combat_feedback.events:
 			if event.kind=="skill_"+kind: found=true
-		if not found or game.units[0].skill!=10.0 or enemy.hp>=enemy.maxhp: failures.append(kind+" skill burst follows real damage and cooldown")
+		if not found or absf(game.units[0].skill-10.0*(1-game.Loot.bonus(game.units[0].data,"skill_haste")))>0.001 or enemy.hp>=enemy.maxhp: failures.append(kind+" skill burst follows real damage and cooldown")
 	game.start_stage(false)
 	if not game.combat_feedback.events.is_empty() or not game.combat_feedback.numbers.is_empty(): failures.append("stage clears feedback")
 	game.free()

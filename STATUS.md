@@ -39,6 +39,18 @@
 - self-test, boar_gait, capture, pixel_actor, action_events, combat_feedback, art_type, save_repair PASS. 고정 시드 일반 처치1000회에서 포획 기회142회. 보행/정지/보스 배율,12프레임 경계,스킬별 실제 피해/10초 쿨다운,튜토리얼 보장/보스 제외 검증. 임포트 및 실제 녹화에서 SCRIPT/Parse ERROR 없음. 모바일 실기기·전체 스테이지 완주·장기 수집 밸런스는 미검증.
 - 재생성: `tools/bake_boar_trot.gd`, `tools/bake_capture_poses.gd`를 그래픽 Godot에서 실행하고 임포트. `tools/preview.py` + `animation/skill_gameplay_review.tscn`, `animation/capture_review.tscn` 재사용.
 
+## 등급·랜덤 옵션 수집 1차 (2026-10-19)
+- 사용자 결정: 블록 전투 제외,성장·수집 우선. 개체값 없이 기존 고정 특성1개 + 등급별 랜덤 옵션 적용. 기존 특성 효과를 유지하며 행동형 특성 개편은 하지 않았다.
+- 일반/희귀/영웅 옵션1/2/3개,임시 확률75/22/3%. 포획 기회15%와 별개. 옵션은 역할/특성 적합 풀에서 중복 없이 뽑고 수치도 범위 내 무작위. `companion_loot.gd`가 정의/생성/검증 기준.
+- 포획 기회 생성 시 개체 데이터를 확정해 획득 시 복사한다. UI/재접속/세이브 로드로 재추첨하지 않는다. 미획득 포획 기회 자체는 기존처럼 스테이지 한정이며 월드 중간 저장은 추가하지 않았다.
+- 옵션이 실제 체력/공격/피해 감소/이속/동료 스킬 쿨다운/기절 대상 피해/회복량에 반영된다. 같은 단순 능력치의 기존 특성과 옵션 중복은 추첨에서 제외한다.
+- 등급별 1/2/3 표식,색,희귀/영웅 입자,영웅의 작은 빛기둥,합성 PCM 획득 차임. 캐릭터 크기와 카메라는 유지.
+- 전투 중 포획은 알림과 실제 획득 효과만. 전투 밖에서는0.45초 효과 후 옵션 순차 공개 결과창. 전투 후 HUD 획득 확인 버튼,캠프 최근 동료,보관함 상세·비교 제공. 현재 레벨 체력/공격,고정 특성 설명,옵션 수치를 비교한다. 출발 준비6마리 원칙을 유지해 현장에서 보관함 동료를 임의 동행으로 꺼내지 않는다.
+- 기존 세이브는 일반/옵션 없음으로 결정적 마이그레이션하여 기존 능력/레벨/XP/특성/편성 보존. 최초 정보 추가 시 원본 백업,이후 숫자 타입 때문에 반복 백업되지 않도록 JSON 숫자 동치 검사. 저장 버전1 호환 유지.
+- 실제 Godot `docs/companion-loot-review.gif`/`.mp4`, `docs/companion-loot-grades.png`, `docs/companion-loot-result.png`, `docs/companion-loot-roster.png`. 영상은 무음 인코딩이며 차임 PCM 생성 검사는 별도 통과. 실기기 청감/성능은 미검증.
+- self-test 및 loot/save_repair/capture/combat_feedback/action_events/pixel_actor/boar_gait/art_type/UI 검사 PASS. 10,000회 등급 추첨 일반7531/희귀2165/영웅304. 역할풀/수치범위,포획정보 보존,JSON왕복,기존 동료 보존,실제 옵션 효과,전투 중 모달 차단 검사 포함.
+- 미구현: 승급/재추첨/전설/중복 동료 소비/기존 동료 옵션 부여. 장기 밸런스 검증 전 수치 확정으로 간주하지 않는다.
+
 ## 검증과 도구
 - 현행 비율 수정: Godot 임포트/배경 lossless round-trip/art-type/self-test 통과. 실제 Godot HUD 및6초 전투 녹화 생성. 실기기와 전체 스테이지 완주는 별도 미검증.
 - `tools/pack_background.gd -- SOURCE.png res://assets/maps/OUTPUT.webp`: nearest 확대 + lossless RGB 재검증. 원본 해상도 이상 새 디테일은 생기지 않는다.
@@ -53,4 +65,4 @@
 
 ## 다음 대화 시작
 - 구체적인 재개 순서·모션 우선순위·완료 기준·새 대화 시작 문구: `docs/NEXT_SESSION.md`.
-- 다음은 새 포획15%와 스킬 이펙트에 대한 사용자 플레이 피드백을 우선 반영하고, 다른 종의 빠른 추격/대각 이동 발 접지 및 전용 이동 공격 프레임을 검토한다.
+- 다음은 등급/옵션 획득·비교 흐름을 플레이하고 수집 속도와 선택의 재미를 조정한다. 중복 동료 활용과 주인공 성장의 구체적 방식은 아직 미확정이다.

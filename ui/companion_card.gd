@@ -1,4 +1,6 @@
 extends Button
+const Loot=preload("res://companion_loot.gd")
+var rarity="common"
 const UI=preload("res://ui/grove_ui.gd")
 var portrait: Texture2D
 var companion_name="빈자리"
@@ -8,7 +10,8 @@ var max_hp=1.0
 var cooldown=0.0
 var slot=1
 var occupied=false
-func configure(texture,caption,job,health,maximum,wait):
+func configure(texture,caption,job,health,maximum,wait,quality="common"):
+	rarity=quality
 	portrait=texture
 	companion_name=caption
 	role=job
@@ -20,6 +23,7 @@ func configure(texture,caption,job,health,maximum,wait):
 func _draw():
 	var font=get_theme_font("font")
 	var width=size.x
+	if occupied: draw_rect(Rect2(1,1,width-2,size.y-2),Loot.COLORS.get(rarity,Loot.COLORS.common),false,1)
 	var color=UI.PAPER if hp>0 or not occupied else Color("b6937b")
 	draw_rect(Rect2(8,8,20,18),UI.INK)
 	draw_string(font,Vector2(13,22),str(slot),HORIZONTAL_ALIGNMENT_LEFT,-1,14,UI.BRONZE)

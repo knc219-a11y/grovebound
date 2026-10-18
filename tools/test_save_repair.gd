@@ -10,7 +10,9 @@ func _initialize():
 	if normalized.next_id<3: failures.append("new creature IDs")
 	var valid = decoded.duplicate(true)
 	valid.squad=[1.0,2.0]
-	if SaveData.normalize(valid,["boar","fox"]).repaired: failures.append("valid JSON numeric IDs")
+	var migrated=SaveData.normalize(valid,["boar","fox"])
+	if migrated.owned[0].grade!="common" or not migrated.owned[0].options.is_empty(): failures.append("legacy loot migration keeps strength")
+	if SaveData.normalize(migrated,["boar","fox"]).repaired: failures.append("migration is idempotent with JSON numeric IDs")
 	var legacy = {"owned":[{"id":"7","kind":"boar"},{"id":7,"kind":"fox"}],"squad":["7","7",-5,99]}
 	var repaired = SaveData.normalize(legacy,["boar","fox"])
 	if repaired.owned.size()!=2 or repaired.owned[0].id==repaired.owned[1].id or repaired.squad.size()!=1: failures.append("legacy or duplicate IDs")

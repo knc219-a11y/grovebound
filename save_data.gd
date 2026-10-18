@@ -1,4 +1,5 @@
 extends RefCounted
+const Loot=preload("res://companion_loot.gd")
 # Normalize legacy JSON without guessing which creature a dangling party ID meant.
 static func id_value(value):
 	if value is int: return value
@@ -39,6 +40,8 @@ static func normalize(data: Dictionary, valid_kinds: Array):
 			repaired = true
 		if not raw.has("level") or not raw.has("xp") or record.level!=raw.get("level") or record.xp!=raw.get("xp"):
 			repaired = true
+		Loot.normalize(record)
+		if raw.get("grade")!=record.grade or not Loot.same_options(raw.get("options"),record.options): repaired=true
 		owned.append(record)
 		ids[id] = true
 	var source_squad = data.get("squad",[])

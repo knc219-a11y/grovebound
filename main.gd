@@ -3,6 +3,15 @@ extends Node2D
 const WORLD_SIZE=Vector2(2900,1650)
 const VIEW_SIZE=Vector2(1440,810)
 const CAPTURE_CHANCE=0.15
+const Loot=preload("res://companion_loot.gd")
+var loot_rng=RandomNumberGenerator.new()
+var recent_capture_id=-1
+var pending_loot_id=-1
+var loot_reveal_delay=0.0
+const LootAudio=preload("res://ui/loot_audio.gd")
+var loot_audio:AudioStreamPlayer
+var loot_sounds={}
+var loot_result_button:Button
 const CaptureVisual=preload("res://animation/capture_visual.gd")
 var capture_visual=CaptureVisual.new()
 const SAVE_PATH = "user://grovebound_v1.json"
@@ -108,6 +117,8 @@ func _ready():
 	if is_test:
 		run_tests()
 		return
+	rng.randomize()
+	loot_rng.randomize()
 	load_game()
 	show_camp()
 	if "--screenshot" in OS.get_cmdline_user_args():
@@ -142,6 +153,7 @@ func build_ui():
 	toast_label=label(hud,"",Vector2(385,210),17)
 	toast_label.size=Vector2(650,54)
 	toast_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	loot_result_button=button(hud,"획득 동료 확인",Rect2(22,116,320,46),func(): show_loot_details(recent_capture_id))
 	team_button=button(hud,"편성 [Tab]",Rect2(1142,18,132,62),open_roster)
 	button(hud,"귀환",Rect2(1288,18,132,62),func(): confirm_return())
 	label(hud,"동료 스킬",Vector2(365,650),14)
@@ -270,6 +282,8 @@ func show_camp():
 	var depart=button(overlay,"첫 동료 만나기" if not tutorial_done else "계곡으로 출발",Rect2(215,590,340,72),show_starters if not tutorial_done else func(): start_stage(false))
 	GroveUI.emphasize(depart)
 	button(overlay,"동료 · 편성 · 성장",Rect2(575,590,340,72),open_roster)
+	if not owned.is_empty():
+		button(overlay,"최근 동료",Rect2(935,590,140,72),func(): show_loot_details(owned[-1].id))
 	var reset=button(overlay,"새 여정",Rect2(1095,590,130,72),confirm_reset)
 	GroveUI.emphasize(reset,"danger")
 	var preview=TextureRect.new()
@@ -297,19 +311,20 @@ func show_starters():
 		label(overlay,desc[i],Vector2(x+20,440),20)
 		button(overlay,NAMES[kinds[i]]+" 만나기",Rect2(x,560,260,65),func(): tutorial_species=kinds[i]; start_stage(true))
 
-func make_owned(kind, level):
-	var pool = TRAITS.duplicate()
-	if kind == "deer": pool.append("다정함")
-	var d = {"id":next_id,"kind":kind,"level":level,"xp":0,"trait":pool[rng.randi_range(0,pool.size()-1)]}
-	next_id += 1
+func make_owned(kind, level, rolled={}):
+	var d=Loot.roll(kind,level,loot_rng) if rolled.is_empty() else rolled.duplicate(true)
+	d.erase("pos")
+	d.id=next_id
+	Loot.normalize(d)
+	next_id+=1
 	owned.append(d)
 	return d
 
 func max_hp(d):
-	return STATS[d.kind][0] * (1.0 + (d.level-1)*0.12) * (1.2 if d.trait=="강인함" else 1.0)
+	return STATS[d.kind][0] * (1.0 + (d.level-1)*0.12) * (1.2 if d.trait=="강인함" else 1.0)*(1.0+Loot.bonus(d,"vitality"))
 
 func attack(d):
-	return STATS[d.kind][1] * (1.0 + (d.level-1)*0.1) * (1.18 if d.trait=="용맹함" else 1.0)
+	return STATS[d.kind][1] * (1.0 + (d.level-1)*0.1) * (1.18 if d.trait=="용맹함" else 1.0)*(1.0+Loot.bonus(d,"power"))
 
 func find_owned(id):
 	for d in owned:
@@ -321,6 +336,7 @@ func make_unit(d, p):
 	return {"data":d,"pos":p,"hp":max_hp(d),"maxhp":max_hp(d),"cd":0.0,"skill":0.0,"buff":0.0,"shield":0.0,"face":1.0,"walk":false}
 
 func start_stage(tutorial):
+	pending_loot_id=-1
 	repair_party()
 	clear_overlay()
 	mode = "tutorial" if tutorial else "stage"
@@ -394,6 +410,9 @@ func move_entity(u, target, speed, dt, stop=0.0):
 
 func _process(dt):
 	clock += dt
+	loot_reveal_delay=maxf(0,loot_reveal_delay-dt)
+	if pending_loot_id>0 and loot_reveal_delay<=0 and mode=="stage" and not in_combat and not overlay.visible:
+		show_loot_details(pending_loot_id)
 	if is_test: return
 	message_time = maxf(0,message_time-dt)
 	if (mode=="stage" or mode=="tutorial") and not overlay.visible:
@@ -463,7 +482,7 @@ func update_game(dt):
 		if i>=4 or u.hp<=0: continue
 		u.cd-=dt
 		var kind=u.data.kind
-		var speed=STATS[kind][3]*(1.2 if u.data.trait=="민첩함" else 1.0)
+		var speed=STATS[kind][3]*(1.2 if u.data.trait=="민첩함" else 1.0)*(1.0+Loot.bonus(u.data,"speed"))
 		var target=nearest_enemy(u.pos,410)
 		if u.pos.distance_to(player.pos)>430 or (not target.is_empty() and target.pos.distance_to(player.pos)>550):
 			move_entity(u,player.pos,speed*1.7,dt,75)
@@ -591,6 +610,7 @@ func damage_ally(a, damage, source):
 	if a.hp<=0: return
 	if a.has("data"):
 		if a.data.trait=="단단함": damage*=0.85
+		damage*=1.0-Loot.bonus(a.data,"armor")
 		if a.shield>0: damage*=0.4
 	var taken=minf(a.hp,damage)
 	a.hp=maxf(0,a.hp-damage)
@@ -608,6 +628,8 @@ func animate_attack(source,attacker={}):
 
 func hit_enemy(e, damage, source,attacker={}):
 	if e.hp<=0: return
+	if not attacker.is_empty() and attacker.has("data") and e.get("stun",0.0)>0:
+		damage*=1.0+Loot.bonus(attacker.data,"stun_hunter")
 	var dealt=minf(e.hp,damage)
 	e.hp=maxf(0,e.hp-damage)
 	e.active=true
@@ -624,7 +646,10 @@ func hit_enemy(e, damage, source,attacker={}):
 		materials+=1 if not e.boss else 5
 		for u in units: gain_xp(u.data,12+int(e.level)*4)
 		if not e.boss and (e.guaranteed or rng.randf()<CAPTURE_CHANCE):
-			captures.append({"kind":e.kind,"pos":e.pos,"level":e.level})
+			var candidate=Loot.roll(e.kind,e.level,loot_rng)
+			candidate.pos=e.pos
+			captures.append(candidate)
+			if Loot.grade(candidate)!="common": play_loot_sound(Loot.grade(candidate))
 			e.death=0.0 # The resting capture pose replaces the fading corpse.
 		save_game()
 
@@ -651,6 +676,7 @@ func heal(a, amount, source,healer={}):
 			var species="druid" if caster==player else caster.data.kind
 			motion_actions.start(caster,species,"heal")
 			break
+	if not healer.is_empty() and healer.has("data"): amount*=1.0+Loot.bonus(healer.data,"healing")
 	var restored=minf(amount,a.maxhp-a.hp)
 	a.hp=minf(a.maxhp,a.hp+amount)
 	if restored>0: combat_feedback.emit("heal",source,a.pos,restored,{"target_id":a.data.id if a.has("data") else -1,"height":sprite_height(a.data.kind) if a.has("data") else sprite_height("druid")})
@@ -713,7 +739,7 @@ func use_companion_skill(i):
 					target.stun=1.5
 				hit_enemy(target,attack(u.data)*3.5*(1.6 if u.buff>0 else 1.0),u.pos,u)
 			combat_feedback.emit("skill_"+u.data.kind,skill_origin,target.pos)
-	u.skill=10.0
+	u.skill=10.0*(1.0-Loot.bonus(u.data,"skill_haste"))
 
 func closest_down():
 	var best=85.0
@@ -737,13 +763,19 @@ func interact():
 	var i=closest_capture()
 	if i<0: return
 	var c=captures[i]
-	var d=make_owned(c.kind,int(c.level))
+	var d=make_owned(c.kind,int(c.level),c if c.has("grade") else {})
+	recent_capture_id=d.id
+	combat_feedback.emit("capture_"+Loot.grade(d),c.pos,c.pos)
+	play_loot_sound(Loot.grade(d))
 	captures.remove_at(i)
 	if squad.size()<6:
 		squad.append(d.id)
 		units.append(make_unit(d,c.pos))
-	notify("%s Lv.%d · %s 획득! %s" % [NAMES[d.kind],d.level,d.trait,"동행 합류" if squad.has(d.id) else "보관함으로 이동"])
+	notify("[%s] %s Lv.%d · %s 획득! %s" % [Loot.title(d),NAMES[d.kind],d.level,d.trait,"동행 합류" if squad.has(d.id) else "보관함으로 이동"])
 	save_game()
+	if mode=="stage" and not in_combat:
+		pending_loot_id=d.id
+		loot_reveal_delay=0.45
 	if mode=="tutorial":
 		tutorial_done=true
 		mode="tutorial_practice"
@@ -777,6 +809,79 @@ func notify(txt):
 func fx(a,b,col,txt,time):
 	effects.append({"a":a,"b":b,"color":col,"text":txt,"time":time,"duration":time})
 
+func _exit_tree():
+	if is_instance_valid(loot_audio):
+		loot_audio.stop()
+		loot_audio.stream=null
+	loot_sounds.clear()
+
+func play_loot_sound(grade):
+	if not is_inside_tree() or is_test or DisplayServer.get_name()=="headless": return
+	if loot_audio==null:
+		loot_audio=AudioStreamPlayer.new()
+		loot_audio.volume_db=-12
+		add_child(loot_audio)
+	if not loot_sounds.has(grade): loot_sounds[grade]=LootAudio.stream(grade)
+	loot_audio.stream=loot_sounds[grade]
+	loot_audio.play()
+
+func loot_card(d,x,caption,animate=false):
+	var color=Loot.color(d)
+	var card=panel(overlay,Rect2(x,265,465,330),Color("202823"))
+	card.add_theme_stylebox_override("panel",GroveUI.frame(Color("202823"),color,2))
+	label(overlay,caption,Vector2(x+18,278),16)
+	var title=label(overlay,"[%s] %s  Lv.%d" % [Loot.title(d),NAMES[d.kind],d.level],Vector2(x+18,312),25)
+	title.add_theme_color_override("font_color",color)
+	label(overlay,"고정 특성 · "+d.trait,Vector2(x+18,359),21)
+	label(overlay,Loot.TRAIT_DESCRIPTIONS.get(d.trait,"고정된 개체 특성"),Vector2(x+18,389),16)
+	label(overlay,"체력 %d   공격력 %.1f" % [max_hp(d),attack(d)],Vector2(x+18,421),19)
+	var lines=Loot.lines(d)
+	if lines.is_empty(): lines.append("기존 동료 · 옵션 없음 (능력 유지)")
+	for i in lines.size():
+		var line=label(overlay,lines[i],Vector2(x+18,459+i*34),18)
+		line.add_theme_color_override("font_color",color)
+		if animate:
+			line.modulate.a=0
+			var tween=create_tween().bind_node(line)
+			tween.tween_interval(0.35+i*0.3)
+			tween.tween_property(line,"modulate:a",1.0,0.18)
+
+func show_loot_details(id,compare_id=-1,animate=true,from_roster=false):
+	if in_combat and mode=="stage": notify("전투가 끝나면 획득 동료를 확인할 수 있습니다."); return
+	var d=find_owned(id)
+	if d.is_empty(): return
+	pending_loot_id=-1
+	var candidates=[]
+	for member_id in squad:
+		var other=find_owned(member_id)
+		if other.is_empty() or other.id==id: continue
+		candidates.append(other)
+	if compare_id<0:
+		for other in candidates:
+			if compare_id<0 or other.kind==d.kind: compare_id=other.id
+			if other.kind==d.kind: break
+	modal("동료 발견  ·  "+NAMES[d.kind],"특성은 고정 · 옵션은 개체별 고정 / 표시 능력치는 각 동료의 현재 레벨 기준입니다.")
+	label(overlay,"이미 보유 목록에 안전하게 합류했습니다.",Vector2(232,222),18)
+	loot_card(d,230,"선택한 동료",animate)
+	var comparison=find_owned(compare_id)
+	if not comparison.is_empty(): loot_card(comparison,745,"동행 동료와 비교")
+	else:
+		panel(overlay,Rect2(745,265,465,330),Color("202823"))
+		label(overlay,"비교할 다른 동행 동료가 없습니다.",Vector2(765,360),20)
+	if not candidates.is_empty():
+		var picker=OptionButton.new()
+		picker.position=Vector2(745,215)
+		picker.size=Vector2(465,42)
+		for i in candidates.size():
+			var other=candidates[i]
+			picker.add_item("[%s] %s Lv.%d · %s" % [Loot.title(other),NAMES[other.kind],other.level,other.trait])
+			if other.id==compare_id: picker.select(i)
+		picker.item_selected.connect(func(index): show_loot_details(id,candidates[index].id,false,from_roster))
+		overlay.add_child(picker)
+	var arrange=button(overlay,"편성에서 교체하기" if mode=="camp" or squad.has(d.id) else "캠프에서 동행 편성",Rect2(230,620,290,55),open_roster)
+	arrange.disabled=mode!="camp" and not squad.has(d.id)
+	button(overlay,"보관 · 돌아가기",Rect2(925,620,285,55),func(): open_roster() if from_roster else (show_camp() if mode=="camp" else clear_overlay()))
+
 func open_roster():
 	if in_combat and mode=="stage": notify("전투 중에는 편성을 바꿀 수 없습니다."); return
 	if mode=="tutorial": notify("튜토리얼을 먼저 마쳐주세요."); return
@@ -799,12 +904,14 @@ func open_roster():
 		row.custom_minimum_size=Vector2(970,72)
 		rows.add_child(row)
 		var idx=squad.find(d.id)
-		var desc="%s  Lv.%d\n%s · %s" % [NAMES[d.kind],d.level,ROLES[d.kind],d.trait]
+		var desc="[%s] %s  Lv.%d\n%s · %s" % [Loot.title(d),NAMES[d.kind],d.level,ROLES[d.kind],d.trait]
 		if idx>=0: desc=("[출전 %d] " % (idx+1) if idx<4 else "[대기 %d] " % (idx-3))+desc
 		else: desc="[보관] "+desc
 		var b=Button.new()
 		b.text=desc
-		b.custom_minimum_size=Vector2(440,64)
+		b.custom_minimum_size=Vector2(350,64)
+		b.add_theme_color_override("font_color",Loot.color(d))
+		b.tooltip_text=Loot.TRAIT_DESCRIPTIONS.get(d.trait,"")+"\n"+"\n".join(Loot.lines(d))
 		b.clip_text=true
 		b.alignment=HORIZONTAL_ALIGNMENT_LEFT
 		var portrait=TextureRect.new()
@@ -816,6 +923,11 @@ func open_roster():
 		row.add_child(portrait)
 		b.pressed.connect(func(): select_swap(d.id))
 		row.add_child(b)
+		var detail=Button.new()
+		detail.text="상세·비교"
+		detail.custom_minimum_size=Vector2(108,64)
+		detail.pressed.connect(func(): show_loot_details(d.id,-1,false,true))
+		row.add_child(detail)
 		if camp:
 			var equip=Button.new()
 			equip.text="동행 해제" if idx>=0 else "동행 추가"
@@ -883,6 +995,9 @@ func confirm_reset():
 func update_hud():
 	hud.visible=mode!="camp" and mode!="result" and mode!="tutorial_practice"
 	if not hud.visible: return
+	loot_result_button.visible=recent_capture_id>0 and not find_owned(recent_capture_id).is_empty()
+	loot_result_button.disabled=in_combat or mode=="tutorial"
+	if loot_result_button.visible: loot_result_button.text="획득 동료 · "+Loot.title(find_owned(recent_capture_id))+" / 상세 확인"
 	status_label.text="드루이드  ·  %d / %d" % [player.hp,player.maxhp]
 	player_hp_bar.max_value=player.maxhp
 	player_hp_bar.value=player.hp
@@ -906,7 +1021,7 @@ func update_hud():
 		var b=party_buttons[i]
 		if i<units.size():
 			var u=units[i]
-			b.configure(textures[u.data.kind],NAMES[u.data.kind],ROLES[u.data.kind],u.hp,u.maxhp,u.skill)
+			b.configure(textures[u.data.kind],NAMES[u.data.kind],ROLES[u.data.kind],u.hp,u.maxhp,u.skill,Loot.grade(u.data))
 			b.disabled=u.hp<=0 or u.skill>0 or revive_target>=0
 		else:
 			b.configure(null,"빈자리","포획으로 합류",0,1,0)
@@ -1047,9 +1162,9 @@ func _draw():
 	var nearest_cap=closest_capture()
 	for i in captures.size():
 		var c=captures[i]
-		capture_visual.draw(self,c.pos-cam,c.kind,sprite_height(c.kind),clock,i==nearest_cap)
+		capture_visual.draw(self,c.pos-cam,c.kind,sprite_height(c.kind),clock,i==nearest_cap,Loot.grade(c))
 		if i==nearest_cap:
-			text_at("포획 가능 [F]",c.pos-cam+Vector2(-40,-sprite_height(c.kind)-20),15,Color("c6e0ac"))
+			text_at(Loot.title(c)+" · 포획 [F]",c.pos-cam+Vector2(-40,-sprite_height(c.kind)-20),15,Loot.color(c))
 	var actors=[]
 	actors.append({"kind":"druid","pos":player.pos,"hp":player.hp,"maxhp":player.maxhp,"face":player.face,"size":sprite_height("druid"),"ally":true,"state":player})
 	for u in active_units():

@@ -1,5 +1,6 @@
 extends RefCounted
 # Cosmetic only: no damage, timers, targeting or saves are changed here.
+const Loot=preload("res://companion_loot.gd")
 const MAX_EVENTS=80
 const MAX_NUMBERS=32
 var events=[]
@@ -9,6 +10,7 @@ func clear():
 	numbers.clear()
 func emit(kind,source,target,amount=0.0,options={}):
 	var duration=0.28
+	if kind.begins_with("capture_"): duration=1.0
 	if kind in ["heal","buff","guard","revive"]: duration=0.75
 	elif kind.begins_with("skill_"): duration=0.5
 	elif kind=="stomp": duration=0.45
@@ -36,6 +38,7 @@ func advance(dt):
 			collection[i].age+=maxf(0,dt)
 			if collection[i].age>=collection[i].duration: collection.remove_at(i)
 func color_for(kind):
+	if kind.begins_with("capture_"): return Loot.COLORS.get(kind.trim_prefix("capture_"),Loot.COLORS.common)
 	match kind:
 		"heal","revive": return Color("b5d99a")
 		"guard","block": return Color("a0c9d2")
@@ -91,6 +94,14 @@ func draw(canvas,cam,font):
 		var a=(event.a-cam-Vector2(0,28)).round()
 		var c=color_for(event.kind)
 		c.a=1.0-smoothstep(0.45,1.0,t)
+		if event.kind.begins_with("capture_"):
+			ground_pulse(canvas,event.b-cam,12+t*36,c)
+			var rank=Loot.COUNTS.get(event.kind.trim_prefix("capture_"),1)
+			for i in rank*4:
+				var direction=Vector2.RIGHT.rotated(float(i)*TAU/(rank*4))
+				spark(canvas,p+direction*(8+t*30)+Vector2(0,-t*18),2,c)
+			if rank==3:
+				canvas.draw_rect(Rect2(p+Vector2(-4,-42),Vector2(8,64)),Color(c,0.18*(1-t)))
 		if event.kind.begins_with("skill_"):
 			skill_burst(canvas,event,cam,t,c)
 		match event.kind:
