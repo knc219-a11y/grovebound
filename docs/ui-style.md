@@ -11,3 +11,5 @@ Reusable components: `companion_card.gd` draws the live party state; `support_bu
 Review scenes: `ui_hud_review.tscn` shows cooldown, low HP and a downed ally; `ui_camp_review.tscn` and `ui_roster_review.tscn` use isolated preview data with six animals. Actual animated combat uses `full_gameplay_preview.tscn`. All review scenes disable player-save reading/writing through the existing preview base.
 
 Validation: Godot 4.7 import, HUD values/states, thin bar bounds, main control minimum sizes/non-overlap, skill slot callbacks, heal callback, roster widths/portraits, camp navigation and empty slots. Gameplay, pixel motion, action events, combat feedback and save repair regressions passed. Native screenshots and gameplay MP4 were rendered and inspected. Physical phone touch testing remains outside these desktop checks.
+
+Typography/background update: runtime now uses packaged Galmuri11 Regular/Bold and the simplified ruins v2 plate; see `docs/art-type.md`. Earlier UI screenshots remain historical reviews.

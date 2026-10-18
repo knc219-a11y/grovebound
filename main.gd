@@ -20,6 +20,7 @@ var motion_actions
 const PIXEL_KINDS = ["druid","marten","fox","turtle","deer","wolf"]
 var textures = {}
 var font: Font
+var heading_font: Font
 var rng = RandomNumberGenerator.new()
 var owned = []
 var squad = []
@@ -82,13 +83,11 @@ var interact_progress: ProgressBar
 func _ready():
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	rng.seed = 10417
-	font = load("res://assets/Korean.ttf") if ResourceLoader.exists("res://assets/Korean.ttf") else ThemeDB.fallback_font
-	var readable_font=FontVariation.new()
-	readable_font.base_font=font
-	readable_font.variation_opentype={"wght":600.0}
-	readable_font.variation_embolden=0.35
-	font=readable_font
-	textures["valley"]=load("res://assets/pixel-ruins-background-v1.png")
+	font=load("res://assets/fonts/Galmuri11.res")
+	heading_font=load("res://assets/fonts/Galmuri11-Bold.res")
+	font.subpixel_positioning=TextServer.SUBPIXEL_POSITIONING_DISABLED
+	heading_font.subpixel_positioning=TextServer.SUBPIXEL_POSITIONING_DISABLED
+	textures["valley"]=load("res://assets/pixel-ruins-background-v2.png")
 	for key in ["druid","boar","marten","fox","turtle","deer","wolf","tree"]:
 		textures[key] = load("res://assets/party-pixel/"+key+".png" if key in PIXEL_KINDS else "res://assets/"+key+".png")
 	boar_rig=BoarRig.new()
@@ -127,7 +126,9 @@ func build_ui():
 	hud.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
 	ui.add_child(hud)
 	var theme=GroveUI.theme(font)
-	hud.theme = theme
+	var hud_theme=theme.duplicate()
+	hud_theme.default_font=heading_font
+	hud.theme=hud_theme
 	panel(hud,Rect2(22,18,320,86),Color("202823f2"))
 	status_label=label(hud,"",Vector2(40,29),19)
 	player_hp_bar=health_bar(hud,Rect2(40,72,284,10))
@@ -205,6 +206,7 @@ func label(parent, txt, pos, size=18):
 	l.text = txt
 	l.position = pos
 	l.add_theme_font_size_override("font_size",size)
+	if size>=24: l.add_theme_font_override("font",heading_font)
 	l.add_theme_color_override("font_color",GroveUI.PAPER)
 	l.add_theme_color_override("font_shadow_color",GroveUI.INK)
 	l.add_theme_constant_override("shadow_offset_x",1)
@@ -1099,7 +1101,7 @@ func _draw():
 		else:
 			text_at(f.text,f.b-cam+Vector2(-15,-70-elapsed*32),20,col)
 	if not overlay.visible:
-		combat_feedback.draw(self,cam,font)
+		combat_feedback.draw(self,cam,heading_font)
 		if player.get("channeling",false) and revive_target>=0:
 			combat_feedback.draw_channel(self,player.pos,units[revive_target].pos,revive_progress,cam)
 	if hud.visible:
