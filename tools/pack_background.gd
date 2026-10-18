@@ -13,7 +13,8 @@ func _initialize():
 	image.convert(Image.FORMAT_RGB8)
 	var source_size=image.get_size()
 	image.resize(2900,1650,Image.INTERPOLATE_NEAREST)
-	var path="res://assets/pixel-ruins-background-v3.webp"
+	var path=args[1] if args.size()>1 else "res://assets/pixel-ruins-background-v3.webp"
+	DirAccess.make_dir_recursive_absolute(path.get_base_dir())
 	if image.save_webp(path,false)!=OK:
 		quit(1)
 		return

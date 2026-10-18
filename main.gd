@@ -1,5 +1,7 @@
 extends Node2D
 # A self-contained, data-driven playable slice. All gameplay positions are world coordinates.
+const WORLD_SIZE=Vector2(2900,1650)
+const VIEW_SIZE=Vector2(1440,810)
 const SAVE_PATH = "user://grovebound_v1.json"
 const SaveData = preload("res://save_data.gd")
 var save_path = SAVE_PATH
@@ -87,7 +89,7 @@ func _ready():
 	heading_font=load("res://assets/fonts/Galmuri11-Bold.res")
 	font.subpixel_positioning=TextServer.SUBPIXEL_POSITIONING_DISABLED
 	heading_font.subpixel_positioning=TextServer.SUBPIXEL_POSITIONING_DISABLED
-	textures["valley"]=load("res://assets/pixel-ruins-background-v3.webp")
+	textures["valley"]=load("res://assets/maps/greenwater-beginner-v1.webp")
 	for key in ["druid","boar","marten","fox","turtle","deer","wolf","tree"]:
 		textures[key] = load("res://assets/party-pixel/"+key+".png" if key in PIXEL_KINDS else "res://assets/"+key+".png")
 	boar_rig=BoarRig.new()
@@ -396,7 +398,7 @@ func _process(dt):
 				var species=actor.get("kind",actor.get("data",{}).get("kind",""))
 				if species=="boar": boar_rig.advance(actor,minf(dt,0.05))
 				elif animal_rigs.has(species): animal_rigs[species].advance(actor,minf(dt,0.05))
-	cam = (player.pos-Vector2(720,400)).clamp(Vector2(-40,0),Vector2(1500,840))
+	cam = (player.pos-Vector2(720,400)).clamp(Vector2.ZERO,WORLD_SIZE-VIEW_SIZE)
 	update_hud()
 	queue_redraw()
 	if "--screenshot" in OS.get_cmdline_user_args() and clock>2.0 and clock<2.2:
@@ -1030,7 +1032,7 @@ func load_game():
 
 func _draw():
 	draw_rect(Rect2(0,0,1440,810),Color("282a2b"))
-	draw_texture_rect(textures["valley"],Rect2(-cam.round(),Vector2(2900,1650)),false)
+	draw_texture_rect(textures["valley"],Rect2(-cam.round(),WORLD_SIZE),false)
 	for e in enemies: combat_feedback.draw_tell(self,e,cam)
 	for c in captures:
 		var p=c.pos-cam
