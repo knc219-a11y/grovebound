@@ -1,0 +1,11 @@
+# Beginner hunting ground: crisp v2
+
+Built-in imagegen style-transfer from the v1 map, with the approved party lineup as style reference. Layout, small prop proportions and flat open hunting-ground design are retained. The redraw targets clearer rock/foliage silhouettes, fewer muddy intermediate shades, and quieter ground texture. Runtime: `assets/maps/greenwater-beginner-v2.webp` (2900×1650, lossless); v1 is retained.
+
+## Exact generation prompt
+
+Use case: style-transfer. Edit target image 1: beginner hunting ground map. Image 2 is STYLE reference only (pixel characters). Redraw the entire map with MUCH CRISPER, CLEANER, hand-placed pixel clusters to harmonize with those sharp character sprites. Preserve map layout, winding west-east dirt trail, open center, small beginner-scale stones and shrubs, perimeter-only trees, elevated orthographic camera and earthy palette. Most important change: REMOVE about 80% of grass/soil speckle and painterly intermediate colors. Broad clean flat grass patches, sparse clearly shaped tiny tufts, dirt trail with clean stepped edges and few pebbles. Every rock and bush has a dark crisp stepped silhouette and 3-4 clearly separated flat shade bands. Leaves are grouped in distinct angular clusters, not thousands of fuzzy dots. Limited coherent earthy palette about 32 colors, clearly separated light and shadow, no gradients or haze. Hard native pixel boundaries, no anti-aliasing, no photographic texture, no blur, no sharpen halos. Think production pixel tileset, readable at actual game scale. Do NOT add details to make it sharper; simplify details and strengthen edge definition. Keep modest proportions: a human in source map is 40px high; rocks 5-10px, bushes 8-16px, trees80-110px. Continuous unobstructed middle walkable band. NO stairs, ruins, cliffs, structures, water, characters, text, UI, labels or grid. Output only the landscape map, approximately16:9, opaque.
+
+Source: `generated_images/exec-fce052c1-55b2-4b9e-8f3e-6bd0efb2f6cc.png` (1672×941). Pack with the existing `tools/pack_background.gd`, which verifies lossless RGB round-trip. Upscaling adds no new detail. The 32-color request is an art direction target, not a verified palette count.
+
+Validation: Godot 4.7 clean import, packaged art/type test, actual HUD capture and six-second combat recording. Gameplay code and UI geometry are unchanged.

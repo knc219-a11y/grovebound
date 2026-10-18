@@ -14,7 +14,7 @@ func _initialize():
 			if not font.has_char(letter.unicode_at(0)): failures.append(name+" UI symbol "+letter)
 		if font.get_string_size("동료 편성 · 회복 123",HORIZONTAL_ALIGNMENT_LEFT,-1,18).x<=0:
 			failures.append(name+" shaping")
-	var texture=load("res://assets/maps/greenwater-beginner-v1.webp")
+	var texture=load("res://assets/maps/greenwater-beginner-v2.webp")
 	if texture==null or texture.get_size()!=Vector2(2900,1650): failures.append("background size")
 	else:
 		var image=texture.get_image()

@@ -89,7 +89,7 @@ func _ready():
 	heading_font=load("res://assets/fonts/Galmuri11-Bold.res")
 	font.subpixel_positioning=TextServer.SUBPIXEL_POSITIONING_DISABLED
 	heading_font.subpixel_positioning=TextServer.SUBPIXEL_POSITIONING_DISABLED
-	textures["valley"]=load("res://assets/maps/greenwater-beginner-v1.webp")
+	textures["valley"]=load("res://assets/maps/greenwater-beginner-v2.webp")
 	for key in ["druid","boar","marten","fox","turtle","deer","wolf","tree"]:
 		textures[key] = load("res://assets/party-pixel/"+key+".png" if key in PIXEL_KINDS else "res://assets/"+key+".png")
 	boar_rig=BoarRig.new()
