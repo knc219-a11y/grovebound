@@ -1,0 +1,16 @@
+{
+	"cell": [
+		96,
+		72
+	],
+	"columns": 4,
+	"count": 12,
+	"ground": [
+		48,
+		62
+	],
+	"run_enter_speed": 48.0,
+	"run_exit_speed": 36.0,
+	"stride_pixels": 43.2,
+	"texture": "res://assets/boar-pixel-trot.png"
+}

@@ -1,0 +1,26 @@
+{
+	"boar": {
+		"height": 48.0,
+		"texture": "res://assets/capture-v1/boar.png"
+	},
+	"deer": {
+		"height": 64.0,
+		"texture": "res://assets/capture-v1/deer.png"
+	},
+	"fox": {
+		"height": 40.0,
+		"texture": "res://assets/capture-v1/fox.png"
+	},
+	"marten": {
+		"height": 32.0,
+		"texture": "res://assets/capture-v1/marten.png"
+	},
+	"turtle": {
+		"height": 32.0,
+		"texture": "res://assets/capture-v1/turtle.png"
+	},
+	"wolf": {
+		"height": 48.0,
+		"texture": "res://assets/capture-v1/wolf.png"
+	}
+}

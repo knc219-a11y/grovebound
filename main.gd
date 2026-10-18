@@ -2,6 +2,9 @@ extends Node2D
 # A self-contained, data-driven playable slice. All gameplay positions are world coordinates.
 const WORLD_SIZE=Vector2(2900,1650)
 const VIEW_SIZE=Vector2(1440,810)
+const CAPTURE_CHANCE=0.15
+const CaptureVisual=preload("res://animation/capture_visual.gd")
+var capture_visual=CaptureVisual.new()
 const SAVE_PATH = "user://grovebound_v1.json"
 const SaveData = preload("res://save_data.gd")
 var save_path = SAVE_PATH
@@ -347,7 +350,7 @@ func start_stage(tutorial):
 		var packs = [Vector2(650,790),Vector2(1030,640),Vector2(1340,970),Vector2(1660,650),Vector2(1990,960),Vector2(2260,680)]
 		var kinds = ["boar","turtle","deer","fox","marten","wolf"]
 		for i in range(packs.size()):
-			spawn_enemy(kinds[i],packs[i],1+i/2,false,i<3)
+			spawn_enemy(kinds[i],packs[i],1+i/2)
 			if i>0: spawn_enemy("wolf",packs[i]+Vector2(85,90),1+i/2)
 		spawn_enemy("boar",Vector2(2590,850),4,true,false)
 		notify("동료를 모으며 동쪽으로 탐험하세요. 마지막 공터에 우두머리가 있습니다.")
@@ -620,8 +623,9 @@ func hit_enemy(e, damage, source,attacker={}):
 		kills+=1
 		materials+=1 if not e.boss else 5
 		for u in units: gain_xp(u.data,12+int(e.level)*4)
-		if not e.boss and (e.guaranteed or rng.randf()<0.45):
+		if not e.boss and (e.guaranteed or rng.randf()<CAPTURE_CHANCE):
 			captures.append({"kind":e.kind,"pos":e.pos,"level":e.level})
+			e.death=0.0 # The resting capture pose replaces the fading corpse.
 		save_game()
 
 func gain_xp(d, amount):
@@ -681,6 +685,7 @@ func use_companion_skill(i):
 	var u=units[i]
 	if u.hp<=0 or u.skill>0: return
 	var target=nearest_enemy(u.pos,430)
+	var skill_origin=u.pos
 	match u.data.kind:
 		"deer":
 			for a in alive_allies():
@@ -707,6 +712,7 @@ func use_companion_skill(i):
 					u.pos=target.pos+Vector2(-48,0)
 					target.stun=1.5
 				hit_enemy(target,attack(u.data)*3.5*(1.6 if u.buff>0 else 1.0),u.pos,u)
+			combat_feedback.emit("skill_"+u.data.kind,skill_origin,target.pos)
 	u.skill=10.0
 
 func closest_down():
@@ -1038,11 +1044,12 @@ func _draw():
 	draw_rect(Rect2(0,0,1440,810),Color("282a2b"))
 	draw_texture_rect(textures["valley"],Rect2(-cam.round(),WORLD_SIZE),false)
 	for e in enemies: combat_feedback.draw_tell(self,e,cam)
-	for c in captures:
-		var p=c.pos-cam
-		draw_arc(p,36+sin(clock*3)*3,0,TAU,30,Color("ffde85"),3,true)
-		draw_sprite(c.kind,p,59,1,Color(1,1,1,0.8))
-		text_at("포획 가능",p+Vector2(-30,-57),15,Color("fff1ab"))
+	var nearest_cap=closest_capture()
+	for i in captures.size():
+		var c=captures[i]
+		capture_visual.draw(self,c.pos-cam,c.kind,sprite_height(c.kind),clock,i==nearest_cap)
+		if i==nearest_cap:
+			text_at("포획 가능 [F]",c.pos-cam+Vector2(-40,-sprite_height(c.kind)-20),15,Color("c6e0ac"))
 	var actors=[]
 	actors.append({"kind":"druid","pos":player.pos,"hp":player.hp,"maxhp":player.maxhp,"face":player.face,"size":sprite_height("druid"),"ally":true,"state":player})
 	for u in active_units():
@@ -1296,12 +1303,12 @@ func run_tests():
 	rig_actor.hp=30
 	boar_rig.advance(rig_actor,0.3)
 	if not is_zero_approx(rig_actor.rig_down): failures.append("rig revive pose")
-	# Fast travel must not turn the small walk cycle into frame flicker.
+	# Fast travel uses a wider trot stride without discarding travelled distance.
 	var fast_actor={"pos":Vector2.ZERO,"hp":100.0,"walk":true}
 	boar_rig.advance(fast_actor,0.05)
 	fast_actor.pos.x=10
 	boar_rig.advance(fast_actor,0.05)
-	if fast_actor.rig_phase>TAU*0.05/0.36+0.001: failures.append("pixel gait cadence cap")
+	if not fast_actor.rig_running or absf(fast_actor.rig_phase-TAU*10.0/boar_rig.trot_stride)>0.001: failures.append("pixel trot distance cadence")
 	if boar_rig.display_scale(48)!=1 or boar_rig.display_scale(96)!=2: failures.append("pixel integer scale")
 	var idle_image=boar_rig.idle_texture.get_image()
 	if idle_image.get_size()!=Vector2i(96,72): failures.append("pixel idle dimensions")

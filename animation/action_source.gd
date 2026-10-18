@@ -36,7 +36,13 @@ func pose(t):
 				var neck=Vector2(size.x*0.67,size.y*0.52)
 				var head=smoothstep(size.x*0.55,size.x*0.8,x)
 				var paw=1.0-smoothstep(size.y*0.65,size.y,y)
-				if kind=="turtle" and action=="guard":
+				if action=="capture":
+					# Bend the silhouette down while the feet retain their original ground.
+					var grounded=1.0-smoothstep(size.y*0.65,size.y,y)
+					var breath=0.5-0.5*cos(t*TAU)
+					d.y+=(size.y*0.22+breath)*grounded
+					d+=((p-neck).rotated(0.12)-(p-neck))*head
+				elif kind=="turtle" and action=="guard":
 					d.x-=5.0*strength*head
 					d.y+=1.2*strength*head
 				elif action=="heal" or action=="cast":

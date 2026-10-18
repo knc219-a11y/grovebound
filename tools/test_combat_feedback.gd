@@ -46,6 +46,18 @@ func check_feedback():
 	enemy.pattern=1
 	game.begin_boss_attack(enemy,game.player)
 	if enemy.wind_total!=enemy.wind or enemy.attack_kind!="charge": failures.append("charge tell tracks actual countdown")
+	for kind in ["boar","wolf","marten","fox"]:
+		game.combat_feedback.clear()
+		game.revive_target=-1
+		game.clear_overlay()
+		game.mode="stage"
+		enemy.hp=enemy.maxhp
+		game.units=[game.make_unit(game.make_owned(kind,1),enemy.pos-Vector2(80,0))]
+		game.use_companion_skill(0)
+		var found=false
+		for event in game.combat_feedback.events:
+			if event.kind=="skill_"+kind: found=true
+		if not found or game.units[0].skill!=10.0 or enemy.hp>=enemy.maxhp: failures.append(kind+" skill burst follows real damage and cooldown")
 	game.start_stage(false)
 	if not game.combat_feedback.events.is_empty() or not game.combat_feedback.numbers.is_empty(): failures.append("stage clears feedback")
 	game.free()

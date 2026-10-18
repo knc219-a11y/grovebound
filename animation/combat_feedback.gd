@@ -10,6 +10,7 @@ func clear():
 func emit(kind,source,target,amount=0.0,options={}):
 	var duration=0.28
 	if kind in ["heal","buff","guard","revive"]: duration=0.75
+	elif kind.begins_with("skill_"): duration=0.5
 	elif kind=="stomp": duration=0.45
 	if events.size()>=MAX_EVENTS: events.pop_front()
 	events.append({"kind":kind,"a":source,"b":target,"age":0.0,"duration":duration,"radius":options.get("radius",130.0)})
@@ -38,7 +39,8 @@ func color_for(kind):
 	match kind:
 		"heal","revive": return Color("b5d99a")
 		"guard","block": return Color("a0c9d2")
-		"fox","buff": return Color("e2b46c")
+		"fox","buff","skill_fox": return Color("e2b46c")
+		"skill_boar","skill_wolf","skill_marten": return Color("e8d7b5")
 		"hurt": return Color("df907b")
 		_: return Color("ded1ae")
 func shield(canvas,p,r,col):
@@ -47,6 +49,41 @@ func shield(canvas,p,r,col):
 	canvas.draw_polyline(points,col,2,false)
 	canvas.draw_line(p+Vector2(-r*0.35,0),p+Vector2(0,r*0.3),col,2,false)
 	canvas.draw_line(p+Vector2(0,r*0.3),p+Vector2(r*0.4,-r*0.3),col,2,false)
+func ground_pulse(canvas,p,r,c):
+	canvas.draw_set_transform(p.round(),0,Vector2(1,0.4))
+	canvas.draw_arc(Vector2.ZERO,r,0,TAU,24,c,2,false)
+	canvas.draw_set_transform(Vector2.ZERO)
+func spark(canvas,p,r,c):
+	canvas.draw_line((p-Vector2(r,0)).round(),(p+Vector2(r,0)).round(),c,2,false)
+	canvas.draw_line((p-Vector2(0,r)).round(),(p+Vector2(0,r)).round(),c,2,false)
+func skill_burst(canvas,event,cam,t,c):
+	var p=event.b-cam-Vector2(0,22)
+	var a=event.a-cam-Vector2(0,22)
+	var pop=1.0-pow(1.0-t,3)
+	if event.kind=="skill_fox":
+		ground_pulse(canvas,event.b-cam,16+pop*35,c)
+		for i in 8:
+			var direction=Vector2.RIGHT.rotated(i*TAU/8+t*0.4)
+			var q=p+direction*(9+pop*29)
+			canvas.draw_colored_polygon(PackedVector2Array([q+direction*5,q+direction.orthogonal()*3,q-direction*5,q-direction.orthogonal()*3]),c)
+		if t<0.35: spark(canvas,p,8*(1-t),Color("fff0bf"))
+	else:
+		var direction=(p-a).normalized()
+		if direction.length()<0.1: direction=Vector2.RIGHT
+		var side=direction.orthogonal()
+		if event.kind=="skill_boar":
+			ground_pulse(canvas,event.b-cam,10+pop*26,c)
+			if t<0.55:
+				for i in 3:
+					var q=a+side*(i-1)*5
+					canvas.draw_line(q.round(),q.lerp(p,pop).round(),c,3,false)
+		else:
+			for i in (2 if event.kind=="skill_marten" else 3):
+				var center=p+side*(i-1)*6
+				canvas.draw_arc(center,12+pop*12,direction.angle()-1.4+t*0.4,direction.angle()+0.8+t*0.4,10,c,2,false)
+		for i in 5:
+			var q=p+Vector2.RIGHT.rotated(i*TAU/5)*(5+pop*25)
+			spark(canvas,q,2,c)
 func draw(canvas,cam,font):
 	for event in events:
 		var t=event.age/event.duration
@@ -54,6 +91,8 @@ func draw(canvas,cam,font):
 		var a=(event.a-cam-Vector2(0,28)).round()
 		var c=color_for(event.kind)
 		c.a=1.0-smoothstep(0.45,1.0,t)
+		if event.kind.begins_with("skill_"):
+			skill_burst(canvas,event,cam,t,c)
 		match event.kind:
 			"melee","hurt":
 				var direction=(p-a).normalized()
@@ -75,13 +114,29 @@ func draw(canvas,cam,font):
 					var dir=Vector2.RIGHT.rotated(i*TAU/6)
 					canvas.draw_line((p+dir*(3+t*7)).round(),(p+dir*(8+t*14)).round(),c,2,false)
 			"heal","revive":
+				ground_pulse(canvas,event.b-cam,12+sin(t*PI)*18,c)
+				if event.a.distance_to(event.b)>20 and t<0.5:
+					ground_pulse(canvas,event.a-cam,8+t*28,c)
+				for i in 3:
+					var q=p+Vector2.RIGHT.rotated(i*TAU/3+t*TAU)*(12+8*t)
+					spark(canvas,q+Vector2(0,-t*20),2,c)
 				for i in range(5):
 					var q=p+Vector2((i-2)*6+sin(t*TAU+i)*3,12-t*32-float(i%2)*9)
 					canvas.draw_rect(Rect2(q.round(),Vector2(3,5)),c)
 					if i%2==0: canvas.draw_rect(Rect2((q+Vector2(-2,1)).round(),Vector2(7,2)),c)
 				if event.kind=="revive": canvas.draw_arc(event.b-cam,18+t*15,0,TAU,24,c,2,false)
-			"guard","block": shield(canvas,p,16+t*5,c)
+			"guard","block":
+				shield(canvas,p,16+t*5,c)
+				if event.kind=="guard":
+					ground_pulse(canvas,event.b-cam,15+t*21,c)
+					var echo=c
+					echo.a*=0.45
+					shield(canvas,p,22+t*8,echo)
 			"buff":
+				ground_pulse(canvas,event.b-cam,12+t*20,c)
+				for i in 6:
+					var q=p+Vector2.RIGHT.rotated(i*TAU/6+t)*(13+9*t)
+					spark(canvas,q,2,c)
 				for i in range(3):
 					var q=p+Vector2(0,10-i*9-t*18)
 					canvas.draw_polyline(PackedVector2Array([q+Vector2(-7,4),q,q+Vector2(7,4)]),c,2,false)
