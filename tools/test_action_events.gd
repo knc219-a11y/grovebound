@@ -7,6 +7,17 @@ func check_events():
 	game.set_process(false)
 	root.add_child(game)
 	var failures=[]
+	# Movement easing may change arrival time, but never overshoots attack stop distance.
+	var mover={"pos":Vector2(800,700),"face":1.0,"walk":false}
+	game.move_entity(mover,Vector2(900,700),100.0,0.05,20.0)
+	if mover.pos.x<=800 or mover.pos.x>=805: failures.append("companion eases departure")
+	for step in 120: game.move_entity(mover,Vector2(900,700),100.0,0.05,20.0)
+	if absf(mover.pos.x-880)>0.001: failures.append("companion reaches stop without overshoot")
+	mover.face=1.0
+	game.move_entity(mover,mover.pos+Vector2(-5,100),100.0,0.05)
+	if mover.face!=1.0: failures.append("near vertical travel keeps facing")
+	game.move_entity(mover,mover.pos+Vector2(-100,0),100.0,0.05)
+	if mover.face!=-1.0: failures.append("deliberate turn changes facing")
 	var actions=game.motion_actions
 	# Every baked role has visible variation and padding around every frame.
 	for kind in actions.catalog:
@@ -57,7 +68,14 @@ func check_events():
 	game.holding_revive=false
 	game.update_game(0.1)
 	if game.player.get("channeling",false): failures.append("interrupt ends channel")
-	var probe={"hp":100.0}
+	var probe={"hp":100.0,"face":-1.0,"walk":false}
+	actions.start(probe,"wolf","attack")
+	probe.face=1.0
+	if probe.action_face!=-1.0: failures.append("attack keeps event facing")
+	probe.walk=true
+	if not actions.selection("wolf",probe).is_empty(): failures.append("travel does not slide in stationary attack pose")
+	probe.walk=false
+	if actions.selection("wolf",probe).is_empty(): failures.append("stationary attack pose remains available")
 	actions.start(probe,"wolf","attack")
 	actions.advance(probe,1.0)
 	if not actions.selection("wolf",probe).is_empty(): failures.append("action expires")

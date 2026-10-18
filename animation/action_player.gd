@@ -10,6 +10,7 @@ func start(actor,kind,key):
 	# A routine strike must not cancel an explicit heal/guard/support gesture.
 	if key in ["attack","support","cast"] and actor.get("action_remaining",0.0)>0 and actor.get("action_key","") in ["heal","guard"]: return false
 	var duration=catalog[kind].actions[key].duration
+	actor.action_face=actor.get("face",1.0)
 	actor.action_key=key
 	actor.action_duration=duration
 	actor.action_remaining=duration
@@ -32,6 +33,8 @@ func selection(kind,actor):
 		key="guard"
 	else: return {}
 	if not catalog[kind].actions.has(key): return {}
+	# Full-body stationary poses cannot replace travelling feet. Channeling is stationary.
+	if actor.get("walk",false) and not actor.get("channeling",false): return {}
 	var frames=catalog[kind].actions[key].frames
 	return {"key":key,"region":frames[clampi(floori(phase*frames.size()),0,frames.size()-1)]}
 func draw(canvas,position,height,face,tint,kind,actor):
@@ -41,7 +44,7 @@ func draw(canvas,position,height,face,tint,kind,actor):
 	var r=chosen.region
 	var region=Rect2(r[0],r[1],r[2],r[3])
 	var scale_value=maxf(1,roundf(float(height)/data.height))
-	canvas.draw_set_transform_matrix(Transform2D(0,position.round()).scaled_local(Vector2(face,1)*scale_value))
+	canvas.draw_set_transform_matrix(Transform2D(0,position.round()).scaled_local(Vector2(actor.get("action_face",face) if not actor.get("channeling",false) else face,1)*scale_value))
 	canvas.draw_texture_rect_region(textures[kind],Rect2(-Vector2(data.ground[0],data.ground[1]),region.size),region,tint)
 	canvas.draw_set_transform(Vector2.ZERO)
 	return true

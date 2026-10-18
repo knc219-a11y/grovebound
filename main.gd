@@ -381,9 +381,12 @@ func move_entity(u, target, speed, dt, stop=0.0):
 	var delta = target-u.pos
 	if delta.length()>stop:
 		u["walk"]=true
-		var v = delta.normalized()*minf(speed*dt,maxf(0,delta.length()-stop))
+		# Ease into motion and brake near the requested stopping distance.
+		var desired=speed*clampf((delta.length()-stop)/40.0,0.2,1.0)
+		u.move_speed=move_toward(u.get("move_speed",0.0),desired,speed*6.0*dt)
+		var v = delta.normalized()*minf(u.move_speed*dt,maxf(0,delta.length()-stop))
 		u.pos = (u.pos+v).clamp(Vector2(150,345),Vector2(2750,1130))
-		if absf(v.x)>0.1: u.face=signf(v.x)
+		if absf(delta.x)>14: u.face=signf(delta.x)
 		if u.has("walk"): u.walk=true
 
 func _process(dt):
@@ -408,6 +411,7 @@ func update_game(dt):
 	stage_time += dt
 	combat_feedback.advance(dt)
 	for a in [player]+units+enemies:
+		if not a.get("walk",false): a.move_speed=0.0
 		motion_actions.advance(a,dt)
 		a["hit"]=maxf(0,a.get("hit",0.0)-dt)
 		a["swing"]=maxf(0,a.get("swing",0.0)-dt)
@@ -1067,7 +1071,7 @@ func _draw():
 			bob=0.0
 			tilt=0.0
 			deformation=Vector2.ONE
-		var offset=state.get("recoil",Vector2.ZERO)*(hit/0.18)
+		var offset=state.get("recoil",Vector2.ZERO)*sin(clampf(hit/0.18,0.0,1.0)*PI)
 		if a.hp<=0:
 			tilt=-0.75*a.face
 			if not a.ally: col.a=state.get("death",0.0)/0.32

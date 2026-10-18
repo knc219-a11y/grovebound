@@ -39,9 +39,10 @@ func _init(manifest,run_manifest=""):
 func frame_for_phase(phase):
 	return posmod(floori(phase*frames.size()),frames.size())
 func advance(actor,dt):
+	actor.pixel_down=move_toward(actor.get("pixel_down",0.0),1.0 if actor.hp<=0 else 0.0,maxf(0,dt)/0.22)
 	var distance=actor.pos.distance_to(actor.get("pixel_last",actor.pos))
 	actor.pixel_last=actor.pos
-	var moving=actor.get("walk",false) and actor.hp>0 and distance>0.001 and distance<100 and actor.get("swing",0.0)<=0 and actor.get("wind",0.0)<=0
+	var moving=actor.get("walk",false) and actor.hp>0 and distance>0.001 and distance<100 and actor.get("wind",0.0)<=0
 	if moving:
 		var scale_value=2.0 if actor.get("boss",false) else 1.0
 		var speed=distance/maxf(dt,0.001)/scale_value
@@ -58,8 +59,8 @@ func advance(actor,dt):
 func draw(canvas,position,height,face,tint,actor,idle):
 	var scale_value=maxf(1.0,roundf(height/native_height))
 	var down=actor.hp<=0
-	var moving=actor.get("pixel_moving",false) and not down and actor.get("swing",0.0)<=0 and actor.get("wind",0.0)<=0
-	var tilt=-0.75*face if down else 0.0
+	var moving=actor.get("pixel_moving",false) and not down and actor.get("wind",0.0)<=0
+	var tilt=-0.75*face*smoothstep(0.0,1.0,actor.get("pixel_down",1.0 if down else 0.0))
 	canvas.draw_set_transform_matrix(Transform2D(tilt,position.round()).scaled_local(Vector2(face,1)*scale_value))
 	if moving:
 		if actor.get("pixel_running",false) and run_texture!=null:

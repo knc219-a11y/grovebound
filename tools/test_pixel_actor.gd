@@ -25,10 +25,12 @@ func _initialize():
 	a.pos.x+=1
 	rig.advance(a,0.05)
 	if a.pixel_moving: failures.append("downed remains still")
+	if a.pixel_down<=0 or a.pixel_down>=1: failures.append("fall starts gradually")
 	a.hp=180
 	a.pos.x+=1
 	rig.advance(a,0.05)
 	if not a.pixel_moving: failures.append("revive resumes")
+	if a.pixel_down!=0: failures.append("revive returns upright")
 	var image=rig.texture.get_image()
 	var unique={}
 	for region in rig.frames:
@@ -83,7 +85,7 @@ func _initialize():
 		qa.swing=0.15
 		qa.pos.x+=1
 		quad.advance(qa,0.05)
-		if qa.pixel_moving: failures.append(kind+" attack holds stance")
+		if not qa.pixel_moving: failures.append(kind+" moving strike keeps feet animated")
 		qa.swing=0.0
 		qa.wind=0.3
 		qa.pos.x+=1
@@ -93,6 +95,9 @@ func _initialize():
 		qa.pos.x+=6.5
 		quad.advance(qa,0.05)
 		if not qa.pixel_moving or not qa.pixel_running: failures.append(kind+" resumes trot")
+		qa.pixel_phase=0.0
+		qa.pos.x+=6.5
+		quad.advance(qa,0.05)
 		var scaled={"pos":Vector2.ZERO,"hp":100,"walk":true,"boss":true}
 		quad.advance(scaled,0.05)
 		scaled.pos.x+=13.0

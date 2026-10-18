@@ -49,9 +49,9 @@ func draw(canvas: Node2D, position: Vector2, height: float, face: float, tint: C
 	var scale_value = display_scale(height)
 	var down = actor.get("rig_down",0.0)
 	var swing = actor.get("swing",0.0)
-	var acting = swing>0 or actor.get("wind",0.0)>0
+	var acting = actor.get("wind",0.0)>0
 	var moving = actor.get("walk",false) and actor.get("rig_move",0.0)>0.25 and down<0.01 and not acting
-	var nudge = roundf(sin(clampf(swing/0.22,0,1)*PI)*2)*scale_value if swing>0 else 0.0
+	var nudge = roundf(sin(clampf(swing/0.22,0,1)*PI)*2)*scale_value if swing>0 and not actor.get("walk",false) else 0.0
 	var p = position.round()+Vector2(face*nudge,0)
 	canvas.draw_set_transform_matrix(Transform2D(-0.7*face*down,p).scaled_local(Vector2(face,1)*scale_value))
 	var old_filter = canvas.texture_filter
