@@ -43,6 +43,8 @@ jobs:
           grep -q 'PIXEL ACTOR PASS:' pixel-test.log
           timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_action_events.gd 2>&1 | tee action-test.log
           grep -q 'ACTION EVENTS PASS:' action-test.log
+          timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_combat_feedback.gd 2>&1 | tee feedback-test.log
+          grep -q 'COMBAT FEEDBACK PASS:' feedback-test.log
           timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_save_repair.gd 2>&1 | tee save-test.log
           grep -q 'SAVE REPAIR PASS:' save-test.log
       - name: 3D boar study kinematics and exported sheet

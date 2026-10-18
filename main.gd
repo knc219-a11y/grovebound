@@ -25,7 +25,10 @@ var owned = []
 var squad = []
 var units = []
 var enemies = []
+var enemy_visual_id=0
 var captures = []
+const CombatFeedback=preload("res://animation/combat_feedback.gd")
+var combat_feedback=CombatFeedback.new()
 var effects = []
 var terrain = []
 var trees = []
@@ -296,6 +299,7 @@ func start_stage(tutorial):
 	captures.clear()
 	units.clear()
 	effects.clear()
+	combat_feedback.clear()
 	for i in range(squad.size()):
 		var unit = make_unit(find_owned(squad[i]),player.pos+Vector2(-65-i*25,40))
 		if not unit.is_empty(): units.append(unit)
@@ -315,7 +319,8 @@ func start_stage(tutorial):
 func spawn_enemy(kind, p, level=1, boss=false, guaranteed=false):
 	var h = 24.0 if mode=="tutorial" else (STATS[kind][0]*0.72+level*10)
 	if boss: h=850.0
-	enemies.append({"kind":kind,"pos":p,"home":p,"hp":h,"maxhp":h,"level":int(level),"boss":boss,"guaranteed":guaranteed,"cd":1.3,"wind":0.0,"aim":p,"stun":0.0,"active":false,"face":-1.0,"pattern":0,"attack_kind":"bite","dash":0.0,"dash_hits":[],"death":0.0})
+	enemy_visual_id+=1
+	enemies.append({"feedback_id":enemy_visual_id,"kind":kind,"pos":p,"home":p,"hp":h,"maxhp":h,"level":int(level),"boss":boss,"guaranteed":guaranteed,"cd":1.3,"wind":0.0,"aim":p,"stun":0.0,"active":false,"face":-1.0,"pattern":0,"attack_kind":"bite","dash":0.0,"dash_hits":[],"death":0.0})
 
 func active_units():
 	return units.slice(0,mini(4,units.size()))
@@ -364,6 +369,7 @@ func _process(dt):
 
 func update_game(dt):
 	stage_time += dt
+	combat_feedback.advance(dt)
 	for a in [player]+units+enemies:
 		motion_actions.advance(a,dt)
 		a["hit"]=maxf(0,a.get("hit",0.0)-dt)
@@ -387,7 +393,9 @@ func update_game(dt):
 		revive_progress += dt
 		if revive_progress>=3.0:
 			units[down].hp=units[down].maxhp*0.3
+			combat_feedback.emit("revive",player.pos,units[down].pos)
 			fx(units[down].pos,units[down].pos,Color("a8f79b"),"소생!",0.8)
+			player.channeling=false
 			revive_progress=0.0
 			revive_target=-1
 	else:
@@ -476,6 +484,7 @@ func update_game(dt):
 			e.aim=target.pos
 			e.attack_kind="bite"
 			e.wind=0.65
+			e.wind_total=e.wind
 	in_combat=false
 	for e in enemies:
 		if e.hp>0 and e.active: in_combat=true
@@ -501,6 +510,7 @@ func begin_boss_attack(e, target):
 		if direction.length()<0.01: direction=Vector2.LEFT
 		e.aim=(e.pos+direction*340).clamp(Vector2(170,345),Vector2(2740,1130))
 		e.wind=1.25
+	e.wind_total=e.wind
 	if absf(e.aim.x-e.pos.x)>1: e.face=signf(e.aim.x-e.pos.x)
 
 func resolve_enemy_attack(e):
@@ -515,7 +525,7 @@ func resolve_enemy_attack(e):
 		if a.pos.distance_to(e.aim)<radius:
 			damage_ally(a,28.0 if e.boss else (2.0 if mode=="tutorial" else 10.0+e.level*2),e.pos)
 	if e.attack_kind=="stomp":
-		effects.append({"a":e.pos,"b":e.pos,"color":Color("efbc79"),"text":"","time":0.45,"duration":0.45,"ring":true,"radius":130.0})
+		combat_feedback.emit("stomp",e.pos,e.pos,0,{"radius":130.0})
 	e.cd=2.4 if e.boss else 1.5
 
 func advance_charge(e, dt):
@@ -538,10 +548,11 @@ func damage_ally(a, damage, source):
 	if a.has("data"):
 		if a.data.trait=="단단함": damage*=0.85
 		if a.shield>0: damage*=0.4
+	var taken=minf(a.hp,damage)
 	a.hp=maxf(0,a.hp-damage)
 	a["hit"]=0.18
 	a["recoil"]=(a.pos-source).normalized()*6
-	fx(source,a.pos,Color("ff997a"),"−%d" % int(damage),0.7)
+	combat_feedback.emit("block" if a.get("shield",0.0)>0 else "hurt",source,a.pos,taken,{"target_id":a.data.id if a.has("data") else -1,"height":sprite_height(a.data.kind) if a.has("data") else sprite_height("druid")})
 
 func animate_attack(source,attacker={}):
 	for a in ([attacker] if not attacker.is_empty() else [player]+active_units()):
@@ -553,12 +564,16 @@ func animate_attack(source,attacker={}):
 
 func hit_enemy(e, damage, source,attacker={}):
 	if e.hp<=0: return
+	var dealt=minf(e.hp,damage)
 	e.hp=maxf(0,e.hp-damage)
 	e.active=true
 	e["hit"]=0.16
 	e["recoil"]=(e.pos-source).normalized()*7
 	animate_attack(source,attacker)
-	fx(source,e.pos,Color("f4e4a8"),"%d" % int(damage),0.65)
+	var visual="melee"
+	if not attacker.is_empty():
+		visual="support" if attacker==player else ("fox" if attacker.data.kind=="fox" else "melee")
+	combat_feedback.emit(visual,source,e.pos,dealt,{"target_id":e.get("feedback_id",str(e.pos.round())),"height":sprite_height(e.kind,e.get("boss",false))})
 	if e.hp<=0:
 		e["death"]=0.32
 		kills+=1
@@ -591,8 +606,9 @@ func heal(a, amount, source,healer={}):
 			var species="druid" if caster==player else caster.data.kind
 			motion_actions.start(caster,species,"heal")
 			break
+	var restored=minf(amount,a.maxhp-a.hp)
 	a.hp=minf(a.maxhp,a.hp+amount)
-	fx(source,a.pos,Color("a6f1aa"),"+%d" % int(amount),0.7)
+	if restored>0: combat_feedback.emit("heal",source,a.pos,restored,{"target_id":a.data.id if a.has("data") else -1,"height":sprite_height(a.data.kind) if a.has("data") else sprite_height("druid")})
 
 func cast_heal():
 	if not can_act() or heal_cd>0: return
@@ -613,6 +629,7 @@ func cast_buff():
 		motion_actions.start(player,"druid","support")
 		best.buff=7.0
 		buff_cd=14.0
+		combat_feedback.emit("buff",player.pos,best.pos)
 		fx(player.pos,best.pos,Color("ffce6a"),"야성 +60%",0.9)
 
 func can_act():
@@ -637,6 +654,7 @@ func use_companion_skill(i):
 					e["taunt_time"]=5.0
 					e.aim=u.pos
 					e.pos=e.pos.move_toward(u.pos,35)
+			combat_feedback.emit("guard",u.pos,u.pos)
 			fx(u.pos,u.pos,Color("a7d9e8"),"도발 · 방어",1)
 		_:
 			if target.is_empty(): return
@@ -959,19 +977,7 @@ func load_game():
 func _draw():
 	draw_rect(Rect2(0,0,1440,810),Color("282a2b"))
 	draw_texture_rect(textures["valley"],Rect2(-cam,Vector2(2900,1650)),false)
-	for e in enemies:
-		if e.hp>0 and e.wind>0:
-			var pulse=0.26+0.08*sin(clock*14)
-			if e.attack_kind=="charge":
-				draw_line(e.origin-cam,e.aim-cam,Color(0.95,0.3,0.15,pulse),96,true)
-				var normal=(e.aim-e.origin).normalized().orthogonal()*48
-				draw_line(e.origin+normal-cam,e.aim+normal-cam,Color("ffbb77"),3,true)
-				draw_line(e.origin-normal-cam,e.aim-normal-cam,Color("ffbb77"),3,true)
-				draw_circle(e.aim-cam,8,Color("fff0a2"))
-			else:
-				var radius=130 if e.attack_kind=="stomp" else 56
-				draw_circle(e.aim-cam,radius,Color(0.92,0.28,0.16,pulse))
-				draw_arc(e.aim-cam,radius,0,TAU,48,Color("ffc18d"),3,true)
+	for e in enemies: combat_feedback.draw_tell(self,e,cam)
 	for c in captures:
 		var p=c.pos-cam
 		draw_arc(p,36+sin(clock*3)*3,0,TAU,30,Color("ffde85"),3,true)
@@ -1039,8 +1045,11 @@ func _draw():
 		if f.get("ring",false):
 			draw_arc(f.b-cam,f.radius*(0.6+elapsed/f.duration*0.4),0,TAU,48,col,5,true)
 		else:
-			if elapsed<0.13: draw_line(f.a-cam-Vector2(0,24),f.b-cam-Vector2(0,24),col,3,true)
 			text_at(f.text,f.b-cam+Vector2(-15,-70-elapsed*32),20,col)
+	if not overlay.visible:
+		combat_feedback.draw(self,cam,font)
+		if player.get("channeling",false) and revive_target>=0:
+			combat_feedback.draw_channel(self,player.pos,units[revive_target].pos,revive_progress,cam)
 	if hud.visible:
 		draw_minimap()
 		draw_circle(Vector2(140,680),83,Color(0.08,0.18,0.15,0.3))
