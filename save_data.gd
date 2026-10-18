@@ -40,6 +40,8 @@ static func normalize(data: Dictionary, valid_kinds: Array):
 			repaired = true
 		if not raw.has("level") or not raw.has("xp") or record.level!=raw.get("level") or record.xp!=raw.get("xp"):
 			repaired = true
+		record.favorite=raw.get("favorite",false) if raw.get("favorite",false) is bool else false
+		if not raw.get("favorite",null) is bool or raw.favorite!=record.favorite: repaired=true
 		Loot.normalize(record)
 		if raw.get("grade")!=record.grade or not Loot.same_options(raw.get("options"),record.options): repaired=true
 		owned.append(record)

@@ -2,7 +2,7 @@ extends SceneTree
 const SaveData = preload("res://save_data.gd")
 func _initialize():
 	var failures = []
-	var fixture = {"version":1,"owned":[{"id":1,"kind":"boar","level":3,"xp":42,"trait":"용맹함"},{"id":2,"kind":"fox","level":2,"xp":9,"trait":"민첩함"}],"squad":[1,99999,2],"materials":17,"tutorial_done":true,"unlocked":true,"next_id":1}
+	var fixture = {"version":1,"owned":[{"id":1,"kind":"boar","level":3,"xp":42,"trait":"용맹함","favorite":true},{"id":2,"kind":"fox","level":2,"xp":9,"trait":"민첩함"}],"squad":[1,99999,2],"materials":17,"tutorial_done":true,"unlocked":true,"next_id":1}
 	var decoded = JSON.parse_string(JSON.stringify(fixture))
 	var normalized = SaveData.normalize(decoded,["boar","fox"])
 	if not normalized.repaired or normalized.squad!=[1,2]: failures.append("dangling party reference")
@@ -32,7 +32,7 @@ func _initialize():
 		if unit.is_empty() or unit.hp<=0 or not unit.data.has("kind"): failures.append("repaired unit")
 	world.save_game()
 	world.load_game()
-	if world.squad!=[1,2] or world.owned.size()!=2: failures.append("repaired save roundtrip")
+	if world.squad!=[1,2] or world.owned.size()!=2 or not world.owned[0].favorite: failures.append("repaired save and favorite roundtrip")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(test_path))
 	if not world.save_backup_path.is_empty(): DirAccess.remove_absolute(ProjectSettings.globalize_path(world.save_backup_path))
 	world.free()

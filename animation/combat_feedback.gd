@@ -11,7 +11,7 @@ func clear():
 func emit(kind,source,target,amount=0.0,options={}):
 	var duration=0.28
 	if kind.begins_with("capture_"): duration=1.0
-	if kind in ["heal","buff","guard","revive"]: duration=0.75
+	if kind in ["heal","buff","guard","revive","level_up"]: duration=0.75
 	elif kind.begins_with("skill_"): duration=0.5
 	elif kind=="stomp": duration=0.45
 	if events.size()>=MAX_EVENTS: events.pop_front()
@@ -42,7 +42,7 @@ func color_for(kind):
 	match kind:
 		"heal","revive": return Color("b5d99a")
 		"guard","block": return Color("a0c9d2")
-		"fox","buff","skill_fox": return Color("e2b46c")
+		"fox","buff","skill_fox","level_up": return Color("e2b46c")
 		"skill_boar","skill_wolf","skill_marten": return Color("e8d7b5")
 		"hurt": return Color("df907b")
 		_: return Color("ded1ae")
@@ -124,7 +124,7 @@ func draw(canvas,cam,font):
 				for i in range(6):
 					var dir=Vector2.RIGHT.rotated(i*TAU/6)
 					canvas.draw_line((p+dir*(3+t*7)).round(),(p+dir*(8+t*14)).round(),c,2,false)
-			"heal","revive":
+			"heal","revive","level_up":
 				ground_pulse(canvas,event.b-cam,12+sin(t*PI)*18,c)
 				if event.a.distance_to(event.b)>20 and t<0.5:
 					ground_pulse(canvas,event.a-cam,8+t*28,c)
