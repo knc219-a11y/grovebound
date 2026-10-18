@@ -87,7 +87,7 @@ func _ready():
 	heading_font=load("res://assets/fonts/Galmuri11-Bold.res")
 	font.subpixel_positioning=TextServer.SUBPIXEL_POSITIONING_DISABLED
 	heading_font.subpixel_positioning=TextServer.SUBPIXEL_POSITIONING_DISABLED
-	textures["valley"]=load("res://assets/pixel-ruins-background-v2.png")
+	textures["valley"]=load("res://assets/pixel-ruins-background-v3.webp")
 	for key in ["druid","boar","marten","fox","turtle","deer","wolf","tree"]:
 		textures[key] = load("res://assets/party-pixel/"+key+".png" if key in PIXEL_KINDS else "res://assets/"+key+".png")
 	boar_rig=BoarRig.new()
@@ -1030,7 +1030,7 @@ func load_game():
 
 func _draw():
 	draw_rect(Rect2(0,0,1440,810),Color("282a2b"))
-	draw_texture_rect(textures["valley"],Rect2(-cam,Vector2(2900,1650)),false)
+	draw_texture_rect(textures["valley"],Rect2(-cam.round(),Vector2(2900,1650)),false)
 	for e in enemies: combat_feedback.draw_tell(self,e,cam)
 	for c in captures:
 		var p=c.pos-cam

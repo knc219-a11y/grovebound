@@ -19,3 +19,5 @@ References: previous `assets/pixel-ruins-background-v1.png` as edit target; appr
 Run `godot --headless --path . --script res://tools/bake_background.gd -- /absolute/generated-source.png` for the runtime background. Font rebuild instructions are in assets/fonts/README.md.
 
 Font load, full Hangul range, UI symbols, text shaping and background dimensions/visibility are checked by `tools/test_art_type.gd` and CI. UI layout/callbacks, gameplay, animation events, combat feedback and save repair regressions passed. HUD, camp, roster and actual gameplay were rendered for inspection. Physical phone readability still needs device testing; the viewport can scale the native font grid at non-integer ratios.
+
+Current terrain revision: the v3 contour correction supersedes the v2 plate; see `docs/terrain-crisp.md`.

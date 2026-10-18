@@ -13,3 +13,5 @@ Review scenes: `ui_hud_review.tscn` shows cooldown, low HP and a downed ally; `u
 Validation: Godot 4.7 import, HUD values/states, thin bar bounds, main control minimum sizes/non-overlap, skill slot callbacks, heal callback, roster widths/portraits, camp navigation and empty slots. Gameplay, pixel motion, action events, combat feedback and save repair regressions passed. Native screenshots and gameplay MP4 were rendered and inspected. Physical phone touch testing remains outside these desktop checks.
 
 Typography/background update: runtime now uses packaged Galmuri11 Regular/Bold and the simplified ruins v2 plate; see `docs/art-type.md`. Earlier UI screenshots remain historical reviews.
+
+Current terrain revision: the v3 contour correction supersedes the v2 plate; see `docs/terrain-crisp.md`.
