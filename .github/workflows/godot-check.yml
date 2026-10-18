@@ -35,6 +35,14 @@ jobs:
           set -euo pipefail
           timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . -- --self-test 2>&1 | tee test.log
           grep -q 'SELF TEST PASS:' test.log
+      - name: Pixel animation and save repair regression checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_pixel_actor.gd 2>&1 | tee pixel-test.log
+          grep -q 'PIXEL ACTOR PASS:' pixel-test.log
+          timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_save_repair.gd 2>&1 | tee save-test.log
+          grep -q 'SAVE REPAIR PASS:' save-test.log
       - name: 3D boar study kinematics and exported sheet
         shell: bash
         run: |

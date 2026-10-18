@@ -12,6 +12,8 @@ const STATS = {"boar":[130,14,60,110],"marten":[85,21,62,150],"fox":[80,14,235,1
 const TRAITS = ["강인함", "용맹함", "단단함", "민첩함"]
 const BoarRig = preload("res://animation/boar_pixel.gd")
 var boar_rig
+const PixelActor = preload("res://animation/pixel_actor.gd")
+var druid_rig
 const PIXEL_KINDS = ["druid","marten","fox","turtle","deer","wolf"]
 var textures = {}
 var font: Font
@@ -78,6 +80,7 @@ func _ready():
 	for key in ["druid","boar","marten","fox","turtle","deer","wolf","tree"]:
 		textures[key] = load("res://assets/party-pixel/"+key+".png" if key in PIXEL_KINDS else "res://assets/"+key+".png")
 	boar_rig=BoarRig.new()
+	druid_rig=PixelActor.new("res://animation/druid_walk_frames.json")
 	textures["boar"]=boar_rig.portrait()
 	build_terrain()
 	build_ui()
@@ -342,6 +345,7 @@ func _process(dt):
 	if (mode=="stage" or mode=="tutorial") and not overlay.visible:
 		if not screenshot_mode:
 			update_game(minf(dt,0.05))
+			druid_rig.advance(player,minf(dt,0.05))
 			for actor in units+enemies:
 				if actor.get("kind",actor.get("data",{}).get("kind",""))=="boar": boar_rig.advance(actor,minf(dt,0.05))
 	cam = (player.pos-Vector2(720,400)).clamp(Vector2(-40,0),Vector2(1500,840))
@@ -987,6 +991,8 @@ func _draw():
 		if a.kind=="boar":
 			# The rig owns breathing, gait and attack poses; never stack whole-image shaking.
 			boar_rig.draw(self,p+offset,a.size,a.face,col,state)
+		elif a.kind=="druid":
+			druid_rig.draw(self,p+offset,a.size,a.face,col,state,textures["druid"])
 		else:
 			draw_sprite(a.kind,p+Vector2(0,bob)+offset,a.size,a.face,col,tilt,deformation)
 		var bar=Rect2(p+Vector2(-27,-a.size-10),Vector2(54,6))

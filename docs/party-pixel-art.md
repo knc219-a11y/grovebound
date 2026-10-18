@@ -7,3 +7,11 @@ Sources were generated as isolated right-facing elevated side-view characters wi
 Rebuild with Godot: `godot --headless --path . --script res://tools/bake_party_pixels.gd -- /absolute/source-manifest.json`. The external manifest is an array of `{ "kind": "fox", "source": "/absolute/original.png", "height": 40 }`. The native image pipeline trims alpha halos, samples nearest pixels and quantizes to the shared palette; it writes runtime PNGs and manifest.
 
 Validation: Godot 4.7 import, gameplay self-test and save repair regression passed. All new runtime PNGs have binary alpha and at most 32 opaque colors. Actual gameplay captured with tools/preview.py; lineup review scene includes all seven characters.
+
+## Druid walk v1
+
+The druid now has eight baked walk frames at native resolution. A continuous build-time mesh moves the boots in alternating support/swing phases, the lower cloak, the free hand and the staff. Shared mesh vertices avoid open cutout seams. The original idle art remains unchanged. `animation/pixel_actor.gd` plays the padded atlas at runtime with nearest filtering, integer scales and a shared foot anchor. Stopping, teleporting and being downed reset walking. No runtime mesh or frame generation is required.
+
+Rebuild on a graphical display: `godot --audio-driver Dummy --path . --script res://tools/bake_druid_walk.gd`. Review: `res://animation/druid_walk_review.tscn`; actual combat/movement review: `res://animation/druid_gameplay_preview.tscn` (isolated from player saves). The enlarged review travels at 30 px/s. Gameplay still uses its existing 210 px/s movement speed; animation cadence is capped, so fast travel still needs a dedicated run cycle to reduce foot sliding. The five other new beasts remain static; the generic frame player can accept their future manifests.
+
+Regression checks now cover eight distinct unclipped frames, phase wrap, distance-driven advancement, stop/teleport, down/revive, gameplay and save repair.

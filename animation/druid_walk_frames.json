@@ -1,0 +1,17 @@
+{
+	"cell": [
+		64,
+		88
+	],
+	"columns": 4,
+	"count": 8,
+	"ground": [
+		28,
+		80
+	],
+	"idle": "res://assets/party-pixel/druid.png",
+	"minimum_cycle_seconds": 0.46,
+	"native_height": 72,
+	"stride_pixels": 16.13,
+	"texture": "res://assets/party-pixel/druid-walk-v1.png"
+}
