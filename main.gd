@@ -1,6 +1,11 @@
 extends Node2D
 # A self-contained, data-driven playable slice. All gameplay positions are world coordinates.
 const SAVE_PATH = "user://grovebound_v1.json"
+const SaveData = preload("res://save_data.gd")
+var save_path = SAVE_PATH
+var save_notice = ""
+var save_blocked = false
+var save_backup_path = ""
 const NAMES = {"boar":"멧돼지", "marten":"담비", "fox":"여우", "turtle":"거북", "deer":"사슴", "wolf":"늑대", "druid":"드루이드"}
 const ROLES = {"boar":"근접", "marten":"근접", "fox":"원거리", "turtle":"탱커", "deer":"힐러", "wolf":"근접"}
 const STATS = {"boar":[130,14,60,110],"marten":[85,21,62,150],"fox":[80,14,235,125],"turtle":[200,8,65,90],"deer":[95,8,240,120],"wolf":[95,12,60,130]}
@@ -208,6 +213,7 @@ func show_camp():
 	label(overlay,"작은 동료와 시작하는 모험",Vector2(230,235),26)
 	label(overlay,"회복과 야성으로 동료를 돕고, 쓰러진 동료를 직접 소생시키세요.\n포획한 야수는 실패해도 사라지지 않습니다.\n\nWASD 이동  ·  Q 회복  ·  E 강화  ·  1~4 동료 스킬\nF 포획 / 길게 소생  ·  Tab 편성  ·  Esc 일시정지\n터치: 왼쪽 스틱 + 화면 버튼",Vector2(230,285),20)
 	label(overlay,"보유 %d마리    성장 재료 %d    %s" % [owned.size(),materials,"계곡 클리어 완료" if unlocked else "계곡 탐험 대기"],Vector2(230,495),20)
+	if not save_notice.is_empty(): label(overlay,save_notice,Vector2(230,540),16)
 	if not tutorial_done:
 		button(overlay,"첫 동료 만나기",Rect2(230,590,290,65),show_starters)
 	else:
@@ -258,9 +264,11 @@ func find_owned(id):
 	return {}
 
 func make_unit(d, p):
+	if not d is Dictionary or not STATS.has(d.get("kind","")): return {}
 	return {"data":d,"pos":p,"hp":max_hp(d),"maxhp":max_hp(d),"cd":0.0,"skill":0.0,"buff":0.0,"shield":0.0,"face":1.0,"walk":false}
 
 func start_stage(tutorial):
+	repair_party()
 	clear_overlay()
 	mode = "tutorial" if tutorial else "stage"
 	player.pos = Vector2(340,800)
@@ -279,7 +287,8 @@ func start_stage(tutorial):
 	units.clear()
 	effects.clear()
 	for i in range(squad.size()):
-		units.append(make_unit(find_owned(squad[i]),player.pos+Vector2(-65-i*25,40)))
+		var unit = make_unit(find_owned(squad[i]),player.pos+Vector2(-65-i*25,40))
+		if not unit.is_empty(): units.append(unit)
 	if tutorial:
 		spawn_enemy(tutorial_species,Vector2(650,800),1,false,true)
 		notify("선택한 야수에게 다가가세요. 사거리 안에서 자동 공격합니다.")
@@ -876,25 +885,50 @@ func _unhandled_input(event):
 	if event is InputEventMouseMotion and mouse_stick:
 		stick=((event.position-Vector2(140,680))/72.0).limit_length()
 
+func backup_save():
+	if not FileAccess.file_exists(save_path): return true
+	var original = FileAccess.get_file_as_bytes(save_path)
+	var suffix = Time.get_datetime_string_from_system().replace(":","-")+"-"+str(Time.get_ticks_usec())
+	var target = save_path+".backup-"+suffix
+	var file = FileAccess.open(target,FileAccess.WRITE)
+	if file==null:
+		save_blocked = true
+		save_notice = "저장 백업에 실패해 자동 저장을 중지했습니다."
+		return false
+	file.store_buffer(original)
+	file.close()
+	save_backup_path = target
+	return true
+
+func repair_party():
+	var result = SaveData.normalize({"owned":owned,"squad":squad,"next_id":next_id},STATS.keys())
+	if result.repaired:
+		if backup_save(): save_notice = "편성의 잘못된 연결을 복구했습니다. 원본 저장은 백업했습니다."
+	owned = result.owned
+	squad = result.squad
+	next_id = result.next_id
+
 func save_game():
-	if is_test or screenshot_mode: return
-	var f=FileAccess.open(SAVE_PATH,FileAccess.WRITE)
+	if is_test or screenshot_mode or save_blocked: return
+	var f=FileAccess.open(save_path,FileAccess.WRITE)
 	if f: f.store_string(JSON.stringify({"version":1,"owned":owned,"squad":squad,"materials":materials,"tutorial_done":tutorial_done,"unlocked":unlocked,"next_id":next_id}))
 
 func load_game():
-	if not FileAccess.file_exists(SAVE_PATH): return
-	var d=JSON.parse_string(FileAccess.get_file_as_string(SAVE_PATH))
-	if not d is Dictionary or d.get("version",0)!=1: return
-	owned=d.get("owned",[])
-	squad=d.get("squad",[])
-	materials=int(d.get("materials",0))
+	if not FileAccess.file_exists(save_path): return
+	var d=JSON.parse_string(FileAccess.get_file_as_string(save_path))
+	if not d is Dictionary or d.get("version",0)!=1:
+		save_blocked = true
+		save_notice = "저장 데이터를 읽을 수 없어 원본을 유지하고 자동 저장을 중지했습니다."
+		return
+	var result = SaveData.normalize(d,STATS.keys())
+	if result.repaired:
+		if backup_save(): save_notice = "편성의 잘못된 연결을 복구했습니다. 원본 저장은 백업했습니다."
+	owned=result.owned
+	squad=result.squad
+	materials=SaveData.integer(d.get("materials",0),0)
 	tutorial_done=d.get("tutorial_done",false)
 	unlocked=d.get("unlocked",false)
-	next_id=int(d.get("next_id",1))
-	for a in owned:
-		a.id=int(a.id)
-		a.level=int(a.level)
-		a.xp=int(a.xp)
+	next_id=result.next_id
 
 func _draw():
 	draw_rect(Rect2(0,0,1440,810),Color("282a2b"))
@@ -1133,6 +1167,11 @@ func run_tests():
 	holding_revive=true
 	_notification(NOTIFICATION_APPLICATION_FOCUS_OUT)
 	if holding_revive: failures.append("focus release")
+	# A stale party reference must never produce a unit with Nil HP or empty data.
+	var repair_case=SaveData.normalize({"owned":[{"id":1,"kind":"boar","level":3,"xp":42,"trait":"용맹함"}],"squad":[1,999999],"next_id":1},STATS.keys())
+	if not repair_case.repaired or repair_case.squad!=[1] or repair_case.owned[0].xp!=42:
+		failures.append("saved party repair")
+	if not make_unit({},Vector2.ZERO).is_empty(): failures.append("invalid saved unit rejected")
 	# Gait must depend on distance and stop during pauses, never world-coordinate noise.
 	var rig_actor={"pos":Vector2.ZERO,"hp":100.0,"walk":true}
 	boar_rig.advance(rig_actor,0.1)

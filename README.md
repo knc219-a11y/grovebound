@@ -145,3 +145,5 @@ Godot 엔진은 패키지에 포함하지 않습니다. 배포 시 엔진 라이
 `animation/boar_pixel.gd`는 출력된 PNG만 사용합니다. 원화 재생성은 `experiments/pixel/README.md`를 참고하세요. 공격/달리기 전용프레임은 아직 없으며 빠른 이동 시 걷기 재생속도를 제한합니다.
 
 실제 본편 전투검토 장면: `animation/pixel_gameplay_preview.tscn`. 이 장면은 세이브를 읽거나 쓰지 않습니다. 녹화: `docs/pixel-gameplay.gif`, `docs/pixel-gameplay.mp4`.
+
+저장된 편성에 없는 동료ID가 남아 있으면 시작 시 복구합니다. 정상 보유동료와 성장/재료는 유지하며, 원본 저장은 같은 사용자 저장폴더에 `.backup-시간` 파일로 보관합니다. 저장파일을 수동으로 초기화할 필요는 없습니다.
