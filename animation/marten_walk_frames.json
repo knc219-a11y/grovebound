@@ -1,0 +1,19 @@
+{
+	"cell": [
+		96,
+		72
+	],
+	"columns": 4,
+	"count": 12,
+	"ground": [
+		48,
+		62
+	],
+	"idle": "res://assets/party-pixel/marten.png",
+	"minimum_cycle_seconds": 0.4,
+	"native_height": 32.0,
+	"run_enter_speed": 60,
+	"run_exit_speed": 45,
+	"stride_pixels": 14.7058823529412,
+	"texture": "res://assets/party-pixel/marten-walk-v1.png"
+}

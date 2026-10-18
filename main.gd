@@ -15,6 +15,8 @@ var boar_rig
 const PixelActor = preload("res://animation/pixel_actor.gd")
 var druid_rig
 var animal_rigs={}
+const ActionPlayer=preload("res://animation/action_player.gd")
+var motion_actions
 const PIXEL_KINDS = ["druid","marten","fox","turtle","deer","wolf"]
 var textures = {}
 var font: Font
@@ -82,7 +84,8 @@ func _ready():
 		textures[key] = load("res://assets/party-pixel/"+key+".png" if key in PIXEL_KINDS else "res://assets/"+key+".png")
 	boar_rig=BoarRig.new()
 	druid_rig=PixelActor.new("res://animation/druid_walk_frames.json","res://animation/druid_run_frames.json")
-	for species in ["wolf","fox"]:
+	motion_actions=ActionPlayer.new()
+	for species in ["wolf","fox","marten","deer","turtle"]:
 		animal_rigs[species]=PixelActor.new("res://animation/"+species+"_walk_frames.json","res://animation/"+species+"_trot_frames.json")
 	textures["boar"]=boar_rig.portrait()
 	build_terrain()
@@ -362,6 +365,7 @@ func _process(dt):
 func update_game(dt):
 	stage_time += dt
 	for a in [player]+units+enemies:
+		motion_actions.advance(a,dt)
 		a["hit"]=maxf(0,a.get("hit",0.0)-dt)
 		a["swing"]=maxf(0,a.get("swing",0.0)-dt)
 		a["death"]=maxf(0,a.get("death",0.0)-dt)
@@ -375,6 +379,8 @@ func update_game(dt):
 	if stick.length()>0.1: motion=stick
 	var held = holding_revive or Input.is_physical_key_pressed(KEY_F)
 	var down = closest_down()
+	player["channeling"]=held and down>=0
+	player["channel_time"]=player.get("channel_time",0.0)+dt if player.channeling else 0.0
 	if held and down>=0:
 		if revive_target!=down: revive_progress=0.0
 		revive_target=down
@@ -394,7 +400,7 @@ func update_game(dt):
 		player.cd-=dt
 		var target=nearest_enemy(player.pos,250)
 		if not target.is_empty() and player.cd<=0:
-			hit_enemy(target,6.0,player.pos)
+			hit_enemy(target,6.0,player.pos,player)
 			player.cd=0.85
 	for i in range(units.size()):
 		var u=units[i]
@@ -417,7 +423,7 @@ func update_game(dt):
 			if u.pos.distance_to(target.pos)<155: move_entity(u,u.pos+(u.pos-target.pos).normalized()*70,speed,dt)
 			var a=lowest_ally(u.pos,300)
 			if u.cd<=0 and not a.is_empty() and a.hp<a.maxhp:
-				heal(a,12*(1.25 if u.data.trait=="다정함" else 1.0),u.pos)
+				heal(a,12*(1.25 if u.data.trait=="다정함" else 1.0),u.pos,u)
 				u.cd=1.7
 		else:
 			var reach=STATS[kind][2]
@@ -425,7 +431,7 @@ func update_game(dt):
 			if kind=="fox" and u.pos.distance_to(target.pos)<105:
 				move_entity(u,u.pos+(u.pos-target.pos).normalized()*100,speed,dt)
 			if u.pos.distance_to(target.pos)<=reach and u.cd<=0:
-				hit_enemy(target,attack(u.data)*(1.6 if u.buff>0 else 1.0),u.pos)
+				hit_enemy(target,attack(u.data)*(1.6 if u.buff>0 else 1.0),u.pos,u)
 				u.cd=0.85 if kind=="marten" else 1.2
 	for a in active_units():
 		if a.hp<=0: continue
@@ -499,6 +505,7 @@ func begin_boss_attack(e, target):
 
 func resolve_enemy_attack(e):
 	e["swing"]=0.22
+	motion_actions.start(e,e.kind,"cast" if e.kind=="fox" else "attack")
 	if e.attack_kind=="charge":
 		e.dash=0.48
 		e.dash_hits=[]
@@ -536,19 +543,21 @@ func damage_ally(a, damage, source):
 	a["recoil"]=(a.pos-source).normalized()*6
 	fx(source,a.pos,Color("ff997a"),"−%d" % int(damage),0.7)
 
-func animate_attack(source):
-	for a in [player]+active_units():
+func animate_attack(source,attacker={}):
+	for a in ([attacker] if not attacker.is_empty() else [player]+active_units()):
 		if a.pos.distance_to(source)<2:
 			a["swing"]=0.22
+			var species="druid" if a==player else a.data.kind
+			motion_actions.start(a,species,"support" if species=="druid" else ("cast" if species=="fox" else "attack"))
 			return
 
-func hit_enemy(e, damage, source):
+func hit_enemy(e, damage, source,attacker={}):
 	if e.hp<=0: return
 	e.hp=maxf(0,e.hp-damage)
 	e.active=true
 	e["hit"]=0.16
 	e["recoil"]=(e.pos-source).normalized()*7
-	animate_attack(source)
+	animate_attack(source,attacker)
 	fx(source,e.pos,Color("f4e4a8"),"%d" % int(damage),0.65)
 	if e.hp<=0:
 		e["death"]=0.32
@@ -576,7 +585,12 @@ func lowest_ally(origin, reach):
 			best=a
 	return best
 
-func heal(a, amount, source):
+func heal(a, amount, source,healer={}):
+	for caster in ([healer] if not healer.is_empty() else [player]+active_units()):
+		if caster.pos.distance_to(source)<2:
+			var species="druid" if caster==player else caster.data.kind
+			motion_actions.start(caster,species,"heal")
+			break
 	a.hp=minf(a.maxhp,a.hp+amount)
 	fx(source,a.pos,Color("a6f1aa"),"+%d" % int(amount),0.7)
 
@@ -584,7 +598,7 @@ func cast_heal():
 	if not can_act() or heal_cd>0: return
 	var a=lowest_ally(player.pos,430)
 	if not a.is_empty() and a.hp<a.maxhp:
-		heal(a,55,player.pos)
+		heal(a,55,player.pos,player)
 		heal_cd=8.0
 
 func cast_buff():
@@ -596,6 +610,7 @@ func cast_buff():
 			best=u
 			power=attack(u.data)
 	if not best.is_empty():
+		motion_actions.start(player,"druid","support")
 		best.buff=7.0
 		buff_cd=14.0
 		fx(player.pos,best.pos,Color("ffce6a"),"야성 +60%",0.9)
@@ -611,8 +626,9 @@ func use_companion_skill(i):
 	match u.data.kind:
 		"deer":
 			for a in alive_allies():
-				if a.pos.distance_to(u.pos)<350: heal(a,35*(1.25 if u.data.trait=="다정함" else 1),u.pos)
+				if a.pos.distance_to(u.pos)<350: heal(a,35*(1.25 if u.data.trait=="다정함" else 1),u.pos,u)
 		"turtle":
+			motion_actions.start(u,"turtle","guard")
 			u.shield=5.0
 			for e in enemies:
 				if e.hp>0 and e.pos.distance_to(u.pos)<270:
@@ -626,12 +642,12 @@ func use_companion_skill(i):
 			if target.is_empty(): return
 			if u.data.kind=="fox":
 				for e in enemies:
-					if e.hp>0 and e.pos.distance_to(target.pos)<125: hit_enemy(e,attack(u.data)*2.5*(1.6 if u.buff>0 else 1.0),u.pos)
+					if e.hp>0 and e.pos.distance_to(target.pos)<125: hit_enemy(e,attack(u.data)*2.5*(1.6 if u.buff>0 else 1.0),u.pos,u)
 			else:
 				if u.data.kind=="boar":
 					u.pos=target.pos+Vector2(-48,0)
 					target.stun=1.5
-				hit_enemy(target,attack(u.data)*3.5*(1.6 if u.buff>0 else 1.0),u.pos)
+				hit_enemy(target,attack(u.data)*3.5*(1.6 if u.buff>0 else 1.0),u.pos,u)
 	u.skill=10.0
 
 func closest_down():
@@ -993,7 +1009,9 @@ func _draw():
 		if a.hp<=0:
 			tilt=-0.75*a.face
 			if not a.ally: col.a=state.get("death",0.0)/0.32
-		if a.kind=="boar":
+		if motion_actions.draw(self,p+offset,a.size,a.face,col,a.kind,state):
+			pass
+		elif a.kind=="boar":
 			# The rig owns breathing, gait and attack poses; never stack whole-image shaking.
 			boar_rig.draw(self,p+offset,a.size,a.face,col,state)
 		elif a.kind=="druid":

@@ -33,3 +33,15 @@ Both allied and enemy wolves/foxes use the shared native-pixel player. Per-actor
 Rebuild all four atlases on a graphical display: `godot --audio-driver Dummy --path . --script res://tools/bake_quadrupeds.gd`. Review `res://animation/quadruped_review.tscn` shows both directions, walk/trot/stop/resume and attack stance. `res://animation/quadruped_gameplay_preview.tscn` uses two wolves and two foxes plus enemy versions, without loading or writing player saves. Each atlas is 384x216 px, binary alpha; wolf uses 13 opaque colors, fox uses 21.
 
 Regression checks cover all frame bounds/uniqueness, species gait selection, independent duplicate state, attack and windup hold, resume, doubled stride and source support travel. Gameplay and save repair checks also passed.
+
+## Complete party movement and event poses v1
+
+Marten, deer and tortoise now join the movement player with 12-frame slow and fast cycles each. Deer cells are taller to preserve antler padding. Tortoise keeps staggered footfall timing even at high speed; its shell remains almost level. Normal gameplay speeds and cadence caps remain, so rapid catch-up movement can still slide.
+
+Ten baked role poses use the approved original sprites: boar/wolf/marten strikes; fox casting; deer healing; tortoise bash/guard; druid support/heal/revive. Each pose has eight frame slots. These are continuous 2D skin deformations rather than newly painted open jaws or detailed joint anatomy. Impact/healing remains instantaneous under the existing combat rules: the pose begins at contact and recovers, without adding a hidden damage delay. Existing trails, hit flashes and spell effects remain. The guard posture persists while a stationary tortoise is shielded. Druid revive loops only during the actual hold; interrupting returns control, and skills remain blocked while channeling. Dead actors suppress action poses.
+
+The shared action player takes explicit attacker/healer identity so overlapping duplicates cannot steal each other's gestures. Routine attacks cannot overwrite an ongoing heal or guard gesture. Source meshes are build-time only; runtime plays native pixel atlases. All approved idle assets and existing walk/run atlases are preserved.
+
+Rebuild new movement: `godot --audio-driver Dummy --path . --script res://tools/bake_quadrupeds.gd -- marten deer turtle`. Rebuild actions: `godot --audio-driver Dummy --path . --script res://tools/bake_actions.gd`. Output metadata is flushed and closed explicitly. `full_motion_review.tscn` reviews all seven; `full_gameplay_preview.tscn` exercises heal, buff, guard, group heal, hold/revive, and a second party in real combat without reading/writing saves.
+
+Validation includes native atlas bounds/variation and binary alpha, all movement regression checks, actual damage/heal/cast/guard event ownership, channel interrupt/skill block, expiry/death, gameplay self-test and save repair. GitHub CI runs the action-event regression too.

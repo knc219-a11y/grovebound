@@ -1,0 +1,19 @@
+{
+	"cell": [
+		96,
+		88
+	],
+	"columns": 4,
+	"count": 12,
+	"ground": [
+		48,
+		78
+	],
+	"idle": "res://assets/party-pixel/deer.png",
+	"minimum_cycle_seconds": 0.18,
+	"native_height": 64.0,
+	"run_enter_speed": 60,
+	"run_exit_speed": 45,
+	"stride_pixels": 50.0,
+	"texture": "res://assets/party-pixel/deer-trot-v1.png"
+}

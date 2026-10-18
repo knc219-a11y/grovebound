@@ -41,6 +41,8 @@ jobs:
           set -euo pipefail
           timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_pixel_actor.gd 2>&1 | tee pixel-test.log
           grep -q 'PIXEL ACTOR PASS:' pixel-test.log
+          timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_action_events.gd 2>&1 | tee action-test.log
+          grep -q 'ACTION EVENTS PASS:' action-test.log
           timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_save_repair.gd 2>&1 | tee save-test.log
           grep -q 'SAVE REPAIR PASS:' save-test.log
       - name: 3D boar study kinematics and exported sheet

@@ -15,11 +15,17 @@ func bake():
 	var source=Source.new()
 	source.position=ground
 	viewport.add_child(source)
-	for kind in ["wolf","fox"]:
+	var species=OS.get_cmdline_user_args()
+	if species.is_empty(): species=["wolf","fox","marten","deer","turtle"]
+	for kind in species:
+		cell=Vector2i(96,88) if kind=="deer" else Vector2i(96,72)
+		ground=Vector2i(48,78) if kind=="deer" else Vector2i(48,62)
+		viewport.size=cell
+		source.position=ground
 		for fast in [false,true]:
 			source.configure(kind,fast)
 			var count=12
-			var sheet=Image.create(384,216,false,Image.FORMAT_RGBA8)
+			var sheet=Image.create(cell.x*4,cell.y*3,false,Image.FORMAT_RGBA8)
 			for frame in count:
 				source.pose(float(frame)/count)
 				await process_frame
@@ -36,8 +42,10 @@ func bake():
 			if sheet.save_png(path)!=OK:
 				quit(1)
 				return
-			var metadata={"texture":path,"idle":"res://assets/party-pixel/"+kind+".png","cell":[96,72],"ground":[48,62],"columns":4,"count":count,"native_height":source.config.size.y,"stride_pixels":source.stride(),"minimum_cycle_seconds":0.18 if fast else 0.4,"run_enter_speed":60,"run_exit_speed":45}
+			var metadata={"texture":path,"idle":"res://assets/party-pixel/"+kind+".png","cell":[cell.x,cell.y],"ground":[ground.x,ground.y],"columns":4,"count":count,"native_height":source.config.size.y,"stride_pixels":source.stride(),"minimum_cycle_seconds":0.18 if fast else 0.4,"run_enter_speed":60,"run_exit_speed":45}
 			var out=FileAccess.open("res://animation/"+kind+"_"+action+"_frames.json",FileAccess.WRITE)
 			out.store_string(JSON.stringify(metadata,"\t")+"\n")
+			out.flush()
+			out.close()
 			print("QUADRUPED BAKE PASS: ",kind," ",action," 12 frames; stride ",source.stride())
 	quit()

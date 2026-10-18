@@ -70,7 +70,7 @@ func _initialize():
 	var last=source.foot_offset(0.3).x+runner.run_stride*0.3
 	if absf(first-last)>0.01: failures.append("support foot travel matches run stride")
 	source.free()
-	for kind in ["wolf","fox"]:
+	for kind in ["wolf","fox","marten","deer","turtle"]:
 		var quad=Player.new("res://animation/"+kind+"_walk_frames.json","res://animation/"+kind+"_trot_frames.json")
 		var qa={"pos":Vector2.ZERO,"hp":100,"walk":true}
 		var qb={"pos":Vector2.ZERO,"hp":100,"walk":false}
@@ -110,13 +110,13 @@ func _initialize():
 				if bounds.position.x<=0 or bounds.position.y<=0 or bounds.end.x>=cell.x or bounds.end.y>=cell.y:
 					failures.append(kind+" clipped frame")
 				hashes[frame.get_data().hex_encode().sha256_text()]=true
-			if hashes.size()!=12: failures.append(kind+" distinct gait frames")
+			if hashes.size()<(6 if kind=="turtle" else 12): failures.append(kind+" distinct gait frames")
 			var skin=load("res://animation/quadruped_source.gd").new()
 			skin.configure(kind,gait)
 			var support_a=skin.foot_offset(0.05,0).x+skin.stride()*0.05
 			var support_b=skin.foot_offset(0.3,0).x+skin.stride()*0.3
 			if absf(support_a-support_b)>0.01: failures.append(kind+" support contact")
-			if gait and skin.beats()[0]!=skin.beats()[3]: failures.append(kind+" diagonal trot")
+			if gait and not skin.config.get("no_trot",false) and skin.beats()[0]!=skin.beats()[3]: failures.append(kind+" diagonal trot")
 			skin.free()
 	if failures.is_empty():
 		print("PIXEL ACTOR PASS: distinct frames, bounds, wrap, distance cadence, teleport, stop, down/revive, run cadence, gait hysteresis, support contact")
