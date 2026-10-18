@@ -72,6 +72,12 @@ var stage_time = 0.0
 var revive_touch_id = -1
 var boss_label: Label
 var boss_panel: Panel
+const GroveUI=preload("res://ui/grove_ui.gd")
+const CompanionCard=preload("res://ui/companion_card.gd")
+const SupportButton=preload("res://ui/support_button.gd")
+var player_hp_bar: ProgressBar
+var boss_hp_bar: ProgressBar
+var interact_progress: ProgressBar
 
 func _ready():
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -118,49 +124,55 @@ func build_ui():
 	add_child(ui)
 	hud = Control.new()
 	hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hud.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
 	ui.add_child(hud)
-	var theme = Theme.new()
-	theme.default_font = font
-	theme.default_font_size = 17
-	theme.set_color("font_color","Button",Color("f2f2db"))
-	theme.set_color("font_hover_color","Button",Color.WHITE)
-	for state in ["normal","hover","pressed","disabled"]:
-		var s = StyleBoxFlat.new()
-		s.bg_color = Color("292d2e") if state == "normal" else Color("454a48")
-		if state == "disabled": s.bg_color = Color("29322d")
-		s.border_color = Color("817661")
-		s.set_border_width_all(2)
-		s.set_corner_radius_all(12)
-		s.content_margin_left = 12
-		s.content_margin_right = 12
-		theme.set_stylebox(state,"Button",s)
+	var theme=GroveUI.theme(font)
 	hud.theme = theme
-	panel(hud,Rect2(22,18,350,80),Color("232628e8"))
-	status_label = label(hud,"",Vector2(40,28),21)
-	panel(hud,Rect2(430,15,610,80),Color("232628e8"))
-	quest_label = label(hud,"",Vector2(450,26),19)
-	toast_label = label(hud,"",Vector2(380,112),20)
-	team_button = button(hud,"편성 [Tab]",Rect2(1190,20,130,45),open_roster)
-	button(hud,"귀환",Rect2(1330,20,90,45),func(): confirm_return())
+	panel(hud,Rect2(22,18,320,86),Color("202823f2"))
+	status_label=label(hud,"",Vector2(40,29),19)
+	player_hp_bar=health_bar(hud,Rect2(40,72,284,10))
+	panel(hud,Rect2(365,18,620,86),Color("202823f2"))
+	quest_label=label(hud,"",Vector2(385,28),18)
+	toast_label=label(hud,"",Vector2(385,210),17)
+	toast_label.size=Vector2(650,54)
+	toast_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	team_button=button(hud,"편성 [Tab]",Rect2(1142,18,132,62),open_roster)
+	button(hud,"귀환",Rect2(1288,18,132,62),func(): confirm_return())
+	label(hud,"동료 스킬",Vector2(365,650),14)
 	for i in range(4):
-		var b = button(hud,"",Rect2(385+i*137,687,127,100),func(): use_companion_skill(i))
-		b.icon = textures["boar"]
-		b.expand_icon = true
-		b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		b.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
-		b.add_theme_constant_override("icon_max_width",30)
-		b.add_theme_font_size_override("font_size",15)
+		var b=CompanionCard.new()
+		b.position=Vector2(363+i*158,676)
+		b.size=Vector2(148,112)
+		b.slot=i+1
+		b.focus_mode=Control.FOCUS_NONE
+		b.pressed.connect(func(): use_companion_skill(i))
+		hud.add_child(b)
 		party_buttons.append(b)
-	heal_button = button(hud,"회복 [Q]",Rect2(1060,690,150,94),cast_heal)
-	buff_button = button(hud,"야성 [E]",Rect2(1230,690,150,94),cast_buff)
-	interact_button = button(hud,"",Rect2(1100,590,280,70),interact)
-	interact_button.button_down.connect(func(): holding_revive = true)
-	interact_button.button_up.connect(func(): holding_revive = false)
-	boss_panel = panel(hud,Rect2(22,110,350,80),Color("232628e8"))
-	boss_label = label(hud,"",Vector2(40,123),16)
-	label(hud,"WASD / 방향키 이동",Vector2(30,774),14)
+	heal_button=SupportButton.new()
+	heal_button.position=Vector2(1050,676)
+	heal_button.size=Vector2(160,112)
+	heal_button.focus_mode=Control.FOCUS_NONE
+	heal_button.pressed.connect(cast_heal)
+	hud.add_child(heal_button)
+	buff_button=SupportButton.new()
+	buff_button.healing=false
+	buff_button.position=Vector2(1220,676)
+	buff_button.size=Vector2(160,112)
+	buff_button.focus_mode=Control.FOCUS_NONE
+	buff_button.pressed.connect(cast_buff)
+	hud.add_child(buff_button)
+	interact_button=button(hud,"",Rect2(1080,574,300,80),interact)
+	interact_button.button_down.connect(func(): holding_revive=true)
+	interact_button.button_up.connect(func(): holding_revive=false)
+	interact_progress=health_bar(interact_button,Rect2(14,66,272,5))
+	interact_progress.max_value=3
+	boss_panel=panel(hud,Rect2(425,116,510,82),Color("202823f2"))
+	boss_label=label(hud,"",Vector2(442,124),17)
+	boss_hp_bar=health_bar(hud,Rect2(442,178,476,6),Color("bd8067"))
+	label(hud,"WASD / 방향키 이동",Vector2(30,779),13)
 	overlay = Control.new()
 	overlay.theme = theme
+	overlay.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
 	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	ui.add_child(overlay)
 
@@ -169,20 +181,32 @@ func panel(parent, rect, color):
 	p.position = rect.position
 	p.size = rect.size
 	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var s = StyleBoxFlat.new()
-	s.bg_color = color
-	s.set_corner_radius_all(16)
+	var s=GroveUI.frame(color)
+	if rect.size==Vector2(1440,810): s.set_border_width_all(0)
 	p.add_theme_stylebox_override("panel",s)
 	parent.add_child(p)
 	return p
+
+func health_bar(parent,rect,fill=GroveUI.GREEN):
+	var bar=ProgressBar.new()
+	bar.position=rect.position
+	bar.size=rect.size
+	bar.show_percentage=false
+	bar.add_theme_font_size_override("font_size",1)
+	bar.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	bar.add_theme_stylebox_override("background",GroveUI.bar(GroveUI.INK,Color("4e5647"),1))
+	bar.add_theme_stylebox_override("fill",GroveUI.bar(fill,fill,0))
+	parent.add_child(bar)
+	bar.size=rect.size
+	return bar
 
 func label(parent, txt, pos, size=18):
 	var l = Label.new()
 	l.text = txt
 	l.position = pos
 	l.add_theme_font_size_override("font_size",size)
-	l.add_theme_color_override("font_color",Color("f0f1d9"))
-	l.add_theme_color_override("font_shadow_color",Color("192b22"))
+	l.add_theme_color_override("font_color",GroveUI.PAPER)
+	l.add_theme_color_override("font_shadow_color",GroveUI.INK)
 	l.add_theme_constant_override("shadow_offset_x",1)
 	l.add_theme_constant_override("shadow_offset_y",1)
 	parent.add_child(l)
@@ -220,25 +244,34 @@ func modal(title, subtitle):
 	holding_revive = false
 
 func show_camp():
-	mode = "camp"
+	mode="camp"
 	save_game()
-	modal("GROVEBOUND  ·  야수의 계곡", "드루이드 프로토타입 v0.2  /  동행 6 · 출전 4 · 특성 고정 · 진화 없음")
-	label(overlay,"작은 동료와 시작하는 모험",Vector2(230,235),26)
-	label(overlay,"회복과 야성으로 동료를 돕고, 쓰러진 동료를 직접 소생시키세요.\n포획한 야수는 실패해도 사라지지 않습니다.\n\nWASD 이동  ·  Q 회복  ·  E 강화  ·  1~4 동료 스킬\nF 포획 / 길게 소생  ·  Tab 편성  ·  Esc 일시정지\n터치: 왼쪽 스틱 + 화면 버튼",Vector2(230,285),20)
-	label(overlay,"보유 %d마리    성장 재료 %d    %s" % [owned.size(),materials,"계곡 클리어 완료" if unlocked else "계곡 탐험 대기"],Vector2(230,495),20)
-	if not save_notice.is_empty(): label(overlay,save_notice,Vector2(230,540),16)
-	if not tutorial_done:
-		button(overlay,"첫 동료 만나기",Rect2(230,590,290,65),show_starters)
-	else:
-		button(overlay,"계곡으로 출발",Rect2(230,590,290,65),func(): start_stage(false))
-	button(overlay,"동료 · 편성 · 성장",Rect2(550,590,290,65),open_roster)
-	button(overlay,"새 여정",Rect2(870,590,180,65),confirm_reset)
-	var preview = TextureRect.new()
-	preview.texture = textures["druid"]
-	preview.position = Vector2(960,260)
-	preview.size = Vector2(180,230)
-	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	modal("GROVEBOUND  ·  야수의 계곡","야영지  /  동료와 함께 다음 탐험을 준비하세요")
+	panel(overlay,Rect2(215,215,610,330),Color("202823"))
+	panel(overlay,Rect2(865,215,360,330),Color("202823"))
+	label(overlay,"함께할 동료",Vector2(240,240),16)
+	label(overlay,"성장 재료",Vector2(435,240),16)
+	label(overlay,"탐험 기록",Vector2(630,240),16)
+	label(overlay,str(owned.size())+"마리",Vector2(240,275),30)
+	label(overlay,str(materials),Vector2(435,275),30)
+	label(overlay,"계곡 정복" if unlocked else "첫 탐험" if not tutorial_done else "탐험 중",Vector2(630,281),23)
+	label(overlay,"포획한 야수와 네 마리의 편성을 꾸리세요.\n회복·강화·소생으로 동료를 지켜주세요.",Vector2(240,345),20)
+	label(overlay,"WASD 이동   ·   Q 회복   ·   E 야성   ·   1~4 동료 스킬\nF 포획 / 길게 소생   ·   Tab 편성   ·   Esc 일시정지\n터치: 왼쪽 이동 스틱과 화면 버튼",Vector2(240,435),16)
+	label(overlay,"계곡의 길잡이",Vector2(975,239),20)
+	label(overlay,"DRUID",Vector2(1010,511),16)
+	if not save_notice.is_empty(): label(overlay,save_notice,Vector2(230,552),15)
+	var depart=button(overlay,"첫 동료 만나기" if not tutorial_done else "계곡으로 출발",Rect2(215,590,340,72),show_starters if not tutorial_done else func(): start_stage(false))
+	GroveUI.emphasize(depart)
+	button(overlay,"동료 · 편성 · 성장",Rect2(575,590,340,72),open_roster)
+	var reset=button(overlay,"새 여정",Rect2(1095,590,130,72),confirm_reset)
+	GroveUI.emphasize(reset,"danger")
+	var preview=TextureRect.new()
+	preview.texture=textures["druid"]
+	preview.position=Vector2(973,282)
+	preview.size=Vector2(144,216)
+	preview.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+	preview.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	preview.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	overlay.add_child(preview)
 
 func show_starters():
@@ -739,6 +772,7 @@ func open_roster():
 	var roster=owned if camp else []
 	if not camp:
 		for id in squad: roster.append(find_owned(id))
+	if roster.is_empty(): label(overlay,"아직 동료가 없습니다. 첫 인연을 만나보세요.",Vector2(250,310),23)
 	var scroll=ScrollContainer.new()
 	scroll.position=Vector2(215,215)
 	scroll.size=Vector2(1010,365)
@@ -748,29 +782,41 @@ func open_roster():
 	scroll.add_child(rows)
 	for d in roster:
 		var row=HBoxContainer.new()
-		row.custom_minimum_size=Vector2(970,57)
+		row.custom_minimum_size=Vector2(970,72)
 		rows.add_child(row)
 		var idx=squad.find(d.id)
-		var desc="%s  Lv.%d  %s · %s" % [NAMES[d.kind],d.level,ROLES[d.kind],d.trait]
+		var desc="%s  Lv.%d\n%s · %s" % [NAMES[d.kind],d.level,ROLES[d.kind],d.trait]
 		if idx>=0: desc=("[출전 %d] " % (idx+1) if idx<4 else "[대기 %d] " % (idx-3))+desc
 		else: desc="[보관] "+desc
 		var b=Button.new()
 		b.text=desc
-		b.custom_minimum_size=Vector2(550,52)
+		b.custom_minimum_size=Vector2(440,64)
+		b.clip_text=true
+		b.alignment=HORIZONTAL_ALIGNMENT_LEFT
+		var portrait=TextureRect.new()
+		portrait.texture=textures[d.kind]
+		portrait.custom_minimum_size=Vector2(56,64)
+		portrait.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+		portrait.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		portrait.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		row.add_child(portrait)
 		b.pressed.connect(func(): select_swap(d.id))
 		row.add_child(b)
 		if camp:
 			var equip=Button.new()
 			equip.text="동행 해제" if idx>=0 else "동행 추가"
+			equip.custom_minimum_size=Vector2(116,64)
 			equip.pressed.connect(func(): toggle_squad(d.id); open_roster())
 			row.add_child(equip)
 			var grow=Button.new()
 			grow.text="육성 (재료 3)"
+			grow.custom_minimum_size=Vector2(142,64)
 			grow.disabled=materials<3
 			grow.pressed.connect(func(): materials-=3; gain_xp(d,40); save_game(); open_roster())
 			row.add_child(grow)
 			var release=Button.new()
 			release.text="방생"
+			release.custom_minimum_size=Vector2(76,64)
 			release.disabled=idx>=0
 			release.pressed.connect(func(): confirm_release(d.id))
 			row.add_child(release)
@@ -823,39 +869,45 @@ func confirm_reset():
 func update_hud():
 	hud.visible=mode!="camp" and mode!="result" and mode!="tutorial_practice"
 	if not hud.visible: return
-	status_label.text="DRUID  ·  Lv.1\n체력 %d / %d" % [player.hp,player.maxhp]
+	status_label.text="드루이드  ·  %d / %d" % [player.hp,player.maxhp]
+	player_hp_bar.max_value=player.maxhp
+	player_hp_bar.value=player.hp
 	quest_label.text="첫 인연 · 가까이 가서 포획 [F]" if mode=="tutorial" else "01  초록물 계곡   →   동쪽 우두머리\n동행 %d/6 · 처치 %d · %02d:%02d · %s" % [squad.size(),kills,int(stage_time)/60,int(stage_time)%60,"전투 중" if in_combat else "탐험 중"]
 	toast_label.text=message if message_time>0 else ""
 	boss_label.text=""
 	for e in enemies:
 		if e.boss and e.hp>0 and e.active:
-			boss_label.text="계곡의 우두머리  ·  HP %d / %d" % [e.hp,e.maxhp]
+			boss_label.text="계곡의 우두머리  ·  %d / %d" % [e.hp,e.maxhp]
+			boss_hp_bar.max_value=e.maxhp
+			boss_hp_bar.value=e.hp
 			if e.wind>0: boss_label.text+="\n"+("발구르기! 원 밖으로 이동" if e.attack_kind=="stomp" else "돌진! 옆으로 피하세요")
 			elif e.get("dash",0.0)>0: boss_label.text+="\n돌진 중!"
 			else: boss_label.text+="\n공격 기회"
 			break
 	boss_panel.visible=not boss_label.text.is_empty()
+	boss_hp_bar.visible=boss_panel.visible
+	boss_label.visible=boss_panel.visible
 	team_button.disabled=in_combat or mode=="tutorial"
 	for i in range(4):
 		var b=party_buttons[i]
 		if i<units.size():
 			var u=units[i]
-			b.icon=textures[u.data.kind]
-			b.text="%s [%d]\nHP %d%% · %s" % [NAMES[u.data.kind],i+1,int(u.hp/u.maxhp*100),"쓰러짐" if u.hp<=0 else ("%d초" % ceil(u.skill) if u.skill>0 else "준비")]
+			b.configure(textures[u.data.kind],NAMES[u.data.kind],ROLES[u.data.kind],u.hp,u.maxhp,u.skill)
 			b.disabled=u.hp<=0 or u.skill>0 or revive_target>=0
 		else:
-			b.icon=null
-			b.text="빈자리\n포획으로 합류"
+			b.configure(null,"빈자리","포획으로 합류",0,1,0)
 			b.disabled=true
-	heal_button.text="회복 [Q]\n"+("%d초" % ceil(heal_cd) if heal_cd>0 else "체력 낮은 아군")
-	buff_button.text="야성 [E]\n"+("%d초" % ceil(buff_cd) if buff_cd>0 else "공격력 +60%")
+	heal_button.refresh(heal_cd)
+	buff_button.refresh(buff_cd)
 	heal_button.disabled=heal_cd>0 or revive_target>=0
 	buff_button.disabled=buff_cd>0 or revive_target>=0
 	var down=closest_down()
 	var cap=closest_capture()
 	interact_button.visible=down>=0 or cap>=0
+	interact_progress.visible=down>=0
+	interact_progress.value=revive_progress
 	if down>=0:
-		interact_button.text="길게 눌러 소생 [F]  %.1f / 3초" % revive_progress
+		interact_button.text="길게 눌러 소생 [F]\n%.1f / 3초" % revive_progress
 	elif cap>=0: interact_button.text=NAMES[captures[cap].kind]+" 포획 [F]"
 	if mode=="tutorial" and tutorial_species=="practice" and not overlay.visible:
 		var alive=false
@@ -1052,16 +1104,14 @@ func _draw():
 			combat_feedback.draw_channel(self,player.pos,units[revive_target].pos,revive_progress,cam)
 	if hud.visible:
 		draw_minimap()
-		draw_circle(Vector2(140,680),83,Color(0.08,0.18,0.15,0.3))
-		draw_arc(Vector2(140,680),83,0,TAU,48,Color(0.88,0.91,0.76,0.4),3,true)
-		draw_circle(Vector2(140,680)+stick.limit_length()*55,33,Color(0.85,0.89,0.75,0.65))
+		GroveUI.draw_stick(self,stick)
 	if revive_target>=0:
 		var p=player.pos-cam+Vector2(-42,20)
 		draw_rect(Rect2(p,Vector2(84,9)),Color("213f32"))
 		draw_rect(Rect2(p,Vector2(84*revive_progress/3.0,9)),Color("bcf3b1"))
 
 func draw_minimap():
-	var box=Rect2(1190,90,225,135)
+	var box=Rect2(1190,104,225,135)
 	draw_style_box(map_style(),box)
 	text_at("계곡 지도",box.position+Vector2(12,22),15,Color("edf0d4"))
 	var origin=box.position+Vector2(12,35)
@@ -1078,10 +1128,7 @@ func draw_minimap():
 	draw_rect(Rect2(origin+visible_rect.position,visible_rect.size),Color(0.8,0.9,0.8,0.35),false,1)
 
 func map_style():
-	var style=StyleBoxFlat.new()
-	style.bg_color=Color(0.08,0.17,0.13,0.9)
-	style.set_corner_radius_all(12)
-	return style
+	return GroveUI.frame(Color("202823ef"))
 
 func sprite_height(kind,boss=false):
 	var h=48 if kind=="boar" else textures[kind].get_height()
