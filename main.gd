@@ -12,6 +12,7 @@ const STATS = {"boar":[130,14,60,110],"marten":[85,21,62,150],"fox":[80,14,235,1
 const TRAITS = ["강인함", "용맹함", "단단함", "민첩함"]
 const BoarRig = preload("res://animation/boar_pixel.gd")
 var boar_rig
+const PIXEL_KINDS = ["druid","marten","fox","turtle","deer","wolf"]
 var textures = {}
 var font: Font
 var rng = RandomNumberGenerator.new()
@@ -75,7 +76,7 @@ func _ready():
 	font=readable_font
 	textures["valley"]=load("res://assets/pixel-ruins-background-v1.png")
 	for key in ["druid","boar","marten","fox","turtle","deer","wolf","tree"]:
-		textures[key] = load("res://assets/"+key+".png")
+		textures[key] = load("res://assets/party-pixel/"+key+".png" if key in PIXEL_KINDS else "res://assets/"+key+".png")
 	boar_rig=BoarRig.new()
 	textures["boar"]=boar_rig.portrait()
 	build_terrain()
@@ -952,11 +953,11 @@ func _draw():
 		draw_sprite(c.kind,p,59,1,Color(1,1,1,0.8))
 		text_at("포획 가능",p+Vector2(-30,-57),15,Color("fff1ab"))
 	var actors=[]
-	actors.append({"kind":"druid","pos":player.pos,"hp":player.hp,"maxhp":player.maxhp,"face":player.face,"size":66,"ally":true,"state":player})
+	actors.append({"kind":"druid","pos":player.pos,"hp":player.hp,"maxhp":player.maxhp,"face":player.face,"size":sprite_height("druid"),"ally":true,"state":player})
 	for u in active_units():
-		actors.append({"kind":u.data.kind,"pos":u.pos,"hp":u.hp,"maxhp":u.maxhp,"face":u.face,"size":48 if u.data.kind=="boar" else 64,"ally":true,"unit":u,"state":u})
+		actors.append({"kind":u.data.kind,"pos":u.pos,"hp":u.hp,"maxhp":u.maxhp,"face":u.face,"size":sprite_height(u.data.kind),"ally":true,"unit":u,"state":u})
 	for e in enemies:
-		if e.hp>0 or e.get("death",0.0)>0: actors.append({"kind":e.kind,"pos":e.pos,"hp":e.hp,"maxhp":e.maxhp,"face":e.face,"size":(96 if e.boss else 48) if e.kind=="boar" else (112 if e.boss else 63),"ally":false,"state":e})
+		if e.hp>0 or e.get("death",0.0)>0: actors.append({"kind":e.kind,"pos":e.pos,"hp":e.hp,"maxhp":e.maxhp,"face":e.face,"size":sprite_height(e.kind,e.boss),"ally":false,"state":e})
 	actors.sort_custom(func(a,b): return a.pos.y<b.pos.y)
 	for a in actors:
 		var p=a.pos-cam
@@ -975,6 +976,10 @@ func _draw():
 		if swing>0:
 			deformation=Vector2(1.0+sin(swing/0.22*PI)*0.14,1.0-sin(swing/0.22*PI)*0.09)
 			tilt+=a.face*sin(swing/0.22*PI)*0.08
+		if a.kind in PIXEL_KINDS:
+			bob=0.0
+			tilt=0.0
+			deformation=Vector2.ONE
 		var offset=state.get("recoil",Vector2.ZERO)*(hit/0.18)
 		if a.hp<=0:
 			tilt=-0.75*a.face
@@ -1038,11 +1043,18 @@ func map_style():
 	style.set_corner_radius_all(12)
 	return style
 
+func sprite_height(kind,boss=false):
+	var h=48 if kind=="boar" else textures[kind].get_height()
+	return h*(2 if boss else 1)
+
 func draw_sprite(kind,p,height,face,col,tilt=0.0,deformation=Vector2.ONE):
 	if kind=="boar":
 		boar_rig.draw(self,p,height,face,col,{})
 		return
 	var tex=textures[kind]
+	if kind in PIXEL_KINDS:
+		height=tex.get_height()*maxi(1,roundi(float(height)/tex.get_height()))
+		p=p.round()
 	var ratio=float(tex.get_width())/tex.get_height()
 	var w=height*ratio
 	draw_set_transform(p,tilt,Vector2(face,1)*deformation)

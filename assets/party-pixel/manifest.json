@@ -1,0 +1,74 @@
+{
+	"palette": [
+		"181619",
+		"272023",
+		"362b2b",
+		"443532",
+		"51413b",
+		"625149",
+		"746157",
+		"897569",
+		"9e8978",
+		"b29e88",
+		"c9b69b",
+		"e0d2b2",
+		"363b40",
+		"51575b",
+		"6e7779",
+		"e4e3d4",
+		"252e25",
+		"354333",
+		"4c5c43",
+		"718063",
+		"98a18a",
+		"55352d",
+		"754635",
+		"985d3f",
+		"ba8254",
+		"34423c",
+		"4a5b4e",
+		"6a7863",
+		"8f8067",
+		"ad9a75",
+		"b29a82",
+		"d3b79a"
+	],
+	"sprites": [
+		{
+			"height": 72,
+			"kind": "druid",
+			"texture": "res://assets/party-pixel/druid.png",
+			"width": 48
+		},
+		{
+			"height": 32,
+			"kind": "marten",
+			"texture": "res://assets/party-pixel/marten.png",
+			"width": 74
+		},
+		{
+			"height": 40,
+			"kind": "fox",
+			"texture": "res://assets/party-pixel/fox.png",
+			"width": 57
+		},
+		{
+			"height": 32,
+			"kind": "turtle",
+			"texture": "res://assets/party-pixel/turtle.png",
+			"width": 56
+		},
+		{
+			"height": 64,
+			"kind": "deer",
+			"texture": "res://assets/party-pixel/deer.png",
+			"width": 51
+		},
+		{
+			"height": 48,
+			"kind": "wolf",
+			"texture": "res://assets/party-pixel/wolf.png",
+			"width": 67
+		}
+	]
+}
