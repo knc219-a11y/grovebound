@@ -1,0 +1,39 @@
+# 다음 대화에서 이어갈 작업
+기록: 2026-10-19 Asia/Seoul
+
+## 시작점
+- 먼저 루트 AGENTS.md와 STATUS.md를 읽고 최신 main을 확인한다.
+- 이 메모 작성 전 기준 커밋: c1880241af293d7847feed6f1fa0e74f35b6d88b.
+- 현재 초급 맵: assets/maps/greenwater-beginner-v3.webp. 작은 캐릭터·기존 넓은 시야 유지. 배경 소품을 줄였으며 캐릭터2배 확대는 되돌렸다.
+- 사용자는 배경의 선명한 도트풍을 좋아한다. 최신 v3 소품 비율에 대한 최종 사용자 평가는 아직 받지 않았다. 이미 승인됐다고 가정하지 않는다.
+
+## 다음 작업: 전체 모션 개선
+이 요청은 취소되지 않았다. 비율 수정 때문에 중단했으며, 다음 대화에서 재개한다.
+1. 기존 크기와 카메라를 유지한 실제 전투 영상을 먼저 확인해 기준을 잡는다. 배경이나 그림체를 다시 바꾸지 않는다.
+2. docs/wip/motion-upgrade.patch를 읽는다. 2배 크기였던 840a16b 기반의 미적용 패치이므로 그대로 적용하지 말고 필요한 변경만 현행에 옮긴다.
+3. 우선순위:
+   - 이동 중 정지형 공격 포즈가 걷기를 덮어 발이 미끄러지는 문제.
+   - 동료 출발·도착의 급격한 속도 변화와 작은 좌우 이동 때 방향 뒤집힘.
+   - 공격 방향 유지, 이동/공격/대기 연결.
+   - 피격 시 위치 반응과 쓰러짐이 갑자기 바뀌는 문제.
+   - 이후 종별 보폭·속도·발 접지를 검토. 특히 멧돼지의 살금살금 걷는 느낌과 추격 시 미끄러짐.
+4. 이동 중 다리를 유지하는 개선은 완성된 이동 공격 애니메이션이 아니다. 정지 포즈를 감추는 절충과 새 프레임 제작을 구분한다. 원화 변형만으로 해결되지 않으면 이음새를 확인하며 종별 프레임을 개선한다.
+5. 사용자 조작감과 피해/회복 타이밍을 불필요하게 바꾸지 않는다. 모션 수정이 전투 속도·거리·판정까지 바꾸면 영향도 함께 검증한다.
+
+## 관련 구현
+- main.gd: move_entity, update_game, _process, _draw, sprite_height.
+- animation/pixel_actor.gd: 드루이드 및 동물 보행/빠른 걸음, 거리 기반 위상.
+- animation/boar_pixel.gd: 멧돼지 보행/정지/쓰러짐.
+- animation/action_player.gd 및 actions-v1.json: 공격/회복/방어/소생 포즈.
+- animation/combat_feedback.gd: 전투 이펙트와 숫자.
+- tools/preview.py, animation/full_gameplay_preview.tscn: 사용자 세이브와 격리한 실제 Godot 전투 녹화.
+
+## 완료 기준
+- 보폭과 실제 이동, 방향 전환, 정지/공격 연결을 실제 속도로 검토한다.
+- Godot 임포트와 self-test, 변경에 맞게 test_pixel_actor.gd / test_action_events.gd / test_combat_feedback.gd 등을 실행하고 로그의 SCRIPT ERROR도 확인한다.
+- 실제 Godot GIF와 MP4를 모두 제공한다. 모션은 정지 사진만으로 검증했다고 하지 않는다.
+- 관련 파일만 GitHub에 반영하고 STATUS.md의 다음 작업을 갱신한다.
+- 로컬 도구·캡처가 정리되어 없어졌으면 저장소에서 소스를 복원하고 재캡처한다. 저장소에 없는 과거 scratch 경로가 항상 존재한다고 가정하지 않는다.
+
+## 새 대화 시작 문구
+https://github.com/knc219-a11y/grovebound 의 AGENTS.md, STATUS.md, docs/NEXT_SESSION.md를 읽고 이어서 진행해줘. 작은 캐릭터와 넓은 시야를 유지하면서 보류한 전체 모션 개선을 재개해줘.
