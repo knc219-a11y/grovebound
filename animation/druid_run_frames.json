@@ -1,0 +1,17 @@
+{
+	"cell": [
+		80,
+		96
+	],
+	"columns": 4,
+	"count": 12,
+	"ground": [
+		36,
+		88
+	],
+	"idle": "res://assets/party-pixel/druid.png",
+	"minimum_cycle_seconds": 0.18,
+	"native_height": 72,
+	"stride_pixels": 50.0,
+	"texture": "res://assets/party-pixel/druid-run-v1.png"
+}

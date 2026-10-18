@@ -80,7 +80,7 @@ func _ready():
 	for key in ["druid","boar","marten","fox","turtle","deer","wolf","tree"]:
 		textures[key] = load("res://assets/party-pixel/"+key+".png" if key in PIXEL_KINDS else "res://assets/"+key+".png")
 	boar_rig=BoarRig.new()
-	druid_rig=PixelActor.new("res://animation/druid_walk_frames.json")
+	druid_rig=PixelActor.new("res://animation/druid_walk_frames.json","res://animation/druid_run_frames.json")
 	textures["boar"]=boar_rig.portrait()
 	build_terrain()
 	build_ui()

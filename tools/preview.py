@@ -12,7 +12,7 @@ ERROR_MARKERS = ("SCRIPT ERROR:", "Parse Error:", "ERROR:")
 
 
 def run(command, *, cwd, check_godot=False, timeout=180):
-    result = subprocess.run(command, cwd=cwd, capture_output=True, text=True,
+    result = subprocess.run(command, cwd=cwd, capture_output=True, stdin=subprocess.DEVNULL, text=True,
                             encoding="utf-8", errors="replace", timeout=timeout)
     log = result.stdout + result.stderr
     if result.returncode or (check_godot and any(s in log for s in ERROR_MARKERS)):
@@ -68,7 +68,7 @@ def main():
         run(command, cwd=project, check_godot=True)
         if not movie.is_file() or movie.stat().st_size == 0:
             raise RuntimeError("Godot produced no movie")
-        base = [ffmpeg, "-y", "-loglevel", "error", "-i", str(movie)]
+        base = [ffmpeg, "-nostdin", "-y", "-loglevel", "error", "-i", str(movie)]
         outputs = []
         if args.mode == "still":
             image = output.with_suffix(".png")
@@ -76,8 +76,11 @@ def main():
             outputs.append(image)
         else:
             video = output.with_suffix(".mp4")
+            encoded = Path(temp) / "verified.mp4"
             run(base + ["-an", "-vf", f"scale={args.width}:-2", "-c:v", "libx264", "-crf", "23",
-                        "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(video)], cwd=project)
+                        "-pix_fmt", "yuv420p", "-threads", "2", "-movflags", "+faststart", str(encoded)], cwd=project)
+            run([ffmpeg, "-nostdin", "-v", "error", "-i", str(encoded), "-f", "null", "-"], cwd=project)
+            shutil.copyfile(encoded, video)
             gif = output.with_suffix(".gif")
             filters = (f"[0:v]fps={args.gif_fps},scale={args.gif_width}:-2:flags=lanczos,split[a][b];"
                        "[a]palettegen=max_colors=80:stats_mode=diff[p];"
