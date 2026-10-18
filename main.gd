@@ -2,6 +2,7 @@ extends Node2D
 # A self-contained, data-driven playable slice. All gameplay positions are world coordinates.
 const WORLD_SIZE=Vector2(2900,1650)
 const VIEW_SIZE=Vector2(1440,810)
+const ACTOR_SCALE=2.0
 const SAVE_PATH = "user://grovebound_v1.json"
 const SaveData = preload("res://save_data.gd")
 var save_path = SAVE_PATH
@@ -393,9 +394,11 @@ func _process(dt):
 	if (mode=="stage" or mode=="tutorial") and not overlay.visible:
 		if not screenshot_mode:
 			update_game(minf(dt,0.05))
+			player.visual_scale=ACTOR_SCALE
 			druid_rig.advance(player,minf(dt,0.05))
 			for actor in units+enemies:
 				var species=actor.get("kind",actor.get("data",{}).get("kind",""))
+				actor.visual_scale=ACTOR_SCALE
 				if species=="boar": boar_rig.advance(actor,minf(dt,0.05))
 				elif animal_rigs.has(species): animal_rigs[species].advance(actor,minf(dt,0.05))
 	cam = (player.pos-Vector2(720,400)).clamp(Vector2.ZERO,WORLD_SIZE-VIEW_SIZE)
@@ -462,7 +465,7 @@ func update_game(dt):
 			move_entity(u,player.pos,speed*1.7,dt,75)
 			continue
 		if target.is_empty():
-			var offset=Vector2(-75+(i%2)*110,55+(i/2)*60)
+			var offset=Vector2(-75+(i%2)*110,55+(i/2)*60)*ACTOR_SCALE
 			move_entity(u,player.pos+offset,speed*1.3,dt,15)
 		elif kind=="deer":
 			if u.pos.distance_to(target.pos)<155: move_entity(u,u.pos+(u.pos-target.pos).normalized()*70,speed,dt)
@@ -1088,12 +1091,12 @@ func _draw():
 		draw_rect(bar,Color("b5e280") if a.ally else Color("eb8469"))
 		if a.hp<=0 and a.ally: text_at("소생 필요",p+Vector2(-33,20),14,Color("f4d89b"))
 		if a.has("unit"):
-			if a.unit.buff>0: draw_arc(p,33,0,TAU,24,Color("ffd478"),2,true)
-			if a.unit.shield>0: draw_arc(p-Vector2(0,25),40,0,TAU,24,Color("a9e5e5"),3,true)
+			if a.unit.buff>0: draw_arc(p,33*ACTOR_SCALE,0,TAU,24,Color("ffd478"),2,true)
+			if a.unit.shield>0: draw_arc(p-Vector2(0,25)*ACTOR_SCALE,40*ACTOR_SCALE,0,TAU,24,Color("a9e5e5"),3,true)
 	if not overlay.visible and (mode=="stage" or mode=="tutorial"):
 		var heal_target=lowest_ally(player.pos,430)
 		if not heal_target.is_empty() and heal_target.hp<heal_target.maxhp:
-			draw_arc(heal_target.pos-cam,29,0,TAU,28,Color("d7f3ad"),2,true)
+			draw_arc(heal_target.pos-cam,29*ACTOR_SCALE,0,TAU,28,Color("d7f3ad"),2,true)
 	for f in effects:
 		var elapsed=f.duration-f.time
 		var col=f.color
@@ -1136,7 +1139,7 @@ func map_style():
 
 func sprite_height(kind,boss=false):
 	var h=48 if kind=="boar" else textures[kind].get_height()
-	return h*(2 if boss else 1)
+	return h*ACTOR_SCALE*(2 if boss else 1)
 
 func draw_sprite(kind,p,height,face,col,tilt=0.0,deformation=Vector2.ONE):
 	if kind=="boar":
