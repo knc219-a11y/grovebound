@@ -61,6 +61,16 @@
 - 실제 캡처: `docs/management-roster.png`, `docs/management-filtered.png`, `docs/management-growth-result.png`; `docs/management-growth-flow.gif`/`.mp4`, `docs/management-level-up.gif`/`.mp4`. 사용자 세이브와 격리한 리뷰 장면.
 - 주인공 성장/중복 동료 소비/승급/재추첨은 아직 설계하지 않았다. 장기 재료 수급과 모바일 터치 실기기 성능은 미검증. 작은 캐릭터·기존 카메라·배경은 유지했다.
 
+## UI 형태·계층 개선 (2026-10-19)
+- 사용자 요청: 전체 UI의 반복적인 네모 형태를 고도화. 기존 도트풍/석판·청동 팔레트/한국어 폰트 유지,이미지 생성 에셋 대신 Godot 네이티브 벡터/StyleBox를 사용했다.
+- `ui/carved_style.gd`: 잘린 모서리,얇은 밝은 면/하단 그림자/테두리의 공통 스타일. 드롭다운·팝업·일반 버튼·정보 패널에 적용. 체력/경험치 막대는 기존 얇은 직선 유지. 전체화면 딤은 무장식.
+- 모달은 잎 메달과 구분선,캠프는 사각 초상 패널 대신 원형 문양과 잎 장식. `ui/modal_ornament.gd`, `ui/camp_display.gd`. 캠프 하단 버튼은620px로 정리해 구분선 및 초상 하단 글자와 겹치지 않는다.
+- 보관함은 `ui/roster_row.gd`의 통합 행 카드/등급색 초상 메달. 이름·즐겨찾기·비교·편성·방생은 가벼운 텍스트/호버 처리,육성만 작은 강조 버튼으로 시각적 계층을 나눴다.
+- 전투 HUD 동료 카드/회복/야성 아이콘은 메달형으로 변경. 동료 스킬 대기는 초상 둘레 호선과 초 숫자로 표시한다. 호선 비율도 옵션의 대기시간 감소를 반영한다.
+- 실제 Godot `docs/refined-ui-camp.png`, `refined-ui-roster.png`, `refined-ui-hud.png`, `refined-ui-comparison.png`, `refined-ui-growth.png` 확인. 기존 리뷰 장면/도구 재사용.
+- Godot 임포트 및 self-test/UI/art_type/companion_management/companion_loot 검사 PASS,실제 렌더 SCRIPT/Parse ERROR 없음. 버튼/바 크기·행 넘침·주요 터치 영역·콜백 검사 유지. 성장/포획/세이브/전투 수치·월드 캐릭터 크기/카메라/배경은 변경하지 않았다.
+- 모바일 실기기 촉감/성능과 사용자 미적 평가는 아직 미검증. 이번 디자인을 이미 최종 승인된 것으로 간주하지 않는다.
+
 ## 검증과 도구
 - 현행 비율 수정: Godot 임포트/배경 lossless round-trip/art-type/self-test 통과. 실제 Godot HUD 및6초 전투 녹화 생성. 실기기와 전체 스테이지 완주는 별도 미검증.
 - `tools/pack_background.gd -- SOURCE.png res://assets/maps/OUTPUT.webp`: nearest 확대 + lossless RGB 재검증. 원본 해상도 이상 새 디테일은 생기지 않는다.

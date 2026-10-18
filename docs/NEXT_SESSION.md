@@ -7,7 +7,12 @@
 - 현재 초급 맵: assets/maps/greenwater-beginner-v3.webp. 작은 캐릭터·기존 넓은 시야 유지. 배경 소품을 줄였으며 캐릭터2배 확대는 되돌렸다.
 - 사용자는 배경의 선명한 도트풍을 좋아한다. 최신 v3 소품 비율에 대한 최종 사용자 평가는 아직 받지 않았다. 이미 승인됐다고 가정하지 않는다.
 
-## 최신 진행: 동료 선택·육성 흐름
+## 최신 진행: 전체 UI 형태 개선
+- `STATUS.md`의 UI 형태·계층 개선이 최신 작업. 잘린 모서리/메달/잎 장식,통합 보관함 행 카드,가벼운 행 액션,전투 HUD 초상/아이콘 메달을 적용했다.
+- 실제 `docs/refined-ui-camp.png`, `docs/refined-ui-roster.png`, `docs/refined-ui-hud.png`, `docs/refined-ui-comparison.png`, `docs/refined-ui-growth.png`를 확인한다.
+- 사용자 미적 평가를 기다린다. 성장/수집 기능이나 전투 규칙은 바꾸지 않았다. 작은 캐릭터·카메라 유지.
+
+## 이전 진행: 동료 선택·육성 흐름
 - `STATUS.md`의 동료 선택·육성 흐름2차가 최신 기준. 필터/정렬/즐겨찾기 보호/경험치/육성 미리보기와 결과 구현.
 - `docs/management-roster.png`, `docs/management-growth-result.png`, `docs/management-growth-flow.gif`/`.mp4`, `docs/management-level-up.gif`/`.mp4` 참조.
 - 기존 성장 비용3재료→40XP 유지. 등급·특성·옵션 재추첨 없음. 필터는 실제 편성을 바꾸지 않는다. 즐겨찾기는 방생만 보호하며 세이브에 보존.

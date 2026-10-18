@@ -205,7 +205,15 @@ func panel(parent, rect, color):
 	p.size = rect.size
 	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var s=GroveUI.frame(color)
-	if rect.size==Vector2(1440,810): s.set_border_width_all(0)
+	if rect.size==Vector2(1440,810):
+		s.set_border_width_all(0)
+		s.chamfer=0
+		s.shadow_size=0
+		s.bevel=false
+	elif rect.size==Vector2(1100,630):
+		s.chamfer=18
+		s.shadow_size=8
+		s.border_width=2
 	p.add_theme_stylebox_override("panel",s)
 	parent.add_child(p)
 	return p
@@ -259,7 +267,11 @@ func modal(title, subtitle):
 	overlay.size = Vector2(1440,810)
 	panel(overlay,Rect2(0,0,1440,810),Color(0.03,0.08,0.06,0.85))
 	panel(overlay,Rect2(170,90,1100,630),Color("252a2c"))
-	label(overlay,title,Vector2(215,119),31)
+	var ornament=preload("res://ui/modal_ornament.gd").new()
+	ornament.position=Vector2(170,90)
+	ornament.size=Vector2(1100,630)
+	overlay.add_child(ornament)
+	label(overlay,title,Vector2(215,119),31).add_theme_color_override("font_color",Color("ead9af"))
 	label(overlay,subtitle,Vector2(215,169),17)
 	stick = Vector2.ZERO
 	mouse_stick = false
@@ -271,8 +283,15 @@ func show_camp():
 	mode="camp"
 	save_game()
 	modal("GROVEBOUND  ·  야수의 계곡","야영지  /  동료와 함께 다음 탐험을 준비하세요")
-	panel(overlay,Rect2(215,215,610,330),Color("202823"))
-	panel(overlay,Rect2(865,215,360,330),Color("202823"))
+	var ledger=panel(overlay,Rect2(215,215,610,330),Color("202823"))
+	var quiet_frame=GroveUI.frame(Color("202823"),GroveUI.BRONZE,0)
+	quiet_frame.shadow_size=0
+	quiet_frame.bevel=false
+	ledger.add_theme_stylebox_override("panel",quiet_frame)
+	var display=preload("res://ui/camp_display.gd").new()
+	display.position=Vector2(865,215)
+	display.size=Vector2(360,330)
+	overlay.add_child(display)
 	label(overlay,"함께할 동료",Vector2(240,240),16)
 	label(overlay,"성장 재료",Vector2(435,240),16)
 	label(overlay,"탐험 기록",Vector2(630,240),16)
@@ -282,14 +301,14 @@ func show_camp():
 	label(overlay,"포획한 야수와 네 마리의 편성을 꾸리세요.\n회복·강화·소생으로 동료를 지켜주세요.",Vector2(240,345),20)
 	label(overlay,"WASD 이동   ·   Q 회복   ·   E 야성   ·   1~4 동료 스킬\nF 포획 / 길게 소생   ·   Tab 편성   ·   Esc 일시정지\n터치: 왼쪽 이동 스틱과 화면 버튼",Vector2(240,435),16)
 	label(overlay,"계곡의 길잡이",Vector2(975,239),20)
-	label(overlay,"DRUID",Vector2(1010,511),16)
+	label(overlay,"DRUID",Vector2(1010,536),16)
 	if not save_notice.is_empty(): label(overlay,save_notice,Vector2(230,552),15)
-	var depart=button(overlay,"첫 동료 만나기" if not tutorial_done else "계곡으로 출발",Rect2(215,590,340,72),show_starters if not tutorial_done else func(): start_stage(false))
+	var depart=button(overlay,"첫 동료 만나기" if not tutorial_done else "계곡으로 출발",Rect2(215,620,340,64),show_starters if not tutorial_done else func(): start_stage(false))
 	GroveUI.emphasize(depart)
-	button(overlay,"동료 · 편성 · 성장",Rect2(575,590,340,72),open_roster)
+	button(overlay,"동료 · 편성 · 성장",Rect2(575,620,340,64),open_roster)
 	if not owned.is_empty():
-		button(overlay,"최근 동료",Rect2(935,590,140,72),func(): show_loot_details(owned[-1].id))
-	var reset=button(overlay,"새 여정",Rect2(1095,590,130,72),confirm_reset)
+		button(overlay,"최근 동료",Rect2(935,620,140,64),func(): show_loot_details(owned[-1].id))
+	var reset=button(overlay,"새 여정",Rect2(1095,620,130,64),confirm_reset)
 	GroveUI.emphasize(reset,"danger")
 	var preview=TextureRect.new()
 	preview.texture=textures["druid"]
@@ -971,7 +990,8 @@ func open_roster():
 	rows.add_theme_constant_override("separation",8)
 	scroll.add_child(rows)
 	for d in roster:
-		var row=HBoxContainer.new()
+		var row=preload("res://ui/roster_row.gd").new()
+		row.accent=Loot.color(d)
 		row.name="Companion_"+str(d.id)
 		row.custom_minimum_size=Vector2(970,90)
 		rows.add_child(row)
@@ -994,6 +1014,7 @@ func open_roster():
 		b.custom_minimum_size=Vector2(330,52)
 		b.add_theme_font_size_override("font_size",17)
 		b.add_theme_color_override("font_color",Loot.color(d))
+		GroveUI.quiet(b,Loot.color(d))
 		b.tooltip_text=Loot.TRAIT_DESCRIPTIONS.get(d.trait,"")+"\n"+"\n".join(Loot.lines(d))
 		b.clip_text=true
 		b.alignment=HORIZONTAL_ALIGNMENT_LEFT
@@ -1009,28 +1030,35 @@ func open_roster():
 		body.add_child(xp)
 		var favorite=Button.new()
 		favorite.text="잠금 ✓" if d.get("favorite",false) else "즐겨찾기"
+		favorite.add_theme_color_override("font_color",GroveUI.GREEN if d.get("favorite",false) else GroveUI.MUTED)
 		favorite.custom_minimum_size=Vector2(86,64)
+		GroveUI.quiet(favorite,GroveUI.GREEN)
 		favorite.pressed.connect(func(): toggle_favorite(d.id))
 		row.add_child(favorite)
 		var detail=Button.new()
 		detail.text="상세·비교"
 		detail.custom_minimum_size=Vector2(100,64)
+		GroveUI.quiet(detail)
 		detail.pressed.connect(func(): show_loot_details(d.id,-1,false,true))
 		row.add_child(detail)
 		if camp:
 			var equip=Button.new()
 			equip.text="동행 해제" if idx>=0 else "동행 추가"
 			equip.custom_minimum_size=Vector2(108,64)
+			GroveUI.quiet(equip)
 			equip.pressed.connect(func(): toggle_squad(d.id); open_roster())
 			row.add_child(equip)
 			var grow=Button.new()
 			grow.text="육성 미리보기"
 			grow.custom_minimum_size=Vector2(126,64)
+			grow.size_flags_vertical=Control.SIZE_SHRINK_CENTER
+			GroveUI.emphasize(grow)
 			grow.pressed.connect(func(): show_training(d.id))
 			row.add_child(grow)
 			var release=Button.new()
 			release.text="방생"
 			release.custom_minimum_size=Vector2(68,64)
+			GroveUI.quiet(release,Color("ad816d"))
 			release.disabled=not Management.can_release(d,squad)
 			release.pressed.connect(func(): confirm_release(d.id))
 			row.add_child(release)
@@ -1163,7 +1191,7 @@ func update_hud():
 		var b=party_buttons[i]
 		if i<units.size():
 			var u=units[i]
-			b.configure(textures[u.data.kind],NAMES[u.data.kind],ROLES[u.data.kind],u.hp,u.maxhp,u.skill,Loot.grade(u.data))
+			b.configure(textures[u.data.kind],NAMES[u.data.kind],ROLES[u.data.kind],u.hp,u.maxhp,u.skill,Loot.grade(u.data),10.0*(1.0-Loot.bonus(u.data,"skill_haste")))
 			b.disabled=u.hp<=0 or u.skill>0 or revive_target>=0
 		else:
 			b.configure(null,"빈자리","포획으로 합류",0,1,0)

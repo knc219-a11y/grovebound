@@ -8,9 +8,11 @@ var role="포획으로 합류"
 var hp=0.0
 var max_hp=1.0
 var cooldown=0.0
+var cooldown_duration=10.0
 var slot=1
 var occupied=false
-func configure(texture,caption,job,health,maximum,wait,quality="common"):
+func configure(texture,caption,job,health,maximum,wait,quality="common",wait_total=10.0):
+	cooldown_duration=maxf(0.01,wait_total)
 	rarity=quality
 	portrait=texture
 	companion_name=caption
@@ -23,9 +25,12 @@ func configure(texture,caption,job,health,maximum,wait,quality="common"):
 func _draw():
 	var font=get_theme_font("font")
 	var width=size.x
-	if occupied: draw_rect(Rect2(1,1,width-2,size.y-2),Loot.COLORS.get(rarity,Loot.COLORS.common),false,1)
+	var accent=Loot.COLORS.get(rarity,Loot.COLORS.common)
+	if occupied:
+		draw_line(Vector2(10,3),Vector2(width-10,3),accent,2,false)
+		UI.medallion(self,Vector2(width/2,53),23,accent)
 	var color=UI.PAPER if hp>0 or not occupied else Color("b6937b")
-	draw_rect(Rect2(8,8,20,18),UI.INK)
+	draw_colored_polygon(PackedVector2Array([Vector2(8,9),Vector2(24,9),Vector2(29,17),Vector2(24,25),Vector2(8,25),Vector2(4,17)]),UI.INK)
 	draw_string(font,Vector2(13,22),str(slot),HORIZONTAL_ALIGNMENT_LEFT,-1,14,UI.BRONZE)
 	draw_string(font,Vector2(34,23),companion_name,HORIZONTAL_ALIGNMENT_LEFT,width-40,17,color)
 	if occupied:
@@ -33,7 +38,8 @@ func _draw():
 		var extent=Vector2(portrait.get_size())*ratio
 		draw_texture_rect(portrait,Rect2(Vector2(width/2,53)-extent/2,extent),false,Color.WHITE if hp>0 else Color("727b6b"))
 		if cooldown>0:
-			draw_rect(Rect2(10,31,width-20,40),Color(0.06,0.08,0.07,0.55))
+			draw_circle(Vector2(width/2,53),21,Color(0.06,0.08,0.07,0.65))
+			draw_arc(Vector2(width/2,53),23,-PI/2,-PI/2+TAU*clampf(cooldown/cooldown_duration,0,1),24,accent,2,false)
 			draw_string(font,Vector2(width/2-9,61),str(ceili(cooldown)),HORIZONTAL_ALIGNMENT_LEFT,-1,24,UI.PAPER)
 		var bar=Rect2(10,77,width-20,7)
 		draw_rect(bar,UI.INK)

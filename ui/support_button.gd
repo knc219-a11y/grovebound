@@ -9,13 +9,15 @@ func _draw():
 	var font=get_theme_font("font")
 	var col=UI.GREEN if healing else Color("d1ad6d")
 	var p=Vector2(25,29)
+	UI.medallion(self,p,17,col)
+	if cooldown>0: draw_arc(p,18,-PI/2,-PI/2+TAU*clampf(cooldown/(8.0 if healing else 14.0),0,1),24,col,2,false)
 	if healing:
 		draw_rect(Rect2(p-Vector2(3,10),Vector2(6,20)),col)
 		draw_rect(Rect2(p-Vector2(10,3),Vector2(20,6)),col)
 	else:
 		draw_colored_polygon(PackedVector2Array([p+Vector2(-9,8),p+Vector2(-6,-7),p+Vector2(10,-10),p+Vector2(7,5)]),col)
 		draw_line(p+Vector2(-7,8),p+Vector2(7,-6),UI.INK,2,false)
-	draw_string(font,Vector2(44,36),"회복  Q" if healing else "야성  E",HORIZONTAL_ALIGNMENT_LEFT,-1,20,UI.PAPER)
+	draw_string(font,Vector2(49,36),"회복  Q" if healing else "야성  E",HORIZONTAL_ALIGNMENT_LEFT,-1,20,UI.PAPER)
 	if cooldown>0:
 		draw_string(font,Vector2(17,75),str(ceili(cooldown))+"초",HORIZONTAL_ALIGNMENT_LEFT,-1,25,col)
 	else:
