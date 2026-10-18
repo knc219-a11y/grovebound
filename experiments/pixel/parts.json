@@ -1,0 +1,45 @@
+{
+	"alignment": "connected opaque silhouettes; bottom-center; uniform displayed height",
+	"columns": 3,
+	"frames": [
+		{
+			"pivot": [
+				541.5,
+				585
+			],
+			"region": [
+				59,
+				79,
+				1083,
+				585
+			]
+		},
+		{
+			"pivot": [
+				111.0,
+				434
+			],
+			"region": [
+				1271,
+				312,
+				222,
+				434
+			]
+		},
+		{
+			"pivot": [
+				125.5,
+				456
+			],
+			"region": [
+				1676,
+				290,
+				251,
+				456
+			]
+		}
+	],
+	"normalized_height": 100,
+	"rows": 1,
+	"texture": "res://assets/boar-pixel-parts-v1.png"
+}

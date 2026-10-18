@@ -1,0 +1,3 @@
+Built-in image_gen. Reference: approved original dark quarter-view pixel RPG board.
+Parts: original mature grey-brown boar, stout anatomy, modest tusks, alert small eye, short bristly mane. Three isolated components in row: left half connected body/head/ears/tusks/tail with no legs, middle full front leg, right full hind leg. Hidden belly painted; roots overlap body. Consistent chunky pixel clusters, restrained earth palette, upper-left light, true alpha, no floor, shadow, text or extra limbs.
+Backdrop: empty original ruined courtyard matching board, quarter-view flagstones/earth, subdued charcoal and olive, crumbling perimeter walls, crooked roots and small amber brazier. Broad clear central combat area. Pixel clusters, no characters, UI, labels or smooth3D rendering.

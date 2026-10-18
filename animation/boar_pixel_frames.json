@@ -1,0 +1,23 @@
+{
+	"bounds": [
+		12,
+		14,
+		70,
+		48
+	],
+	"cell": [
+		96,
+		72
+	],
+	"columns": 4,
+	"count": 8,
+	"cycle_seconds": 0.85,
+	"ground": [
+		48,
+		62
+	],
+	"idle": "res://assets/boar-pixel-idle.png",
+	"palette_colors": 16,
+	"stride_pixels": 14.4,
+	"texture": "res://assets/boar-pixel-walk.png"
+}

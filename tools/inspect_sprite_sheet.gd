@@ -35,7 +35,7 @@ func _initialize():
 			var height=bottom-top+1
 			frames.append({"region":[left,top,width,height],"pivot":[width/2.0,height]})
 			shortest=mini(shortest,height); tallest=maxi(tallest,height)
-	if float(tallest)/shortest>1.20: fail("Frame height variation exceeds 20%; revise sheet or grid"); return
+	if float(tallest)/shortest>float(options.get("max-height-ratio","1.20")): fail("Frame height variation exceeds configured limit; revise sheet or grid"); return
 	var result={"texture":options.source,"columns":columns,"rows":rows,"normalized_height":100,"frames":frames,"alignment":"opaque alpha bounds; bottom-center; uniform displayed height"}
 	var file=FileAccess.open(options.out,FileAccess.WRITE)
 	if file==null: fail("Cannot write metadata"); return
@@ -95,7 +95,7 @@ func inspect_components(image,options,columns,rows):
 	for region in regions:
 		frames.append({"region":[region.position.x,region.position.y,region.size.x,region.size.y],"pivot":[region.size.x/2.0,region.size.y]})
 		shortest=mini(shortest,region.size.y); tallest=maxi(tallest,region.size.y)
-	if float(tallest)/shortest>1.20: fail("Frame height variation exceeds 20%"); return
+	if float(tallest)/shortest>float(options.get("max-height-ratio","1.20")): fail("Frame height variation exceeds configured limit"); return
 	var result={"texture":options.source,"columns":columns,"rows":rows,"normalized_height":100,"frames":frames,"alignment":"connected opaque silhouettes; bottom-center; uniform displayed height"}
 	var file=FileAccess.open(options.out,FileAccess.WRITE)
 	if file==null: fail("Cannot write metadata"); return

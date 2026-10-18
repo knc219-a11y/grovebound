@@ -1,0 +1,33 @@
+{
+	"alignment": "connected opaque silhouettes; bottom-center; uniform displayed height",
+	"columns": 2,
+	"frames": [
+		{
+			"pivot": [
+				184.5,
+				799
+			],
+			"region": [
+				288,
+				116,
+				369,
+				799
+			]
+		},
+		{
+			"pivot": [
+				188.0,
+				789
+			],
+			"region": [
+				930,
+				118,
+				376,
+				789
+			]
+		}
+	],
+	"normalized_height": 100,
+	"rows": 1,
+	"texture": "res://assets/boar-cutout-legs-v1.png"
+}

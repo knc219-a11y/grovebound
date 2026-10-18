@@ -5,7 +5,7 @@ const NAMES = {"boar":"멧돼지", "marten":"담비", "fox":"여우", "turtle":"
 const ROLES = {"boar":"근접", "marten":"근접", "fox":"원거리", "turtle":"탱커", "deer":"힐러", "wolf":"근접"}
 const STATS = {"boar":[130,14,60,110],"marten":[85,21,62,150],"fox":[80,14,235,125],"turtle":[200,8,65,90],"deer":[95,8,240,120],"wolf":[95,12,60,130]}
 const TRAITS = ["강인함", "용맹함", "단단함", "민첩함"]
-const BoarRig = preload("res://animation/boar_rig.gd")
+const BoarRig = preload("res://animation/boar_pixel.gd")
 var boar_rig
 var textures = {}
 var font: Font
@@ -60,6 +60,7 @@ var boss_label: Label
 var boss_panel: Panel
 
 func _ready():
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	rng.seed = 10417
 	font = load("res://assets/Korean.ttf") if ResourceLoader.exists("res://assets/Korean.ttf") else ThemeDB.fallback_font
 	var readable_font=FontVariation.new()
@@ -67,10 +68,11 @@ func _ready():
 	readable_font.variation_opentype={"wght":600.0}
 	readable_font.variation_embolden=0.35
 	font=readable_font
-	textures["valley"]=load("res://assets/valley.png")
+	textures["valley"]=load("res://assets/pixel-ruins-background-v1.png")
 	for key in ["druid","boar","marten","fox","turtle","deer","wolf","tree"]:
 		textures[key] = load("res://assets/"+key+".png")
-	boar_rig=BoarRig.new(load("res://assets/boar-parts.png"))
+	boar_rig=BoarRig.new()
+	textures["boar"]=boar_rig.portrait()
 	build_terrain()
 	build_ui()
 	is_test = "--self-test" in OS.get_cmdline_user_args()
@@ -106,18 +108,18 @@ func build_ui():
 	theme.set_color("font_hover_color","Button",Color.WHITE)
 	for state in ["normal","hover","pressed","disabled"]:
 		var s = StyleBoxFlat.new()
-		s.bg_color = Color("263e36") if state == "normal" else Color("3e6550")
+		s.bg_color = Color("292d2e") if state == "normal" else Color("454a48")
 		if state == "disabled": s.bg_color = Color("29322d")
-		s.border_color = Color("9eaf7c")
+		s.border_color = Color("817661")
 		s.set_border_width_all(2)
 		s.set_corner_radius_all(12)
 		s.content_margin_left = 12
 		s.content_margin_right = 12
 		theme.set_stylebox(state,"Button",s)
 	hud.theme = theme
-	panel(hud,Rect2(22,18,350,80),Color("1d332de8"))
+	panel(hud,Rect2(22,18,350,80),Color("232628e8"))
 	status_label = label(hud,"",Vector2(40,28),21)
-	panel(hud,Rect2(430,15,610,80),Color("1d332de8"))
+	panel(hud,Rect2(430,15,610,80),Color("232628e8"))
 	quest_label = label(hud,"",Vector2(450,26),19)
 	toast_label = label(hud,"",Vector2(380,112),20)
 	team_button = button(hud,"편성 [Tab]",Rect2(1190,20,130,45),open_roster)
@@ -136,7 +138,7 @@ func build_ui():
 	interact_button = button(hud,"",Rect2(1100,590,280,70),interact)
 	interact_button.button_down.connect(func(): holding_revive = true)
 	interact_button.button_up.connect(func(): holding_revive = false)
-	boss_panel = panel(hud,Rect2(22,110,350,80),Color("1d332de8"))
+	boss_panel = panel(hud,Rect2(22,110,350,80),Color("232628e8"))
 	boss_label = label(hud,"",Vector2(40,123),16)
 	label(hud,"WASD / 방향키 이동",Vector2(30,774),14)
 	overlay = Control.new()
@@ -190,7 +192,7 @@ func modal(title, subtitle):
 	overlay.show()
 	overlay.size = Vector2(1440,810)
 	panel(overlay,Rect2(0,0,1440,810),Color(0.03,0.08,0.06,0.85))
-	panel(overlay,Rect2(170,90,1100,630),Color("203a33"))
+	panel(overlay,Rect2(170,90,1100,630),Color("252a2c"))
 	label(overlay,title,Vector2(215,119),31)
 	label(overlay,subtitle,Vector2(215,169),17)
 	stick = Vector2.ZERO
@@ -895,7 +897,7 @@ func load_game():
 		a.xp=int(a.xp)
 
 func _draw():
-	draw_rect(Rect2(0,0,1440,810),Color("819e57"))
+	draw_rect(Rect2(0,0,1440,810),Color("282a2b"))
 	draw_texture_rect(textures["valley"],Rect2(-cam,Vector2(2900,1650)),false)
 	for e in enemies:
 		if e.hp>0 and e.wind>0:
@@ -918,9 +920,9 @@ func _draw():
 	var actors=[]
 	actors.append({"kind":"druid","pos":player.pos,"hp":player.hp,"maxhp":player.maxhp,"face":player.face,"size":66,"ally":true,"state":player})
 	for u in active_units():
-		actors.append({"kind":u.data.kind,"pos":u.pos,"hp":u.hp,"maxhp":u.maxhp,"face":u.face,"size":64,"ally":true,"unit":u,"state":u})
+		actors.append({"kind":u.data.kind,"pos":u.pos,"hp":u.hp,"maxhp":u.maxhp,"face":u.face,"size":48 if u.data.kind=="boar" else 64,"ally":true,"unit":u,"state":u})
 	for e in enemies:
-		if e.hp>0 or e.get("death",0.0)>0: actors.append({"kind":e.kind,"pos":e.pos,"hp":e.hp,"maxhp":e.maxhp,"face":e.face,"size":112 if e.boss else 63,"ally":false,"state":e})
+		if e.hp>0 or e.get("death",0.0)>0: actors.append({"kind":e.kind,"pos":e.pos,"hp":e.hp,"maxhp":e.maxhp,"face":e.face,"size":(96 if e.boss else 48) if e.kind=="boar" else (112 if e.boss else 63),"ally":false,"state":e})
 	actors.sort_custom(func(a,b): return a.pos.y<b.pos.y)
 	for a in actors:
 		var p=a.pos-cam
@@ -1135,7 +1137,7 @@ func run_tests():
 	var rig_actor={"pos":Vector2.ZERO,"hp":100.0,"walk":true}
 	boar_rig.advance(rig_actor,0.1)
 	if rig_actor.get("rig_phase",0.0)!=0.0: failures.append("rig stationary phase")
-	rig_actor.pos.x=19.0
+	rig_actor.pos.x=boar_rig.stride_pixels/4.0
 	boar_rig.advance(rig_actor,0.1)
 	if not is_equal_approx(rig_actor.rig_phase,PI/2.0): failures.append("rig distance phase")
 	rig_actor.walk=false
@@ -1148,20 +1150,16 @@ func run_tests():
 	rig_actor.hp=30
 	boar_rig.advance(rig_actor,0.3)
 	if not is_zero_approx(rig_actor.rig_down): failures.append("rig revive pose")
-	# A zero-weight gait must reproduce the approved rest pose exactly.
-	var rest_pose=boar_rig.pose_vertices(0.0,0.0,0.0,0.0,0.0)
-	if rest_pose!=boar_rig.rest: failures.append("approved boar rest silhouette")
-	# Mesh triangles must not invert during the small-step cycle.
-	var flipped=false
-	for pose in range(12):
-		var verts=boar_rig.pose_vertices(float(pose)/12.0*TAU,1.0,0.0,0.0,0.0)
-		for triangle in range(0,boar_rig.indices.size(),3):
-			var a=verts[boar_rig.indices[triangle]]
-			var b=verts[boar_rig.indices[triangle+1]]
-			var c=verts[boar_rig.indices[triangle+2]]
-			if (b-a).cross(c-a)<=0.0: flipped=true
-	if flipped: failures.append("boar skin fold")
-	# Painted walk frames must loop and remain entirely within the sheet.
+	# Fast travel must not turn the small walk cycle into frame flicker.
+	var fast_actor={"pos":Vector2.ZERO,"hp":100.0,"walk":true}
+	boar_rig.advance(fast_actor,0.05)
+	fast_actor.pos.x=10
+	boar_rig.advance(fast_actor,0.05)
+	if fast_actor.rig_phase>TAU*0.05/0.36+0.001: failures.append("pixel gait cadence cap")
+	if boar_rig.display_scale(48)!=1 or boar_rig.display_scale(96)!=2: failures.append("pixel integer scale")
+	var idle_image=boar_rig.idle_texture.get_image()
+	if idle_image.get_size()!=Vector2i(96,72): failures.append("pixel idle dimensions")
+	# Baked pixel walk frames must loop and remain entirely within the sheet.
 	if boar_rig.walk_frames.size()!=8: failures.append("boar walk frame count")
 	if boar_rig.frame_for_phase(0.0)!=0 or boar_rig.frame_for_phase(TAU)!=0 or boar_rig.frame_for_phase(TAU-0.001)!=7:
 		failures.append("boar frame loop")
