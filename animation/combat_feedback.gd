@@ -104,6 +104,25 @@ func draw(canvas,cam,font):
 				canvas.draw_rect(Rect2(p+Vector2(-4,-42),Vector2(8,64)),Color(c,0.18*(1-t)))
 		if event.kind.begins_with("skill_"):
 			skill_burst(canvas,event,cam,t,c)
+		if event.kind.begins_with("impact_"):
+			# A bright brief core plus directional fragments: readable at native size.
+			var direction=(p-a).normalized()
+			if direction.length()<0.1: direction=Vector2.RIGHT
+			var side=direction.orthogonal()
+			var radius=8+18*(1-pow(1-t,3))
+			var outer=Color("edbd6a") if event.kind=="impact_boar" else Color("b9dbe2")
+			outer.a=c.a
+			if t<0.32:
+				var core=Color("fff3cd")
+				core.a=1-t/0.32
+				canvas.draw_colored_polygon(PackedVector2Array([p-direction*12,p-side*5,p+direction*14,p+side*5]),core)
+			for i in 5:
+				var ray=direction.rotated((i-2)*0.65)
+				canvas.draw_line((p+ray*radius*0.4).round(),(p+ray*radius).round(),outer,2,false)
+			if event.kind=="impact_wolf":
+				for i in 2:
+					var offset=side*(i*2-1)*5
+					canvas.draw_line((p+offset-side*9-direction*4).round(),(p+offset+side*7+direction*5).round(),outer,2,false)
 		match event.kind:
 			"melee","hurt":
 				var direction=(p-a).normalized()

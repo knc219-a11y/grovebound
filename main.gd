@@ -557,6 +557,7 @@ func update_game(dt):
 	for a in [player]+units+enemies:
 		if not a.get("walk",false): a.move_speed=0.0
 		motion_actions.advance(a,dt)
+		if a.hp<=0: a.erase("pending_basic")
 		a["hit"]=maxf(0,a.get("hit",0.0)-dt)
 		a["swing"]=maxf(0,a.get("swing",0.0)-dt)
 		a["death"]=maxf(0,a.get("death",0.0)-dt)
@@ -604,6 +605,7 @@ func update_game(dt):
 		u.role_flash=maxf(0,u.get("role_flash",0.0)-dt)
 		if i>=4 or u.hp<=0: continue
 		u.cd-=dt
+		if advance_basic_attack(u,dt): continue
 		var kind=u.data.kind
 		var speed=STATS[kind][3]*(1.2 if u.data.trait=="민첩함" else 1.0)*(1.0+Loot.bonus(u.data,"speed"))
 		var target=Roles.target(kind,u.pos,enemies,player.pos,410)
@@ -628,7 +630,9 @@ func update_game(dt):
 			if kind=="fox" and u.pos.distance_to(target.pos)<105:
 				move_entity(u,u.pos+(u.pos-target.pos).normalized()*100,speed,dt)
 			if u.pos.distance_to(target.pos)<=reach and u.cd<=0:
-				hit_enemy(target,attack(u.data)*(1.6 if u.buff>0 else 1.0),u.pos,u)
+				if kind in ["boar","wolf"]:
+					begin_basic_attack(u,target,attack(u.data)*(1.6 if u.buff>0 else 1.0))
+				else: hit_enemy(target,attack(u.data)*(1.6 if u.buff>0 else 1.0),u.pos,u)
 				u.cd=0.85 if kind=="marten" else 1.2
 	for a in active_units():
 		if a.hp<=0: continue
@@ -761,9 +765,35 @@ func animate_attack(source,attacker={}):
 			a["swing"]=0.22
 			var species="druid" if a==player else a.data.kind
 			motion_actions.start(a,species,"support" if species=="druid" else ("cast" if species=="fox" else "attack"))
+			# Immediate skills already applied damage; show the impact, not a late wind-up.
+			if species in ["boar","wolf"]: a.action_remaining=a.action_duration*2.0/3.0
 			return
 
-func hit_enemy(e, damage, source,attacker={}):
+func begin_basic_attack(u,target,damage):
+	if u.hp<=0 or target.hp<=0 or u.has("pending_basic"): return false
+	u.walk=false
+	if absf(target.pos.x-u.pos.x)>1: u.face=signf(target.pos.x-u.pos.x)
+	motion_actions.start(u,u.data.kind,"attack")
+	u.pending_basic={"target":target,"damage":damage,"remaining":0.14}
+	return true
+
+func advance_basic_attack(u,dt):
+	if not u.has("pending_basic"): return false
+	var pending=u.pending_basic
+	if u.hp<=0:
+		u.erase("pending_basic")
+		return false
+	pending.remaining-=maxf(0,dt)
+	u.walk=false
+	if pending.remaining<=0:
+		u.erase("pending_basic")
+		var target=pending.target
+		# A target that died or left melee reach during anticipation is not hit remotely.
+		if enemies.has(target) and target.hp>0 and u.pos.distance_to(target.pos)<=STATS[u.data.kind][2]+18:
+			hit_enemy(target,pending.damage,u.pos,u,false)
+	return true
+
+func hit_enemy(e, damage, source,attacker={},animate=true):
 	if e.hp<=0: return
 	if not attacker.is_empty() and attacker.has("data") and e.get("stun",0.0)>0:
 		damage*=1.0+Loot.bonus(attacker.data,"stun_hunter")
@@ -776,11 +806,13 @@ func hit_enemy(e, damage, source,attacker={}):
 	e.active=true
 	e["hit"]=0.16
 	e["recoil"]=(e.pos-source).normalized()*7
-	animate_attack(source,attacker)
+	if animate: animate_attack(source,attacker)
 	var visual="melee"
 	if not attacker.is_empty():
 		visual="support" if attacker==player else ("fox" if attacker.data.kind=="fox" else "melee")
 	combat_feedback.emit(visual,source,e.pos,dealt,{"target_id":e.get("feedback_id",str(e.pos.round())),"height":sprite_height(e.kind,e.get("boss",false))})
+	if not animate and not attacker.is_empty() and attacker.has("data"):
+		combat_feedback.emit("impact_"+attacker.data.kind,source,e.pos)
 	if e.hp<=0:
 		e["death"]=0.32
 		kills+=1
@@ -882,6 +914,7 @@ func use_companion_skill(i):
 			fx(u.pos,u.pos,Color("a7d9e8"),"도발 · 방어",1)
 		_:
 			if target.is_empty(): return
+			u.erase("pending_basic")
 			if u.data.kind=="fox":
 				for e in enemies:
 					if e.hp>0 and e.pos.distance_to(target.pos)<125: hit_enemy(e,attack(u.data)*2.5*(1.6 if u.buff>0 else 1.0),u.pos,u)
