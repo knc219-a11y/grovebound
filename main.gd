@@ -170,7 +170,7 @@ func build_ui():
 	toast_label=label(hud,"",Vector2(385,210),17)
 	toast_label.size=Vector2(650,54)
 	toast_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-	loot_result_button=button(hud,"획득 동료 확인",Rect2(22,116,320,46),func(): show_loot_details(recent_capture_id))
+	loot_result_button=button(hud,"새로운 인연 확인",Rect2(22,116,320,46),func(): show_loot_details(recent_capture_id))
 	town_hidden_labels.append(label(hud,"동료 스킬",Vector2(365,650),14))
 	for i in range(4):
 		var b=CompanionCard.new()
@@ -331,7 +331,7 @@ func return_from_details():
 
 func open_controls():
 	modal("조작 안내","탐험과 동료 지원을 위한 기본 조작입니다.","controls",open_game_menu)
-	label(overlay,"이동  WASD / 방향키 · 터치 이동 스틱\n회복  Q · 야성 강화  E\n동료 스킬  1~4 · 하단 동료 초상 터치\n포획  F · 쓰러진 동료 소생은 F 길게 누르기\n가방  I · 편성  Tab · 메뉴 / 뒤로  Esc",Vector2(245,250),24)
+	label(overlay,"이동  WASD / 방향키 · 터치 이동 스틱\n회복  Q · 야성 강화  E\n동료 스킬  1~4 · 하단 동료 초상 터치\n교감  F · 쓰러진 동료 소생은 F 길게 누르기\n가방  I · 편성  Tab · 메뉴 / 뒤로  Esc",Vector2(245,250),24)
 	label(overlay,"메뉴를 열면 탐험이 일시정지됩니다. 편성은 비전투 중, 육성은 캠프에서 가능합니다.",Vector2(245,530),18)
 	button(overlay,"메뉴로",Rect2(925,630,285,55),open_game_menu)
 
@@ -385,7 +385,7 @@ func town_interact():
 				button(overlay,"마을로",Rect2(750,500,350,65),resume_game)
 
 func show_starters():
-	modal("첫 인연을 선택하세요", "선택한 야수를 직접 쓰러뜨리면 첫 포획 기회는 확정입니다. 다른 종도 나중에 만날 수 있습니다.","starters",resume_game)
+	modal("첫 인연을 선택하세요", "야수의 경계를 누그러뜨린 뒤 다가가 교감하세요. 첫 인연의 교감 기회는 확정입니다.","starters",resume_game)
 	var kinds = ["boar","marten","fox"]
 	var desc = ["든든한 근접형\n돌진 · 잠깐 기절", "빠른 근접형\n한 적에게 연속 공격", "원거리형\n범위 기운탄"]
 	for i in range(3):
@@ -453,7 +453,7 @@ func start_stage(tutorial):
 		if not unit.is_empty(): units.append(unit)
 	if tutorial:
 		spawn_enemy(tutorial_species,Vector2(650,800),1,false,true)
-		notify("선택한 야수에게 다가가세요. 사거리 안에서 자동 공격합니다.")
+		notify("야수에게 다가가 경계를 누그러뜨리세요. 전투 후 쉬고 있는 야수와 교감할 수 있습니다.")
 	else:
 		var packs = [Vector2(650,790),Vector2(1030,640),Vector2(1340,970),Vector2(1660,650),Vector2(1990,960),Vector2(2260,680)]
 		var kinds = ["boar","turtle","deer","fox","marten","wolf"]
@@ -867,13 +867,16 @@ func interact():
 	var c=captures[i]
 	var d=make_owned(c.kind,int(c.level),c if c.has("grade") else {})
 	recent_capture_id=d.id
+	# Cosmetic communion: support gesture and restorative light, no HP/stat changes.
+	motion_actions.start(player,"druid","support")
+	combat_feedback.emit("heal",player.pos,c.pos)
 	combat_feedback.emit("capture_"+Loot.grade(d),c.pos,c.pos)
 	play_loot_sound(Loot.grade(d))
 	captures.remove_at(i)
 	if squad.size()<6:
 		squad.append(d.id)
 		units.append(make_unit(d,c.pos))
-	notify("[%s] %s Lv.%d · %s 획득! %s" % [Loot.title(d),NAMES[d.kind],d.level,d.trait,"동행 합류" if squad.has(d.id) else "보관함으로 이동"])
+	notify("[%s] %s Lv.%d · %s · 새로운 인연! %s" % [Loot.title(d),NAMES[d.kind],d.level,d.trait,"동행 합류" if squad.has(d.id) else "동료 쉼터로 이동"])
 	save_game()
 	if mode=="stage" and not in_combat:
 		pending_loot_id=d.id
@@ -900,8 +903,8 @@ func finish(success):
 		materials+=10
 		unlocked=true
 	save_game()
-	modal("계곡 탐험 완료" if success else "드루이드가 쓰러졌습니다", "포획한 동료 · 전투 경험치 · 획득 재료는 모두 유지됩니다.")
-	label(overlay,"처치 %d마리  ·  보유 동료 %d마리\n성장 재료 %d\n\n%s" % [kills,owned.size(),materials,"클리어 보너스 +10 · 다음 지역 개방 기록 완료\n다음 지역 콘텐츠는 후속 버전에서 추가됩니다." if success else "클리어 보상은 받지 못했습니다.\n동료 구성과 지원 타이밍을 바꿔 다시 도전해보세요."],Vector2(230,280),23)
+	modal("계곡 탐험 완료" if success else "드루이드가 쓰러졌습니다", "인연을 맺은 동료 · 전투 경험치 · 획득 재료는 모두 유지됩니다.")
+	label(overlay,"제압 %d마리  ·  보유 동료 %d마리\n성장 재료 %d\n\n%s" % [kills,owned.size(),materials,"클리어 보너스 +10 · 다음 지역 개방 기록 완료\n다음 지역 콘텐츠는 후속 버전에서 추가됩니다." if success else "클리어 보상은 받지 못했습니다.\n동료 구성과 지원 타이밍을 바꿔 다시 도전해보세요."],Vector2(230,280),23)
 	button(overlay,"캠프로 돌아가기",Rect2(490,580,450,65),show_camp)
 
 func notify(txt):
@@ -951,7 +954,7 @@ func loot_card(d,x,caption,animate=false):
 	label(overlay,"경험치 %d / %d · 다음 레벨까지 %d" % [d.xp,Management.needed_xp(d),maxi(0,Management.needed_xp(d)-d.xp)],Vector2(x+18,566),15)
 
 func show_loot_details(id,compare_id=-1,animate=true,from_roster=false):
-	if in_combat and mode=="stage": notify("전투가 끝나면 획득 동료를 확인할 수 있습니다."); return
+	if in_combat and mode=="stage": notify("전투가 끝나면 새로운 인연를 확인할 수 있습니다."); return
 	var d=find_owned(id)
 	if d.is_empty(): return
 	if menu_page!="detail": detail_origin_page="inventory" if menu_page=="inventory" else ("companions" if from_roster else "")
@@ -965,8 +968,8 @@ func show_loot_details(id,compare_id=-1,animate=true,from_roster=false):
 		for other in candidates:
 			if compare_id<0 or other.kind==d.kind: compare_id=other.id
 			if other.kind==d.kind: break
-	modal("동료 발견  ·  "+NAMES[d.kind],"특성은 고정 · 옵션은 개체별 고정 / 표시 능력치는 각 동료의 현재 레벨 기준입니다.","detail",return_from_details)
-	label(overlay,"이미 보유 목록에 안전하게 합류했습니다.",Vector2(232,222),18)
+	modal("맺어진 인연  ·  "+NAMES[d.kind],"특성은 고정 · 옵션은 개체별 고정 / 표시 능력치는 각 동료의 현재 레벨 기준입니다.","detail",return_from_details)
+	label(overlay,"교감한 야수가 새로운 동료로 합류했습니다.",Vector2(232,222),18)
 	loot_card(d,230,"선택한 동료",animate)
 	var comparison=find_owned(compare_id)
 	if not comparison.is_empty(): loot_card(comparison,745,"동행 동료와 비교")
@@ -987,7 +990,7 @@ func show_loot_details(id,compare_id=-1,animate=true,from_roster=false):
 	arrange.disabled=mode!="camp" and not squad.has(d.id)
 	button(overlay,"즐겨찾기 잠금 ✓" if d.get("favorite",false) else "즐겨찾기 잠금",Rect2(540,620,240,55),func(): toggle_favorite(id,true,from_roster))
 	if mode=="camp": button(overlay,"육성",Rect2(795,620,115,55),func(): show_training(id))
-	button(overlay,"보관 · 돌아가기",Rect2(925,620,285,55),return_from_details)
+	button(overlay,"확인 · 돌아가기",Rect2(925,620,285,55),return_from_details)
 
 func toggle_favorite(id,return_to_details=false,from_roster=true):
 	var d=find_owned(id)
@@ -1030,7 +1033,7 @@ func roster_filters(total,shown):
 	sorting.name="RosterSort"
 	sorting.position=Vector2(554,215)
 	sorting.size=Vector2(180,44)
-	for caption in ["동행 순서","최근 획득순","높은 등급순","높은 레벨순"]: sorting.add_item(caption)
+	for caption in ["동행 순서","최근 인연순","높은 등급순","높은 레벨순"]: sorting.add_item(caption)
 	sorting.select(roster_sort)
 	sorting.item_selected.connect(func(index): roster_sort=index; open_roster())
 	overlay.add_child(sorting)
@@ -1129,13 +1132,14 @@ func open_roster():
 			grow.pressed.connect(func(): show_training(d.id))
 			row.add_child(grow)
 			var release=Button.new()
-			release.text="방생"
+			release.text="작별"
+			release.tooltip_text="자연으로 보내기"
 			release.custom_minimum_size=Vector2(68,64)
 			GroveUI.quiet(release,Color("ad816d"))
 			release.disabled=not Management.can_release(d,squad)
 			release.pressed.connect(func(): confirm_release(d.id))
 			row.add_child(release)
-	label(overlay,"성장 재료 %d · 육성 3개 → 경험치 +40 · 즐겨찾기는 방생할 수 없습니다." % materials,Vector2(230,600),17)
+	label(overlay,"성장 재료 %d · 육성 3개 → 경험치 +40 · 즐겨찾기는 자연으로 보낼 수 없습니다." % materials,Vector2(230,600),17)
 	button(overlay,"완료",Rect2(1000,630,210,55),func(): save_game(); show_camp() if camp else clear_overlay())
 
 func growth_card(d,x,caption):
@@ -1217,11 +1221,11 @@ func release_companion(id):
 func confirm_release(id):
 	var d=find_owned(id)
 	if mode!="camp" or not Management.can_release(d,squad):
-		notify("동행 중이거나 즐겨찾기한 동료는 방생할 수 없습니다.")
+		notify("동행 중이거나 즐겨찾기한 동료는 자연으로 보낼 수 없습니다.")
 		return
-	modal("동료를 방생할까요?", "[%s] %s Lv.%d · %s" % [Loot.title(d),NAMES[d.kind],d.level,d.trait],"",open_roster)
-	label(overlay,"이 동료는 보유 목록에서 사라지고 성장 재료 2개를 얻습니다.\n동행 중이거나 즐겨찾기한 동료는 방생할 수 없습니다.",Vector2(230,300),22)
-	button(overlay,"방생하고 재료 받기",Rect2(300,560,350,65),func(): release_companion(id))
+	modal("동료를 자연으로 보낼까요?", "[%s] %s Lv.%d · %s" % [Loot.title(d),NAMES[d.kind],d.level,d.trait],"",open_roster)
+	label(overlay,"이 동료는 자연으로 돌아갑니다.\n함께한 인연으로 성장 재료 2개가 남습니다.\n동행 중이거나 즐겨찾기한 동료는 자연으로 보낼 수 없습니다.",Vector2(230,300),22)
+	button(overlay,"자연으로 보내기",Rect2(300,560,350,65),func(): release_companion(id))
 	button(overlay,"취소",Rect2(750,560,300,65),open_roster)
 
 func confirm_return():
@@ -1257,11 +1261,11 @@ func update_hud():
 		return
 	loot_result_button.visible=recent_capture_id>0 and not find_owned(recent_capture_id).is_empty()
 	loot_result_button.disabled=in_combat or mode=="tutorial"
-	if loot_result_button.visible: loot_result_button.text="획득 동료 · "+Loot.title(find_owned(recent_capture_id))+" / 상세 확인"
+	if loot_result_button.visible: loot_result_button.text="새로운 인연 · "+Loot.title(find_owned(recent_capture_id))+" / 상세 확인"
 	status_label.text="드루이드  ·  %d / %d" % [player.hp,player.maxhp]
 	player_hp_bar.max_value=player.maxhp
 	player_hp_bar.value=player.hp
-	quest_label.text="첫 인연 · 가까이 가서 포획 [F]" if mode=="tutorial" else "01  초록물 계곡   →   동쪽 우두머리\n동행 %d/6 · 처치 %d · %02d:%02d · %s" % [squad.size(),kills,int(stage_time)/60,int(stage_time)%60,"전투 중" if in_combat else "탐험 중"]
+	quest_label.text="첫 인연 · 가까이 가서 교감 [F]" if mode=="tutorial" else "01  초록물 계곡   →   동쪽 우두머리\n동행 %d/6 · 제압 %d · %02d:%02d · %s" % [squad.size(),kills,int(stage_time)/60,int(stage_time)%60,"전투 중" if in_combat else "탐험 중"]
 	toast_label.text=message if message_time>0 else ""
 	boss_label.text=""
 	for e in enemies:
@@ -1283,7 +1287,7 @@ func update_hud():
 			b.configure(textures[u.data.kind],NAMES[u.data.kind],ROLES[u.data.kind],u.hp,u.maxhp,u.skill,Loot.grade(u.data),10.0*(1.0-Loot.bonus(u.data,"skill_haste")))
 			b.disabled=u.hp<=0 or u.skill>0 or revive_target>=0
 		else:
-			b.configure(null,"빈자리","포획으로 합류",0,1,0)
+			b.configure(null,"빈자리","교감으로 합류",0,1,0)
 			b.disabled=true
 	heal_button.refresh(heal_cd)
 	buff_button.refresh(buff_cd)
@@ -1296,7 +1300,7 @@ func update_hud():
 	interact_progress.value=revive_progress
 	if down>=0:
 		interact_button.text="길게 눌러 소생 [F]\n%.1f / 3초" % revive_progress
-	elif cap>=0: interact_button.text=NAMES[captures[cap].kind]+" 포획 [F]"
+	elif cap>=0: interact_button.text=NAMES[captures[cap].kind]+" 교감 [F]"
 	if mode=="tutorial" and tutorial_species=="practice" and not overlay.visible and not dropdown.popup.visible:
 		var alive=false
 		for e in enemies:
@@ -1431,7 +1435,7 @@ func _draw():
 		var c=captures[i]
 		capture_visual.draw(self,c.pos-cam,c.kind,sprite_height(c.kind),clock,i==nearest_cap,Loot.grade(c))
 		if i==nearest_cap:
-			text_at(Loot.title(c)+" · 포획 [F]",c.pos-cam+Vector2(-40,-sprite_height(c.kind)-20),15,Loot.color(c))
+			text_at(Loot.title(c)+" · 교감 [F]",c.pos-cam+Vector2(-40,-sprite_height(c.kind)-20),15,Loot.color(c))
 	var actors=[]
 	actors.append({"kind":"druid","pos":player.pos,"hp":player.hp,"maxhp":player.maxhp,"face":player.face,"size":sprite_height("druid"),"ally":true,"state":player})
 	for u in active_units():

@@ -6,7 +6,7 @@ static func show_menu(g):
 	g.modal("여정 메뉴","탐험을 준비하고, 동료와 가방을 확인하세요.","menu",g.resume_game)
 	var locations=[Vector2(230,225),Vector2(565,225),Vector2(900,225)]
 	var names=["가방 · 인벤토리","동료 · 편성","야수 도감"]
-	var descriptions=["보유 동료 %d마리\n성장 재료 %d개" % [g.owned.size(),g.materials],"출전 %d/4 · 동행 %d/6\n동료 비교 · 즐겨찾기 · 육성" % [mini(4,g.squad.size()),g.squad.size()],"발견한 종 %d / %d\n기록은 방생 후에도 남습니다." % [g.discovered.size(),g.STATS.size()]]
+	var descriptions=["보유 동료 %d마리\n성장 재료 %d개" % [g.owned.size(),g.materials],"출전 %d/4 · 동행 %d/6\n동료 비교 · 즐겨찾기 · 육성" % [mini(4,g.squad.size()),g.squad.size()],"발견한 종 %d / %d\n기록은 자연으로 돌아간 뒤에도 남습니다." % [g.discovered.size(),g.STATS.size()]]
 	var callbacks=[g.open_inventory,g.open_roster,g.open_collection]
 	for i in 3:
 		var p=locations[i]
@@ -16,7 +16,7 @@ static func show_menu(g):
 		var b=g.button(g.overlay,"열기",Rect2(p+Vector2(20,145),Vector2(270,46)),callbacks[i])
 		if i==1: b.disabled=(g.in_combat and g.mode=="stage") or g.mode=="tutorial"
 	g.label(g.overlay,"여정 기록",Vector2(235,464),20)
-	g.label(g.overlay,"첫 인연  "+("완료" if g.tutorial_done else "캠프에서 첫 동료를 만나세요.")+"     /     초록물 계곡  "+("우두머리 처치 완료" if g.unlocked else "동료를 모아 우두머리에 도전하세요."),Vector2(235,505),18)
+	g.label(g.overlay,"첫 인연  "+("완료" if g.tutorial_done else "캠프에서 첫 동료를 만나세요.")+"     /     초록물 계곡  "+("우두머리 제압 완료" if g.unlocked else "동료를 모아 우두머리에 도전하세요."),Vector2(235,505),18)
 	g.label(g.overlay,"동료와 성장 재료는 자동 저장됩니다. 탐험을 다시 시작하면 입구에서 출발합니다.",Vector2(235,550),16)
 	var resume=g.button(g.overlay,"캠프로" if g.mode=="camp" else "탐험 계속하기",Rect2(230,630,310,55),g.resume_game)
 	UI.emphasize(resume)
@@ -84,7 +84,7 @@ static func show_inventory(g,selected_id=-1,reset_scroll=false):
 	g.button(g.overlay,"메뉴로",Rect2(230,630,240,55),g.open_game_menu)
 	g.button(g.overlay,"캠프로" if g.mode=="camp" else "탐험 복귀",Rect2(925,630,285,55),g.resume_game)
 static func show_collection(g):
-	g.modal("야수 도감","한 번 얻은 종의 발견 기록은 동료를 방생해도 보존됩니다.","collection",g.open_game_menu)
+	g.modal("야수 도감","한 번 얻은 종의 발견 기록은 동료를 자연으로 보내도 보존됩니다.","collection",g.open_game_menu)
 	var kinds=g.STATS.keys()
 	for i in kinds.size():
 		var kind=kinds[i]
@@ -104,7 +104,7 @@ static func show_collection(g):
 		var count=0
 		for d in g.owned:
 			if d.kind==kind: count+=1
-		g.label(g.overlay,g.ROLES[kind]+" · 보유 %d마리" % count if found else "포획하여 기록을 남기세요.",p+Vector2(110,61),16)
+		g.label(g.overlay,g.ROLES[kind]+" · 보유 %d마리" % count if found else "교감해 인연을 기록하세요.",p+Vector2(110,61),16)
 		if found:
 			g.button(g.overlay,"동료 찾아보기" if count>0 else "현재 보유 없음",Rect2(p+Vector2(110,100),Vector2(182,42)),func(): g.open_species_roster(kind)).disabled=count==0 or (g.in_combat and g.mode=="stage") or g.mode=="tutorial"
 	g.label(g.overlay,"발견 %d / %d종" % [g.discovered.size(),kinds.size()],Vector2(235,632),19)

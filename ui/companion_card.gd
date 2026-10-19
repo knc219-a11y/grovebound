@@ -4,7 +4,7 @@ var rarity="common"
 const UI=preload("res://ui/grove_ui.gd")
 var portrait: Texture2D
 var companion_name="빈자리"
-var role="포획으로 합류"
+var role="교감으로 합류"
 var hp=0.0
 var max_hp=1.0
 var cooldown=0.0

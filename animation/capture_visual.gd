@@ -29,7 +29,7 @@ func draw(canvas,position,kind,height,time,near,grade="common"):
 	var scale_value=maxf(1.0,roundf(height/catalog[kind].height))
 	var index=posmod(floori(time/0.55),4)
 	canvas.draw_set_transform(p,0,Vector2.ONE*scale_value)
-	canvas.draw_texture_rect_region(textures[kind],Rect2(-56,-94,112,104),Rect2(index*112,0,112,104),Color("c1c4af"))
+	canvas.draw_texture_rect_region(textures[kind],Rect2(-56,-94,112,104),Rect2(index*112,0,112,104),Color("d5dfbf"))
 	canvas.draw_set_transform(Vector2.ZERO)
 	# A small leaf above the resting animal replaces the oversized gold halo.
 	var marks=Loot.COUNTS.get(grade,1)
