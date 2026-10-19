@@ -1,4 +1,5 @@
 extends RefCounted
+signal sounded(kind)
 # Cosmetic only: no damage, timers, targeting or saves are changed here.
 const Loot=preload("res://companion_loot.gd")
 const MAX_EVENTS=80
@@ -9,6 +10,7 @@ func clear():
 	events.clear()
 	numbers.clear()
 func emit(kind,source,target,amount=0.0,options={}):
+	sounded.emit(options.get("audio_kind",kind))
 	var duration=0.28
 	if kind.begins_with("capture_"): duration=1.0
 	if kind in ["heal","buff","guard","revive","level_up"]: duration=0.75

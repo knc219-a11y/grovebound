@@ -33,6 +33,7 @@ def main():
     p.add_argument("--gif-width", type=int, default=640)
     p.add_argument("--gif-seconds", type=float, default=0.0, help="0 keeps the entire clip")
     p.add_argument("--skip-import", action="store_true")
+    p.add_argument("--audio", action="store_true", help="Keep Godot movie audio in MP4 (GIF stays silent)")
     args = p.parse_args()
     if not (0 < args.seconds <= 30 and 1 <= args.fps <= 60 and 1 <= args.gif_fps <= 30
             and 320 <= args.width <= 1920 and args.width % 2 == 0
@@ -77,7 +78,8 @@ def main():
         else:
             video = output.with_suffix(".mp4")
             encoded = Path(temp) / "verified.mp4"
-            run(base + ["-an", "-vf", f"scale={args.width}:-2", "-c:v", "libx264", "-crf", "23",
+            sound = ["-c:a", "aac", "-b:a", "128k"] if args.audio else ["-an"]
+            run(base + sound + ["-vf", f"scale={args.width}:-2", "-c:v", "libx264", "-crf", "23",
                         "-pix_fmt", "yuv420p", "-threads", "2", "-movflags", "+faststart", str(encoded)], cwd=project)
             run([ffmpeg, "-nostdin", "-v", "error", "-i", str(encoded), "-f", "null", "-"], cwd=project)
             shutil.copyfile(encoded, video)

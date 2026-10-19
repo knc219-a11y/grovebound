@@ -122,3 +122,5 @@
 
 ## 새 대화 시작 문구
 https://github.com/knc219-a11y/grovebound 의 AGENTS.md, STATUS.md, docs/NEXT_SESSION.md를 읽고 이어서 진행해줘. 작은 캐릭터와 넓은 시야를 유지하면서 보류한 전체 모션 개선을 재개해줘.
+최신(2026-10-19): 전투 음향1차 완료. STATUS 맨 위와 `docs/COMBAT_AUDIO.md` 우선. 실제 소리 포함 `docs/combat-audio-gameplay.mp4`; GIF는 무음. 일반 타격6종/피격/방어/보스 충격/스킬9종 PCM,6음성/스킬 우선/중복 제한. 수치·세이브 유지. 청감/아이폰 미검증, 다음은 우두머리 전용 행동과 첫 사냥터 완주 검토.
+

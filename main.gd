@@ -125,6 +125,9 @@ var boss_hp_bar: ProgressBar
 var interact_progress: ProgressBar
 
 func _ready():
+	var combat_audio=preload("res://animation/combat_audio.gd").new()
+	add_child(combat_audio)
+	combat_feedback.sounded.connect(combat_audio.cue)
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	rng.seed = 10417
 	font=load("res://assets/fonts/Galmuri11.res")
@@ -811,7 +814,7 @@ func hit_enemy(e, damage, source,attacker={},animate=true):
 	var visual="melee"
 	if not attacker.is_empty():
 		visual="support" if attacker==player else ("fox" if attacker.data.kind=="fox" else "melee")
-	combat_feedback.emit(visual,source,e.pos,dealt,{"target_id":e.get("feedback_id",str(e.pos.round())),"height":sprite_height(e.kind,e.get("boss",false))})
+	combat_feedback.emit(visual,source,e.pos,dealt,{"audio_kind":"hit_"+attacker.data.kind if attacker.has("data") else visual,"target_id":e.get("feedback_id",str(e.pos.round())),"height":sprite_height(e.kind,e.get("boss",false))})
 	if not animate and not attacker.is_empty() and attacker.has("data") and attacker.data.kind!="fox":
 		combat_feedback.emit("impact_"+attacker.data.kind,source,e.pos)
 	if e.hp<=0:
