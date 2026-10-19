@@ -1,5 +1,8 @@
 extends Node2D
 # A self-contained, data-driven playable slice. All gameplay positions are world coordinates.
+const Town=preload("res://town.gd")
+var town_position=Town.SPAWN
+var town_entered=false
 const WORLD_SIZE=Vector2(2900,1650)
 const VIEW_SIZE=Vector2(1440,810)
 const CAPTURE_CHANCE=0.15
@@ -92,6 +95,7 @@ var heal_button: Button
 var buff_button: Button
 var interact_button: Button
 var dropdown: Control
+var town_hidden_labels=[]
 var party_buttons = []
 var chosen_swap = -1
 var is_test = false
@@ -167,7 +171,7 @@ func build_ui():
 	toast_label.size=Vector2(650,54)
 	toast_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	loot_result_button=button(hud,"획득 동료 확인",Rect2(22,116,320,46),func(): show_loot_details(recent_capture_id))
-	label(hud,"동료 스킬",Vector2(365,650),14)
+	town_hidden_labels.append(label(hud,"동료 스킬",Vector2(365,650),14))
 	for i in range(4):
 		var b=CompanionCard.new()
 		b.position=Vector2(363+i*158,676)
@@ -295,14 +299,13 @@ func modal(title, subtitle,page="",back=Callable()):
 	if back.is_valid(): button(overlay,"뒤로",Rect2(1130,116,95,45),navigate_back)
 
 func resume_game():
-	if mode=="camp": show_camp()
-	else: clear_overlay()
+	clear_overlay()
 
 func navigate_back():
 	if menu_back.is_valid():
 		var callback=menu_back
 		callback.call()
-	elif mode=="camp": show_camp()
+	elif mode=="camp": clear_overlay()
 	elif mode in ["stage","tutorial"]: clear_overlay()
 
 func open_game_menu():
@@ -333,47 +336,56 @@ func open_controls():
 	button(overlay,"메뉴로",Rect2(925,630,285,55),open_game_menu)
 
 func show_camp():
+	if mode!="camp" or not town_entered: player.pos=town_position
+	town_entered=true
+	message=""
+	message_time=0.0
 	mode="camp"
+	in_combat=false
+	player.hp=player.maxhp
+	player.walk=false
+	player.channeling=false
+	revive_target=-1
+	holding_revive=false
+	stick=Vector2.ZERO
+	units.clear()
+	enemies.clear()
+	captures.clear()
+	effects.clear()
+	combat_feedback.clear()
+	clear_overlay()
 	save_game()
-	modal("GROVEBOUND  ·  야수의 계곡","야영지  /  동료와 함께 다음 탐험을 준비하세요","home")
-	var ledger=panel(overlay,Rect2(215,215,610,330),Color("202823"))
-	var quiet_frame=GroveUI.frame(Color("202823"),GroveUI.BRONZE,0)
-	quiet_frame.shadow_size=0
-	quiet_frame.bevel=false
-	ledger.add_theme_stylebox_override("panel",quiet_frame)
-	var display=preload("res://ui/camp_display.gd").new()
-	display.position=Vector2(865,215)
-	display.size=Vector2(360,330)
-	overlay.add_child(display)
-	label(overlay,"함께할 동료",Vector2(240,240),16)
-	label(overlay,"성장 재료",Vector2(435,240),16)
-	label(overlay,"탐험 기록",Vector2(630,240),16)
-	label(overlay,str(owned.size())+"마리",Vector2(240,275),30)
-	label(overlay,str(materials),Vector2(435,275),30)
-	label(overlay,"계곡 정복" if unlocked else "첫 탐험" if not tutorial_done else "탐험 중",Vector2(630,281),23)
-	label(overlay,"포획한 야수와 네 마리의 편성을 꾸리세요.\n회복·강화·소생으로 동료를 지켜주세요.",Vector2(240,345),20)
-	label(overlay,"WASD 이동   ·   Q 회복   ·   E 야성   ·   1~4 동료 스킬\nF 포획 / 길게 소생   ·   I 가방   ·   Tab 편성\nEsc 메뉴 / 뒤로   ·   터치: 이동 스틱과 화면 버튼",Vector2(240,435),16)
-	label(overlay,"계곡의 길잡이",Vector2(975,239),20)
-	label(overlay,"DRUID",Vector2(1010,536),16)
-	if not save_notice.is_empty(): label(overlay,save_notice,Vector2(230,552),15)
-	var depart=button(overlay,"첫 동료 만나기" if not tutorial_done else "계곡으로 출발",Rect2(215,620,340,64),show_starters if not tutorial_done else func(): start_stage(false))
-	GroveUI.emphasize(depart)
-	button(overlay,"동료 · 편성 · 성장",Rect2(575,620,340,64),open_roster)
-	if not owned.is_empty():
-		button(overlay,"최근 동료",Rect2(935,620,140,64),func(): show_loot_details(owned[-1].id))
-	var reset=button(overlay,"새 여정",Rect2(1095,620,130,64),confirm_reset)
-	GroveUI.emphasize(reset,"danger")
-	var preview=TextureRect.new()
-	preview.texture=textures["druid"]
-	preview.position=Vector2(973,282)
-	preview.size=Vector2(144,216)
-	preview.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
-	preview.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	preview.mouse_filter=Control.MOUSE_FILTER_IGNORE
-	overlay.add_child(preview)
+
+func update_town(dt):
+	var motion=Vector2(float(Input.is_physical_key_pressed(KEY_D) or Input.is_physical_key_pressed(KEY_RIGHT))-float(Input.is_physical_key_pressed(KEY_A) or Input.is_physical_key_pressed(KEY_LEFT)),float(Input.is_physical_key_pressed(KEY_S) or Input.is_physical_key_pressed(KEY_DOWN))-float(Input.is_physical_key_pressed(KEY_W) or Input.is_physical_key_pressed(KEY_UP)))
+	if stick.length()>0.1: motion=stick
+	var previous=player.pos
+	player.pos=Town.move(player.pos,motion.limit_length()*220*dt)
+	player.walk=player.pos.distance_to(previous)>0.01
+	player.move_speed=player.pos.distance_to(previous)/maxf(dt,0.001)
+	if absf(player.pos.x-previous.x)>0.01: player.face=signf(player.pos.x-previous.x)
+	town_position=player.pos
+	druid_rig.advance(player,dt)
+
+func town_interact():
+	if overlay.visible or dropdown.popup.visible: return
+	match Town.nearest(player.pos):
+		0: open_roster()
+		1:
+			modal("잎그늘 쉼터 · 야영 자리","가칭 / 동료들과 탐험을 준비하는 작은 쉼터","home",resume_game)
+			label(overlay,"함께할 동료 %d마리 · 성장 재료 %d\n동료 쉼터에서 편성과 육성을 준비하세요.\n동쪽 표지판에서 초록물 계곡으로 출발합니다." % [owned.size(),materials],Vector2(250,280),23)
+			button(overlay,"동료 · 편성 · 육성",Rect2(260,510,400,64),open_roster)
+			button(overlay,"마을로",Rect2(760,510,400,64),resume_game)
+			button(overlay,"새 여정",Rect2(960,630,200,50),confirm_reset)
+		2:
+			if not tutorial_done: show_starters()
+			else:
+				modal("초록물 사냥길","편성을 확인하고 계곡으로 출발하세요.","departure",resume_game)
+				button(overlay,"계곡으로 출발",Rect2(300,500,350,65),func(): start_stage(false))
+				button(overlay,"마을로",Rect2(750,500,350,65),resume_game)
 
 func show_starters():
-	modal("첫 인연을 선택하세요", "선택한 야수를 직접 쓰러뜨리면 첫 포획 기회는 확정입니다. 다른 종도 나중에 만날 수 있습니다.")
+	modal("첫 인연을 선택하세요", "선택한 야수를 직접 쓰러뜨리면 첫 포획 기회는 확정입니다. 다른 종도 나중에 만날 수 있습니다.","starters",resume_game)
 	var kinds = ["boar","marten","fox"]
 	var desc = ["든든한 근접형\n돌진 · 잠깐 기절", "빠른 근접형\n한 적에게 연속 공격", "원거리형\n범위 기운탄"]
 	for i in range(3):
@@ -415,6 +427,7 @@ func make_unit(d, p):
 	return {"data":d,"pos":p,"hp":max_hp(d),"maxhp":max_hp(d),"cd":0.0,"skill":0.0,"buff":0.0,"shield":0.0,"face":1.0,"walk":false}
 
 func start_stage(tutorial):
+	if mode=="camp": town_position=player.pos
 	pending_loot_id=-1
 	repair_party()
 	clear_overlay()
@@ -502,7 +515,9 @@ func _process(dt):
 				var species=actor.get("kind",actor.get("data",{}).get("kind",""))
 				if species=="boar": boar_rig.advance(actor,minf(dt,0.05))
 				elif animal_rigs.has(species): animal_rigs[species].advance(actor,minf(dt,0.05))
-	cam = (player.pos-Vector2(720,400)).clamp(Vector2.ZERO,WORLD_SIZE-VIEW_SIZE)
+	if mode=="camp" and not overlay.visible and not dropdown.popup.visible:
+		update_town(minf(dt,0.05))
+	cam = (player.pos-Vector2(720,400)).clamp(Vector2.ZERO,(Town.SIZE if mode=="camp" else WORLD_SIZE)-VIEW_SIZE)
 	update_hud()
 	queue_redraw()
 	if "--screenshot" in OS.get_cmdline_user_args() and clock>2.0 and clock<2.2:
@@ -843,6 +858,9 @@ func closest_capture():
 	return result
 
 func interact():
+	if mode=="camp":
+		town_interact()
+		return
 	if not can_act() or closest_down()>=0: return
 	var i=closest_capture()
 	if i<0: return
@@ -1218,8 +1236,25 @@ func confirm_reset():
 	button(overlay,"취소",Rect2(750,500,350,65),show_camp)
 
 func update_hud():
-	hud.visible=mode!="camp" and mode!="result" and mode!="tutorial_practice"
+	hud.visible=mode!="result" and mode!="tutorial_practice"
 	if not hud.visible: return
+	for b in party_buttons+town_hidden_labels: b.visible=mode!="camp"
+	heal_button.visible=mode!="camp"
+	buff_button.visible=mode!="camp"
+	if mode=="camp":
+		status_label.text="잎그늘 쉼터 · 안전 지대"
+		player_hp_bar.value=player_hp_bar.max_value
+		quest_label.text="동료 쉼터 · 편성 / 육성    →    동쪽 사냥길\nWASD / 이동 스틱 · 가까이에서 F / 상호작용"
+		toast_label.text=save_notice if not save_notice.is_empty() else message if message_time>0 else ""
+		boss_panel.hide()
+		boss_label.hide()
+		boss_hp_bar.hide()
+		loot_result_button.hide()
+		var point=Town.nearest(player.pos)
+		interact_button.visible=point>=0
+		interact_progress.hide()
+		if point>=0: interact_button.text=Town.LABELS[point]+" [F]"
+		return
 	loot_result_button.visible=recent_capture_id>0 and not find_owned(recent_capture_id).is_empty()
 	loot_result_button.disabled=in_combat or mode=="tutorial"
 	if loot_result_button.visible: loot_result_button.text="획득 동료 · "+Loot.title(find_owned(recent_capture_id))+" / 상세 확인"
@@ -1316,7 +1351,7 @@ func _unhandled_input(event):
 				elif not overlay.visible or not menu_page.is_empty(): open_inventory()
 			KEY_ESCAPE:
 				if overlay.visible: navigate_back()
-				elif mode in ["stage","tutorial"]: dropdown.open()
+				elif mode in ["camp","stage","tutorial"]: dropdown.open()
 	if overlay.visible: return
 	if event is InputEventScreenTouch:
 		if event.pressed and event.position.distance_to(Vector2(140,680))<125:
@@ -1385,6 +1420,9 @@ func load_game():
 	next_id=result.next_id
 
 func _draw():
+	if mode=="camp":
+		Town.draw(self)
+		return
 	draw_rect(Rect2(0,0,1440,810),Color("282a2b"))
 	draw_texture_rect(textures["valley"],Rect2(-cam.round(),WORLD_SIZE),false)
 	for e in enemies: combat_feedback.draw_tell(self,e,cam)

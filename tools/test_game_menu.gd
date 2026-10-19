@@ -45,7 +45,7 @@ func check_menu():
 	click.pressed=true
 	root.push_input(click,true)
 	await process_frame
-	if game.dropdown.popup.visible or game.menu_page!="home": failures.append("outside click dismisses without navigating")
+	if game.dropdown.popup.visible or game.overlay.visible: failures.append("outside click dismisses without navigating")
 	click.pressed=false
 	root.push_input(click,true)
 	game.dropdown.open()
@@ -65,7 +65,7 @@ func check_menu():
 	game.navigate_back()
 	if game.menu_page!="menu": failures.append("bag back returns to menu")
 	game.navigate_back()
-	if game.mode!="camp" or game.menu_page!="home": failures.append("menu back returns to camp")
+	if game.mode!="camp" or game.overlay.visible: failures.append("menu back returns to camp")
 	game.inventory_category=1
 	game.open_inventory()
 	if game.overlay.get_node("InventoryScroll").get_child(0).get_child_count()!=1 or game.materials!=12: failures.append("materials bag is read-only")

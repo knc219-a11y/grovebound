@@ -46,7 +46,7 @@ func check_ui():
 		var portrait=row.get_child(0)
 		if not portrait is TextureRect or portrait.texture==null: failures.append("roster portraits")
 	game.show_camp()
-	if not game.overlay.visible or game.mode!="camp": failures.append("camp navigation")
+	if game.overlay.visible or game.mode!="camp": failures.append("camp navigation")
 	game.units.clear()
 	game.mode="stage"
 	game.update_hud()
