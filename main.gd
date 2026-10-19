@@ -1,10 +1,14 @@
 extends Node2D
 # A self-contained, data-driven playable slice. All gameplay positions are world coordinates.
+const Trail=preload("res://trail.gd")
+var trail=Trail.new()
 const Roles=preload("res://companion_roles.gd")
 const Expedition=preload("res://expedition.gd")
 var expedition=Expedition.new()
 var bond_hint_seen=false
 var preparation_seen=false
+var bulk_selection=[]
+var bulk_scroll=0
 var report_contributions=false
 const Town=preload("res://town.gd")
 var town_position=Town.SPAWN
@@ -122,6 +126,7 @@ func _ready():
 	rng.seed = 10417
 	font=load("res://assets/fonts/Galmuri11.res")
 	heading_font=load("res://assets/fonts/Galmuri11-Bold.res")
+	font=heading_font
 	font.subpixel_positioning=TextServer.SUBPIXEL_POSITIONING_DISABLED
 	heading_font.subpixel_positioning=TextServer.SUBPIXEL_POSITIONING_DISABLED
 	textures["valley"]=load("res://assets/maps/greenwater-beginner-v3.webp")
@@ -164,7 +169,7 @@ func build_ui():
 	hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
 	ui.add_child(hud)
-	var theme=GroveUI.theme(font)
+	var theme=GroveUI.theme(heading_font)
 	var hud_theme=theme.duplicate()
 	hud_theme.default_font=heading_font
 	hud.theme=hud_theme
@@ -440,6 +445,7 @@ func make_unit(d, p):
 	return {"data":d,"pos":p,"hp":max_hp(d),"maxhp":max_hp(d),"cd":0.0,"skill":0.0,"buff":0.0,"shield":0.0,"face":1.0,"walk":false}
 
 func start_stage(tutorial):
+	trail.reset()
 	report_contributions=false
 	expedition.begin(owned,materials,tutorial)
 	bond_hint_seen=false
@@ -471,11 +477,9 @@ func start_stage(tutorial):
 		spawn_enemy(tutorial_species,Vector2(650,800),1,false,true)
 		notify("야수에게 다가가 경계를 누그러뜨리세요. 전투 후 쉬고 있는 야수와 교감할 수 있습니다.")
 	else:
-		var packs = [Vector2(650,790),Vector2(1030,640),Vector2(1340,970),Vector2(1660,650),Vector2(1990,960),Vector2(2260,680)]
-		var kinds = ["boar","turtle","deer","fox","marten","wolf"]
-		for i in range(packs.size()):
-			spawn_enemy(kinds[i],packs[i],1+i/2)
-			if i>0: spawn_enemy("wolf",packs[i]+Vector2(85,90),1+i/2)
+		for i in Trail.PACKS.size():
+			spawn_enemy(Trail.KINDS[i],Trail.PACKS[i],1+i/2)
+			if i>0: spawn_enemy("wolf",Trail.PACKS[i]+Vector2(85,60),1+i/2)
 		spawn_enemy("boar",Vector2(2590,850),4,true,false)
 		notify("동료를 모으며 동쪽으로 탐험하세요. 마지막 공터에 우두머리가 있습니다.")
 	update_hud()
@@ -541,6 +545,7 @@ func _process(dt):
 
 func update_game(dt):
 	stage_time += dt
+	if mode=="stage": trail.update(self)
 	combat_feedback.advance(dt)
 	for a in [player]+units+enemies:
 		if not a.get("walk",false): a.move_speed=0.0
@@ -900,7 +905,9 @@ func interact():
 		return
 	if not can_act() or closest_down()>=0: return
 	var i=closest_capture()
-	if i<0: return
+	if i<0:
+		if mode=="stage" and not in_combat and trail.near_rest(player.pos): show_trail_rest()
+		return
 	var c=captures[i]
 	var d=make_owned(c.kind,int(c.level),c if c.has("grade") else {})
 	expedition.record_bond(d)
@@ -925,6 +932,14 @@ func interact():
 		modal("첫 인연을 맺었습니다!",NAMES[d.kind]+" · "+ROLES[d.kind]+" · "+d.trait+" / 이제 함께 싸워보세요.")
 		label(overlay,"동료는 자동으로 싸우고, 초상화를 누르면 고유 스킬을 사용합니다.\nQ 회복과 E 야성 강화로 동료를 지원하세요.\n\n출전은 최대 4마리, 출발 준비는 6마리입니다.\n연습 후 마을의 동료 쉼터에서 편성·육성을 준비하세요.",Vector2(230,280),23)
 		button(overlay,"협동 전투 시작",Rect2(500,570,420,65),start_practice)
+
+func show_trail_rest():
+	if mode!="stage" or in_combat or not trail.near_rest(player.pos): return
+	modal("풀그늘 쉼터","동료들과 잠시 숨을 고르고 다음 길을 준비하세요.","trail_rest",resume_game)
+	label(overlay,"동행 중인 6마리 안에서 출전 동료를 교체할 수 있습니다.\n회복은 기존 지원 스킬 [Q / 회복 버튼]을 사용하세요.\n\n북쪽 풀밭과 남쪽 덤불길은 선택 동선입니다.\n동쪽의 큰 발자국은 우두머리 공터로 이어집니다.",Vector2(240,270),22)
+	button(overlay,"동행 편성",Rect2(240,550,285,60),open_roster)
+	button(overlay,"가방 확인",Rect2(575,550,285,60),open_inventory)
+	button(overlay,"길로 돌아가기",Rect2(925,630,285,55),resume_game)
 
 func start_practice():
 	clear_overlay()
@@ -1179,6 +1194,7 @@ func open_roster():
 			release.pressed.connect(func(): confirm_release(d.id))
 			row.add_child(release)
 	label(overlay,"성장 재료 %d · 육성 3개 → 경험치 +40 · 즐겨찾기는 자연으로 보낼 수 없습니다." % materials,Vector2(230,600),17)
+	if camp: button(overlay,"일괄 작별",Rect2(230,630,220,55),func(): show_bulk_release(true))
 	button(overlay,"완료",Rect2(1000,630,210,55),func(): save_game(); show_camp() if camp else clear_overlay())
 
 func growth_card(d,x,caption):
@@ -1248,6 +1264,43 @@ func toggle_squad(id):
 	elif squad.size()<6: squad.append(id)
 	save_game()
 
+func show_bulk_release(reset=false):
+	if mode!="camp": return
+	if reset:
+		bulk_selection.clear()
+		bulk_scroll=0
+	preload("res://ui/bulk_release.gd").show_page(self)
+
+func toggle_bulk_release(id,checked):
+	var scroll=overlay.get_node_or_null("BulkReleaseScroll")
+	if scroll!=null: bulk_scroll=scroll.scroll_vertical
+	if checked and Management.can_release(find_owned(id),squad):
+		if not bulk_selection.has(id): bulk_selection.append(id)
+	else: bulk_selection.erase(id)
+	show_bulk_release()
+
+func confirm_bulk_release():
+	if mode!="camp" or bulk_selection.is_empty(): return
+	preload("res://ui/bulk_release.gd").show_confirmation(self,bulk_selection.duplicate())
+
+func commit_bulk_release(ids):
+	if mode!="camp" or ids.is_empty(): return false
+	var selected=[]
+	for id in ids:
+		if selected.has(id): continue
+		if not Management.can_release(find_owned(id),squad):
+			notify("선택한 동료 정보가 달라졌습니다. 동행·즐겨찾기를 다시 확인하세요.")
+			show_bulk_release()
+			return false
+		selected.append(id)
+	owned=owned.filter(func(d): return not selected.has(d.id))
+	materials+=selected.size()*2
+	bulk_selection.clear()
+	save_game()
+	open_roster()
+	notify("%d마리와 작별했습니다. 함께한 인연으로 성장 재료 %d개가 남았습니다." % [selected.size(),selected.size()*2])
+	return true
+
 func release_companion(id):
 	var d=find_owned(id)
 	if mode!="camp" or not Management.can_release(d,squad): return false
@@ -1306,7 +1359,7 @@ func update_hud():
 	status_label.text="드루이드  ·  %d / %d" % [player.hp,player.maxhp]
 	player_hp_bar.max_value=player.maxhp
 	player_hp_bar.value=player.hp
-	quest_label.text=("첫 인연 · 쉬는 야수에게 교감 [F / 화면 버튼]" if not captures.is_empty() else "동료와 협동 연습 · Q 회복 / E 강화 / 동료 초상" if tutorial_species=="practice" else "첫 인연 · 야수에게 다가가 경계를 누그러뜨리세요") if mode=="tutorial" else "01  초록물 계곡   →   동쪽 우두머리\n동행 %d/6 · 제압 %d · %02d:%02d · %s" % [squad.size(),kills,int(stage_time)/60,int(stage_time)%60,"전투 중" if in_combat else "탐험 중"]
+	quest_label.text=("첫 인연 · 쉬는 야수에게 교감 [F / 화면 버튼]" if not captures.is_empty() else "동료와 협동 연습 · Q 회복 / E 강화 / 동료 초상" if tutorial_species=="practice" else "첫 인연 · 야수에게 다가가 경계를 누그러뜨리세요") if mode=="tutorial" else (trail.area(player.pos)+"   →   동쪽 우두머리\n동행 %d/6 · 제압 %d · %02d:%02d · %s") % [squad.size(),kills,int(stage_time)/60,int(stage_time)%60,"전투 중" if in_combat else "탐험 중"]
 	toast_label.text=message if message_time>0 else ""
 	boss_label.text=""
 	for e in enemies:
@@ -1337,12 +1390,13 @@ func update_hud():
 	buff_button.disabled=buff_cd>0 or revive_target>=0
 	var down=closest_down()
 	var cap=closest_capture()
-	interact_button.visible=down>=0 or cap>=0
+	interact_button.visible=down>=0 or cap>=0 or (mode=="stage" and not in_combat and trail.near_rest(player.pos))
 	interact_progress.visible=down>=0
 	interact_progress.value=revive_progress
 	if down>=0:
 		interact_button.text="길게 눌러 소생 [F]\n%.1f / 3초" % revive_progress
 	elif cap>=0: interact_button.text=NAMES[captures[cap].kind]+" 교감 [F]"
+	else: interact_button.text="쉼터 · 편성 점검 [F]"
 	if mode=="tutorial" and tutorial_species=="practice" and not overlay.visible and not dropdown.popup.visible:
 		var alive=false
 		for e in enemies:
@@ -1473,6 +1527,7 @@ func _draw():
 		return
 	draw_rect(Rect2(0,0,1440,810),Color("282a2b"))
 	draw_texture_rect(textures["valley"],Rect2(-cam.round(),WORLD_SIZE),false)
+	if mode=="stage": trail.draw(self)
 	for e in enemies: combat_feedback.draw_tell(self,e,cam)
 	var nearest_cap=closest_capture()
 	for i in captures.size():
@@ -1566,6 +1621,8 @@ func draw_minimap():
 		if e.hp>0:
 			draw_circle(origin+e.pos*scale_map,5 if e.boss else 3,Color("ffbc67") if e.boss else Color("e78a75"))
 	for c in captures: draw_arc(origin+c.pos*scale_map,4,0,TAU,12,Color("ffec96"),1.5,true)
+	if mode=="stage":
+		for point in [Trail.NORTH,Trail.SOUTH,Trail.REST]: draw_circle(origin+point*scale_map,2,Color("d9c68b"))
 	for u in active_units():
 		draw_circle(origin+u.pos*scale_map,2.5,Color("bce78b") if u.hp>0 else Color("777e71"))
 	draw_circle(origin+player.pos*scale_map,4,Color("eaf7ea"))
