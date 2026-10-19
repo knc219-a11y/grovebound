@@ -6,10 +6,10 @@ var attack_textures={}
 func _init():
 	catalog=JSON.parse_string(FileAccess.get_file_as_string("res://animation/actions-v1.json"))
 	for kind in catalog: textures[kind]=load(catalog[kind].texture)
-	for kind in ["boar","wolf"]:
+	for kind in ["boar","wolf","marten","fox"]:
 		if ResourceLoader.exists("res://assets/attacks-v2/"+kind+".png"):
 			attack_textures[kind]=load("res://assets/attacks-v2/"+kind+".png")
-			catalog[kind].actions.attack.duration=0.42
+			catalog[kind].actions["cast" if kind=="fox" else "attack"].duration=0.42
 func start(actor,kind,key):
 	if actor.hp<=0 or not catalog.has(kind) or not catalog[kind].actions.has(key): return false
 	# A routine strike must not cancel an explicit heal/guard/support gesture.
@@ -31,7 +31,7 @@ func selection(kind,actor):
 	var phase=0.0
 	# Enemy bite anticipation keeps its existing .65s wind-up and hit timing.
 	if attack_textures.has(kind) and actor.get("wind",0.0)>0 and not actor.get("boss",false):
-		return {"key":"attack","region":[112,0,112,104],"dedicated":true}
+		return {"key":"cast" if kind=="fox" else "attack","region":[112,0,112,104],"dedicated":true}
 	if kind=="druid" and actor.get("channeling",false):
 		key="revive"
 		phase=fposmod(actor.get("channel_time",0.0),0.9)/0.9
@@ -43,7 +43,7 @@ func selection(kind,actor):
 	if not catalog[kind].actions.has(key): return {}
 	# Full-body stationary poses cannot replace travelling feet. Channeling is stationary.
 	if actor.get("walk",false) and not actor.get("channeling",false): return {}
-	if key=="attack" and attack_textures.has(kind) and not actor.get("boss",false):
+	if key==("cast" if kind=="fox" else "attack") and attack_textures.has(kind) and not actor.get("boss",false):
 		# Enemy impact starts after its existing wind-up; allies start with anticipation.
 		var index=clampi(floori(phase*6),0,5)
 		if actor.has("kind") and not actor.get("boss",false): index=clampi(2+floori(phase*4),2,5)

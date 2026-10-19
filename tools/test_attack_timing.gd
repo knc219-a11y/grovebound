@@ -9,7 +9,7 @@ func check():
 	g.spawn_enemy("boar",Vector2(1000,800),9)
 	var enemy=g.enemies[0]
 	var failures=[]
-	for kind in ["boar","wolf"]:
+	for kind in ["boar","wolf","marten","fox"]:
 		var d=g.make_owned(kind,1)
 		var u=g.make_unit(d,Vector2(955,800))
 		var hp=enemy.hp
@@ -38,10 +38,10 @@ func check():
 				var frame=image.get_region(Rect2i(i*112,0,112,104))
 				var box=frame.get_used_rect()
 				if box.position.x<=0 or box.position.y<=0 or box.end.x>=112 or box.end.y>=104: failures.append(kind+" dedicated art clipped")
-				if box.size.y>49: failures.append(kind+" native height changed")
+				if box.size.y>int({"boar":48,"wolf":48,"marten":32,"fox":40}[kind]): failures.append(kind+" native height changed")
 				unique[frame.get_data().hex_encode().sha256_text()]=true
 			if unique.size()<4: failures.append(kind+" dedicated poses not distinct")
-	if failures.is_empty(): print("ATTACK TIMING PASS: no early/double/dead/remote hit, dedicated boar/wolf art, exact .14 second impact")
+	if failures.is_empty(): print("ATTACK TIMING PASS: no early/double/dead/remote hit, dedicated four-species art, exact .14 second impact")
 	else: push_error(str(failures))
 	g.free()
 	quit(0 if failures.is_empty() else 1)

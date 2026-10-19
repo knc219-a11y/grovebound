@@ -82,7 +82,7 @@ func draw(canvas,cam,font):
 			if direction.length()<0.1: direction=Vector2.RIGHT
 			var side=direction.orthogonal()
 			var radius=8+18*(1-pow(1-t,3))
-			var outer=Color("edbd6a") if event.kind=="impact_boar" else Color("b9dbe2")
+			var outer=Color("edbd6a") if event.kind=="impact_boar" else Color("edbbd0") if event.kind=="impact_marten" else Color("b9dbe2")
 			outer.a=c.a
 			if t<0.32:
 				var core=Color("fff3cd")
@@ -91,7 +91,7 @@ func draw(canvas,cam,font):
 			for i in 5:
 				var ray=direction.rotated((i-2)*0.65)
 				canvas.draw_line((p+ray*radius*0.4).round(),(p+ray*radius).round(),outer,2,false)
-			if event.kind=="impact_wolf":
+			if event.kind in ["impact_wolf","impact_marten"]:
 				for i in 2:
 					var offset=side*(i*2-1)*5
 					canvas.draw_line((p+offset-side*9-direction*4).round(),(p+offset+side*7+direction*5).round(),outer,2,false)

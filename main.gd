@@ -631,7 +631,7 @@ func update_game(dt):
 			if kind=="fox" and u.pos.distance_to(target.pos)<105:
 				move_entity(u,u.pos+(u.pos-target.pos).normalized()*100,speed,dt)
 			if u.pos.distance_to(target.pos)<=reach and u.cd<=0:
-				if kind in ["boar","wolf"]:
+				if kind in ["boar","wolf","marten","fox"]:
 					begin_basic_attack(u,target,attack(u.data)*(1.6 if u.buff>0 else 1.0))
 				else: hit_enemy(target,attack(u.data)*(1.6 if u.buff>0 else 1.0),u.pos,u)
 				u.cd=0.85 if kind=="marten" else 1.2
@@ -767,14 +767,14 @@ func animate_attack(source,attacker={}):
 			var species="druid" if a==player else a.data.kind
 			motion_actions.start(a,species,"support" if species=="druid" else ("cast" if species=="fox" else "attack"))
 			# Immediate skills already applied damage; show the impact, not a late wind-up.
-			if species in ["boar","wolf"]: a.action_remaining=a.action_duration*2.0/3.0
+			if species in ["boar","wolf","marten","fox"]: a.action_remaining=a.action_duration*2.0/3.0
 			return
 
 func begin_basic_attack(u,target,damage):
 	if u.hp<=0 or target.hp<=0 or u.has("pending_basic"): return false
 	u.walk=false
 	if absf(target.pos.x-u.pos.x)>1: u.face=signf(target.pos.x-u.pos.x)
-	motion_actions.start(u,u.data.kind,"attack")
+	motion_actions.start(u,u.data.kind,"cast" if u.data.kind=="fox" else "attack")
 	u.pending_basic={"target":target,"damage":damage,"remaining":0.14}
 	return true
 
@@ -789,7 +789,7 @@ func advance_basic_attack(u,dt):
 	if pending.remaining<=0:
 		u.erase("pending_basic")
 		var target=pending.target
-		# A target that died or left melee reach during anticipation is not hit remotely.
+		# A target that died or left the species' normal reach is not hit remotely.
 		if enemies.has(target) and target.hp>0 and u.pos.distance_to(target.pos)<=STATS[u.data.kind][2]+18:
 			hit_enemy(target,pending.damage,u.pos,u,false)
 	return true
@@ -812,7 +812,7 @@ func hit_enemy(e, damage, source,attacker={},animate=true):
 	if not attacker.is_empty():
 		visual="support" if attacker==player else ("fox" if attacker.data.kind=="fox" else "melee")
 	combat_feedback.emit(visual,source,e.pos,dealt,{"target_id":e.get("feedback_id",str(e.pos.round())),"height":sprite_height(e.kind,e.get("boss",false))})
-	if not animate and not attacker.is_empty() and attacker.has("data"):
+	if not animate and not attacker.is_empty() and attacker.has("data") and attacker.data.kind!="fox":
 		combat_feedback.emit("impact_"+attacker.data.kind,source,e.pos)
 	if e.hp<=0:
 		e["death"]=0.32
