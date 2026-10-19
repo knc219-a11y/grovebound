@@ -56,10 +56,11 @@ func _draw():
 		var p=Vector2(180+(i%4)*355,390) if i<4 else Vector2(250+(i-4)*470,690)
 		var h=72 if kind=="druid" else (48 if kind=="boar" else idle[kind].get_height())
 		draw_line(p-Vector2(125,0),p+Vector2(125,0),Color("4c5c43"),2)
-		if kind=="druid": weapon.draw(self,p,h*3,1,Color.WHITE,actors[kind])
+		if kind=="druid" and not weapon.in_front(actors[kind]): weapon.draw(self,p,h*3,1,Color.WHITE,actors[kind])
 		if not actions.draw(self,p,h*3,1,Color.WHITE,kind,actors[kind]):
 			if kind=="boar": rigs[kind].draw(self,p,h*3,1,Color.WHITE,actors[kind])
 			else: rigs[kind].draw(self,p,h*3,1,Color.WHITE,actors[kind],idle[kind])
+		if kind=="druid" and weapon.in_front(actors[kind]): weapon.draw(self,p,h*3,1,Color.WHITE,actors[kind])
 		var chosen=actions.selection(kind,actors[kind])
 		var label=chosen.get("key","walk" if clock<2.0 else "idle")
 		draw_string(font,p+Vector2(-105,40),kind.to_upper()+" / "+label,HORIZONTAL_ALIGNMENT_LEFT,-1,21,Color("e0d2b2"))

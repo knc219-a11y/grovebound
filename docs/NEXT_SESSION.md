@@ -10,6 +10,8 @@
 
 # 최신 갱신: 이동형 마을 1차 구현 완료
 
+최신 드루이드 원화: `docs/DRUID_SUPPORT_ART.md`, STATUS 맨 위 기준으로 회복/강화/소생3자세와 독립 지팡이 손잡이 연결을 적용했다. 실제 `docs/druid-support-gameplay.gif`/`.mp4`, 제작용 `druid-support-detail.gif`/`.mp4` 확인. 여섯 동료+드루이드 첫 행동 원화 연결이 끝났으므로 다음은 사용자 전투 화면 평가 후 자세 전환/스킬 구분/가림 조정, 이후 전투 음향·보스 전용 행동을 검토한다.
+
 최신 지원 원화: 사슴 회복/거북 방어를 `docs/SUPPORT_ART_V1.md` 기준으로 적용했다. `docs/support-art-gameplay.gif`/`.mp4`와 제작용 `support-art-detail.gif`/`.mp4`에서 이동↔회복·방어 연결을 확인한다. 다음 후보는 드루이드 회복/강화/소생 원화이며 무기 독립 레이어를 보존해야 한다. 전투 수치·캐릭터 표시 크기는 유지했다.
 
 최신 원화 확장: 담비·여우 준비/타격·시전/회수 원화가 추가됐다. `docs/ATTACK_ART_V3.md`, STATUS 맨 위 기준. 실제 `docs/attack-v3-gameplay.gif`/`.mp4`와 제작용 `attack-v3-detail.gif`/`.mp4`에서 네 종 공격 연결을 확인한다. 다음 후보는 사슴·거북·드루이드의 지원/방어 전용 원화지만 사용자의 모션 평가에 따라 우선순위를 조정한다.

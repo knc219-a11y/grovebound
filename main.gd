@@ -1678,7 +1678,8 @@ func _draw():
 		if a.hp<=0:
 			tilt=-0.75*a.face
 			if not a.ally: col.a=state.get("death",0.0)/0.32
-		if a.kind=="druid": weapon_visual.draw(self,p+offset,a.size,a.face,col,state)
+		var front_weapon=a.kind=="druid" and weapon_visual.in_front(state)
+		if a.kind=="druid" and not front_weapon: weapon_visual.draw(self,p+offset,a.size,a.face,col,state)
 		if motion_actions.draw(self,p+offset,a.size,a.face,col,a.kind,state):
 			pass
 		elif a.kind=="boar":
@@ -1690,6 +1691,7 @@ func _draw():
 			animal_rigs[a.kind].draw(self,p+offset,a.size,a.face,col,state,textures[a.kind])
 		else:
 			draw_sprite(a.kind,p+Vector2(0,bob)+offset,a.size,a.face,col,tilt,deformation)
+		if front_weapon: weapon_visual.draw(self,p+offset,a.size,a.face,col,state)
 		var bar=Rect2(p+Vector2(-27,-a.size-10),Vector2(54,6))
 		draw_rect(bar,Color("25392b"))
 		bar.size.x*=maxf(0,a.hp/a.maxhp)
