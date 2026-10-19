@@ -28,7 +28,10 @@ static func roll(kind,level,rng,forced_grade=""):
 		var pick=rng.randf()
 		grade="common" if pick<0.75 else ("rare" if pick<0.97 else "epic")
 	var traits=["강인함","용맹함","단단함","민첩함"]
-	if kind=="deer": traits.append("다정함")
+	if kind=="deer":
+		# Deer never attacks: do not roll a new attack-only trait on a healer.
+		traits.erase("용맹함")
+		traits.append("다정함")
 	var temperament=traits[rng.randi_range(0,traits.size()-1)]
 	var available=pool(kind,temperament)
 	var options=[]

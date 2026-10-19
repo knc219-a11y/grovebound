@@ -1,9 +1,11 @@
 extends Node2D
 # A self-contained, data-driven playable slice. All gameplay positions are world coordinates.
+const Roles=preload("res://companion_roles.gd")
 const Expedition=preload("res://expedition.gd")
 var expedition=Expedition.new()
 var bond_hint_seen=false
 var preparation_seen=false
+var report_contributions=false
 const Town=preload("res://town.gd")
 var town_position=Town.SPAWN
 var town_entered=false
@@ -337,11 +339,12 @@ func open_controls():
 	modal("조작 안내","탐험과 동료 지원을 위한 기본 조작입니다.","controls",open_game_menu)
 	label(overlay,"이동  WASD / 방향키 · 터치 이동 스틱\n회복  Q · 야성 강화  E\n동료 스킬  1~4 · 하단 동료 초상 터치\n교감  F · 쓰러진 동료 소생은 F 길게 누르기\n가방  I · 편성  Tab · 메뉴 / 뒤로  Esc",Vector2(245,250),24)
 	label(overlay,"메뉴를 열면 탐험이 일시정지됩니다. 편성은 비전투 중, 육성은 캠프에서 가능합니다.",Vector2(245,530),18)
+	label(overlay,"동료 초상의 강·용·단·민·정은 상시 특성입니다. 가방의 상세 화면에서 효과를 확인하세요.",Vector2(245,575),16)
 	button(overlay,"메뉴로",Rect2(925,630,285,55),open_game_menu)
 
 func show_camp():
 	var show_recap=false
-	if expedition.active: show_recap=expedition.close(owned,materials,kills,stage_time,"마을로 중도 귀환")
+	if expedition.active: show_recap=expedition.close(owned,materials,kills,stage_time,"마을로 중도 귀환",units)
 	if mode!="camp" or not town_entered: player.pos=town_position
 	town_entered=true
 	message=""
@@ -437,6 +440,7 @@ func make_unit(d, p):
 	return {"data":d,"pos":p,"hp":max_hp(d),"maxhp":max_hp(d),"cd":0.0,"skill":0.0,"buff":0.0,"shield":0.0,"face":1.0,"walk":false}
 
 func start_stage(tutorial):
+	report_contributions=false
 	expedition.begin(owned,materials,tutorial)
 	bond_hint_seen=false
 	if mode=="camp": town_position=player.pos
@@ -585,11 +589,12 @@ func update_game(dt):
 		u.buff=maxf(0,u.buff-dt)
 		u.shield=maxf(0,u.shield-dt)
 		u.walk=false
+		u.role_flash=maxf(0,u.get("role_flash",0.0)-dt)
 		if i>=4 or u.hp<=0: continue
 		u.cd-=dt
 		var kind=u.data.kind
 		var speed=STATS[kind][3]*(1.2 if u.data.trait=="민첩함" else 1.0)*(1.0+Loot.bonus(u.data,"speed"))
-		var target=nearest_enemy(u.pos,410)
+		var target=Roles.target(kind,u.pos,enemies,player.pos,410)
 		if u.pos.distance_to(player.pos)>430 or (not target.is_empty() and target.pos.distance_to(player.pos)>550):
 			move_entity(u,player.pos,speed*1.7,dt,75)
 			continue
@@ -598,6 +603,9 @@ func update_game(dt):
 			move_entity(u,player.pos+offset,speed*1.3,dt,15)
 		elif kind=="deer":
 			if u.pos.distance_to(target.pos)<155: move_entity(u,u.pos+(u.pos-target.pos).normalized()*70,speed,dt)
+			var injured=lowest_ally(player.pos,600)
+			if not injured.is_empty() and injured.hp<injured.maxhp and u.pos.distance_to(injured.pos)>245 and u.pos.distance_to(target.pos)>=155:
+				move_entity(u,injured.pos,speed,dt,225)
 			var a=lowest_ally(u.pos,300)
 			if u.cd<=0 and not a.is_empty() and a.hp<a.maxhp:
 				heal(a,12*(1.25 if u.data.trait=="다정함" else 1.0),u.pos,u)
@@ -714,11 +722,16 @@ func advance_charge(e, dt):
 
 func damage_ally(a, damage, source):
 	if a.hp<=0: return
+	var incoming=damage
 	if a.has("data"):
 		if a.data.trait=="단단함": damage*=0.85
 		damage*=1.0-Loot.bonus(a.data,"armor")
 		if a.shield>0: damage*=0.4
 	var taken=minf(a.hp,damage)
+	if a.has("data"):
+		var prevented=maxf(0,minf(a.hp,incoming)-taken)
+		Roles.add_metric(a,"mitigation",prevented)
+		if a.shield>0: Roles.signal_action(a,"방어 중")
 	a.hp=maxf(0,a.hp-damage)
 	a["hit"]=0.18
 	a["recoil"]=(a.pos-source).normalized()*6
@@ -737,6 +750,10 @@ func hit_enemy(e, damage, source,attacker={}):
 	if not attacker.is_empty() and attacker.has("data") and e.get("stun",0.0)>0:
 		damage*=1.0+Loot.bonus(attacker.data,"stun_hunter")
 	var dealt=minf(e.hp,damage)
+	if not attacker.is_empty() and attacker.has("data"):
+		Roles.add_metric(attacker,"damage",dealt)
+		if attacker.get("role_flash",0.0)<=0:
+			Roles.signal_action(attacker,"기절 집중" if attacker.data.kind=="marten" and e.get("stun",0.0)>0 else "추격 타격" if attacker.data.kind=="wolf" else "기본 공격")
 	e.hp=maxf(0,e.hp-damage)
 	e.active=true
 	e["hit"]=0.16
@@ -793,6 +810,9 @@ func heal(a, amount, source,healer={}):
 	if not healer.is_empty() and healer.has("data"): amount*=1.0+Loot.bonus(healer.data,"healing")
 	var restored=minf(amount,a.maxhp-a.hp)
 	a.hp=minf(a.maxhp,a.hp+amount)
+	if restored>0 and not healer.is_empty() and healer.has("data"):
+		Roles.add_metric(healer,"healing",restored)
+		Roles.signal_action(healer,"회복 지원")
 	if restored>0: combat_feedback.emit("heal",source,a.pos,restored,{"target_id":a.data.id if a.has("data") else -1,"height":sprite_height(a.data.kind) if a.has("data") else sprite_height("druid")})
 
 func cast_heal():
@@ -824,7 +844,7 @@ func use_companion_skill(i):
 	if not can_act() or i>=active_units().size(): return
 	var u=units[i]
 	if u.hp<=0 or u.skill>0: return
-	var target=nearest_enemy(u.pos,430)
+	var target=Roles.target(u.data.kind,u.pos,enemies,player.pos,430)
 	var skill_origin=u.pos
 	match u.data.kind:
 		"deer":
@@ -853,6 +873,8 @@ func use_companion_skill(i):
 					target.stun=1.5
 				hit_enemy(target,attack(u.data)*3.5*(1.6 if u.buff>0 else 1.0),u.pos,u)
 			combat_feedback.emit("skill_"+u.data.kind,skill_origin,target.pos)
+	Roles.signal_action(u,Roles.SKILLS[u.data.kind])
+	Roles.add_metric(u,"skills",1)
 	u.skill=10.0*(1.0-Loot.bonus(u.data,"skill_haste"))
 
 func closest_down():
@@ -919,7 +941,7 @@ func finish(success):
 	if success:
 		materials+=10
 		unlocked=true
-	expedition.close(owned,materials,kills,stage_time,"우두머리 제압 · 클리어 보너스 +10" if success else "드루이드가 쓰러져 귀환 · 클리어 보너스 없음")
+	expedition.close(owned,materials,kills,stage_time,"우두머리 제압 · 클리어 보너스 +10" if success else "드루이드가 쓰러져 귀환 · 클리어 보너스 없음",units)
 	save_game()
 	show_run_report()
 
@@ -950,11 +972,11 @@ func loot_card(d,x,caption,animate=false):
 	var color=Loot.color(d)
 	var card=panel(overlay,Rect2(x,265,465,330),Color("202823"))
 	card.add_theme_stylebox_override("panel",GroveUI.frame(Color("202823"),color,2))
-	label(overlay,caption,Vector2(x+18,278),16)
+	label(overlay,caption+" · "+Roles.LABELS[d.kind]+" / "+Roles.SKILLS[d.kind],Vector2(x+18,278),16)
 	var title=label(overlay,"[%s] %s  Lv.%d" % [Loot.title(d),NAMES[d.kind],d.level],Vector2(x+18,312),25)
 	title.add_theme_color_override("font_color",color)
 	label(overlay,"고정 특성 · "+d.trait,Vector2(x+18,359),21)
-	label(overlay,Loot.TRAIT_DESCRIPTIONS.get(d.trait,"고정된 개체 특성"),Vector2(x+18,389),16)
+	label(overlay,Loot.TRAIT_DESCRIPTIONS.get(d.trait,"고정된 개체 특성")+(" · 회복량에는 적용 안 됨" if d.kind=="deer" and d.trait=="용맹함" else ""),Vector2(x+18,389),16)
 	label(overlay,"체력 %d   공격력 %.1f" % [max_hp(d),attack(d)],Vector2(x+18,421),19)
 	var lines=Loot.lines(d)
 	if lines.is_empty(): lines.append("기존 동료 · 옵션 없음 (능력 유지)")
@@ -970,7 +992,7 @@ func loot_card(d,x,caption,animate=false):
 	label(overlay,"경험치 %d / %d · 다음 레벨까지 %d" % [d.xp,Management.needed_xp(d),maxi(0,Management.needed_xp(d)-d.xp)],Vector2(x+18,566),15)
 
 func show_loot_details(id,compare_id=-1,animate=true,from_roster=false):
-	if in_combat and mode=="stage": notify("전투가 끝나면 새로운 인연를 확인할 수 있습니다."); return
+	if in_combat and mode=="stage": notify("전투가 끝나면 새로운 인연을 확인할 수 있습니다."); return
 	var d=find_owned(id)
 	if d.is_empty(): return
 	if menu_page!="detail": detail_origin_page="inventory" if menu_page=="inventory" else ("companions" if from_roster else "")
@@ -984,7 +1006,7 @@ func show_loot_details(id,compare_id=-1,animate=true,from_roster=false):
 		for other in candidates:
 			if compare_id<0 or other.kind==d.kind: compare_id=other.id
 			if other.kind==d.kind: break
-	modal("맺어진 인연  ·  "+NAMES[d.kind],"특성은 고정 · 옵션은 개체별 고정 / 표시 능력치는 각 동료의 현재 레벨 기준입니다.","detail",return_from_details)
+	modal("맺어진 인연  ·  "+NAMES[d.kind],Roles.DESCRIPTIONS[d.kind]+" · 스킬 대기 %.1f초" % (10.0*(1.0-Loot.bonus(d,"skill_haste"))),"detail",return_from_details)
 	label(overlay,"교감한 야수가 새로운 동료로 합류했습니다.",Vector2(232,222),18)
 	loot_card(d,230,"선택한 동료",animate)
 	var comparison=find_owned(compare_id)
@@ -1089,7 +1111,7 @@ func open_roster():
 		row.custom_minimum_size=Vector2(970,90)
 		rows.add_child(row)
 		var idx=squad.find(d.id)
-		var desc="[%s] %s  Lv.%d\n%s · %s" % [Loot.title(d),NAMES[d.kind],d.level,ROLES[d.kind],d.trait]
+		var desc="[%s] %s  Lv.%d\n%s · %s" % [Loot.title(d),NAMES[d.kind],d.level,Roles.LABELS[d.kind],d.trait]
 		if idx>=0: desc=("[출전 %d] " % (idx+1) if idx<4 else "[대기 %d] " % (idx-3))+desc
 		else: desc="[보관] "+desc
 		var portrait=TextureRect.new()
@@ -1108,7 +1130,7 @@ func open_roster():
 		b.add_theme_font_size_override("font_size",17)
 		b.add_theme_color_override("font_color",Loot.color(d))
 		GroveUI.quiet(b,Loot.color(d))
-		b.tooltip_text=Loot.TRAIT_DESCRIPTIONS.get(d.trait,"")+"\n"+"\n".join(Loot.lines(d))
+		b.tooltip_text=Roles.describe(d,Loot)+"\n"+"\n".join(Loot.lines(d))
 		b.clip_text=true
 		b.alignment=HORIZONTAL_ALIGNMENT_LEFT
 		b.pressed.connect(func(): select_swap(d.id))
@@ -1303,7 +1325,8 @@ func update_hud():
 		var b=party_buttons[i]
 		if i<units.size():
 			var u=units[i]
-			b.configure(textures[u.data.kind],NAMES[u.data.kind],ROLES[u.data.kind],u.hp,u.maxhp,u.skill,Loot.grade(u.data),10.0*(1.0-Loot.bonus(u.data,"skill_haste")))
+			b.configure(textures[u.data.kind],NAMES[u.data.kind],Roles.LABELS[u.data.kind],u.hp,u.maxhp,u.skill,Loot.grade(u.data),10.0*(1.0-Loot.bonus(u.data,"skill_haste")))
+			b.insight(u.data.trait,Roles.describe(u.data,Loot),u.get("role_action",""),u.get("role_flash",0.0))
 			b.disabled=u.hp<=0 or u.skill>0 or revive_target>=0
 		else:
 			b.configure(null,"빈자리","교감으로 합류",0,1,0)
@@ -1326,7 +1349,7 @@ func update_hud():
 			if e.hp>0: alive=true
 		if not alive:
 			tutorial_species=""
-			expedition.close(owned,materials,kills,stage_time,"첫 인연 · 협동 연습 완료")
+			expedition.close(owned,materials,kills,stage_time,"첫 인연 · 협동 연습 완료",units)
 			show_camp()
 			show_run_report()
 

@@ -13,7 +13,7 @@ func begin(owned,materials,tutorial):
 	baseline={"owned":owned.duplicate(true),"materials":materials,"tutorial":tutorial}
 func record_bond(d):
 	if active: joined[d.id]=d.duplicate(true)
-func close(owned,materials,kills,seconds,outcome):
+func close(owned,materials,kills,seconds,outcome,units=[]):
 	if not active: return false
 	active=false
 	var before={}
@@ -27,7 +27,11 @@ func close(owned,materials,kills,seconds,outcome):
 		if old.is_empty(): continue
 		var delta=int(lifetime_xp(d)-lifetime_xp(old))
 		if delta>0: growth.append({"id":d.id,"kind":d.kind,"from":old.level,"to":d.level,"xp":delta})
-	report={"outcome":outcome,"newcomers":newcomers,"growth":growth,"materials":materials-int(baseline.materials),"kills":kills,"seconds":int(seconds),"tutorial":baseline.tutorial}
+	var contributions=[]
+	for u in units:
+		if u.get("contribution",{}).is_empty(): continue
+		contributions.append({"id":u.data.id,"kind":u.data.kind,"trait":u.data.trait,"values":u.contribution.duplicate(true)})
+	report={"contributions":contributions,"outcome":outcome,"newcomers":newcomers,"growth":growth,"materials":materials-int(baseline.materials),"kills":kills,"seconds":int(seconds),"tutorial":baseline.tutorial}
 	return true
 func clear():
 	active=false
