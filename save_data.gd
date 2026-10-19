@@ -58,4 +58,15 @@ static func normalize(data: Dictionary, valid_kinds: Array):
 			continue
 		if value is Dictionary: repaired = true
 		squad.append(id)
-	return {"owned":owned,"squad":squad,"next_id":next_id,"repaired":repaired}
+	var discovered=[]
+	var history=data.get("discovered",[])
+	if not history is Array:
+		history=[]
+		repaired=true
+	for kind in history:
+		if valid_kinds.has(kind) and not discovered.has(kind): discovered.append(kind)
+		else: repaired=true
+	for record in owned:
+		if not discovered.has(record.kind): discovered.append(record.kind)
+	if not data.has("discovered") or discovered!=history: repaired=true
+	return {"owned":owned,"squad":squad,"next_id":next_id,"discovered":discovered,"repaired":repaired}

@@ -30,8 +30,10 @@ func _initialize():
 	for id in world.squad:
 		var unit = world.make_unit(world.find_owned(id),Vector2.ZERO)
 		if unit.is_empty() or unit.hp<=0 or not unit.data.has("kind"): failures.append("repaired unit")
+	world.discovered.append("deer")
 	world.save_game()
 	world.load_game()
+	if not world.discovered.has("deer"): failures.append("released species history persists")
 	if world.squad!=[1,2] or world.owned.size()!=2 or not world.owned[0].favorite: failures.append("repaired save and favorite roundtrip")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(test_path))
 	if not world.save_backup_path.is_empty(): DirAccess.remove_absolute(ProjectSettings.globalize_path(world.save_backup_path))

@@ -27,7 +27,7 @@ func check_management():
 	if multi.level!=4 or multi.xp!=125: failures.append("multiple level projection")
 	if Manager.project(records[0],-40).xp!=100: failures.append("negative XP ignored")
 	if Manager.can_release(records[0],[]) or Manager.can_release(records[2],party): failures.append("favorite and squad protection")
-	var normalized=Save.normalize(JSON.parse_string(JSON.stringify({"owned":records,"squad":party,"next_id":5})),["boar","fox"])
+	var normalized=Save.normalize(JSON.parse_string(JSON.stringify({"owned":records,"squad":party,"next_id":5,"discovered":["boar","fox"]})),["boar","fox"])
 	if normalized.repaired or not normalized.owned[0].favorite or normalized.owned[1].favorite: failures.append("favorite JSON roundtrip")
 	var legacy=records[0].duplicate(true)
 	legacy.erase("favorite")

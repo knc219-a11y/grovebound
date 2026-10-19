@@ -71,6 +71,16 @@
 - Godot 임포트 및 self-test/UI/art_type/companion_management/companion_loot 검사 PASS,실제 렌더 SCRIPT/Parse ERROR 없음. 버튼/바 크기·행 넘침·주요 터치 영역·콜백 검사 유지. 성장/포획/세이브/전투 수치·월드 캐릭터 크기/카메라/배경은 변경하지 않았다.
 - 모바일 실기기 촉감/성능과 사용자 미적 평가는 아직 미검증. 이번 디자인을 이미 최종 승인된 것으로 간주하지 않는다.
 
+## 공통 메뉴·인벤토리·도감 (2026-10-19)
+- 사용자 요청: 캠프/전투 두 화면 중심 구조를 현대적인 메뉴·인벤토리 흐름으로 개선. `ui/game_menu.gd`에 공통 페이지/탐색, `ui/inventory_slot.gd`에 실제 소유 동료/재료 슬롯 구현.
+- 정보 페이지 하단에 캠프(현장에서는 탐험 복귀)/가방/동료/도감/메뉴 내비게이션. 기존 보관함/상세/육성도 연결. HUD 가방 I/메뉴 Esc 추가. 캠프·전투 mode와 메뉴 page를 분리해 현장에서 캠프로 순간 이동시키지 않는다.
+- 가방: 동료 격자·선택 상세·등급/특성/옵션/경험치·상세 비교 연결. 재료 탭은 실제 성장 재료 수량과3개→40XP 용도 및 캠프 육성 진입. 슬롯 선택 시 스크롤 유지. 장비·소비품·새 재료 드랍은 도입하지 않았다.
+- 여정 메뉴: 보유/편성/발견 종 요약,실제 튜토리얼/클리어 기록,조작 안내,탐험 재개/귀환. 메뉴 열기 시 게임 루프 일시정지,복귀 시 위치 유지. 전투 중 편성/튜토리얼 편성/현장 육성 제한 유지. 귀환/방생/초기화 확인의 뒤로 경로도 취소 동작과 연결.
+- 도감: 획득 시 발견 기록 등록,방생 후에도 유지. 저장 버전1에 `discovered` 배열 추가,중복/미지원 값 정규화. 기존 저장은 현재 보유 종을 합쳐 결정적으로 마이그레이션하고 원본 백업 정책 유지. 과거 방생 내역은 기록이 없으므로 추측 복원하지 않는다. 새 여정 시 도감도 초기화한다.
+- 실제 Godot `docs/menu-overview.png`, `menu-inventory.png`, `menu-materials.png`, `menu-collection.png`, `menu-camp.png`, `menu-navigation.gif`/`.mp4`. 사용자 저장과 격리한 `animation/menu_*_review.tscn` 사용.
+- self-test/game_menu/UI/art_type/loot/management/save_repair/capture/combat_feedback/action_events PASS. 실제 슬롯·콜백·빈 상태·내비게이션 화면 범위·상세 뒤로·I/Esc·메뉴 중 실제 시간/위치 정지·재개 위치·귀환 취소·전투 제한·발견 JSON/파일 저장·방생 후 기록 보존 검증. 실제 캡처 Parse/SCRIPT ERROR 없음.
+- 장비 인벤토리/설정 화면/주인공 성장/중복 소비는 미구현. 모바일 실기기 터치/성능은 미검증. 기존 작은 캐릭터·넓은 시야·배경·전투/수집 밸런스 유지.
+
 ## 검증과 도구
 - 현행 비율 수정: Godot 임포트/배경 lossless round-trip/art-type/self-test 통과. 실제 Godot HUD 및6초 전투 녹화 생성. 실기기와 전체 스테이지 완주는 별도 미검증.
 - `tools/pack_background.gd -- SOURCE.png res://assets/maps/OUTPUT.webp`: nearest 확대 + lossless RGB 재검증. 원본 해상도 이상 새 디테일은 생기지 않는다.

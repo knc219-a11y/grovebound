@@ -7,7 +7,13 @@
 - 현재 초급 맵: assets/maps/greenwater-beginner-v3.webp. 작은 캐릭터·기존 넓은 시야 유지. 배경 소품을 줄였으며 캐릭터2배 확대는 되돌렸다.
 - 사용자는 배경의 선명한 도트풍을 좋아한다. 최신 v3 소품 비율에 대한 최종 사용자 평가는 아직 받지 않았다. 이미 승인됐다고 가정하지 않는다.
 
-## 최신 진행: 전체 UI 형태 개선
+## 최신 진행: 메뉴와 가방·도감
+- `STATUS.md`의 공통 메뉴·인벤토리·도감이 최신 기준이다. 하단 공통 탐색과 I/Esc/HUD 버튼,가방 격자/재료 탭,영구 발견 기록,여정 메뉴/조작 안내 구현.
+- 실제 `docs/menu-inventory.png`, `docs/menu-overview.png`, `docs/menu-collection.png`, `docs/menu-navigation.gif`/`.mp4` 참조.
+- 메뉴는 mode를 바꾸지 않으며 탐험 일시정지/재개 위치를 보존. 전투 중 편성/현장 육성 제한 유지. 저장 `discovered`는 획득 종 기록이며 방생 후에도 남는다.
+- 장비·새 아이템 드랍·설정·주인공 성장·중복 소비는 아직 구현/확정하지 않았다. 다음은 새 화면 흐름의 플레이 피드백을 반영하거나 성장/중복 활용 설계를 구체화한다.
+
+## 이전 진행: 전체 UI 형태 개선
 - `STATUS.md`의 UI 형태·계층 개선이 최신 작업. 잘린 모서리/메달/잎 장식,통합 보관함 행 카드,가벼운 행 액션,전투 HUD 초상/아이콘 메달을 적용했다.
 - 실제 `docs/refined-ui-camp.png`, `docs/refined-ui-roster.png`, `docs/refined-ui-hud.png`, `docs/refined-ui-comparison.png`, `docs/refined-ui-growth.png`를 확인한다.
 - 사용자 미적 평가를 기다린다. 성장/수집 기능이나 전투 규칙은 바꾸지 않았다. 작은 캐릭터·카메라 유지.

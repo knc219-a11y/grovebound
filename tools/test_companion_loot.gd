@@ -45,7 +45,7 @@ func check_loot():
 	var acquired=game.owned[-1]
 	if acquired.grade!=candidate.grade or acquired.trait!=candidate.trait or acquired.options!=candidate.options: failures.append("capture transfers exact rolled companion")
 	if snapshot!=JSON.stringify(candidate): failures.append("candidate data unchanged")
-	var saved=Save.normalize(JSON.parse_string(JSON.stringify({"owned":[acquired],"squad":[acquired.id],"next_id":game.next_id})),game.STATS.keys())
+	var saved=Save.normalize(JSON.parse_string(JSON.stringify({"owned":[acquired],"squad":[acquired.id],"next_id":game.next_id,"discovered":[acquired.kind]})),game.STATS.keys())
 	if saved.owned[0].options!=acquired.options or saved.repaired: failures.append("loot persists without reroll through JSON")
 	game.show_loot_details(acquired.id,-1,false)
 	if not game.overlay.visible: failures.append("loot detail opens safely")

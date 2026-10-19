@@ -4,6 +4,14 @@ const WORLD_SIZE=Vector2(2900,1650)
 const VIEW_SIZE=Vector2(1440,810)
 const CAPTURE_CHANCE=0.15
 const Loot=preload("res://companion_loot.gd")
+const MenuUI=preload("res://ui/game_menu.gd")
+var menu_page=""
+var menu_back:Callable
+var detail_origin_page=""
+var inventory_selected=-1
+var inventory_category=0
+var inventory_scroll=0
+var discovered=[]
 const Management=preload("res://companion_management.gd")
 var roster_kind_filter=""
 var roster_grade_filter=""
@@ -160,7 +168,8 @@ func build_ui():
 	toast_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	loot_result_button=button(hud,"획득 동료 확인",Rect2(22,116,320,46),func(): show_loot_details(recent_capture_id))
 	team_button=button(hud,"편성 [Tab]",Rect2(1142,18,132,62),open_roster)
-	button(hud,"귀환",Rect2(1288,18,132,62),func(): confirm_return())
+	button(hud,"가방 [I]",Rect2(1010,18,120,62),open_inventory)
+	button(hud,"메뉴 [Esc]",Rect2(1288,18,132,62),open_game_menu)
 	label(hud,"동료 스킬",Vector2(365,650),14)
 	for i in range(4):
 		var b=CompanionCard.new()
@@ -255,14 +264,18 @@ func button(parent, txt, rect, callback):
 	return b
 
 func clear_overlay():
+	menu_page=""
+	menu_back=Callable()
 	for c in overlay.get_children():
 		overlay.remove_child(c)
 		c.queue_free()
 	overlay.hide()
 	overlay.size = Vector2.ZERO
 
-func modal(title, subtitle):
+func modal(title, subtitle,page="",back=Callable()):
 	clear_overlay()
+	menu_page=page
+	menu_back=back
 	overlay.show()
 	overlay.size = Vector2(1440,810)
 	panel(overlay,Rect2(0,0,1440,810),Color(0.03,0.08,0.06,0.85))
@@ -278,11 +291,51 @@ func modal(title, subtitle):
 	stick_id = -1
 	revive_touch_id = -1
 	holding_revive = false
+	if not page.is_empty(): MenuUI.navigation(self,page)
+	if back.is_valid(): button(overlay,"뒤로",Rect2(1130,116,95,45),navigate_back)
+
+func resume_game():
+	if mode=="camp": show_camp()
+	else: clear_overlay()
+
+func navigate_back():
+	if menu_back.is_valid():
+		var callback=menu_back
+		callback.call()
+	elif mode=="camp": show_camp()
+	elif mode in ["stage","tutorial"]: clear_overlay()
+
+func open_game_menu():
+	MenuUI.show_menu(self)
+
+func open_inventory(selected_id=-1,reset_scroll=false):
+	MenuUI.show_inventory(self,selected_id,reset_scroll)
+
+func open_collection():
+	MenuUI.show_collection(self)
+
+func open_species_roster(kind):
+	roster_kind_filter=kind
+	roster_grade_filter=""
+	roster_favorites_only=false
+	roster_sort=0
+	open_roster()
+
+func return_from_details():
+	if detail_origin_page=="inventory": open_inventory()
+	elif detail_origin_page=="companions": open_roster()
+	else: resume_game()
+
+func open_controls():
+	modal("조작 안내","탐험과 동료 지원을 위한 기본 조작입니다.","controls",open_game_menu)
+	label(overlay,"이동  WASD / 방향키 · 터치 이동 스틱\n회복  Q · 야성 강화  E\n동료 스킬  1~4 · 하단 동료 초상 터치\n포획  F · 쓰러진 동료 소생은 F 길게 누르기\n가방  I · 편성  Tab · 메뉴 / 뒤로  Esc",Vector2(245,250),24)
+	label(overlay,"메뉴를 열면 탐험이 일시정지됩니다. 편성은 비전투 중, 육성은 캠프에서 가능합니다.",Vector2(245,530),18)
+	button(overlay,"메뉴로",Rect2(925,630,285,55),open_game_menu)
 
 func show_camp():
 	mode="camp"
 	save_game()
-	modal("GROVEBOUND  ·  야수의 계곡","야영지  /  동료와 함께 다음 탐험을 준비하세요")
+	modal("GROVEBOUND  ·  야수의 계곡","야영지  /  동료와 함께 다음 탐험을 준비하세요","home")
 	var ledger=panel(overlay,Rect2(215,215,610,330),Color("202823"))
 	var quiet_frame=GroveUI.frame(Color("202823"),GroveUI.BRONZE,0)
 	quiet_frame.shadow_size=0
@@ -299,7 +352,7 @@ func show_camp():
 	label(overlay,str(materials),Vector2(435,275),30)
 	label(overlay,"계곡 정복" if unlocked else "첫 탐험" if not tutorial_done else "탐험 중",Vector2(630,281),23)
 	label(overlay,"포획한 야수와 네 마리의 편성을 꾸리세요.\n회복·강화·소생으로 동료를 지켜주세요.",Vector2(240,345),20)
-	label(overlay,"WASD 이동   ·   Q 회복   ·   E 야성   ·   1~4 동료 스킬\nF 포획 / 길게 소생   ·   Tab 편성   ·   Esc 일시정지\n터치: 왼쪽 이동 스틱과 화면 버튼",Vector2(240,435),16)
+	label(overlay,"WASD 이동   ·   Q 회복   ·   E 야성   ·   1~4 동료 스킬\nF 포획 / 길게 소생   ·   I 가방   ·   Tab 편성\nEsc 메뉴 / 뒤로   ·   터치: 이동 스틱과 화면 버튼",Vector2(240,435),16)
 	label(overlay,"계곡의 길잡이",Vector2(975,239),20)
 	label(overlay,"DRUID",Vector2(1010,536),16)
 	if not save_notice.is_empty(): label(overlay,save_notice,Vector2(230,552),15)
@@ -343,6 +396,7 @@ func make_owned(kind, level, rolled={}):
 	Loot.normalize(d)
 	next_id+=1
 	owned.append(d)
+	if not discovered.has(d.kind): discovered.append(d.kind)
 	return d
 
 func max_hp(d):
@@ -882,6 +936,7 @@ func show_loot_details(id,compare_id=-1,animate=true,from_roster=false):
 	if in_combat and mode=="stage": notify("전투가 끝나면 획득 동료를 확인할 수 있습니다."); return
 	var d=find_owned(id)
 	if d.is_empty(): return
+	if menu_page!="detail": detail_origin_page="inventory" if menu_page=="inventory" else ("companions" if from_roster else "")
 	pending_loot_id=-1
 	var candidates=[]
 	for member_id in squad:
@@ -892,7 +947,7 @@ func show_loot_details(id,compare_id=-1,animate=true,from_roster=false):
 		for other in candidates:
 			if compare_id<0 or other.kind==d.kind: compare_id=other.id
 			if other.kind==d.kind: break
-	modal("동료 발견  ·  "+NAMES[d.kind],"특성은 고정 · 옵션은 개체별 고정 / 표시 능력치는 각 동료의 현재 레벨 기준입니다.")
+	modal("동료 발견  ·  "+NAMES[d.kind],"특성은 고정 · 옵션은 개체별 고정 / 표시 능력치는 각 동료의 현재 레벨 기준입니다.","detail",return_from_details)
 	label(overlay,"이미 보유 목록에 안전하게 합류했습니다.",Vector2(232,222),18)
 	loot_card(d,230,"선택한 동료",animate)
 	var comparison=find_owned(compare_id)
@@ -914,7 +969,7 @@ func show_loot_details(id,compare_id=-1,animate=true,from_roster=false):
 	arrange.disabled=mode!="camp" and not squad.has(d.id)
 	button(overlay,"즐겨찾기 잠금 ✓" if d.get("favorite",false) else "즐겨찾기 잠금",Rect2(540,620,240,55),func(): toggle_favorite(id,true,from_roster))
 	if mode=="camp": button(overlay,"육성",Rect2(795,620,115,55),func(): show_training(id))
-	button(overlay,"보관 · 돌아가기",Rect2(925,620,285,55),func(): open_roster() if from_roster else (show_camp() if mode=="camp" else clear_overlay()))
+	button(overlay,"보관 · 돌아가기",Rect2(925,620,285,55),return_from_details)
 
 func toggle_favorite(id,return_to_details=false,from_roster=true):
 	var d=find_owned(id)
@@ -969,7 +1024,7 @@ func open_roster():
 	if in_combat and mode=="stage": notify("전투 중에는 편성을 바꿀 수 없습니다."); return
 	if mode=="tutorial": notify("튜토리얼을 먼저 마쳐주세요."); return
 	var camp=mode=="camp"
-	modal("동료 관리  ·  출전 4 / 동행 6", "필터·정렬은 실제 편성을 바꾸지 않습니다. 두 동료의 이름을 눌러 동행 순서를 교체하세요.")
+	modal("동료 관리  ·  출전 4 / 동행 6", "필터·정렬은 실제 편성을 바꾸지 않습니다. 두 동료의 이름을 눌러 동행 순서를 교체하세요.","companions",open_game_menu)
 	chosen_swap=-1
 	var source=owned if camp else []
 	if not camp:
@@ -1083,7 +1138,7 @@ func show_training(id,result={}):
 	if d.is_empty(): return
 	var before=d if result.is_empty() else result.before
 	var after=Management.project(d,40) if result.is_empty() else result.after
-	modal("동료 육성  ·  "+NAMES[d.kind],"경험치만 성장합니다. 등급·고정 특성·랜덤 옵션은 바뀌지 않습니다.")
+	modal("동료 육성  ·  "+NAMES[d.kind],"경험치만 성장합니다. 등급·고정 특성·랜덤 옵션은 바뀌지 않습니다.","training",open_roster)
 	label(overlay,"보유 성장 재료 %d · 1회 3개 · 경험치 +40" % materials,Vector2(235,220),20)
 	growth_card(before,230,"육성 전")
 	growth_card(after,745,"육성 후 예상" if result.is_empty() else "육성 완료")
@@ -1146,20 +1201,20 @@ func confirm_release(id):
 	if mode!="camp" or not Management.can_release(d,squad):
 		notify("동행 중이거나 즐겨찾기한 동료는 방생할 수 없습니다.")
 		return
-	modal("동료를 방생할까요?", "[%s] %s Lv.%d · %s" % [Loot.title(d),NAMES[d.kind],d.level,d.trait])
+	modal("동료를 방생할까요?", "[%s] %s Lv.%d · %s" % [Loot.title(d),NAMES[d.kind],d.level,d.trait],"",open_roster)
 	label(overlay,"이 동료는 보유 목록에서 사라지고 성장 재료 2개를 얻습니다.\n동행 중이거나 즐겨찾기한 동료는 방생할 수 없습니다.",Vector2(230,300),22)
 	button(overlay,"방생하고 재료 받기",Rect2(300,560,350,65),func(): release_companion(id))
 	button(overlay,"취소",Rect2(750,560,300,65),open_roster)
 
 func confirm_return():
 	if mode!="stage" and mode!="tutorial": return
-	modal("탐험을 마치고 귀환할까요?", "이미 획득한 동료와 재료는 유지됩니다. 클리어 보상은 지급되지 않습니다.")
+	modal("탐험을 마치고 귀환할까요?", "이미 획득한 동료와 재료는 유지됩니다. 클리어 보상은 지급되지 않습니다.","",open_game_menu)
 	button(overlay,"귀환",Rect2(300,500,350,65),show_camp)
-	button(overlay,"계속 탐험",Rect2(750,500,350,65),clear_overlay)
+	button(overlay,"취소 · 메뉴로",Rect2(750,500,350,65),open_game_menu)
 
 func confirm_reset():
-	modal("새 여정 시작", "이 기기의 프로토타입 저장 데이터를 초기화합니다.")
-	button(overlay,"초기화",Rect2(300,500,350,65),func(): owned.clear(); squad.clear(); units.clear(); materials=0; tutorial_done=false; unlocked=false; next_id=1; show_camp())
+	modal("새 여정 시작", "이 기기의 프로토타입 저장 데이터를 초기화합니다.","",show_camp)
+	button(overlay,"초기화",Rect2(300,500,350,65),func(): owned.clear(); squad.clear(); units.clear(); discovered.clear(); materials=0; tutorial_done=false; unlocked=false; next_id=1; show_camp())
 	button(overlay,"취소",Rect2(750,500,350,65),show_camp)
 
 func update_hud():
@@ -1254,12 +1309,12 @@ func _unhandled_input(event):
 			KEY_F: interact()
 			KEY_TAB:
 				if not overlay.visible: open_roster()
+			KEY_I:
+				if menu_page=="inventory": resume_game()
+				elif not overlay.visible or not menu_page.is_empty(): open_inventory()
 			KEY_ESCAPE:
-				if mode=="stage" or mode=="tutorial":
-					if overlay.visible: clear_overlay()
-					else:
-						modal("잠시 쉬어가기", "전투가 일시정지되었습니다.")
-						button(overlay,"계속",Rect2(500,500,400,65),clear_overlay)
+				if overlay.visible: navigate_back()
+				elif mode in ["stage","tutorial"]: open_game_menu()
 	if overlay.visible: return
 	if event is InputEventScreenTouch:
 		if event.pressed and event.position.distance_to(Vector2(140,680))<125:
@@ -1296,9 +1351,10 @@ func backup_save():
 	return true
 
 func repair_party():
-	var result = SaveData.normalize({"owned":owned,"squad":squad,"next_id":next_id},STATS.keys())
+	var result = SaveData.normalize({"owned":owned,"squad":squad,"next_id":next_id,"discovered":discovered},STATS.keys())
 	if result.repaired:
-		if backup_save(): save_notice = "편성의 잘못된 연결을 복구했습니다. 원본 저장은 백업했습니다."
+		if backup_save(): save_notice = "저장 정보를 새 기능에 맞게 정리했습니다. 원본은 백업했습니다."
+	discovered=result.discovered
 	owned = result.owned
 	squad = result.squad
 	next_id = result.next_id
@@ -1306,7 +1362,7 @@ func repair_party():
 func save_game():
 	if is_test or screenshot_mode or save_blocked: return
 	var f=FileAccess.open(save_path,FileAccess.WRITE)
-	if f: f.store_string(JSON.stringify({"version":1,"owned":owned,"squad":squad,"materials":materials,"tutorial_done":tutorial_done,"unlocked":unlocked,"next_id":next_id}))
+	if f: f.store_string(JSON.stringify({"version":1,"owned":owned,"squad":squad,"materials":materials,"tutorial_done":tutorial_done,"unlocked":unlocked,"next_id":next_id,"discovered":discovered}))
 
 func load_game():
 	if not FileAccess.file_exists(save_path): return
@@ -1317,7 +1373,8 @@ func load_game():
 		return
 	var result = SaveData.normalize(d,STATS.keys())
 	if result.repaired:
-		if backup_save(): save_notice = "편성의 잘못된 연결을 복구했습니다. 원본 저장은 백업했습니다."
+		if backup_save(): save_notice = "저장 정보를 새 기능에 맞게 정리했습니다. 원본은 백업했습니다."
+	discovered=result.discovered
 	owned=result.owned
 	squad=result.squad
 	materials=SaveData.integer(d.get("materials",0),0)
