@@ -11,6 +11,9 @@ func _ready():
 	elif page=="materials":
 		inventory_category=1
 		open_inventory()
+	elif page=="dropdown":
+		show_camp()
+		dropdown.open()
 	elif page=="camp": show_camp()
 	else: open_inventory()
 func _process(dt):

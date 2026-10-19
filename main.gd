@@ -91,7 +91,7 @@ var toast_label: Label
 var heal_button: Button
 var buff_button: Button
 var interact_button: Button
-var team_button: Button
+var dropdown: Control
 var party_buttons = []
 var chosen_swap = -1
 var is_test = false
@@ -167,9 +167,6 @@ func build_ui():
 	toast_label.size=Vector2(650,54)
 	toast_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	loot_result_button=button(hud,"획득 동료 확인",Rect2(22,116,320,46),func(): show_loot_details(recent_capture_id))
-	team_button=button(hud,"편성 [Tab]",Rect2(1142,18,132,62),open_roster)
-	button(hud,"가방 [I]",Rect2(1010,18,120,62),open_inventory)
-	button(hud,"메뉴 [Esc]",Rect2(1288,18,132,62),open_game_menu)
 	label(hud,"동료 스킬",Vector2(365,650),14)
 	for i in range(4):
 		var b=CompanionCard.new()
@@ -207,6 +204,10 @@ func build_ui():
 	overlay.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
 	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	ui.add_child(overlay)
+	dropdown=preload("res://ui/dropdown_menu.gd").new()
+	dropdown.theme=theme
+	ui.add_child(dropdown)
+	dropdown.setup(self)
 
 func panel(parent, rect, color):
 	var p = Panel.new()
@@ -291,7 +292,6 @@ func modal(title, subtitle,page="",back=Callable()):
 	stick_id = -1
 	revive_touch_id = -1
 	holding_revive = false
-	if not page.is_empty(): MenuUI.navigation(self,page)
 	if back.is_valid(): button(overlay,"뒤로",Rect2(1130,116,95,45),navigate_back)
 
 func resume_game():
@@ -490,11 +490,11 @@ func move_entity(u, target, speed, dt, stop=0.0):
 func _process(dt):
 	clock += dt
 	loot_reveal_delay=maxf(0,loot_reveal_delay-dt)
-	if pending_loot_id>0 and loot_reveal_delay<=0 and mode=="stage" and not in_combat and not overlay.visible:
+	if pending_loot_id>0 and loot_reveal_delay<=0 and mode=="stage" and not in_combat and not overlay.visible and not dropdown.popup.visible:
 		show_loot_details(pending_loot_id)
 	if is_test: return
 	message_time = maxf(0,message_time-dt)
-	if (mode=="stage" or mode=="tutorial") and not overlay.visible:
+	if (mode=="stage" or mode=="tutorial") and not overlay.visible and not dropdown.popup.visible:
 		if not screenshot_mode:
 			update_game(minf(dt,0.05))
 			druid_rig.advance(player,minf(dt,0.05))
@@ -788,7 +788,7 @@ func cast_buff():
 		fx(player.pos,best.pos,Color("ffce6a"),"야성 +60%",0.9)
 
 func can_act():
-	return (mode=="stage" or mode=="tutorial") and not overlay.visible and revive_target<0
+	return (mode=="stage" or mode=="tutorial") and not overlay.visible and not dropdown.popup.visible and revive_target<0
 
 func use_companion_skill(i):
 	if not can_act() or i>=active_units().size(): return
@@ -1241,7 +1241,6 @@ func update_hud():
 	boss_panel.visible=not boss_label.text.is_empty()
 	boss_hp_bar.visible=boss_panel.visible
 	boss_label.visible=boss_panel.visible
-	team_button.disabled=in_combat or mode=="tutorial"
 	for i in range(4):
 		var b=party_buttons[i]
 		if i<units.size():
@@ -1263,7 +1262,7 @@ func update_hud():
 	if down>=0:
 		interact_button.text="길게 눌러 소생 [F]\n%.1f / 3초" % revive_progress
 	elif cap>=0: interact_button.text=NAMES[captures[cap].kind]+" 포획 [F]"
-	if mode=="tutorial" and tutorial_species=="practice" and not overlay.visible:
+	if mode=="tutorial" and tutorial_species=="practice" and not overlay.visible and not dropdown.popup.visible:
 		var alive=false
 		for e in enemies:
 			if e.hp>0: alive=true
@@ -1279,7 +1278,7 @@ func _input(event):
 		if event.index==revive_touch_id:
 			holding_revive=false
 			revive_touch_id=-1
-	if event is InputEventScreenTouch and event.pressed and not overlay.visible:
+	if event is InputEventScreenTouch and event.pressed and not overlay.visible and not dropdown.popup.visible:
 		if interact_button.visible and interact_button.get_global_rect().has_point(event.position):
 			revive_touch_id=event.index
 	if event is InputEventScreenDrag and event.index==stick_id:
@@ -1298,6 +1297,9 @@ func _notification(what):
 		revive_touch_id=-1
 
 func _unhandled_input(event):
+	if dropdown.popup.visible:
+		if event is InputEventKey and event.pressed and event.physical_keycode==KEY_ESCAPE: dropdown.close()
+		return
 	if event is InputEventKey and event.pressed and not event.echo:
 		match event.physical_keycode:
 			KEY_Q: cast_heal()
@@ -1314,7 +1316,7 @@ func _unhandled_input(event):
 				elif not overlay.visible or not menu_page.is_empty(): open_inventory()
 			KEY_ESCAPE:
 				if overlay.visible: navigate_back()
-				elif mode in ["stage","tutorial"]: open_game_menu()
+				elif mode in ["stage","tutorial"]: dropdown.open()
 	if overlay.visible: return
 	if event is InputEventScreenTouch:
 		if event.pressed and event.position.distance_to(Vector2(140,680))<125:

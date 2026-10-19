@@ -81,6 +81,13 @@
 - self-test/game_menu/UI/art_type/loot/management/save_repair/capture/combat_feedback/action_events PASS. 실제 슬롯·콜백·빈 상태·내비게이션 화면 범위·상세 뒤로·I/Esc·메뉴 중 실제 시간/위치 정지·재개 위치·귀환 취소·전투 제한·발견 JSON/파일 저장·방생 후 기록 보존 검증. 실제 캡처 Parse/SCRIPT ERROR 없음.
 - 장비 인벤토리/설정 화면/주인공 성장/중복 소비는 미구현. 모바일 실기기 터치/성능은 미검증. 기존 작은 캐릭터·넓은 시야·배경·전투/수집 밸런스 유지.
 
+## 상단 드롭다운 메뉴 (2026-10-19)
+- 기존 하단 공통 탐색 및 HUD 텍스트 가방/편성/메뉴 버튼을 우측 상단 가로줄3개 버튼으로 교체했다. 캠프·탐험·정보 화면 위에서 동일하게 사용할 수 있다.
+- 아이콘+짧은 이름, GridContainer 5열 자동 줄바꿈. 첫 줄 가방/동료/도감/여정/조작, 둘째 줄 재료/캠프. 모두 기존 실제 기능으로 연결한다. 탐험 중 캠프는 귀환 확인을 거친다.
+- 항목 선택/바깥 클릭/버튼 재누름/Esc로 닫는다. 펼침 중 실제 탐험 업데이트·지원 입력을 막고 닫을 때 기존 페이지/위치를 보존한다. 전투·튜토리얼 편성 제한 유지. I/Tab 단축키와 정보 페이지 뒤로 흐름 유지.
+- 실제 Godot `docs/dropdown-menu.png`, 재현 `animation/menu_dropdown_review.tscn`. 작은 캐릭터·카메라·배경·세이브·밸런스 변경 없음.
+- 임포트 및 self-test/game_menu/UI/art_type/loot/management/save_repair PASS, SCRIPT/Parse ERROR 없음. 5열/6번째 줄바꿈/11번째 세 번째 줄·바깥 클릭·콜백·전투 정지·위치 보존 검증. 모바일 실기기는 미검증.
+
 ## 검증과 도구
 - 현행 비율 수정: Godot 임포트/배경 lossless round-trip/art-type/self-test 통과. 실제 Godot HUD 및6초 전투 녹화 생성. 실기기와 전체 스테이지 완주는 별도 미검증.
 - `tools/pack_background.gd -- SOURCE.png res://assets/maps/OUTPUT.webp`: nearest 확대 + lossless RGB 재검증. 원본 해상도 이상 새 디테일은 생기지 않는다.

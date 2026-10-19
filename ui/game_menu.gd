@@ -2,20 +2,6 @@ extends RefCounted
 const UI=preload("res://ui/grove_ui.gd")
 const Loot=preload("res://companion_loot.gd")
 const Slot=preload("res://ui/inventory_slot.gd")
-static func navigation(g,page):
-	var titles=["캠프","가방","동료","도감","메뉴"]
-	titles[0]="캠프" if g.mode=="camp" else "탐험 복귀"
-	var pages=["home","inventory","companions","collection","menu"]
-	var selected_page=page
-	if page=="detail": selected_page="inventory" if g.detail_origin_page=="inventory" else "companions"
-	elif page=="training": selected_page="companions"
-	elif page=="controls": selected_page="menu"
-	var actions=[g.resume_game,g.open_inventory,g.open_roster,g.open_collection,g.open_game_menu]
-	for i in 5:
-		var b=g.button(g.overlay,titles[i],Rect2(215+i*204,744,192,50),actions[i])
-		b.name="Navigation_"+pages[i]
-		if pages[i]==selected_page: UI.emphasize(b)
-		if pages[i]=="companions" and ((g.in_combat and g.mode=="stage") or g.mode=="tutorial"): b.disabled=true
 static func show_menu(g):
 	g.modal("여정 메뉴","탐험을 준비하고, 동료와 가방을 확인하세요.","menu",g.resume_game)
 	var locations=[Vector2(230,225),Vector2(565,225),Vector2(900,225)]
