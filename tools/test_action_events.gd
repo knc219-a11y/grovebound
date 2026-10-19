@@ -31,6 +31,24 @@ func check_events():
 				if bounds.position.x<=0 or bounds.position.y<=0 or bounds.end.x>=112 or bounds.end.y>=104: failures.append(kind+" "+key+" clipped")
 				unique[frame.get_data().hex_encode().sha256_text()]=true
 			if unique.size()<2: failures.append(kind+" "+key+" static action")
+	for kind in ["deer","turtle"]:
+		if not actions.support_textures.has(kind): failures.append(kind+" dedicated support art missing"); continue
+		var probe={"hp":100.0,"face":1.0,"walk":false,"shield":5.0 if kind=="turtle" else 0.0}
+		actions.start(probe,kind,"heal" if kind=="deer" else "guard")
+		if not actions.selection(kind,probe).get("support_art",false): failures.append(kind+" support art routing")
+		probe.walk=true
+		if not actions.selection(kind,probe).is_empty(): failures.append(kind+" support pose slides while travelling")
+		probe.walk=false
+		actions.advance(probe,1.0)
+		if kind=="turtle":
+			if not actions.selection(kind,probe).get("support_art",false): failures.append("shield does not hold brace pose")
+			probe.shield=0.0
+		if not actions.selection(kind,probe).is_empty(): failures.append(kind+" support expires after effect")
+		var image=actions.support_textures[kind].get_image()
+		for i in 6:
+			var box=image.get_region(Rect2i(i*112,0,112,104)).get_used_rect()
+			if box.position.x<=0 or box.position.y<=0 or box.end.x>=112 or box.end.y>=104: failures.append(kind+" support art clipped")
+			if box.size.y>(64 if kind=="deer" else 32): failures.append(kind+" support scale changed")
 	var enemy=game.enemies[0]
 	var marten=game.units[0]
 	var turtle=game.units[1]
