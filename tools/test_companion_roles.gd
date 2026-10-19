@@ -47,6 +47,7 @@ func check():
 	var saved=g.expedition.report.contributions.duplicate(true)
 	g.report_contributions=true
 	g.show_run_report()
+	if g.overlay.get_node_or_null("ContributionGraphs")==null: failures.append("numeric contribution graph missing")
 	g.show_run_report()
 	if g.expedition.report.contributions!=saved: failures.append("read-only contribution replay")
 	g.loot_rng.seed=20261019

@@ -4,7 +4,7 @@ extends Node2D
 const DUTY = 0.62
 var phase = 0.0
 var running = false
-var sprite = preload("res://assets/party-pixel/druid.png")
+var sprite = preload("res://assets/party-pixel/druid-body-v2.png")
 var mesh: ArrayMesh
 
 func foot_offset(t):
@@ -34,12 +34,9 @@ func pose(t):
 			delta+=legs
 			# Lower cloak follows the hip with a delayed, smaller swing.
 			delta.x+=sin((t-0.12)*TAU)*(2.2 if running else 0.8)*smoothstep(37,58,y)*(1.0-smoothstep(57,65,y))*(1.0-smoothstep(21,25,x))
-			# Free hand counter-swings; staff and gripping hand remain together.
+			# The free hand counter-swings. The staff is rendered as an independent layer.
 			var hand=smoothstep(33,43,y)*(1.0-smoothstep(48,52,y))
 			delta.x-=sin(t*TAU)*(2.0 if running else 0.8)*hand*smoothstep(8,11,x)*(1.0-smoothstep(17,20,x))
-			var staff=smoothstep(30,35,x)
-			var pivot=Vector2(35,36)
-			delta+=( (p-pivot).rotated(sin(t*TAU)*(0.035 if running else 0.015))-(p-pivot))*staff
 			if running:
 				var hip=Vector2(20,50)
 				delta+=((p-hip).rotated(0.09)-(p-hip))*(1.0-smoothstep(50,70,y))

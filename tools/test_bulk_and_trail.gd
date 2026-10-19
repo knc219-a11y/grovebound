@@ -28,8 +28,9 @@ func check():
 	g.find_owned(ids[3]).favorite=true
 	if g.commit_bulk_release([ids[2],ids[3]]) or g.owned.size()!=5 or g.materials!=7: failures.append("atomic revalidation of changed protection")
 	g.find_owned(ids[3]).favorite=false
-	if not g.commit_bulk_release([ids[2],ids[2],ids[3]]) or g.materials!=11 or g.owned.size()!=3: failures.append("batch dedup and exact rewards")
-	if g.commit_bulk_release([ids[2],ids[3]]) or g.materials!=11: failures.append("duplicate submit grants again")
+	var expected=7+g.Management.farewell_reward(g.find_owned(ids[2]))+g.Management.farewell_reward(g.find_owned(ids[3]))
+	if not g.commit_bulk_release([ids[2],ids[2],ids[3]]) or g.materials!=expected or g.owned.size()!=3: failures.append("batch dedup and exact rewards")
+	if g.commit_bulk_release([ids[2],ids[3]]) or g.materials!=expected: failures.append("duplicate submit grants again")
 	if g.owned.slice(0,2)!=survivors or not g.discovered.has("deer"): failures.append("survivors/order/discovery preserved")
 	g.open_roster()
 	var filter=g.overlay.get_node("SpeciesFilter")

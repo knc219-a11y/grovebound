@@ -9,7 +9,7 @@
 		36,
 		88
 	],
-	"idle": "res://assets/party-pixel/druid.png",
+	"idle": "res://assets/party-pixel/druid-body-v2.png",
 	"minimum_cycle_seconds": 0.18,
 	"native_height": 72,
 	"stride_pixels": 50.0,

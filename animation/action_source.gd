@@ -11,7 +11,7 @@ func configure(species,key):
 	if kind=="boar":
 		var image=Image.load_from_file("res://assets/boar-pixel-idle.png").get_region(Rect2i(12,14,70,48))
 		sprite=ImageTexture.create_from_image(image)
-	else: sprite=load("res://assets/party-pixel/"+kind+".png")
+	else: sprite=load("res://assets/party-pixel/"+("druid-body-v2" if kind=="druid" else kind)+".png")
 	size=sprite.get_size()
 func pose(t):
 	# Impact is frame zero: gameplay damage/healing is applied immediately.
@@ -25,10 +25,6 @@ func pose(t):
 			var p=Vector2(x,y)
 			var d=Vector2.ZERO
 			if kind=="druid":
-				var pivot=Vector2(27,35)
-				var staff=smoothstep(27,34,x)
-				var angle=0.16 if action=="revive" else (-0.22 if action=="heal" else -0.12)
-				d+=((p-pivot).rotated(angle*strength)-(p-pivot))*staff
 				var upper=1.0-smoothstep(40,65,y)
 				d.x+=(2.5 if action=="revive" else -1.0)*strength*upper
 				d.y-=1.2*strength*upper if action!="revive" else -1.3*strength*upper
@@ -51,9 +47,12 @@ func pose(t):
 					var tail=1.0-smoothstep(size.x*0.18,size.x*0.44,x)
 					d.y-=2.0*strength*tail
 				else:
-					d.x+=3.0*strength*paw+2.0*strength*head
-					d+=((p-neck).rotated(0.10*strength)-(p-neck))*head
-					d.y+=strength*pow(sin(float(x)/size.x*PI),2)*paw
+					# A clearer lunge and foreleg swipe while the planted hind feet stay readable.
+					var fore=smoothstep(size.x*0.55,size.x*0.72,x)*smoothstep(size.y*0.48,size.y*0.72,y)
+					fore*=1.0-smoothstep(size.y*0.88,size.y,y)
+					d.x+=4.5*strength*paw+4.0*strength*head+5.0*strength*fore
+					d.y+=1.8*strength*pow(sin(float(x)/size.x*PI),2)*paw-3.0*strength*fore
+					d+=((p-neck).rotated(-0.18*strength)-(p-neck))*head
 			vertices.append(p+d-Vector2(size.x/2,size.y))
 			uv.append(p/size)
 	for y in range(int(size.y)):

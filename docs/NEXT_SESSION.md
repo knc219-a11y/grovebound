@@ -17,6 +17,12 @@
 다음은 사용자 화면 피드백과 마을 외형/동선/실기기 조작 검토. 신규 경제·퀘스트·제작 범위로 확대하지 않는다.
 아래는 구현 전 인계 기록으로, ‘마을 미구현’ 서술과 시작 프롬프트는 과거 내용이다.
 
+## 최신 갱신: 플레이 피드백 8항목 (2026-10-19)
+- 상세 기준은 `STATUS.md`의 같은 제목을 먼저 읽는다. 전투 기여 수치+그래프, 등급/레벨별 작별 보상, 목표 레벨 일괄 육성, 등급 동행 시각 효과를 구현했다.
+- 사슴 네 다리와 거북 접지를 다시 굽고 일반 공격 동세를 키웠다. 드루이드 몸/지팡이는 무손실 분리하여 지팡이가 발 메시와 함께 휘지 않으며, 향후 무기 그림 교체 지점은 `animation/weapon_visual.gd`다. 아직 장비 시스템은 아니다.
+- 실제 캡처는 `docs/eight-contributions.png`, `eight-target-growth.png`, `eight-farewell.png`, `eight-motion-gameplay.gif`/`.mp4`, `eight-motion-detail.gif`/`.mp4`. 재현 장면은 `roles_contribution_review.tscn`, `management_target_review.tscn`, `bulk_selection_review.tscn`, `eight_motion_review.tscn`, `full_motion_review.tscn`.
+- 다음 우선순위는 사용자가 이 화면/동세를 실제 플레이로 확인한 뒤 수치와 모션 강도를 조정하는 것이다. 특히 작별 보상과 등급 동행 효과는 장기 밸런스 전 임시값이며, 모바일 실기기 검증은 사용자의 iPhone 환경상 별도 확인이 필요하다.
+
 ---
 
 # 다음 대화에서 이어갈 작업

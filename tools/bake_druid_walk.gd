@@ -34,7 +34,7 @@ func bake():
 	if sheet.save_png(path)!=OK:
 		quit(1)
 		return
-	var metadata={"texture":path,"idle":"res://assets/party-pixel/druid.png","cell":[cell.x,cell.y],"ground":[ground.x,ground.y],"columns":4,"count":count,"native_height":72,"stride_pixels":50.0 if running else 16.13,"minimum_cycle_seconds":0.18 if running else 0.46}
+	var metadata={"texture":path,"idle":"res://assets/party-pixel/druid-body-v2.png","cell":[cell.x,cell.y],"ground":[ground.x,ground.y],"columns":4,"count":count,"native_height":72,"stride_pixels":50.0 if running else 16.13,"minimum_cycle_seconds":0.18 if running else 0.46}
 	var out=FileAccess.open("res://animation/druid_run_frames.json" if running else "res://animation/druid_walk_frames.json",FileAccess.WRITE)
 	out.store_string(JSON.stringify(metadata,"\t")+"\n")
 	print("DRUID BAKE PASS: ",count," padded, foot-anchored native pixel frames")

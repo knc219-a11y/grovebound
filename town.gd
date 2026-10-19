@@ -55,7 +55,8 @@ static func draw(g):
 	for i in order:
 		if i==-1:
 			g.draw_set_transform(Vector2.ZERO)
-			g.druid_rig.draw(g,g.player.pos-g.cam,72,g.player.face,Color.WHITE,g.player,g.textures.druid)
+			g.weapon_visual.draw(g,g.player.pos-g.cam,72,g.player.face,Color.WHITE,g.player)
+			g.druid_rig.draw(g,g.player.pos-g.cam,72,g.player.face,Color.WHITE,g.player,g.druid_body)
 			g.draw_set_transform(-g.cam.round())
 		else: building(g,i)
 	g.draw_set_transform(Vector2.ZERO)

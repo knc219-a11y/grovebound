@@ -42,7 +42,8 @@ func bake():
 			if sheet.save_png(path)!=OK:
 				quit(1)
 				return
-			var metadata={"texture":path,"idle":"res://assets/party-pixel/"+kind+".png","cell":[cell.x,cell.y],"ground":[ground.x,ground.y],"columns":4,"count":count,"native_height":source.config.size.y,"stride_pixels":source.stride(),"minimum_cycle_seconds":0.18 if fast else 0.4,"run_enter_speed":60,"run_exit_speed":45}
+			var minimum_cycle=0.14 if kind=="turtle" else (0.18 if fast else 0.4)
+			var metadata={"texture":path,"idle":"res://assets/party-pixel/"+kind+".png","cell":[cell.x,cell.y],"ground":[ground.x,ground.y],"columns":4,"count":count,"native_height":source.config.size.y,"stride_pixels":source.stride(),"minimum_cycle_seconds":minimum_cycle,"run_enter_speed":60,"run_exit_speed":45}
 			var out=FileAccess.open("res://animation/"+kind+"_"+action+"_frames.json",FileAccess.WRITE)
 			out.store_string(JSON.stringify(metadata,"\t")+"\n")
 			out.flush()

@@ -47,12 +47,13 @@ func check_management():
 	game.confirm_release(1)
 	if not game.find_owned(1).favorite: failures.append("confirmation does not unlock")
 	game.toggle_favorite(2)
-	if not game.release_companion(2) or not game.find_owned(2).is_empty() or game.materials!=8: failures.append("unlocked reserve release")
-	if game.release_companion(2) or game.release_companion(3) or game.materials!=8: failures.append("duplicate release and squad release blocked")
+	var reward=Manager.farewell_reward(game.find_owned(2))
+	if not game.release_companion(2) or not game.find_owned(2).is_empty() or game.materials!=6+reward: failures.append("unlocked reserve release")
+	if game.release_companion(2) or game.release_companion(3) or game.materials!=6+reward: failures.append("duplicate release and squad release blocked")
 	game.show_training(1)
-	if game.materials!=8 or game.find_owned(1).level!=3: failures.append("preview spends nothing")
+	if game.materials!=6+reward or game.find_owned(1).level!=3: failures.append("preview spends nothing")
 	var metadata=game.find_owned(1).duplicate(true)
-	if not game.train_companion(1) or game.materials!=5 or game.find_owned(1).level!=4 or game.find_owned(1).xp!=35: failures.append("training cost and XP")
+	if not game.train_companion(1) or game.materials!=3+reward or game.find_owned(1).level!=4 or game.find_owned(1).xp!=35: failures.append("training cost and XP")
 	for key in ["id","kind","trait","grade","options","favorite"]:
 		if game.find_owned(1)[key]!=metadata[key]: failures.append("training preserves "+key)
 	game.materials=2

@@ -10,10 +10,10 @@
 		62
 	],
 	"idle": "res://assets/party-pixel/turtle.png",
-	"minimum_cycle_seconds": 0.18,
+	"minimum_cycle_seconds": 0.14,
 	"native_height": 32.0,
 	"run_enter_speed": 60,
 	"run_exit_speed": 45,
-	"stride_pixels": 10.0,
+	"stride_pixels": 14.0625,
 	"texture": "res://assets/party-pixel/turtle-trot-v1.png"
 }

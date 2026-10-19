@@ -54,6 +54,9 @@ const BoarRig = preload("res://animation/boar_pixel.gd")
 var boar_rig
 const PixelActor = preload("res://animation/pixel_actor.gd")
 var druid_rig
+const WeaponVisual=preload("res://animation/weapon_visual.gd")
+var weapon_visual
+var druid_body:Texture2D
 var animal_rigs={}
 const ActionPlayer=preload("res://animation/action_player.gd")
 var motion_actions
@@ -132,8 +135,10 @@ func _ready():
 	textures["valley"]=load("res://assets/maps/greenwater-beginner-v3.webp")
 	for key in ["druid","boar","marten","fox","turtle","deer","wolf","tree"]:
 		textures[key] = load("res://assets/party-pixel/"+key+".png" if key in PIXEL_KINDS else "res://assets/"+key+".png")
+	druid_body=load("res://assets/party-pixel/druid-body-v2.png")
 	boar_rig=BoarRig.new()
 	druid_rig=PixelActor.new("res://animation/druid_walk_frames.json","res://animation/druid_run_frames.json")
+	weapon_visual=WeaponVisual.new()
 	motion_actions=ActionPlayer.new()
 	for species in ["wolf","fox","marten","deer","turtle"]:
 		animal_rigs[species]=PixelActor.new("res://animation/"+species+"_walk_frames.json","res://animation/"+species+"_trot_frames.json")
@@ -1226,7 +1231,62 @@ func show_training(id,result={}):
 	label(overlay,summary,Vector2(235,586),19)
 	var action=button(overlay,"재료 3개로 육성" if result.is_empty() else "한 번 더 · 미리보기",Rect2(230,630,350,55),func(): train_companion(id) if result.is_empty() else show_training(id))
 	action.disabled=result.is_empty() and materials<3
+	button(overlay,"목표 레벨 육성",Rect2(600,630,285,55),func(): show_target_training(id))
 	button(overlay,"동료 목록으로",Rect2(925,630,285,55),open_roster)
+
+func show_target_training(id):
+	if mode!="camp": return
+	var d=find_owned(id)
+	if d.is_empty(): return
+	modal("목표 레벨까지 육성 · "+NAMES[d.kind],"재료 3개마다 경험치 40 · 목표에 필요한 횟수만 사용하고 남는 경험치는 보존합니다.","target_training",func(): show_training(id))
+	label(overlay,"현재 Lv.%d · 보유 성장 재료 %d개" % [d.level,materials],Vector2(240,245),23)
+	label(overlay,"목표 레벨",Vector2(240,325),21)
+	var target=SpinBox.new()
+	target.name="TargetLevel"
+	target.position=Vector2(450,310)
+	target.size=Vector2(240,65)
+	target.min_value=int(d.level)+1
+	target.max_value=int(d.level)+1000
+	target.allow_greater=false
+	target.step=1
+	target.value=int(d.level)+1
+	overlay.add_child(target)
+	button(overlay,"필요 재료 · 결과 확인",Rect2(240,500,450,65),func(): preview_target_training(id,int(target.value)))
+
+func preview_target_training(id,target):
+	if mode!="camp": return
+	var d=find_owned(id)
+	var plan=Management.target_plan(d,target)
+	if plan.is_empty(): return
+	modal("목표 레벨 육성 확인","등급·고정 특성·옵션은 유지됩니다. 확인 후 아래 재료를 한 번에 사용합니다.","target_preview",func(): show_target_training(id))
+	label(overlay,"Lv.%d → %d · %d회분 · 필요 재료 %d / 보유 %d · 경험치 +%d" % [d.level,target,plan.charges,plan.cost,materials,plan.xp],Vector2(235,222),20)
+	growth_card(d,230,"육성 전")
+	growth_card(plan.after,745,"일괄 육성 후 예상")
+	label(overlay,"남는 경험치도 동료에게 보존됩니다. 목표 레벨이 바뀌면 다시 계산하세요.",Vector2(235,586),17)
+	var apply=button(overlay,"재료 %d개로 일괄 육성" % plan.cost,Rect2(230,630,450,55),func(): train_to_level(id,target,plan.before))
+	apply.disabled=materials<plan.cost
+	button(overlay,"목표 다시 선택",Rect2(925,630,285,55),func(): show_target_training(id))
+
+func train_to_level(id,target,expected):
+	if mode!="camp": return false
+	var d=find_owned(id)
+	if d.is_empty(): return false
+	if int(d.level)!=int(expected.level) or int(d.xp)!=int(expected.xp):
+		notify("동료의 성장 정보가 바뀌었습니다. 결과를 다시 확인하세요.")
+		show_target_training(id)
+		return false
+	var plan=Management.target_plan(d,target)
+	if plan.is_empty() or materials<plan.cost: return false
+	materials-=plan.cost
+	var old_level=d.level
+	d.level=plan.after.level
+	d.xp=plan.after.xp
+	for u in units:
+		if u.data.id==id: u.maxhp=max_hp(d)
+	save_game()
+	show_training(id,{"before":plan.before,"after":d.duplicate(true)})
+	notify("Lv.%d → %d · 재료 %d개 사용 · 경험치 +%d" % [old_level,d.level,plan.cost,plan.xp])
+	return true
 
 func train_companion(id):
 	if mode!="camp" or materials<3: return false
@@ -1293,19 +1353,22 @@ func commit_bulk_release(ids):
 			show_bulk_release()
 			return false
 		selected.append(id)
+	var reward=0
+	for id in selected: reward+=Management.farewell_reward(find_owned(id))
 	owned=owned.filter(func(d): return not selected.has(d.id))
-	materials+=selected.size()*2
+	materials+=reward
 	bulk_selection.clear()
 	save_game()
 	open_roster()
-	notify("%d마리와 작별했습니다. 함께한 인연으로 성장 재료 %d개가 남았습니다." % [selected.size(),selected.size()*2])
+	notify("%d마리와 작별했습니다. 함께한 인연으로 성장 재료 %d개가 남았습니다." % [selected.size(),reward])
 	return true
 
 func release_companion(id):
 	var d=find_owned(id)
 	if mode!="camp" or not Management.can_release(d,squad): return false
+	var reward=Management.farewell_reward(d)
 	owned.erase(d)
-	materials+=2
+	materials+=reward
 	save_game()
 	open_roster()
 	return true
@@ -1316,7 +1379,7 @@ func confirm_release(id):
 		notify("동행 중이거나 즐겨찾기한 동료는 자연으로 보낼 수 없습니다.")
 		return
 	modal("동료를 자연으로 보낼까요?", "[%s] %s Lv.%d · %s" % [Loot.title(d),NAMES[d.kind],d.level,d.trait],"",open_roster)
-	label(overlay,"이 동료는 자연으로 돌아갑니다.\n함께한 인연으로 성장 재료 2개가 남습니다.\n동행 중이거나 즐겨찾기한 동료는 자연으로 보낼 수 없습니다.",Vector2(230,300),22)
+	label(overlay,"이 동료는 자연으로 돌아갑니다.\n함께한 인연으로 성장 재료 %d개가 남습니다.\n동행 중이거나 즐겨찾기한 동료는 자연으로 보낼 수 없습니다." % Management.farewell_reward(d),Vector2(230,300),22)
 	button(overlay,"자연으로 보내기",Rect2(300,560,350,65),func(): release_companion(id))
 	button(overlay,"취소",Rect2(750,560,300,65),open_roster)
 
@@ -1544,6 +1607,7 @@ func _draw():
 	actors.sort_custom(func(a,b): return a.pos.y<b.pos.y)
 	for a in actors:
 		var p=a.pos-cam
+		if a.has("unit") and a.hp>0: preload("res://ui/rarity_aura.gd").draw(self,p,a.size,a.unit.data,clock)
 		if p.x < -120 or p.x>1560 or p.y < -120 or p.y>930: continue
 		draw_set_transform(p,0,Vector2(1,0.35))
 		draw_circle(Vector2.ZERO,a.size*0.38,Color(0.1,0.2,0.12,0.22))
@@ -1567,13 +1631,14 @@ func _draw():
 		if a.hp<=0:
 			tilt=-0.75*a.face
 			if not a.ally: col.a=state.get("death",0.0)/0.32
+		if a.kind=="druid": weapon_visual.draw(self,p+offset,a.size,a.face,col,state)
 		if motion_actions.draw(self,p+offset,a.size,a.face,col,a.kind,state):
 			pass
 		elif a.kind=="boar":
 			# The rig owns breathing, gait and attack poses; never stack whole-image shaking.
 			boar_rig.draw(self,p+offset,a.size,a.face,col,state)
 		elif a.kind=="druid":
-			druid_rig.draw(self,p+offset,a.size,a.face,col,state,textures["druid"])
+			druid_rig.draw(self,p+offset,a.size,a.face,col,state,druid_body)
 		elif animal_rigs.has(a.kind):
 			animal_rigs[a.kind].draw(self,p+offset,a.size,a.face,col,state,textures[a.kind])
 		else:

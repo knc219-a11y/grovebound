@@ -2,7 +2,9 @@ extends Node2D
 const Actions=preload("res://animation/action_player.gd")
 const Pixel=preload("res://animation/pixel_actor.gd")
 const Boar=preload("res://animation/boar_pixel.gd")
+const Weapon=preload("res://animation/weapon_visual.gd")
 var actions
+var weapon
 var rigs={}
 var actors={}
 var idle={}
@@ -12,6 +14,7 @@ var kinds=["druid","boar","wolf","marten","fox","deer","turtle"]
 func _ready():
 	texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
 	actions=Actions.new()
+	weapon=Weapon.new()
 	for kind in kinds:
 		actors[kind]={"pos":Vector2.ZERO,"hp":100.0,"walk":true}
 		if kind=="boar":
@@ -19,7 +22,7 @@ func _ready():
 			idle[kind]=rigs[kind].portrait()
 		elif kind=="druid":
 			rigs[kind]=Pixel.new("res://animation/druid_walk_frames.json","res://animation/druid_run_frames.json")
-			idle[kind]=load("res://assets/party-pixel/druid.png")
+			idle[kind]=load("res://assets/party-pixel/druid-body-v2.png")
 		else:
 			rigs[kind]=Pixel.new("res://animation/"+kind+"_walk_frames.json","res://animation/"+kind+"_trot_frames.json")
 			idle[kind]=load("res://assets/party-pixel/"+kind+".png")
@@ -53,6 +56,7 @@ func _draw():
 		var p=Vector2(180+(i%4)*355,390) if i<4 else Vector2(250+(i-4)*470,690)
 		var h=72 if kind=="druid" else (48 if kind=="boar" else idle[kind].get_height())
 		draw_line(p-Vector2(125,0),p+Vector2(125,0),Color("4c5c43"),2)
+		if kind=="druid": weapon.draw(self,p,h*3,1,Color.WHITE,actors[kind])
 		if not actions.draw(self,p,h*3,1,Color.WHITE,kind,actors[kind]):
 			if kind=="boar": rigs[kind].draw(self,p,h*3,1,Color.WHITE,actors[kind])
 			else: rigs[kind].draw(self,p,h*3,1,Color.WHITE,actors[kind],idle[kind])

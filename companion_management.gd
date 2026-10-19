@@ -35,3 +35,19 @@ static func project(record,amount):
 	return result
 static func can_release(record,squad):
 	return not record.is_empty() and not record.get("favorite",false) and not squad.has(record.id)
+
+static func farewell_reward(record):
+	# Level +1 adds one material; even one training charge costs three.
+	# Thus training solely to cash out cannot return more than its material cost.
+	return maxi(1,int(record.get("level",1)))+1+{"common":0,"rare":3,"epic":8}.get(Loot.grade(record),0)
+static func target_plan(record,target):
+	target=int(target)
+	if record.is_empty() or target<=int(record.level) or target>int(record.level)+1000 or target>1000000: return {}
+	var current=35*int(record.level)*(int(record.level)-1)/2+int(record.xp)
+	var total=35*target*(target-1)/2
+	var charges=ceili(maxf(0,total-current)/40.0)
+	if charges<=0: return {}
+	var projected=record.duplicate(true)
+	projected.level=target
+	projected.xp=int(current+charges*40-total)
+	return {"target":target,"charges":charges,"cost":charges*3,"xp":charges*40,"before":record.duplicate(true),"after":projected}

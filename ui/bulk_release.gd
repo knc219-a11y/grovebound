@@ -1,4 +1,8 @@
 extends RefCounted
+static func reward(g,ids):
+	var total=0
+	for id in ids: total+=g.Management.farewell_reward(g.find_owned(id))
+	return total
 static func visible_roster(g):
 	return g.Management.filtered(g.owned,g.squad,g.roster_kind_filter,g.roster_grade_filter,g.roster_favorites_only,g.roster_sort)
 static func show_page(g):
@@ -10,7 +14,7 @@ static func show_page(g):
 			if g.Management.can_release(d,g.squad) and not g.bulk_selection.has(d.id): g.bulk_selection.append(d.id)
 		g.show_bulk_release())
 	g.button(g.overlay,"선택 해제",Rect2(500,215,170,48),func(): g.bulk_selection.clear(); g.show_bulk_release())
-	g.label(g.overlay,"선택 %d마리 · 성장 재료 %d개" % [g.bulk_selection.size(),g.bulk_selection.size()*2],Vector2(710,230),20)
+	g.label(g.overlay,"선택 %d마리 · 성장 재료 %d개" % [g.bulk_selection.size(),reward(g,g.bulk_selection)],Vector2(710,230),20)
 	var scroll=ScrollContainer.new()
 	scroll.name="BulkReleaseScroll"
 	scroll.position=Vector2(230,280)
@@ -37,12 +41,12 @@ static func show_page(g):
 		description.add_theme_color_override("font_color",g.Loot.color(d))
 		row.add_child(description)
 		var protected=Label.new()
-		protected.text="동행 중" if g.squad.has(d.id) else "즐겨찾기 보호" if d.get("favorite",false) else "작별 가능"
+		protected.text="동행 중" if g.squad.has(d.id) else "즐겨찾기 보호" if d.get("favorite",false) else "재료 %d개" % g.Management.farewell_reward(d)
 		protected.vertical_alignment=VERTICAL_ALIGNMENT_CENTER
 		row.add_child(protected)
 	if visible.is_empty(): g.label(g.overlay,"현재 필터에 맞는 동료가 없습니다.",Vector2(250,320),20)
 	scroll.set_deferred("scroll_vertical",g.bulk_scroll)
-	g.label(g.overlay,"한 마리당 성장 재료 2개 · 작별하면 보유 목록에서 사라집니다.",Vector2(235,600),17)
+	g.label(g.overlay,"Lv.1 기준 일반 2 · 희귀 5 · 영웅 10개 / 레벨마다 +1개",Vector2(235,600),17)
 	g.button(g.overlay,"동료 관리로",Rect2(230,640,240,55),g.open_roster)
 	var confirm=g.button(g.overlay,"선택한 동료와 작별",Rect2(900,640,310,55),g.confirm_bulk_release)
 	confirm.disabled=g.bulk_selection.is_empty()
@@ -52,7 +56,7 @@ static func show_confirmation(g,ids):
 			g.notify("동행·즐겨찾기 상태를 다시 확인하세요.")
 			g.show_bulk_release()
 			return
-	g.modal("선택한 동료를 자연으로 보낼까요?","%d마리와 작별 · 성장 재료 %d개가 남습니다. 아래 명단을 확인하세요." % [ids.size(),ids.size()*2],"bulk_confirmation",g.show_bulk_release)
+	g.modal("선택한 동료를 자연으로 보낼까요?","%d마리와 작별 · 성장 재료 %d개가 남습니다. 아래 명단을 확인하세요." % [ids.size(),reward(g,ids)],"bulk_confirmation",g.show_bulk_release)
 	var scroll=ScrollContainer.new()
 	scroll.position=Vector2(240,230)
 	scroll.size=Vector2(960,300)

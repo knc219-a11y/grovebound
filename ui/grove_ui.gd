@@ -47,7 +47,7 @@ static func leaf(canvas,p,radius,color):
 static func theme(font):
 	var t=Theme.new()
 	t.default_font=font
-	for type in ["Button","Label","OptionButton","PopupMenu","CheckBox","CheckButton","LineEdit","TooltipLabel"]:
+	for type in ["Button","Label","OptionButton","PopupMenu","CheckBox","CheckButton","LineEdit","TooltipLabel","SpinBox"]:
 		t.set_font("font",type,font)
 	t.default_font_size=18
 	for state in ["normal","hover","pressed","disabled","focus"]:

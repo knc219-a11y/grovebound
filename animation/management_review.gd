@@ -20,6 +20,8 @@ func _ready():
 	in_combat=false
 	screenshot_mode=true
 	if screen=="training": show_training(selected_id)
+	elif screen=="target": show_target_training(selected_id)
+	elif screen=="target_preview": preview_target_training(selected_id,8)
 	elif screen=="receipt": train_companion(selected_id)
 	elif screen=="filtered":
 		roster_favorites_only=true

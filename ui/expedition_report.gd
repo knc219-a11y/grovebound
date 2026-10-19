@@ -8,6 +8,9 @@ static func show_report(g):
 	for i in 3:
 		g.panel(g.overlay,Rect2(230+i*330,215,310,58),Color("202823"))
 		g.label(g.overlay,values[i],Vector2(248+i*330,232),21)
+	if g.report_contributions:
+		show_graphs(g,r,leave)
+		return
 	for side in 2:
 		var x=230+side*500
 		g.label(g.overlay,"함께 돌아온 인연" if side==0 else "전투 기여" if g.report_contributions else "동료 성장",Vector2(x,294),23)
@@ -39,15 +42,58 @@ static func show_report(g):
 			elif g.report_contributions:
 				line.add_theme_font_size_override("font_size",16)
 				var v=d["values"]
-				line.text="%s · %s · %s\n피해 %.0f / 회복 %.0f / 경감 %.0f · 스킬 %d회" % [g.NAMES[d.kind],g.Roles.LABELS[d.kind],d.trait,v.get("damage",0),v.get("healing",0),v.get("mitigation",0),v.get("skills",0)]
-				line.custom_minimum_size.y=54
+				line.text="%s · %s · %s · 스킬 %d회" % [g.NAMES[d.kind],g.Roles.LABELS[d.kind],d.trait,v.get("skills",0)]
+				line.custom_minimum_size.y=28
+				rows.add_child(line)
+				var graph=preload("res://ui/contribution_chart.gd").new()
+				graph.custom_minimum_size=Vector2(420,76)
+				graph.values=v
+				for metric in ["damage","healing","mitigation"]:
+					var largest=0.0
+					for member in entries: largest=maxf(largest,member["values"].get(metric,0.0))
+					graph.maximums[metric]=largest
+				rows.add_child(graph)
+				continue
 			else: line.text="%s  Lv.%d → %d  · 경험치 +%d" % [g.NAMES[d.kind],d.from,d.to,d.xp]
 			rows.add_child(line)
 	g.label(g.overlay,"다음 준비",Vector2(235,530),20)
 	var tip="동료 쉼터에서 역할을 비교하고 편성을 준비하세요.\n육성은 재료 3개로 경험치 40 · 동쪽 사냥길에서 다시 출발합니다."
 	if g.owned.is_empty(): tip="동쪽 사냥길에서 첫 인연을 만나보세요.\n전투 뒤 쉬는 야수에게 다가가 교감할 수 있습니다."
 	g.label(g.overlay,tip,Vector2(235,566),18)
-	if g.report_contributions: g.label(g.overlay,"피해·회복은 실제 적용량, 경감은 해당 공격에서 막은 체력 피해입니다.",Vector2(235,613),14)
+	if g.report_contributions: g.label(g.overlay,"막대는 항목별 최대 동료 대비 비율 · 숫자는 실제 적용량입니다.",Vector2(235,613),14)
 	var b=g.button(g.overlay,"마을에서 준비하기" if g.mode=="result" else "마을로 돌아가기",Rect2(925,640,285,55),leave)
 	g.GroveUI.emphasize(b)
 	if g.mode=="camp" and not g.owned.is_empty(): g.button(g.overlay,"동료 · 편성 · 육성",Rect2(230,640,310,55),g.open_roster)
+
+static func show_graphs(g,r,leave):
+	g.label(g.overlay,"동료별 전투 기여",Vector2(235,294),23)
+	g.label(g.overlay,"각 항목의 최대 동료 대비 길이 · 수치는 실제 적용량",Vector2(670,301),15)
+	g.panel(g.overlay,Rect2(230,335,980,255),Color("202823"))
+	var scroll=ScrollContainer.new()
+	scroll.name="ContributionGraphs"
+	scroll.position=Vector2(242,345)
+	scroll.size=Vector2(952,235)
+	g.overlay.add_child(scroll)
+	var rows=VBoxContainer.new()
+	rows.size_flags_horizontal=Control.SIZE_EXPAND_FILL
+	rows.add_theme_constant_override("separation",4)
+	scroll.add_child(rows)
+	var entries=r.get("contributions",[])
+	var maxima={"damage":0.0,"healing":0.0,"mitigation":0.0}
+	for d in entries:
+		for metric in maxima: maxima[metric]=maxf(maxima[metric],d["values"].get(metric,0.0))
+	for d in entries:
+		var title=Label.new()
+		title.text="%s · %s · %s · 스킬 %d회" % [g.NAMES[d.kind],g.Roles.LABELS[d.kind],d.trait,d["values"].get("skills",0)]
+		title.add_theme_font_size_override("font_size",17)
+		title.custom_minimum_size=Vector2(920,22)
+		rows.add_child(title)
+		var graph=preload("res://ui/contribution_chart.gd").new()
+		graph.custom_minimum_size=Vector2(920,27)
+		graph.values=d["values"]
+		graph.maximums=maxima
+		rows.add_child(graph)
+	if entries.is_empty(): g.label(g.overlay,"이번 탐험의 전투 기여 기록이 없습니다.",Vector2(260,390),20)
+	g.label(g.overlay,"초과 피해·회복 제외 · 경감은 실제로 막은 체력 손실 · 기록 확인으로 보상은 바뀌지 않습니다.",Vector2(235,610),14)
+	g.button(g.overlay,"성장 기록 보기",Rect2(230,640,285,55),func(): g.report_contributions=false; g.show_run_report())
+	g.button(g.overlay,"마을로 돌아가기",Rect2(925,640,285,55),leave)

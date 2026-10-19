@@ -8,8 +8,8 @@ var config={}
 const CONFIGS={
 	"wolf":{"size":Vector2(67,48),"roots":[Vector2(24,25),Vector2(30,28),Vector2(42,27),Vector2(52,27)],"feet":[Vector2(15,46),Vector2(30,45),Vector2(45,48),Vector2(58,46)],"widths":[7.0,5.0,5.0,5.0],"tail":Vector2(23,23),"reach":8.0,"fast_reach":10.0,"lift":3.0,"fast_lift":5.0,"tail_angle":0.045},
 	"marten":{"size":Vector2(74,32),"roots":[Vector2(36,20),Vector2(44,20),Vector2(57,18),Vector2(63,18)],"feet":[Vector2(36,31),Vector2(46,29),Vector2(59,32),Vector2(66,30)],"widths":[5.0,4.0,4.0,3.5],"tail":Vector2(32,19),"reach":5.0,"fast_reach":8.0,"lift":2.5,"fast_lift":4.5,"tail_angle":0.07},
-	"deer":{"size":Vector2(51,64),"roots":[Vector2(15,39),Vector2(23,40),Vector2(35,39),Vector2(42,38)],"feet":[Vector2(13,64),Vector2(24,61),Vector2(36,64),Vector2(44,62)],"widths":[4.0,3.5,3.5,3.0],"tail":Vector2(13,34),"reach":7.0,"fast_reach":10.0,"lift":3.0,"fast_lift":5.5,"tail_angle":0.025},
-	"turtle":{"size":Vector2(56,32),"roots":[Vector2(15,21),Vector2(25,19),Vector2(37,22),Vector2(46,20)],"feet":[Vector2(15,30),Vector2(26,27),Vector2(40,32),Vector2(49,28)],"widths":[5.5,4.0,4.5,3.5],"tail":Vector2(8,21),"reach":2.0,"fast_reach":3.0,"lift":1.0,"fast_lift":1.5,"tail_angle":0.0,"no_trot":true},
+	"deer":{"size":Vector2(51,64),"roots":[Vector2(7,36),Vector2(14,37),Vector2(28,39),Vector2(33,38)],"feet":[Vector2(2,62),Vector2(16,61),Vector2(29,64),Vector2(38,62)],"widths":[4.0,3.5,3.5,3.0],"tail":Vector2(13,34),"reach":7.0,"fast_reach":10.0,"lift":3.0,"fast_lift":5.5,"tail_angle":0.025},
+	"turtle":{"size":Vector2(56,32),"roots":[Vector2(7,22),Vector2(17,21),Vector2(34,23),Vector2(45,22)],"feet":[Vector2(6,29),Vector2(18,28),Vector2(35,32),Vector2(49,29)],"widths":[5.5,4.0,4.5,3.5],"tail":Vector2(8,21),"reach":3.0,"fast_reach":4.5,"lift":0.7,"fast_lift":1.1,"tail_angle":0.0,"no_trot":true},
 	"fox":{"size":Vector2(57,40),"roots":[Vector2(27,20),Vector2(30,24),Vector2(39,23),Vector2(45,23)],"feet":[Vector2(21,39),Vector2(31,37),Vector2(42,40),Vector2(51,39)],"widths":[5.0,4.0,4.0,4.0],"tail":Vector2(25,18),"reach":5.5,"fast_reach":7.6,"lift":2.5,"fast_lift":4.0,"tail_angle":0.075}
 }
 func configure(species,running):
@@ -18,13 +18,16 @@ func configure(species,running):
 	config=CONFIGS[kind]
 	sprite=load("res://assets/party-pixel/"+kind+".png")
 func stride():
-	return 2.0*(config.fast_reach if fast else config.reach)/(0.6 if fast and config.get("no_trot",false) else (0.4 if fast else 0.68))
+	return 2.0*(config.fast_reach if fast else config.reach)/duty()
+func duty():
+	if kind=="turtle": return 0.64 if fast else 0.72
+	return 0.4 if fast else 0.68
 func foot_offset(t,beat):
 	t=fposmod(t+beat,1.0)
-	var duty=0.6 if fast and config.get("no_trot",false) else (0.4 if fast else 0.68)
+	var contact=duty()
 	var reach=config.fast_reach if fast else config.reach
-	if t<duty: return Vector2(reach-2.0*reach*t/duty,0)
-	var s=(t-duty)/(1.0-duty)
+	if t<contact: return Vector2(reach-2.0*reach*t/contact,0)
+	var s=(t-contact)/(1.0-contact)
 	return Vector2(lerpf(-reach,reach,smoothstep(0,1,s)),-(config.fast_lift if fast else config.lift)*sin(PI*s))
 func beats():
 	# Walk: four evenly staggered feet. Trot: diagonally paired contacts.
