@@ -1,5 +1,5 @@
 {
 	"texture":"res://assets/attacks-v2/druid-support.png",
-	"mounts":{"heal":[-4,-42],"support":[-1,-42],"revive":[-2,-24]},
-	"angles":{"heal":-0.35,"support":-0.35,"revive":-1.0}
+	"mounts":{"heal":[-10,-35],"support":[-7,-35],"revive":[-8,-20]},
+	"angles":{"heal":-0.35,"support":-0.35,"revive":-1.15}
 }

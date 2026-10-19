@@ -126,3 +126,5 @@ https://github.com/knc219-a11y/grovebound 의 AGENTS.md, STATUS.md, docs/NEXT_SE
 
 최신(2026-10-19): 우두머리6종 행동 원화 적용. STATUS 맨 위와 `docs/BOSS_ACTION_ART.md` 우선. 실제 `docs/boss-action-gameplay.mp4`(소리 포함)/GIF/PNG, 제작3배 `boss-action-detail.gif`/MP4. 발구르기·돌진 예고 구분, 이동 거리 기반 두 보폭, 회수/보행/사망 우선. 기존 판정·피해·카메라·세이브 유지. 다음은 첫 사냥터 완주 검토와 사용자 청감/미적 피드백.
 
+최신(2026-10-20): 주인공 자동 공격 크기 오류 수정. 새 몸체72px↔기본 몸체60px 교차가 원인. 원본 전체72px/카메라는 유지하고 새 자세만 실제 몸체60px/중심에 맞춰 재패킹, 지팡이 손잡이 보정. STATUS 맨 위/DRUID_SUPPORT_ART.md 기준. 실제 druid-scale-gameplay.gif/MP4, 제작용 druid-scale-detail.gif/MP4. 관련 검사 PASS, 사용자 확인 대기.
+

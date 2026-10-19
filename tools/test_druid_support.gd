@@ -43,11 +43,21 @@ func check():
 	if g.motion_actions.druid_support==null: failures.append("body sheet missing")
 	else:
 		var image=g.motion_actions.druid_support.get_image()
+		var idle=load("res://assets/party-pixel/druid-body-v2.png").get_image()
+		var original=idle.get_used_rect()
 		for row in 3:
 			for frame in 6:
 				var box=image.get_region(Rect2i(frame*112,row*104,112,104)).get_used_rect()
-				if box.position.x<=0 or box.position.y<=0 or box.end.x>=112 or box.end.y>=104 or box.size.y>72: failures.append("body clipping/scale")
-	if failures.is_empty(): print("DRUID SUPPORT PASS: body/weapon routing, moving/recovery grip, Q55/8s, E14s, actual 3s/30% revive, interrupt, native72px bounds")
+				if box.position.x<=0 or box.position.y<=0 or box.end.x>=112 or box.end.y>=104 or box.size.y>original.size.y: failures.append("body clipping/scale")
+				if row<2 and box.size.y!=original.size.y: failures.append("standing body grows during action")
+				var center=56-idle.get_width()/2.0+original.get_center().x
+				if absf(box.get_center().x-center)>1: failures.append("body shifts sideways during action")
+		# Automatic attack must use the same corrected standing body as explicit buff.
+		g.player.channeling=false
+		g.player.action_remaining=0.0
+		g.animate_attack(g.player.pos,g.player)
+		if not g.motion_actions.selection("druid",g.player).get("druid_art",false): failures.append("automatic attack route")
+	if failures.is_empty(): print("DRUID SUPPORT PASS: body/weapon routing, original60px standing body/center across automatic attack and recovery, Q55/8s, E14s, actual 3s/30% revive, interrupt")
 	else: push_error(str(failures))
 	g.free()
 	quit(0 if failures.is_empty() else 1)
