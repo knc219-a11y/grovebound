@@ -1,5 +1,9 @@
 extends Node2D
 # A self-contained, data-driven playable slice. All gameplay positions are world coordinates.
+const Expedition=preload("res://expedition.gd")
+var expedition=Expedition.new()
+var bond_hint_seen=false
+var preparation_seen=false
 const Town=preload("res://town.gd")
 var town_position=Town.SPAWN
 var town_entered=false
@@ -336,6 +340,8 @@ func open_controls():
 	button(overlay,"메뉴로",Rect2(925,630,285,55),open_game_menu)
 
 func show_camp():
+	var show_recap=false
+	if expedition.active: show_recap=expedition.close(owned,materials,kills,stage_time,"마을로 중도 귀환")
 	if mode!="camp" or not town_entered: player.pos=town_position
 	town_entered=true
 	message=""
@@ -355,6 +361,10 @@ func show_camp():
 	combat_feedback.clear()
 	clear_overlay()
 	save_game()
+	if show_recap: show_run_report()
+
+func show_run_report():
+	preload("res://ui/expedition_report.gd").show_report(self)
 
 func update_town(dt):
 	var motion=Vector2(float(Input.is_physical_key_pressed(KEY_D) or Input.is_physical_key_pressed(KEY_RIGHT))-float(Input.is_physical_key_pressed(KEY_A) or Input.is_physical_key_pressed(KEY_LEFT)),float(Input.is_physical_key_pressed(KEY_S) or Input.is_physical_key_pressed(KEY_DOWN))-float(Input.is_physical_key_pressed(KEY_W) or Input.is_physical_key_pressed(KEY_UP)))
@@ -427,6 +437,8 @@ func make_unit(d, p):
 	return {"data":d,"pos":p,"hp":max_hp(d),"maxhp":max_hp(d),"cd":0.0,"skill":0.0,"buff":0.0,"shield":0.0,"face":1.0,"walk":false}
 
 func start_stage(tutorial):
+	expedition.begin(owned,materials,tutorial)
+	bond_hint_seen=false
 	if mode=="camp": town_position=player.pos
 	pending_loot_id=-1
 	repair_party()
@@ -743,6 +755,9 @@ func hit_enemy(e, damage, source,attacker={}):
 			var candidate=Loot.roll(e.kind,e.level,loot_rng)
 			candidate.pos=e.pos
 			captures.append(candidate)
+			if not bond_hint_seen:
+				bond_hint_seen=true
+				notify("경계를 푼 야수가 쉬고 있습니다. 가까이에서 교감 [F / 화면 버튼]으로 인연을 맺으세요.")
 			if Loot.grade(candidate)!="common": play_loot_sound(Loot.grade(candidate))
 			e.death=0.0 # The resting capture pose replaces the fading corpse.
 		save_game()
@@ -866,6 +881,7 @@ func interact():
 	if i<0: return
 	var c=captures[i]
 	var d=make_owned(c.kind,int(c.level),c if c.has("grade") else {})
+	expedition.record_bond(d)
 	recent_capture_id=d.id
 	# Cosmetic communion: support gesture and restorative light, no HP/stat changes.
 	motion_actions.start(player,"druid","support")
@@ -884,8 +900,8 @@ func interact():
 	if mode=="tutorial":
 		tutorial_done=true
 		mode="tutorial_practice"
-		modal("첫 동료를 얻었습니다!",NAMES[d.kind]+" · "+d.trait+" / 이제 함께 싸워보세요.")
-		label(overlay,"동료는 자동으로 싸우고, 초상화를 누르면 고유 스킬을 사용합니다.\nQ 회복과 E 야성 강화로 동료를 지원하세요.\n\n다음 전투를 마치면 캠프로 돌아갑니다.",Vector2(230,280),23)
+		modal("첫 인연을 맺었습니다!",NAMES[d.kind]+" · "+ROLES[d.kind]+" · "+d.trait+" / 이제 함께 싸워보세요.")
+		label(overlay,"동료는 자동으로 싸우고, 초상화를 누르면 고유 스킬을 사용합니다.\nQ 회복과 E 야성 강화로 동료를 지원하세요.\n\n출전은 최대 4마리, 출발 준비는 6마리입니다.\n연습 후 마을의 동료 쉼터에서 편성·육성을 준비하세요.",Vector2(230,280),23)
 		button(overlay,"협동 전투 시작",Rect2(500,570,420,65),start_practice)
 
 func start_practice():
@@ -898,14 +914,14 @@ func start_practice():
 	tutorial_species="practice"
 
 func finish(success):
+	if mode=="result": return
 	mode="result"
 	if success:
 		materials+=10
 		unlocked=true
+	expedition.close(owned,materials,kills,stage_time,"우두머리 제압 · 클리어 보너스 +10" if success else "드루이드가 쓰러져 귀환 · 클리어 보너스 없음")
 	save_game()
-	modal("계곡 탐험 완료" if success else "드루이드가 쓰러졌습니다", "인연을 맺은 동료 · 전투 경험치 · 획득 재료는 모두 유지됩니다.")
-	label(overlay,"제압 %d마리  ·  보유 동료 %d마리\n성장 재료 %d\n\n%s" % [kills,owned.size(),materials,"클리어 보너스 +10 · 다음 지역 개방 기록 완료\n다음 지역 콘텐츠는 후속 버전에서 추가됩니다." if success else "클리어 보상은 받지 못했습니다.\n동료 구성과 지원 타이밍을 바꿔 다시 도전해보세요."],Vector2(230,280),23)
-	button(overlay,"캠프로 돌아가기",Rect2(490,580,450,65),show_camp)
+	show_run_report()
 
 func notify(txt):
 	message=txt
@@ -1042,6 +1058,7 @@ func roster_filters(total,shown):
 	label(overlay,"표시 %d / %d마리" % [shown,total],Vector2(1020,225),17)
 
 func open_roster():
+	if mode=="camp": preparation_seen=true
 	if in_combat and mode=="stage": notify("전투 중에는 편성을 바꿀 수 없습니다."); return
 	if mode=="tutorial": notify("튜토리얼을 먼저 마쳐주세요."); return
 	var camp=mode=="camp"
@@ -1236,7 +1253,7 @@ func confirm_return():
 
 func confirm_reset():
 	modal("새 여정 시작", "이 기기의 프로토타입 저장 데이터를 초기화합니다.","",show_camp)
-	button(overlay,"초기화",Rect2(300,500,350,65),func(): owned.clear(); squad.clear(); units.clear(); discovered.clear(); materials=0; tutorial_done=false; unlocked=false; next_id=1; show_camp())
+	button(overlay,"초기화",Rect2(300,500,350,65),func(): expedition.clear(); preparation_seen=false; owned.clear(); squad.clear(); units.clear(); discovered.clear(); materials=0; tutorial_done=false; unlocked=false; next_id=1; show_camp())
 	button(overlay,"취소",Rect2(750,500,350,65),show_camp)
 
 func update_hud():
@@ -1249,6 +1266,8 @@ func update_hud():
 		status_label.text="잎그늘 쉼터 · 안전 지대"
 		player_hp_bar.value=player_hp_bar.max_value
 		quest_label.text="동료 쉼터 · 편성 / 육성    →    동쪽 사냥길\nWASD / 이동 스틱 · 가까이에서 F / 상호작용"
+		if not tutorial_done: quest_label.text="첫 걸음  ·  동쪽 사냥길 → 첫 인연 만나기\nWASD / 왼쪽 이동 스틱 · 가까이에서 F / 화면 버튼"
+		elif not unlocked and not preparation_seen: quest_label.text="탐험 준비  ·  동료 쉼터에서 역할·편성 확인\n재료 3개 → 경험치 40 · 준비되면 동쪽 사냥길"
 		toast_label.text=save_notice if not save_notice.is_empty() else message if message_time>0 else ""
 		boss_panel.hide()
 		boss_label.hide()
@@ -1265,7 +1284,7 @@ func update_hud():
 	status_label.text="드루이드  ·  %d / %d" % [player.hp,player.maxhp]
 	player_hp_bar.max_value=player.maxhp
 	player_hp_bar.value=player.hp
-	quest_label.text="첫 인연 · 가까이 가서 교감 [F]" if mode=="tutorial" else "01  초록물 계곡   →   동쪽 우두머리\n동행 %d/6 · 제압 %d · %02d:%02d · %s" % [squad.size(),kills,int(stage_time)/60,int(stage_time)%60,"전투 중" if in_combat else "탐험 중"]
+	quest_label.text=("첫 인연 · 쉬는 야수에게 교감 [F / 화면 버튼]" if not captures.is_empty() else "동료와 협동 연습 · Q 회복 / E 강화 / 동료 초상" if tutorial_species=="practice" else "첫 인연 · 야수에게 다가가 경계를 누그러뜨리세요") if mode=="tutorial" else "01  초록물 계곡   →   동쪽 우두머리\n동행 %d/6 · 제압 %d · %02d:%02d · %s" % [squad.size(),kills,int(stage_time)/60,int(stage_time)%60,"전투 중" if in_combat else "탐험 중"]
 	toast_label.text=message if message_time>0 else ""
 	boss_label.text=""
 	for e in enemies:
@@ -1307,7 +1326,9 @@ func update_hud():
 			if e.hp>0: alive=true
 		if not alive:
 			tutorial_species=""
+			expedition.close(owned,materials,kills,stage_time,"첫 인연 · 협동 연습 완료")
 			show_camp()
+			show_run_report()
 
 func _input(event):
 	if event is InputEventScreenTouch and not event.pressed:

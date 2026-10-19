@@ -1,3 +1,5 @@
+최신 갱신(2026-10-19): 첫 탐험 안내·귀환 기록 구현. STATUS.md의 같은 항목을 먼저 읽는다. 첫 마을/첫 교감/협동 연습의 단계별 안내와 ‘이번 탐험의 발자취’(새 인연·경험치/레벨·재료·제압·시간)를 연결했다. 여정 메뉴에서 지난 기록 재열기. 기록은 세션 한정,세이브/보상/성장 수치는 유지. `expedition.gd`, `ui/expedition_report.gd`, `tools/test_expedition.gd`; 실제 `docs/first-journey-guide.png`, `expedition-recap.png`, `first-journey-flow.gif`/`.mp4`. 다음은 첫 플레이 피드백과 모바일 조작 확인.
+
 최신 설정 결정: 드루이드 수집은 포획 대신 ‘교감하여 인연을 맺는다’. UI/튜토리얼과 지원 포즈·회복빛에 반영했다. 자연으로 보내기(행 버튼 ‘작별’)는 기존 보호/재료 규칙 유지. STATUS.md의 ‘포획 → 교감과 인연’을 먼저 확인한다.
 
 최신 아트 갱신(2026-10-19): 코드 도형 마을을 기존 사냥터 그림풍의 실제 이미지 에셋으로 교체했다. `docs/TOWN_ART.md`, `assets/town/`, 실제 `docs/town-art-hub.png`, `town-art-flow.gif`/`.mp4`를 먼저 확인한다. 기능/충돌/캐릭터 크기/카메라는 유지. 아래 초기 코드 도형 초안 언급은 과거 기록이다.

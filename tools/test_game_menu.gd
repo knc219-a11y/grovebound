@@ -21,6 +21,7 @@ func check_menu():
 	var second=game.make_owned("fox",4)
 	game.squad=[first.id]
 	game.materials=12
+	game.expedition.clear()
 	game.show_camp()
 	game.dropdown.toggle.pressed.emit()
 	await process_frame

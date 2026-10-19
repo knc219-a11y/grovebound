@@ -61,4 +61,9 @@ static func draw(g):
 	g.draw_set_transform(Vector2.ZERO)
 	for i in POINTS.size():
 		g.text_at(LABELS[i],POINTS[i]-g.cam+Vector2(-50,32),16,Color("e2d4a7"))
+	if not g.tutorial_done or (not g.unlocked and not g.preparation_seen):
+		var target=POINTS[2] if not g.tutorial_done else POINTS[0]
+		var p=(target-g.cam+Vector2(0,-35)).clamp(Vector2(40,145),Vector2(1320,560))
+		var bob=roundf(sin(g.clock*3)*4)
+		g.draw_colored_polygon(PackedVector2Array([p+Vector2(-9,-12+bob),p+Vector2(9,-12+bob),p+Vector2(0,bob)]),Color("e2cf8b"))
 	g.GroveUI.draw_stick(g,g.stick)

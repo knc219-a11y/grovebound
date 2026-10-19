@@ -21,6 +21,7 @@ static func show_menu(g):
 	var resume=g.button(g.overlay,"캠프로" if g.mode=="camp" else "탐험 계속하기",Rect2(230,630,310,55),g.resume_game)
 	UI.emphasize(resume)
 	if g.mode in ["stage","tutorial"]: g.button(g.overlay,"캠프로 귀환",Rect2(565,630,310,55),g.confirm_return)
+	if g.mode=="camp" and not g.expedition.report.is_empty(): g.button(g.overlay,"지난 탐험 기록",Rect2(565,630,310,55),g.show_run_report)
 	g.button(g.overlay,"조작 안내",Rect2(900,630,310,55),g.open_controls)
 static func show_inventory(g,selected_id=-1,reset_scroll=false):
 	var old=g.overlay.get_node_or_null("InventoryScroll")
