@@ -1,5 +1,6 @@
 extends RefCounted
-# Pixel coordinates stay on a 4px grid. Doors are 44x64 beside a 72px druid.
+# Separate generated terrain and alpha cottages match the approved meadow.
+# Gameplay footprints, 72px druid and camera remain unchanged.
 const SIZE=Vector2(1800,1100)
 const SPAWN=Vector2(850,700)
 const BUILDINGS=[Rect2(420,350,232,110),Rect2(1040,290,200,100),Rect2(1120,760,184,96)]
@@ -20,64 +21,32 @@ static func nearest(p:Vector2)->int:
 	for i in POINTS.size():
 		if p.distance_to(POINTS[i])<110: return i
 	return -1
-static func rect(g,p,s,c): g.draw_rect(Rect2(p,s),Color(c))
+static var ground_texture:Texture2D
+static var cottages:Array=[]
+static var props:Array=[]
+static func load_art():
+	if ground_texture!=null: return
+	ground_texture=load("res://assets/town/leafshade-ground-v1.webp")
+	for i in 3:
+		cottages.append(load("res://assets/town/cottage-"+str(i)+"-v1.webp"))
+		props.append(load("res://assets/town/prop-"+str(i)+"-v1.webp"))
 static func ground(g):
-	rect(g,Vector2.ZERO,SIZE,"435747")
-	var r=RandomNumberGenerator.new()
-	r.seed=382
-	for i in 650:
-		var p=Vector2(r.randi_range(20,445)*4,r.randi_range(40,265)*4)
-		rect(g,p,Vector2(8,4),"4a604a" if i%2 else "3c5041")
-	# Quiet earth lanes form a loop, with broad passing spaces.
-	rect(g,Vector2(240,540),Vector2(1410,108),"897b59")
-	rect(g,Vector2(740,430),Vector2(200,460),"897b59")
-	rect(g,Vector2(460,470),Vector2(168,110),"897b59")
-	for i in 95:
-		var p=Vector2(r.randi_range(65,400)*4,r.randi_range(138,157)*4)
-		rect(g,p,Vector2(12,4),"978765")
-	for x in range(100,1700,64):
-		rect(g,Vector2(x,180),Vector2(8,36),"756548")
-		rect(g,Vector2(x,194),Vector2(64,8),"655b43")
-	for p in [Vector2(170,350),Vector2(300,850),Vector2(1440,310),Vector2(1520,890),Vector2(160,950)]:
-		g.draw_texture_rect(g.textures.tree,Rect2(p-Vector2(40,95),Vector2(80,104)),false)
-	for i in 36:
-		var p=Vector2(120+r.randi_range(0,390)*4,240+r.randi_range(0,175)*4)
-		if p.y>500 and p.y<700: continue
-		for j in 3:
-			rect(g,p+Vector2(j*8,-j%2*4),Vector2(12,8),"657956")
-	# Central camp: low stone ring, logs and a small canopy-free gathering place.
-	for i in 8:
-		var a=i*TAU/8
-		rect(g,Vector2(850,640)+Vector2(cos(a)*27,sin(a)*14).snapped(Vector2(4,4)),Vector2(12,8),"a39c80")
-	rect(g,Vector2(840,628),Vector2(24,12),"bb9558")
-	rect(g,Vector2(760,672),Vector2(48,12),"675641")
-	rect(g,Vector2(904,672),Vector2(48,12),"675641")
-	for p in [Vector2(1520,530),Vector2(1630,530)]:
-		rect(g,p,Vector2(12,68),"65543e")
-		rect(g,p+Vector2(-8,0),Vector2(28,12),"b8ac7a")
-static func building(g,i):
+	load_art()
+	g.draw_texture_rect(ground_texture,Rect2(Vector2.ZERO,SIZE),false)
+	# Small props sit below the existing interaction labels; no character zoom.
+	g.draw_texture(props[0],POINTS[1]-Vector2(40,22))
+	g.draw_texture(props[2],POINTS[1]+Vector2(-106,32))
+	g.draw_texture(props[2],POINTS[1]+Vector2(64,32))
+	g.draw_texture(props[1],POINTS[2]+Vector2(0,-62))
+static func building_rect(i):
+	load_art()
 	var b=BUILDINGS[i]
-	var p=b.position
-	var w=b.size.x
-	rect(g,p+Vector2(-12,16),b.size+Vector2(24,8),"344338")
-	rect(g,p-Vector2(0,48),b.size+Vector2(0,48),"aa9971")
-	rect(g,p+Vector2(0,72),Vector2(w,38),"817654")
-	for x in range(12,int(w)-12,32):
-		rect(g,p+Vector2(x,-28),Vector2(8,134),"655d43")
-	var roof=PackedVector2Array([p+Vector2(-20,-40),p+Vector2(w/2,-112),p+Vector2(w+20,-40),p+Vector2(w+12,0),p+Vector2(-12,0)])
-	g.draw_colored_polygon(roof,Color("384c48"))
-	for row in range(5):
-		var y=-68+row*16
-		var inset=maxf(0,(-y-40)*1.5)
-		for x in range(int(inset),int(w-inset),24):
-			rect(g,p+Vector2(x,y),Vector2(20,4),"455b51")
-	for y in range(-40,0,12): rect(g,p+Vector2(-8,y),Vector2(w+16,4),"52645a")
-	rect(g,p+Vector2(w/2-26,46),Vector2(52,64),"504937")
-	for y in range(8,96,16): rect(g,p+Vector2(8,y),Vector2(w-16,4),"998861")
-	rect(g,p+Vector2(w/2-20,50),Vector2(40,60),"353f35")
-	rect(g,p+Vector2(24,26),Vector2(32,28),"4e655a")
-	rect(g,p+Vector2(28,30),Vector2(24,16),"a5ac80")
-	rect(g,p+Vector2(w/2-34,110),Vector2(68,8),"b0a17b")
+	var texture=cottages[i]
+	var width=b.size.x+40
+	var height=width*texture.get_height()/float(texture.get_width())
+	return Rect2(Vector2(b.get_center().x-width/2,b.end.y-height+8),Vector2(width,height))
+static func building(g,i):
+	g.draw_texture_rect(cottages[i],building_rect(i),false)
 static func draw(g):
 	g.draw_set_transform(-g.cam.round())
 	ground(g)

@@ -5,17 +5,17 @@ func load_game(): pass
 func save_game(): pass
 func _ready():
 	super()
-	player.pos=Vector2(700,540)
+	player.pos=Vector2(750,490)
 	town_position=player.pos
 	tutorial_done=true
 	var d=make_owned("boar",2)
 	squad=[d.id]
 func _process(dt):
 	review_time+=dt
-	if review_time<2: stick=Vector2(-0.65,0)
+	if review_time<2: stick=Vector2(-0.45,0)
 	elif review_time<3 and phase==0:
 		phase=1
-		open_roster()
+		town_interact()
 	elif review_time>4 and phase==1:
 		phase=2
 		resume_game()
