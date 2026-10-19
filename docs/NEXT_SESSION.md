@@ -23,6 +23,11 @@
 - 실제 캡처는 `docs/eight-contributions.png`, `eight-target-growth.png`, `eight-farewell.png`, `eight-motion-gameplay.gif`/`.mp4`, `eight-motion-detail.gif`/`.mp4`. 재현 장면은 `roles_contribution_review.tscn`, `management_target_review.tscn`, `bulk_selection_review.tscn`, `eight_motion_review.tscn`, `full_motion_review.tscn`.
 - 다음 우선순위는 사용자가 이 화면/동세를 실제 플레이로 확인한 뒤 수치와 모션 강도를 조정하는 것이다. 특히 작별 보상과 등급 동행 효과는 장기 밸런스 전 임시값이며, 모바일 실기기 검증은 사용자의 iPhone 환경상 별도 확인이 필요하다.
 
+## 최신 갱신: 첫 사냥터 진행 표시·보스 진입 (2026-10-19)
+- 사용자 직접 테스트가 어려운 동안 취향 판단이 필요한 밸런스는 건드리지 않고 객관적으로 검증 가능한 진행 표시를 먼저 구현했다. 본선4무리 `길목 n/4`, 미니맵 상태 표식, 보스 공터 1.35초 무공격 경계 연출과 대응 안내가 적용됐다.
+- 북쪽/남쪽 선택 동선, 적12마리 구성, 전투/교감/재료/클리어 수치는 그대로다. 실제 `docs/trail-progress-boss.png`, `trail-boss-intro.gif`/`.mp4`; 자세한 규칙과 검증은 STATUS의 `첫 사냥터 객관식 진행 보강`을 확인한다.
+- 귀가 후 확인 순서: (1) 전투 기여/목표 육성/작별 화면, (2) 사슴·거북·지팡이·공격 모션, (3) 길목 진행 표시와 보스 등장 길이, (4) 등급 동행 효과를 시각 효과에서 전투 패시브로 확장할지 결정.
+
 ---
 
 # 다음 대화에서 이어갈 작업

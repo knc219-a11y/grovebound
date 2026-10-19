@@ -43,6 +43,24 @@ func check():
 		if e.boss: bosses+=1
 		else: census[e.kind]=census.get(e.kind,0)+1
 	if bosses!=1 or census.get("wolf")!=6 or census.get("deer")!=1: failures.append("same species/boss budget")
+	if g.trail.core_progress(g.enemies)!={"cleared":0,"total":4}: failures.append("core route starts uncleared")
+	for pack in g.Trail.CORE_PACKS:
+		var members=0
+		for e in g.enemies:
+			if int(e.get("pack",-1))==pack:
+				members+=1
+				e.hp=0
+		if members==0: failures.append("missing core pack metadata")
+	if g.trail.core_progress(g.enemies)!={"cleared":4,"total":4}: failures.append("core progress independent of optional paths")
+	var boss={}
+	for e in g.enemies:
+		if e.boss: boss=e
+	g.player.pos=Vector2(2360,800)
+	var hp_before=g.player.hp
+	g.trail.update(g)
+	if not boss.active or boss.get("intro",0.0)<=1.0 or not g.trail.visited.has("boss_intro"): failures.append("boss entry intro")
+	g.update_game(0.2)
+	if g.player.hp!=hp_before or boss.get("intro",0.0)>=1.35: failures.append("boss intro safety and countdown")
 	g.player.pos=g.Trail.REST
 	g.in_combat=false
 	g.captures.clear()
@@ -63,7 +81,7 @@ func check():
 	g.tutorial_species="boar"
 	g.start_stage(true)
 	if g.enemies.size()!=1 or not g.enemies[0].guaranteed or not g.trail.visited.is_empty(): failures.append("tutorial remains isolated")
-	if failures.is_empty(): print("PASS bulk/font/trail: protected/atomic/dedup/camp-only, exact reward and discovery, popup font, encounter budget, rest isolation, warning, tutorial")
+	if failures.is_empty(): print("PASS bulk/font/trail: protected/atomic/dedup/camp-only, exact reward and discovery, popup font, encounter budget/core progress, boss intro safety, rest isolation, warning, tutorial")
 	else: push_error(str(failures))
 	g.queue_free()
 	quit(0 if failures.is_empty() else 1)

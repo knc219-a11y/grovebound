@@ -3,6 +3,9 @@ extends RefCounted
 # same species/levels/rewards. Side paths are optional, not extra farming packs.
 const PACKS=[Vector2(650,790),Vector2(1000,850),Vector2(1100,510),Vector2(1500,820),Vector2(1850,1040),Vector2(2190,760)]
 const KINDS=["boar","turtle","deer","fox","marten","wolf"]
+# Four main-path encounters describe progress. North/south packs stay optional.
+const CORE_PACKS=[0,1,3,5]
+const OPTIONAL_PACKS=[2,4]
 const REST=Vector2(1650,540)
 const NORTH=Vector2(1100,510)
 const SOUTH=Vector2(1850,1040)
@@ -11,6 +14,34 @@ var sign:Texture2D
 var bench:Texture2D
 var fire:Texture2D
 func reset(): visited.clear()
+func cleared_pack(enemies,pack):
+	var found=false
+	for e in enemies:
+		if int(e.get("pack",-1))!=pack: continue
+		found=true
+		if e.hp>0: return false
+	return found
+func core_progress(enemies):
+	var cleared=0
+	for pack in CORE_PACKS:
+		if cleared_pack(enemies,pack): cleared+=1
+	return {"cleared":cleared,"total":CORE_PACKS.size()}
+func progress_text(enemies):
+	var p=core_progress(enemies)
+	return "길목 %d/%d" % [p.cleared,p.total]
+func begin_boss_intro(g):
+	if visited.has("boss_intro"): return false
+	visited.boss_intro=true
+	for e in g.enemies:
+		if e.boss and e.hp>0:
+			e.active=true
+			e.intro=1.35
+			e.wind=0.0
+			e.dash=0.0
+			e.cd=maxf(e.cd,0.8)
+			g.notify("거대한 발자국의 주인이 모습을 드러냈습니다. 발구르기와 돌진을 살피세요.")
+			return true
+	return false
 func area(p):
 	if p.distance_to(NORTH)<175: return "옆길 · 고요한 풀밭"
 	if p.distance_to(SOUTH)<175: return "옆길 · 낮은 덤불길"
@@ -28,7 +59,8 @@ func update(g):
 			g.notify(entry[2])
 	if g.player.pos.x>2290 and not visited.has("boss"):
 		visited.boss=true
-		g.notify("부러진 표지판과 거대한 발자국… 앞은 우두머리 공터입니다. 편성과 지원 스킬을 확인하세요.")
+		g.notify("부러진 표지판과 거대한 발자국… 앞은 우두머리 공터입니다. "+progress_text(g.enemies)+" · 지원 스킬을 확인하세요.")
+	if g.player.pos.x>2350: begin_boss_intro(g)
 func draw(g):
 	if sign==null:
 		sign=load("res://assets/town/prop-1-v1.webp")

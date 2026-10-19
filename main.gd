@@ -484,7 +484,9 @@ func start_stage(tutorial):
 	else:
 		for i in Trail.PACKS.size():
 			spawn_enemy(Trail.KINDS[i],Trail.PACKS[i],1+i/2)
+			enemies[-1].pack=i
 			if i>0: spawn_enemy("wolf",Trail.PACKS[i]+Vector2(85,60),1+i/2)
+			if i>0: enemies[-1].pack=i
 		spawn_enemy("boar",Vector2(2590,850),4,true,false)
 		notify("동료를 모으며 동쪽으로 탐험하세요. 마지막 공터에 우두머리가 있습니다.")
 	update_hud()
@@ -638,6 +640,12 @@ func update_game(dt):
 	for e in enemies:
 		if e.hp<=0: continue
 		e.stun=maxf(0,e.stun-dt)
+		e.intro=maxf(0,e.get("intro",0.0)-dt)
+		if e.get("intro",0.0)>0:
+			e.active=true
+			e.wind=0.0
+			e.dash=0.0
+			continue
 		var targets=alive_allies()
 		var target=player
 		var best=99999.0
@@ -1422,7 +1430,7 @@ func update_hud():
 	status_label.text="드루이드  ·  %d / %d" % [player.hp,player.maxhp]
 	player_hp_bar.max_value=player.maxhp
 	player_hp_bar.value=player.hp
-	quest_label.text=("첫 인연 · 쉬는 야수에게 교감 [F / 화면 버튼]" if not captures.is_empty() else "동료와 협동 연습 · Q 회복 / E 강화 / 동료 초상" if tutorial_species=="practice" else "첫 인연 · 야수에게 다가가 경계를 누그러뜨리세요") if mode=="tutorial" else (trail.area(player.pos)+"   →   동쪽 우두머리\n동행 %d/6 · 제압 %d · %02d:%02d · %s") % [squad.size(),kills,int(stage_time)/60,int(stage_time)%60,"전투 중" if in_combat else "탐험 중"]
+	quest_label.text=("첫 인연 · 쉬는 야수에게 교감 [F / 화면 버튼]" if not captures.is_empty() else "동료와 협동 연습 · Q 회복 / E 강화 / 동료 초상" if tutorial_species=="practice" else "첫 인연 · 야수에게 다가가 경계를 누그러뜨리세요") if mode=="tutorial" else (trail.area(player.pos)+"   →   동쪽 우두머리\n%s · 동행 %d/6 · 제압 %d · %02d:%02d · %s") % [trail.progress_text(enemies),squad.size(),kills,int(stage_time)/60,int(stage_time)%60,"전투 중" if in_combat else "탐험 중"]
 	toast_label.text=message if message_time>0 else ""
 	boss_label.text=""
 	for e in enemies:
@@ -1430,7 +1438,8 @@ func update_hud():
 			boss_label.text="계곡의 우두머리  ·  %d / %d" % [e.hp,e.maxhp]
 			boss_hp_bar.max_value=e.maxhp
 			boss_hp_bar.value=e.hp
-			if e.wind>0: boss_label.text+="\n"+("발구르기! 원 밖으로 이동" if e.attack_kind=="stomp" else "돌진! 옆으로 피하세요")
+			if e.get("intro",0.0)>0: boss_label.text+="\n거대한 발자국의 주인 · 경계 중"
+			elif e.wind>0: boss_label.text+="\n"+("발구르기! 원 밖으로 이동" if e.attack_kind=="stomp" else "돌진! 옆으로 피하세요")
 			elif e.get("dash",0.0)>0: boss_label.text+="\n돌진 중!"
 			else: boss_label.text+="\n공격 기회"
 			break
@@ -1688,6 +1697,9 @@ func draw_minimap():
 	for c in captures: draw_arc(origin+c.pos*scale_map,4,0,TAU,12,Color("ffec96"),1.5,true)
 	if mode=="stage":
 		for point in [Trail.NORTH,Trail.SOUTH,Trail.REST]: draw_circle(origin+point*scale_map,2,Color("d9c68b"))
+		for pack in Trail.CORE_PACKS:
+			var cleared=trail.cleared_pack(enemies,pack)
+			draw_circle(origin+Trail.PACKS[pack]*scale_map,3,Color("69735d") if cleared else Color("e0c27d"))
 	for u in active_units():
 		draw_circle(origin+u.pos*scale_map,2.5,Color("bce78b") if u.hp>0 else Color("777e71"))
 	draw_circle(origin+player.pos*scale_map,4,Color("eaf7ea"))

@@ -5,13 +5,17 @@ var phase=0
 func _ready():
 	super()
 	start_stage(false)
-	screenshot_mode=view!="combat"
+	screenshot_mode=view not in ["combat","boss_intro"]
 	player.pos=Vector2(930,790)
 	for i in units.size(): units[i].pos=player.pos+Vector2(-75+i*30,55)
 	for e in enemies: e.active=false
 	in_combat=false
 	if view=="rest": player.pos=Trail.REST
-	elif view=="boss": player.pos=Vector2(2320,790)
+	elif view=="boss": player.pos=Vector2(2360,790)
+	elif view=="boss_intro":
+		player.pos=Vector2(2240,790)
+		for e in enemies:
+			if not e.boss: e.hp=0
 	trail.update(self)
 	if view=="rest": show_trail_rest()
 	message="사냥터 동선 검토" if view=="flow" else message
@@ -19,6 +23,7 @@ func _process(dt):
 	if view=="combat":
 		stick=Vector2(0.6,0) if clock<0.6 else Vector2.ZERO
 		if clock>2 and heal_cd<=0: cast_heal()
+	if view=="boss_intro": stick=Vector2.RIGHT if clock<1.1 else Vector2.ZERO
 	if view=="flow":
 		var direction=Vector2(0.7,-0.7) if clock<2 else Vector2.RIGHT if clock<4.1 else Vector2(0.9,0.37)
 		if clock>4.1 and phase==0:
