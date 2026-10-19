@@ -580,6 +580,7 @@ func update_game(dt):
 		if revive_progress>=3.0:
 			units[down].hp=units[down].maxhp*0.3
 			combat_feedback.emit("revive",player.pos,units[down].pos)
+			combat_feedback.emit("skill_druid_revive",player.pos,units[down].pos)
 			fx(units[down].pos,units[down].pos,Color("a8f79b"),"소생!",0.8)
 			player.channeling=false
 			revive_progress=0.0
@@ -870,6 +871,7 @@ func cast_heal():
 	var a=lowest_ally(player.pos,430)
 	if not a.is_empty() and a.hp<a.maxhp:
 		heal(a,55,player.pos,player)
+		combat_feedback.emit("skill_druid_heal",player.pos,a.pos)
 		heal_cd=8.0
 
 func cast_buff():
@@ -885,6 +887,7 @@ func cast_buff():
 		best.buff=7.0
 		buff_cd=14.0
 		combat_feedback.emit("buff",player.pos,best.pos)
+		combat_feedback.emit("skill_druid_buff",player.pos,best.pos)
 		fx(player.pos,best.pos,Color("ffce6a"),"야성 +60%",0.9)
 
 func can_act():
@@ -900,6 +903,7 @@ func use_companion_skill(i):
 		"deer":
 			for a in alive_allies():
 				if a.pos.distance_to(u.pos)<350: heal(a,35*(1.25 if u.data.trait=="다정함" else 1),u.pos,u)
+			combat_feedback.emit("skill_deer",u.pos,u.pos)
 		"turtle":
 			motion_actions.start(u,"turtle","guard")
 			u.shield=5.0
@@ -911,6 +915,7 @@ func use_companion_skill(i):
 					e.aim=u.pos
 					e.pos=e.pos.move_toward(u.pos,35)
 			combat_feedback.emit("guard",u.pos,u.pos)
+			combat_feedback.emit("skill_turtle",u.pos,u.pos)
 			fx(u.pos,u.pos,Color("a7d9e8"),"도발 · 방어",1)
 		_:
 			if target.is_empty(): return
