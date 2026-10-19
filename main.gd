@@ -717,6 +717,7 @@ func begin_boss_attack(e, target):
 	if absf(e.aim.x-e.pos.x)>1: e.face=signf(e.aim.x-e.pos.x)
 
 func resolve_enemy_attack(e):
+	if e.boss and e.attack_kind=="stomp": e.boss_recovery=0.38
 	e["swing"]=0.22
 	motion_actions.start(e,e.kind,"cast" if e.kind=="fox" else "attack")
 	if e.attack_kind=="charge":
@@ -744,6 +745,7 @@ func advance_charge(e, dt):
 			e.dash_hits.append(id)
 	if e.pos.distance_to(e.aim)<2 or e.dash<=0:
 		e.dash=0.0
+		e.boss_recovery=0.32
 		e.cd=2.8
 
 func damage_ally(a, damage, source):
@@ -1695,7 +1697,8 @@ func _draw():
 		else:
 			draw_sprite(a.kind,p+Vector2(0,bob)+offset,a.size,a.face,col,tilt,deformation)
 		if front_weapon: weapon_visual.draw(self,p+offset,a.size,a.face,col,state)
-		var bar=Rect2(p+Vector2(-27,-a.size-10),Vector2(54,6))
+		var bar_height=motion_actions.boss_action.headroom(state,a.size)
+		var bar=Rect2(p+Vector2(-27,-bar_height-10),Vector2(54,6))
 		draw_rect(bar,Color("25392b"))
 		bar.size.x*=maxf(0,a.hp/a.maxhp)
 		draw_rect(bar,Color("b5e280") if a.ally else Color("eb8469"))

@@ -4,6 +4,7 @@ var catalog={}
 var textures={}
 var attack_textures={}
 var support_textures={}
+var boss_action=preload("res://animation/boss_action.gd").new()
 const DruidPose=preload("res://animation/druid_pose.gd")
 var druid_support:Texture2D
 func _init():
@@ -32,6 +33,7 @@ func start(actor,kind,key):
 	actor.action_remaining=duration
 	return true
 func advance(actor,dt):
+	actor.boss_recovery=maxf(0,actor.get("boss_recovery",0.0)-dt)
 	actor.action_remaining=maxf(0,actor.get("action_remaining",0.0)-dt)
 	if actor.hp<=0:
 		actor.action_remaining=0.0
@@ -71,6 +73,7 @@ func selection(kind,actor):
 	var frames=catalog[kind].actions[key].frames
 	return {"key":key,"region":frames[clampi(floori(phase*frames.size()),0,frames.size()-1)]}
 func draw(canvas,position,height,face,tint,kind,actor):
+	if kind=="boar" and actor.get("boss",false): return boss_action.draw(canvas,position,height,face,tint,actor)
 	var chosen=selection(kind,actor)
 	if chosen.is_empty(): return false
 	var data=catalog[kind]
