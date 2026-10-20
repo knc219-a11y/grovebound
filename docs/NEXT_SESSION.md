@@ -2,19 +2,13 @@
 
 반드시 최신 main에서 AGENTS.md → docs/PROJECT_SETTINGS.md → STATUS.md → 이 문서를 읽는다. 사용자 설정을 새로 확정/변경한 모든 대화에서 PROJECT_SETTINGS를 갱신하고 구현 상태/검증/다음 단계도 함께 기록한다. `python tools/check_handoff.py` 실행 후 범위 파일만 GitHub에 반영하고 ref를 확인한다. 계정 전체 채팅에 자동 적용되었다고 말하지 않는다.
 
-## 이번 대화에서 정한 다음 Work
-- 사용자 요청: 플레이 테스트는 사용자가 맡는다. 다음 Work는 테스트 결과를 기다리지 않고 **5·6성 진화 설계**를 우선 진행한다. 구현 변경에 필요한 자동 검사/격리 QA는 계속 수행한다.
-- 상세 제안과 복사할 시작 프롬프트: `docs/EVOLUTION_NEXT_WORK.md`.
-- 먼저 레벨 보존/6성 상한, 성공률·비용·재료 제한, 능력치·추가 능력 보상을 최소 질문으로 합의한 뒤 **4→5 한 단위**부터 구현한다. 제안서 수치/정책은 아직 확정이 아니다.
-
-## 최신 작업 경계: 3→4실제합성·4성특수개체
-- 최신STATUS와docs/SYNTHESIS_HANDOFF.md,docs/PROJECT_SETTINGS.md의4성규칙을읽는다.후보확인만인과거상태로돌아가지않는다.
-- 실제합성→고정결과/랜덤2옵션저장→속성1+야수고유1선택→중단복구→성장/7종강화스킬/표식·오라까지구현됐다.저장형식은v2내special.version1필드다.기존ID/옵션/편성/세이브를보존한다.
-- 공통 속성은 불꽃·물·대지·바람. 물은 사용자가 스킬 재사용 대기시간15% 감소를 확정했고 네 속성 모두 선택 가능하다.전용속성명칭·미래직업/계열능력은후속설계다.
-- 다음: docs/EVOLUTION_NEXT_WORK.md의 5·6성 진화 설계를 우선한다. 실제 플레이 피드백은 사용자가 추후 전달한다. 신규 특수종/확률/6성 상한은 임의 확정하지 않는다.
-- 회귀:tools/test_special_synthesis.gd(실제파일왕복/원자적소비/선택복구/무재추첨/실패롤백),test_special_combat.gd(성장/속성·고유/7종강화스킬),기존test_synthesis_preview/progression.원격CI와로컬결과는구별한다.
-
-- 최신 검증: Godot4.7.2 전체34/34 PASS(docs/special-companions-tests.json). 실제UI special-choice/detail/confirm.png와7종QA special-battle.gif/.mp4를 확인한다. 준비된팀/강화된적체력의12초 격리 QA이며 사람의 연속성장 검증이 아니다.
+## 최우선: 4→5 완료 이후
+- 현재4→5 실제진화/영구선택/복구/9개능력은 구현됐다. docs/EVOLUTION.md와 docs/PROJECT_SETTINGS.md「5·6성 진화 확정」을 읽는다. docs/EVOLUTION_NEXT_WORK.md는 이전 제안 이력이며 이미 승인된 세 묶음을 다시 질문하지 않는다.
+- 4성Lv50 주+부→주5성Lv50/상한60. 성공100%/추가비용없음/다른야수종허용/동행6·즐겨찾기보조보호. 주동료ID/종/특성/속성/고유/강화스킬/전체옵션/편성유지, 보조옵션미계승.110→130% 기본성장과역할별3택1 승인수치 적용. 사용자테스트후과하면조정한다.
+- 6성Lv60출발/상한70/기본성장110→130%와기존진화능력강화 방향은 확정. **정확한6성강화값은미정이며5→6실행은비활성**이다. 다음작업은 강화수치 합의 후 별도5→6 트랜잭션/검증 구현. 플레이피드백이오면5성밸런스도조정한다.
+- 저장v2내 special.version1과별도 special.evolution(version1/state/ability). pending결과와보조소비를한파일에기록후메모리반영, 선택확정도저장성공후반영. 기존4성은재선택하지않으며선택중종료/재접속시진화능력창복구/출발차단. 저장/보호/중복/스냅샷경계를 유지한다.
+- 최신Godot4.7.2 전체36/36 PASS: docs/evolution-tests.json. test_evolution/test_evolution_combat와기존4성검사 모두통과. 실제 evolution-materials/confirm/choice/detail.png와 evolution-battle.gif/.mp4 확인.7종두팀12초격리QA이며사람장기성장/실기기검증이아니다. 사용자저장과격리했다.
+- 수치: special_companions.gd EVOLUTION_VALUES/EVOLUTION_START/EVOLUTION_PER_LEVEL, 표시문구/검사/PROJECT_SETTINGS를함께수정.기존headless오디오종료ObjectDB경고는별도잔여다.
 
 ## 확정 방향
 - 현재 주인공은 드루이드 하나. 새 주인공 생성/직업 선택은 아직 추가하지 않는다.
@@ -51,4 +45,4 @@
 - tools/preview.py + res://animation/campaign_quarry_review.tscn / campaign_graveyard_review.tscn / campaign_boss_review.tscn. Linux는 Xvfb 필요.
 - python tools/check_handoff.py (로컬 스테이징 검사), --base COMMIT_SHA (CI 커밋 차이 검사).
 
-새 Work 시작 문장은 `docs/EVOLUTION_NEXT_WORK.md`의 마지막 코드 블록을 사용한다. 이 문서의 옛 캠페인 검증/다음 작업 목록을 최신 진화 작업보다 먼저 수행하지 않는다.
+새 Work는 `docs/EVOLUTION.md`와 이 문서 최우선4→5 완료 인계에서 이어간다. 이 문서의 옛 캠페인 검증/다음 작업 목록을 최신 진화 작업보다 먼저 수행하지 않는다.

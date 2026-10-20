@@ -38,6 +38,8 @@ var inventory_scroll=0
 var discovered=[]
 const Special=preload("res://special_companions.gd")
 const SpecialCombat=preload("res://special_combat.gd")
+const Evolution=preload("res://evolution_rules.gd")
+const EvolutionUI=preload("res://ui/evolution.gd")
 const Synthesis=preload("res://synthesis_rules.gd")
 const SynthesisUI=preload("res://ui/synthesis_preview.gd")
 const Management=preload("res://companion_management.gd")
@@ -1156,6 +1158,7 @@ func loot_card(d,x,caption,animate=false):
 		lines.append(Special.SKILL_DESCRIPTIONS[d.kind])
 		lines.append(Special.ELEMENTS[Special.element(d)].description)
 		lines.append(Special.choices(d.kind)[Special.unique(d)].description)
+		if not Special.evolution(d).is_empty(): lines.append("진화 · "+Special.evolution_choices(d.kind)[Special.evolution(d)].description)
 	var scroller=ScrollContainer.new()
 	scroller.position=Vector2(x+18,455)
 	scroller.size=Vector2(425,100)
@@ -1194,7 +1197,7 @@ func show_loot_details(id,compare_id=-1,animate=true,from_roster=false):
 		for other in candidates:
 			if compare_id<0 or other.kind==d.kind: compare_id=other.id
 			if other.kind==d.kind: break
-	modal(("4성 특수개체  ·  " if Special.is_special(d) else "맺어진 인연  ·  ")+NAMES[d.kind],Roles.DESCRIPTIONS[d.kind]+" · 스킬 대기 %.1f초" % (10.0*(1.0-Loot.bonus(d,"skill_haste"))*Special.haste(d)),"detail",return_from_details)
+	modal((Loot.title(d)+" 특수개체  ·  " if Special.is_special(d) else "맺어진 인연  ·  ")+NAMES[d.kind],Roles.DESCRIPTIONS[d.kind]+" · 스킬 대기 %.1f초" % (10.0*(1.0-Loot.bonus(d,"skill_haste"))*Special.haste(d)),"detail",return_from_details)
 	label(overlay,Special.summary(d) if Special.is_special(d) else "교감한 야수가 새로운 동료로 합류했습니다.",Vector2(232,222),18)
 	if Special.pending(d): show_special_choice(id); return
 	loot_card(d,230,"선택한 동료",animate)
@@ -1401,8 +1404,8 @@ func show_training(id,result={}):
 		summary="Lv.%d → %d · 최대 체력 +%d · 공격력 +%.1f" % [before.level,after.level,roundi(max_hp(after))-roundi(max_hp(before)),attack(after)-attack(before)]
 	elif not result.is_empty(): summary="경험치 +40 획득 · 다음 레벨까지 %d" % (Management.needed_xp(d)-d.xp)
 	label(overlay,summary,Vector2(235,586),19)
-	var action=button(overlay,("%d성으로 승급" % (Loot.star(d)+1)) if Loot.is_max_level(d) and Loot.star(d)<3 else ("4성 합성" if Loot.is_max_level(d) else ("재료 3개로 육성" if result.is_empty() else "한 번 더 · 미리보기")),Rect2(230,630,350,55),func(): show_promotion(id) if Loot.is_max_level(d) and Loot.star(d)<3 else (show_synthesis([id],id) if Loot.is_max_level(d) and Loot.star(d)==3 else (train_companion(id) if not Loot.is_max_level(d) and result.is_empty() else show_training(id))))
-	action.disabled=(Loot.is_max_level(d) and Loot.star(d)>3) or (not Loot.is_max_level(d) and result.is_empty() and materials<3)
+	var action=button(overlay,("%d성으로 승급" % (Loot.star(d)+1)) if Loot.is_max_level(d) and Loot.star(d)<3 else (("5성 진화" if Loot.star(d)==4 else "6성 진화 · 준비 중" if Loot.star(d)==5 else "4성 합성") if Loot.is_max_level(d) else ("재료 3개로 육성" if result.is_empty() else "한 번 더 · 미리보기")),Rect2(230,630,350,55),func(): EvolutionUI.show_page(self,id) if Loot.is_max_level(d) and Loot.star(d)==4 else show_promotion(id) if Loot.is_max_level(d) and Loot.star(d)<3 else (show_synthesis([id],id) if Loot.is_max_level(d) and Loot.star(d)==3 else (train_companion(id) if not Loot.is_max_level(d) and result.is_empty() else show_training(id))))
+	action.disabled=(Loot.is_max_level(d) and Loot.star(d)>4) or (not Loot.is_max_level(d) and result.is_empty() and materials<3)
 	var target_action=button(overlay,"목표 레벨 육성",Rect2(600,630,285,55),func(): show_target_training(id))
 	target_action.disabled=Loot.is_max_level(d)
 	button(overlay,"동료 목록으로",Rect2(925,630,285,55),open_roster)
@@ -2142,7 +2145,10 @@ func preview_synthesis(ids,main_id,preserve):
 
 func show_special_choice(id):
 	if mode!="camp": return
-	preload("res://ui/special_choice.gd").show_page(self,id)
+	if Special.evolution_pending(find_owned(id)):
+		EvolutionUI.show_choice(self,id)
+	else:
+		preload("res://ui/special_choice.gd").show_page(self,id)
 
 func commit_synthesis(ids,main_id,preserve,expected):
 	if mode!="camp" or save_blocked: return false
@@ -2173,13 +2179,47 @@ func commit_synthesis(ids,main_id,preserve,expected):
 func commit_special_choice(id,element,unique,expected):
 	if mode!="camp" or save_blocked: return false
 	var d=find_owned(id)
-	if not Special.pending(d) or d!=expected or not Special.ELEMENTS.has(element) or Special.ELEMENTS[element].get("pending",false) or not Special.choices(d.kind).has(unique): return false
+	if Loot.star(d)!=4 or not Special.pending(d) or d!=expected or not Special.ELEMENTS.has(element) or Special.ELEMENTS[element].get("pending",false) or not Special.choices(d.kind).has(unique): return false
 	var next=owned.duplicate(true)
 	for record in next:
 		if record.id==id:
 			record.special.element=element
 			record.special.unique=unique
 			record.special.state="ready"
+	var payload=save_payload().duplicate(true)
+	payload.owned=next
+	if not persist_payload(payload): notify("저장에 실패했습니다. 선택을 다시 확인하세요."); return false
+	owned=next
+	show_loot_details(id,-1,false,true)
+	return true
+
+func commit_evolution(main_id,support_id,expected):
+	if mode!="camp" or save_blocked: return false
+	var plan=Evolution.preview(owned,squad,main_id,support_id)
+	if not plan.error.is_empty() or not Special.equivalent(plan.materials,expected):
+		notify("동료 정보가 바뀌었습니다. 재료와 보호 상태를 다시 확인하세요.")
+		return false
+	var next=[]
+	for d in owned:
+		if d.id==main_id: next.append(plan.result.duplicate(true))
+		elif d.id!=support_id: next.append(d.duplicate(true))
+	var payload=save_payload().duplicate(true)
+	payload.owned=next
+	if not persist_payload(payload):
+		notify("저장에 실패해 진화를 취소했습니다. 동료는 소모되지 않았습니다.")
+		return false
+	owned=next
+	units.clear()
+	show_special_choice(main_id)
+	return true
+
+func commit_evolution_choice(id,ability,expected):
+	if mode!="camp" or save_blocked: return false
+	var d=find_owned(id)
+	if Loot.star(d)!=5 or owned.filter(func(record): return record.get("id")==id).size()!=1 or not Special.evolution_pending(d) or not Special.ready(d) or not Special.equivalent(d,expected) or not Special.evolution_choices(d.kind).has(ability): return false
+	var next=owned.duplicate(true)
+	for record in next:
+		if record.id==id: record.special.evolution={"version":1,"state":"ready","ability":ability}
 	var payload=save_payload().duplicate(true)
 	payload.owned=next
 	if not persist_payload(payload): notify("저장에 실패했습니다. 선택을 다시 확인하세요."); return false

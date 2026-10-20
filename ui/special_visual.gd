@@ -6,6 +6,7 @@ static func aura(g,p,height,d,time):
 	g.draw_set_transform(p.round(),0,Vector2(1,0.34))
 	g.draw_arc(Vector2.ZERO,23,0,TAU,24,Color(c,0.45),2,false)
 	g.draw_arc(Vector2.ZERO,27,0,TAU,24,Color(c,0.15),1,false)
+	if int(d.star)>=5: g.draw_arc(Vector2.ZERO,19,0,TAU,16,Color(c,0.60),1,false)
 	g.draw_set_transform(Vector2.ZERO)
 	for i in 3:
 		var a=time*0.8+i*TAU/3
@@ -18,3 +19,5 @@ static func mark(g,p,height,d):
 	var point=(p+offset*height).round()
 	g.draw_line(point-Vector2(2,0),point+Vector2(2,0),c,1,false)
 	g.draw_line(point-Vector2(0,2),point+Vector2(0,2),c,1,false)
+	if int(d.star)>=5:
+		g.draw_rect(Rect2(point-Vector2(3,3),Vector2(6,6)),Color(c,0.8),false,1,false)

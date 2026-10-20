@@ -69,6 +69,7 @@ static func cast(g,u,target):
 					barrier(ally,0.05,4.0)
 	if d.kind not in ["boar","fox"]: g.combat_feedback.emit("skill_"+d.kind,u.pos,u.pos if target.is_empty() else target.pos)
 	if Special.unique(d)=="barrier": barrier(u,0.10,4.0)
+	if Special.evolution(d)=="barrier": barrier(u,Special.EVOLUTION_VALUES.barrier,Special.EVOLUTION_VALUES.barrier_seconds)
 	g.Roles.signal_action(u,Special.SKILLS[d.kind])
 	g.Roles.add_metric(u,"skills",1)
 	g.combat_feedback.emit("special_rune",u.pos,u.pos,0,{"tint":Special.ELEMENTS[Special.element(d)].color,"caption":Special.SKILLS[d.kind]})

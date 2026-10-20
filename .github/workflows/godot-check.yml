@@ -84,6 +84,15 @@ jobs:
           timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_special_combat.gd 2>&1 | tee special-combat.log
           grep -q 'SPECIAL COMBAT PASS:' special-combat.log
           if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR:' synthesis-progression.log synthesis-preview.log special-synthesis.log special-combat.log; then exit 1; fi
+      - name: Companion evolution transaction and combat
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_evolution.gd 2>&1 | tee evolution.log
+          grep -q 'EVOLUTION PASS:' evolution.log
+          timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_evolution_combat.gd 2>&1 | tee evolution-combat.log
+          grep -q 'EVOLUTION COMBAT PASS:' evolution-combat.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR:' evolution.log evolution-combat.log; then exit 1; fi
   windows-launcher:
     runs-on: windows-latest
     timeout-minutes: 10
