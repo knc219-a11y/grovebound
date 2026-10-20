@@ -2,14 +2,13 @@
 
 반드시 최신 main에서 AGENTS.md → docs/PROJECT_SETTINGS.md → STATUS.md → 이 문서를 읽는다. 사용자 설정을 새로 확정/변경한 모든 대화에서 PROJECT_SETTINGS를 갱신하고 구현 상태/검증/다음 단계도 함께 기록한다. `python tools/check_handoff.py` 실행 후 범위 파일만 GitHub에 반영하고 ref를 확인한다. 계정 전체 채팅에 자동 적용되었다고 말하지 않는다.
 
-## 최우선: 4→5 완료 이후
-- 사용자최신결정: 현재5성수치를조정없이유지하고나중에직접플레이하면서개선한다.다음Work의정확한안내는 docs/EVOLUTION_SIX_NEXT_WORK.md.6성강화표는새제안이며최소한번합의한뒤구현한다.
-- 현재4→5 실제진화/영구선택/복구/9개능력은 구현됐다. docs/EVOLUTION.md와 docs/PROJECT_SETTINGS.md「5·6성 진화 확정」을 읽는다. docs/EVOLUTION_NEXT_WORK.md는 이전 제안 이력이며 이미 승인된 세 묶음을 다시 질문하지 않는다.
-- 4성Lv50 주+부→주5성Lv50/상한60. 성공100%/추가비용없음/다른야수종허용/동행6·즐겨찾기보조보호. 주동료ID/종/특성/속성/고유/강화스킬/전체옵션/편성유지, 보조옵션미계승.110→130% 기본성장과역할별3택1 승인수치 적용. 사용자테스트후과하면조정한다.
-- 6성Lv60출발/상한70/기본성장110→130%와기존진화능력강화 방향은 확정. **정확한6성강화값은미정이며5→6실행은비활성**이다. 다음작업은 강화수치 합의 후 별도5→6 트랜잭션/검증 구현. 플레이피드백이오면5성밸런스도조정한다.
-- 저장v2내 special.version1과별도 special.evolution(version1/state/ability). pending결과와보조소비를한파일에기록후메모리반영, 선택확정도저장성공후반영. 기존4성은재선택하지않으며선택중종료/재접속시진화능력창복구/출발차단. 저장/보호/중복/스냅샷경계를 유지한다.
-- 최신Godot4.7.2 전체36/36 PASS: docs/evolution-tests.json. test_evolution/test_evolution_combat와기존4성검사 모두통과. 실제 evolution-materials/confirm/choice/detail.png와 evolution-battle.gif/.mp4 확인.7종두팀12초격리QA이며사람장기성장/실기기검증이아니다. 사용자저장과격리했다.
-- 수치: special_companions.gd EVOLUTION_VALUES/EVOLUTION_START/EVOLUTION_PER_LEVEL, 표시문구/검사/PROJECT_SETTINGS를함께수정.기존headless오디오종료ObjectDB경고는별도잔여다.
+## 최신: 5→6성 진화 완료 (2026-10-20)
+- 사용자가 EVOLUTION_SIX_NEXT_WORK의9개 강화표 전체를 승인했다. 5성 수치 유지. 기존 능력을6성 총효과로 자동 강화하며 재선택/옵션 재추첨 없음. 정확한 승인값은 PROJECT_SETTINGS「5·6성 진화 확정」을 따른다.
+- 정확히5성Lv60 주+부→6성Lv60/상한70. 단계별 미리보기/소비확인/동행6·즐겨찾기 보조보호/직전스냅샷검사/원자적저장/중복소비차단. ID·종·특성·속성·고유·강화스킬·전체옵션·즐겨찾기·편성 보존. 저장실패 시 무변경, 추가비용/RNG 없음.
+- Godot4.7.2 전체38/38 PASS: docs/evolution-six-tests.json. 신규 test_evolution_six와 test_evolution_six_combat에서 실제UI콜백·파일왕복·보호변경·저장실패·중복/오래된실행·능력보존·상한70·110/130%와9개 실제전투효과 확인. 기존4→5/3→4 회귀도통과.
+- 실제Godot docs/evolution-six-materials.png / evolution-six-confirm.png / evolution-six-detail.png / evolution-six-battle.gif·mp4. 사용자 저장을 읽거나쓰지않는 animation/evolution_six_*_review.tscn. 두팀7종12초의격리QA이며 사람장기육성/모바일/전체스테이지 검증이아니다.
+- 로컬Windows 제한으로 저장검사5개의 user://만 일시적으로 res://.qa-data/로 치환해 검사 후 원복했다. 실제파일저장/rename 경로는 그대로 검사했다. audit_suite는 명시적 .godot/audit.log와UTF-8을 사용한다. 실제렌더에서 셰이더캐시 쓰기 불가 경고가 있었으나 이미지/전투가 렌더됐고SCRIPT/Parse ERROR는없다. 기존전투오디오 ObjectDB 종료경고는잔여다.
+- 다음: 사용자5·6성실플레이피드백. 수치는피드백전선제조정하지않는다. 성장부담/수급, iPhone/장기육성은미검증. 신규종·직업·교차계열재료·새선택권은추가하지않았다.
 
 ## 확정 방향
 - 현재 주인공은 드루이드 하나. 새 주인공 생성/직업 선택은 아직 추가하지 않는다.
@@ -46,4 +45,4 @@
 - tools/preview.py + res://animation/campaign_quarry_review.tscn / campaign_graveyard_review.tscn / campaign_boss_review.tscn. Linux는 Xvfb 필요.
 - python tools/check_handoff.py (로컬 스테이징 검사), --base COMMIT_SHA (CI 커밋 차이 검사).
 
-새 Work는 `docs/EVOLUTION.md`와 이 문서 최우선4→5 완료 인계에서 이어간다. 이 문서의 옛 캠페인 검증/다음 작업 목록을 최신 진화 작업보다 먼저 수행하지 않는다.
+새 Work는 `docs/EVOLUTION.md`와 이 문서 최신5→6 완료 인계에서 이어간다. 이 문서의 옛 캠페인 검증/다음 작업 목록을 최신 진화 작업보다 먼저 수행하지 않는다.

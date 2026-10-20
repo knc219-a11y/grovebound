@@ -112,14 +112,14 @@ func run():
 	capped.level=60
 	check(is_equal_approx(g.attack(capped)/g.attack(before[0]),1.30) and Loot.max_level(capped)==60,"5-star level60 raw130 percent cap")
 	check(g.Management.project(capped,99999)==capped,"max XP blocked")
-	check(not Evolution.material_error(capped,g.squad,true).is_empty(),"5->6 execution disabled")
+	check(Evolution.material_error(capped,g.squad,true,5).is_empty(),"5->6 material enabled")
 	var ready_index=g.owned.find(g.find_owned(main_id))
 	g.owned[ready_index]=capped
 	g.show_training(main_id)
-	var six_disabled=false
+	var six_enabled=false
 	for child in g.overlay.get_children():
-		if child is Button and child.text=="6성 진화 · 준비 중": six_disabled=child.disabled
-	check(six_disabled,"6-star button explicitly disabled")
+		if child is Button and child.text=="6성 진화": six_enabled=not child.disabled
+	check(six_enabled,"6-star button enabled")
 	g.owned[ready_index]=ready
 	g.show_training(main_id)
 	var labels=[]
@@ -129,6 +129,6 @@ func run():
 	g.queue_free()
 	await process_frame
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
-	if errors.is_empty(): print("EVOLUTION PASS: actual UI and file roundtrip, exact materials/protection/stale/double submit, atomic failure rollback, identity and all options, no RNG, pending recovery and departure gate, permanent choice,110/130 growth, cap and disabled6")
+	if errors.is_empty(): print("EVOLUTION PASS: actual UI and file roundtrip, exact materials/protection/stale/double submit, atomic failure rollback, identity and all options, no RNG, pending recovery and departure gate, permanent choice,110/130 growth, cap and enabled6")
 	else: push_error(str(errors))
 	quit(0 if errors.is_empty() else 1)

@@ -92,7 +92,11 @@ jobs:
           grep -q 'EVOLUTION PASS:' evolution.log
           timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_evolution_combat.gd 2>&1 | tee evolution-combat.log
           grep -q 'EVOLUTION COMBAT PASS:' evolution-combat.log
-          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR:' evolution.log evolution-combat.log; then exit 1; fi
+          timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_evolution_six.gd 2>&1 | tee evolution-six.log
+          grep -q 'EVOLUTION SIX PASS:' evolution-six.log
+          timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_evolution_six_combat.gd 2>&1 | tee evolution-six-combat.log
+          grep -q 'EVOLUTION SIX COMBAT PASS:' evolution-six-combat.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR:' evolution.log evolution-combat.log evolution-six.log evolution-six-combat.log; then exit 1; fi
   windows-launcher:
     runs-on: windows-latest
     timeout-minutes: 10

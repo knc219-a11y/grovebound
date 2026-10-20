@@ -1,4 +1,4 @@
-# 4→5성 진화 구현과 인계
+# 4→5·5→6성 진화 구현과 인계
 
 2026-10-20. 기준 main:08c82fed68e6ed87e249e286e05e8915e2156b18. 사용자 승인값은 docs/PROJECT_SETTINGS.md「5·6성 진화 확정」이 기준이다. EVOLUTION_NEXT_WORK.md는 당시 제안 기록이며 현재 확정/구현은 이 문서와 최신STATUS를 우선한다.
 
@@ -6,7 +6,9 @@
 
 마을 → 동료 관리 → 4성Lv50 동료 육성 → **5성 진화** → 보조 동료 선택 → 소비 대상ID/이름 확인 → 진화 → 역할별 능력3택1 → 최종확정. 선택중 종료하면 같은 동료와 옵션을 복구하고 출발 시 선택창으로 안내한다. 주 동료의 동행/즐겨찾기는 유지되며 보조만 소비한다. 5성Lv50부터60까지 기존 육성/전투XP를 사용한다.
 
-5성Lv60의6성 진화 버튼은 준비중/비활성이다. 6성Lv60 출발·상한70·기본능력110→130%와 기존 진화능력 강화 방향은 승인됐지만, 강화값/실제5→6 실행은 후속이다.
+5성Lv60은 **6성 진화** → 다른5성Lv60 보조선택 → 소비ID/기존능력강화값 확인 → 진화 →6성상세. 기존선택자동강화/새선택창없음. Lv60출발·상한70, 기본능력110→130%. 양쪽능력선택완료/다른ID/보조보호/종보존/옵션무재추첨은4→5와같다.
+
+6성총효과: 체력30%, 피해감소12%, 보호막20%·6초, 기본공격/스킬/추격/위력30%, 대기감소15%, 반경30%. 기존5성총효과를대체하며이중곱셈없음. special.evolution의기존ability를유지하고enhanced=true로저장한다. 수치는 special_companions.gd SIX_VALUES에서관리한다.
 
 ## 구현
 
@@ -33,4 +35,16 @@
 - python tools/preview.py --godot PATH --scene res://animation/evolution_battle_review.tscn --out docs/evolution-battle --seconds 12
 - python tools/check_handoff.py
 
-다음: 사용자 플레이피드백으로5성 수치 조정 여부 확인,6성 강화수치 합의 후5→6 별도 구현. 신규특수종/확률/직업/다계열동료AI/지역과 성장재료 수급은 변경하지 않았다.
+다음: 사용자5·6성플레이피드백. 현행5성수치는유지하고피드백전임의조정하지않는다. 신규특수종/확률/직업/다계열동료AI/지역과 성장재료 수급은 변경하지 않았다.
+
+## 5→6 추가 검증 (2026-10-20)
+
+- 사용자가 EVOLUTION_SIX_NEXT_WORK의9개 강화표 전체를 승인했다. 5성 수치 유지. 기존 능력을6성 총효과로 자동 강화하며 재선택/옵션 재추첨 없음. 정확한 승인값은 PROJECT_SETTINGS「5·6성 진화 확정」을 따른다.
+- 정확히5성Lv60 주+부→6성Lv60/상한70. 단계별 미리보기/소비확인/동행6·즐겨찾기 보조보호/직전스냅샷검사/원자적저장/중복소비차단. ID·종·특성·속성·고유·강화스킬·전체옵션·즐겨찾기·편성 보존. 저장실패 시 무변경, 추가비용/RNG 없음.
+- Godot4.7.2 전체38/38 PASS: docs/evolution-six-tests.json. 신규 test_evolution_six와 test_evolution_six_combat에서 실제UI콜백·파일왕복·보호변경·저장실패·중복/오래된실행·능력보존·상한70·110/130%와9개 실제전투효과 확인. 기존4→5/3→4 회귀도통과.
+- 실제Godot docs/evolution-six-materials.png / evolution-six-confirm.png / evolution-six-detail.png / evolution-six-battle.gif·mp4. 사용자 저장을 읽거나쓰지않는 animation/evolution_six_*_review.tscn. 두팀7종12초의격리QA이며 사람장기육성/모바일/전체스테이지 검증이아니다.
+- 로컬Windows 제한으로 저장검사5개의 user://만 일시적으로 res://.qa-data/로 치환해 검사 후 원복했다. 실제파일저장/rename 경로는 그대로 검사했다. audit_suite는 명시적 .godot/audit.log와UTF-8을 사용한다. 실제렌더에서 셰이더캐시 쓰기 불가 경고가 있었으나 이미지/전투가 렌더됐고SCRIPT/Parse ERROR는없다. 기존전투오디오 ObjectDB 종료경고는잔여다.
+- 다음: 사용자5·6성실플레이피드백. 수치는피드백전선제조정하지않는다. 성장부담/수급, iPhone/장기육성은미검증. 신규종·직업·교차계열재료·새선택권은추가하지않았다.
+
+
+재실행: tools/audit_suite.py --godot PATH --out docs/evolution-six-tests.json. 격리UI/전투장면은 animation/evolution_six_*_review.tscn. 기존 tools/preview.py를사용하거나Godot --write-movie로직접캡처할수있다.
