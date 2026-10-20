@@ -3,6 +3,7 @@ extends "res://animation/pixel_gameplay_preview.gd"
 var screen="roster"
 var selected_id=-1
 var training_shown=false
+var still_captured=false
 func _ready():
 	super()
 	owned.clear()
@@ -36,6 +37,12 @@ func _ready():
 		clear_overlay()
 	else: open_roster()
 func _process(dt):
+	if "--capture-synthesis-still" in OS.get_cmdline_user_args() and clock>0.8 and not still_captured:
+		still_captured=true
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png("res://docs/synthesis-training-v1.png")
+		get_tree().quit()
+		return
 	if screen=="level":
 		combat_feedback.advance(dt)
 		for i in range(effects.size()-1,-1,-1):

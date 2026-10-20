@@ -2,12 +2,12 @@ extends RefCounted
 const Save=preload("res://save_data.gd")
 const Species=preload("res://creature_species.gd")
 const STAGES={
-	1:{"name":"초록물 계곡","theme":"야수 중심 · 세 계열 첫 만남 · 무리 제압","level":1,"background":"res://assets/maps/greenwater-beginner-v3.webp","boss":"계곡의 우두머리","boss_kind":"boar","boss_hp":850.0,
+	1:{"name":"초록물 계곡","theme":"야수 중심 · 세 계열 첫 만남 · 무리 제압","level":1,"wild_stars":[1],"background":"res://assets/maps/greenwater-beginner-v3.webp","boss":"계곡의 우두머리","boss_kind":"boar","boss_hp":850.0,
 		"kinds":["boar","slime","deer","fox","marten","wolf"],"escorts":["boar","skeleton","turtle","wolf","skeleton","slime"],"swarm":"boar"},
-	2:{"name":"버려진 채석장","theme":"슬라임 무리 · 바위 강타 · 박쥐와 교감","level":3,"background":"res://assets/campaign/quarry-v1.webp","boss":"채석장의 돌지기","boss_kind":"golem","boss_hp":1050.0,
+	2:{"name":"버려진 채석장","theme":"슬라임 무리 · 바위 강타 · 박쥐와 교감","level":3,"wild_stars":[1],"background":"res://assets/campaign/quarry-v1.webp","boss":"채석장의 돌지기","boss_kind":"golem","boss_hp":1050.0,
 		"kinds":["slime","golem","bat","slime","slime","golem"],"escorts":["slime","slime","skeleton","bat","skeleton","slime"],"swarm":"slime",
 		"names":["이끼 낀 입구","운반로","굴 입구","갈라진 채굴터","바위 그늘","돌지기 앞마당"],"hints":["슬라임을 모아 한 번에","바위 강타의 원을 피하세요","박쥐와 해골병이 머무는 옆길","슬라임 무리 속 박쥐와 교감 기회","슬라임과 해골병을 만나는 옆길","무리 제압과 강타 회피"]},
-	3:{"name":"잊힌 묘역","theme":"해골 전열 · 원거리 망령 · 수호병의 예고","level":5,"background":"res://assets/campaign/graveyard-v1.webp","boss":"묘역의 문지기","boss_kind":"guardian","boss_hp":1250.0,
+	3:{"name":"잊힌 묘역","theme":"해골 전열 · 원거리 망령 · 수호병의 예고","level":5,"wild_stars":[1],"background":"res://assets/campaign/graveyard-v1.webp","boss":"묘역의 문지기","boss_kind":"guardian","boss_hp":1250.0,
 		"kinds":["skeleton","wraith","wolf","skeleton","wraith","guardian"],"escorts":["skeleton","slime","skeleton","bat","slime","wraith"],"swarm":"skeleton",
 		"names":["무너진 묘문","망령의 길목","야수의 은신처","비석 사이 공터","검은 나뭇가지","문지기 전열"],"hints":["해골 무리를 범위로 제압","소규모 전투에서 지면 예고 회피","늑대와 해골병을 만나는 옆길","해골 전열 속 박쥐와 교감 기회","망령과 슬라임이 머무는 옆길","전열 옆으로 돌아 뒤의 망령부터"]}}
 static func reward_kinds(id):
@@ -28,6 +28,11 @@ static func habitats(kind):
 		if kind in reward_kinds(id): result.append(STAGES[id].name)
 	return result
 static func accessible(id,cleared): return STAGES.has(id) and (id==1 or id-1 in cleared)
+static func wild_star(id,rng):
+	# Implemented early stages only yield 1-star companions. Future stages opt in
+	# to [1,2] or [1,2,3] and may add explicit weights after balance approval.
+	var pool=STAGES.get(id,{}).get("wild_stars",[1])
+	return int(pool[rng.randi_range(0,pool.size()-1)]) if not pool.is_empty() else 1
 static func progress(data):
 	var raw=data.get("cleared_stages",[])
 	var result=[]

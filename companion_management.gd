@@ -17,8 +17,8 @@ static func filtered(records,squad,kind="",grade="",favorites_only=false,order=0
 				if ai!=bi: return ai<bi
 			1: return a.id>b.id
 			2:
-				var ar=Loot.GRADES.find(Loot.grade(a))
-				var br=Loot.GRADES.find(Loot.grade(b))
+				var ar=Loot.star(a)
+				var br=Loot.star(b)
 				if ar!=br: return ar>br
 				if a.level!=b.level: return a.level>b.level
 			3:
@@ -28,10 +28,12 @@ static func filtered(records,squad,kind="",grade="",favorites_only=false,order=0
 static func needed_xp(record): return int(record.level)*35
 static func project(record,amount):
 	var result=record.duplicate(true)
+	if Loot.is_max_level(result): return result
 	result.xp+=maxi(0,int(amount))
-	while result.xp>=needed_xp(result):
+	while not Loot.is_max_level(result) and result.xp>=needed_xp(result):
 		result.xp-=needed_xp(result)
 		result.level+=1
+	if Loot.is_max_level(result): result.xp=0
 	return result
 static func can_release(record,squad):
 	return not record.is_empty() and not record.get("favorite",false) and not squad.has(record.id)
@@ -39,10 +41,11 @@ static func can_release(record,squad):
 static func farewell_reward(record):
 	# Level +1 adds one material; even one training charge costs three.
 	# Thus training solely to cash out cannot return more than its material cost.
-	return maxi(1,int(record.get("level",1)))+1+{"common":0,"rare":3,"epic":8}.get(Loot.grade(record),0)
+	return maxi(1,int(record.get("level",1)))+1+{1:0,2:3,3:8}.get(Loot.star(record),8)
 static func target_plan(record,target):
 	target=int(target)
-	if record.is_empty() or target<=int(record.level) or target>int(record.level)+1000 or target>1000000: return {}
+	var cap=Loot.max_level(record)
+	if record.is_empty() or target<=int(record.level) or (cap>0 and target>cap) or target>1000000: return {}
 	var current=35*int(record.level)*(int(record.level)-1)/2+int(record.xp)
 	var total=35*target*(target-1)/2
 	var charges=ceili(maxf(0,total-current)/40.0)

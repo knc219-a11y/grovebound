@@ -43,7 +43,13 @@ static func normalize(data: Dictionary, valid_kinds: Array):
 		record.favorite=raw.get("favorite",false) if raw.get("favorite",false) is bool else false
 		if not raw.get("favorite",null) is bool or raw.favorite!=record.favorite: repaired=true
 		Loot.normalize(record)
+		var cap=Loot.max_level(record)
+		if cap>0 and record.level>cap:
+			record.legacy_overcap=true
+		elif record.has("legacy_overcap"):
+			record.erase("legacy_overcap")
 		if raw.get("grade")!=record.grade or not Loot.same_options(raw.get("options"),record.options): repaired=true
+		if raw.get("star",null)!=record.star or raw.get("legacy_options",false)!=record.get("legacy_options",false) or raw.get("legacy_overcap",false)!=record.get("legacy_overcap",false): repaired=true
 		owned.append(record)
 		ids[id] = true
 	var source_squad = data.get("squad",[])

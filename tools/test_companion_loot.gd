@@ -8,24 +8,17 @@ func check_loot():
 	var failures=[]
 	var random=RandomNumberGenerator.new()
 	random.seed=20261019
-	for grade in Loot.GRADES:
+	for star in [1,2,3]:
+		var grade=Loot.grade_for_star(star)
 		for kind in ["boar","wolf","marten","fox","deer","turtle"]:
 			for i in 100:
-				var record=Loot.roll(kind,3,random,grade)
-				if record.grade!=grade or record.options.size()!=Loot.COUNTS[grade] or record.has("ivs"): failures.append("grade/count/no IV")
-				var seen=[]
-				for option in record.options:
-					if seen.has(option.key) or not Loot.pool(kind,record.trait).has(option.key): failures.append("unique role/trait compatible options")
-					if option.value<Loot.OPTIONS[option.key].min or option.value>Loot.OPTIONS[option.key].max: failures.append("affix value range")
-					seen.append(option.key)
+				var record=Loot.roll(kind,3,random,star)
+				if record.star!=star or record.grade!=grade or not record.options.is_empty() or record.has("ivs"): failures.append("wild star/no low-star affix/no IV")
 		var stream=Sound.stream(grade)
 		if stream.data.is_empty() or stream.get_length()<0.2 or stream.get_length()>0.6: failures.append("grade chime is valid PCM")
-	var histogram={"common":0,"rare":0,"epic":0}
-	for i in 10000: histogram[Loot.roll("boar",1,random).grade]+=1
-	if histogram.epic<200 or histogram.epic>400 or histogram.rare<2000 or histogram.rare>2400: failures.append("grade roll distribution")
 	var legacy={"id":8,"kind":"boar","level":7,"xp":22,"trait":"단단함"}
 	var migrated=Save.normalize({"owned":[legacy],"squad":[8],"next_id":9},["boar"])
-	if migrated.owned[0].trait!="단단함" or migrated.owned[0].level!=7 or not migrated.owned[0].options.is_empty(): failures.append("legacy companion retained without reroll")
+	if migrated.owned[0].star!=1 or migrated.owned[0].trait!="단단함" or migrated.owned[0].level!=7 or not migrated.owned[0].options.is_empty(): failures.append("legacy companion retained without reroll")
 	var corrupt={"kind":"deer","grade":"epic","options":[{"key":"power","value":7},{"key":"healing","value":999},{"key":"healing","value":12},{"key":"bad","value":1}]}
 	Loot.normalize(corrupt)
 	if corrupt.options!=[{"key":"healing","value":16}]: failures.append("invalid duplicate role affixes sanitized")
@@ -85,7 +78,6 @@ func check_loot():
 	game.queue_free()
 	await process_frame
 	await process_frame
-	print("LOOT distribution: ",histogram)
-	if failures.is_empty(): print("COMPANION LOOT PASS: grade pools, value ranges, immutable acquisition/JSON, legacy migration, real affix effects, details, chimes")
+	if failures.is_empty(): print("COMPANION LOOT PASS: explicit wild stars, no new low-star affixes, immutable acquisition/JSON, legacy migration, real affix effects, details, chimes")
 	else: push_error(str(failures))
 	quit(0 if failures.is_empty() else 1)

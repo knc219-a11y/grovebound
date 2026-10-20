@@ -74,7 +74,7 @@ static func show_inventory(g,selected_id=-1,reset_scroll=false):
 			var lines=Loot.lines(d)
 			if lines.is_empty(): lines.append("기존 동료 · 옵션 없음")
 			for i in lines.size(): g.label(g.overlay,lines[i],Vector2(845,368+i*32),16)
-			g.label(g.overlay,"경험치 %d / %d" % [d.xp,g.Management.needed_xp(d)],Vector2(845,484),17)
+			g.label(g.overlay,"최대 레벨" if g.Loot.is_max_level(d) else "경험치 %d / %d" % [d.xp,g.Management.needed_xp(d)],Vector2(845,484),17)
 			var detail=g.button(g.overlay,"상세 · 동행 동료와 비교",Rect2(845,530,345,46),func(): g.show_loot_details(d.id,-1,false))
 			detail.disabled=(g.in_combat and g.mode=="stage") or g.mode=="tutorial"
 		else: g.label(g.overlay,"선택한 동료 정보",Vector2(845,245),22)

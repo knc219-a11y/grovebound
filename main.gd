@@ -896,7 +896,7 @@ func hit_enemy(e, damage, source,attacker={},animate=true):
 		if not e.get("swarm",false):
 			for u in units: gain_xp(u.data,12+int(e.level)*4)
 		if not e.boss and not e.get("swarm",false) and Species.can_tame(e.kind,PLAYER_CLASS) and (e.guaranteed or rng.randf()<CAPTURE_CHANCE):
-			var candidate=Loot.roll(e.kind,e.level,loot_rng)
+			var candidate=Loot.roll(e.kind,e.level,loot_rng,Campaign.wild_star(current_stage,loot_rng))
 			candidate.pos=e.pos
 			captures.append(candidate)
 			if not bond_hint_seen:
@@ -1135,7 +1135,7 @@ func loot_card(d,x,caption,animate=false):
 			tween.tween_interval(0.35+i*0.3)
 			tween.tween_property(line,"modulate:a",1.0,0.18)
 
-	label(overlay,"경험치 %d / %d · 다음 레벨까지 %d" % [d.xp,Management.needed_xp(d),maxi(0,Management.needed_xp(d)-d.xp)],Vector2(x+18,566),15)
+	label(overlay,"최대 레벨" if Loot.is_max_level(d) else "경험치 %d / %d · 다음 레벨까지 %d" % [d.xp,Management.needed_xp(d),maxi(0,Management.needed_xp(d)-d.xp)],Vector2(x+18,566),15)
 
 func show_loot_details(id,compare_id=-1,animate=true,from_roster=false):
 	if in_combat and mode=="stage": notify("전투가 끝나면 새로운 인연을 확인할 수 있습니다."); return
@@ -1207,7 +1207,7 @@ func roster_filters(total,shown):
 	rarity.name="GradeFilter"
 	rarity.position=Vector2(397,215)
 	rarity.size=Vector2(145,44)
-	rarity.add_item("모든 등급")
+	rarity.add_item("모든 성급")
 	for i in Loot.GRADES.size():
 		rarity.add_item(Loot.NAMES[Loot.GRADES[i]])
 		if roster_grade_filter==Loot.GRADES[i]: rarity.select(i+1)
@@ -1217,7 +1217,7 @@ func roster_filters(total,shown):
 	sorting.name="RosterSort"
 	sorting.position=Vector2(554,215)
 	sorting.size=Vector2(180,44)
-	for caption in ["동행 순서","최근 인연순","높은 등급순","높은 레벨순"]: sorting.add_item(caption)
+	for caption in ["동행 순서","최근 인연순","높은 성급순","높은 레벨순"]: sorting.add_item(caption)
 	sorting.select(roster_sort)
 	sorting.item_selected.connect(func(index): roster_sort=index; open_roster())
 	overlay.add_child(sorting)
@@ -1283,10 +1283,10 @@ func open_roster():
 		body.add_child(b)
 		var progress=health_bar(body,Rect2(0,0,330,6))
 		progress.custom_minimum_size=Vector2(330,6)
-		progress.max_value=Management.needed_xp(d)
-		progress.value=d.xp
+		progress.max_value=maxi(1,Management.needed_xp(d))
+		progress.value=0 if Loot.is_max_level(d) else d.xp
 		var xp=Label.new()
-		xp.text="경험치 %d / %d · 다음 레벨까지 %d" % [d.xp,Management.needed_xp(d),maxi(0,Management.needed_xp(d)-d.xp)]
+		xp.text="최대 레벨 · 승급 준비" if Loot.is_max_level(d) and Loot.star(d)<3 else ("최대 레벨" if Loot.is_max_level(d) else "경험치 %d / %d · 다음 레벨까지 %d" % [d.xp,Management.needed_xp(d),maxi(0,Management.needed_xp(d)-d.xp)])
 		xp.add_theme_font_size_override("font_size",14)
 		body.add_child(xp)
 		var favorite=Button.new()
@@ -1335,10 +1335,10 @@ func growth_card(d,x,caption):
 	label(overlay,"[%s] %s  Lv.%d" % [Loot.title(d),NAMES[d.kind],d.level],Vector2(x+20,320),25).add_theme_color_override("font_color",Loot.color(d))
 	label(overlay,"최대 체력  %d\n공격력       %.1f" % [roundi(max_hp(d)),attack(d)],Vector2(x+20,380),22)
 	var bar=health_bar(overlay,Rect2(x+20,478,425,8))
-	bar.max_value=Management.needed_xp(d)
-	bar.value=d.xp
-	label(overlay,"경험치 %d / %d" % [d.xp,Management.needed_xp(d)],Vector2(x+20,499),19)
-	label(overlay,"다음 레벨까지 %d" % maxi(0,Management.needed_xp(d)-d.xp),Vector2(x+20,531),17)
+	bar.max_value=maxi(1,Management.needed_xp(d))
+	bar.value=0 if Loot.is_max_level(d) else d.xp
+	label(overlay,"최대 레벨" if Loot.is_max_level(d) else "경험치 %d / %d" % [d.xp,Management.needed_xp(d)],Vector2(x+20,499),19)
+	label(overlay,("승급 준비 완료" if Loot.star(d)<3 else "합성 재료 조건 충족") if Loot.is_max_level(d) else "다음 레벨까지 %d" % maxi(0,Management.needed_xp(d)-d.xp),Vector2(x+20,531),17)
 
 func show_training(id,result={}):
 	if mode!="camp": notify("육성은 캠프에서 할 수 있습니다."); return
@@ -1346,7 +1346,7 @@ func show_training(id,result={}):
 	if d.is_empty(): return
 	var before=d if result.is_empty() else result.before
 	var after=Management.project(d,40) if result.is_empty() else result.after
-	modal("동료 육성  ·  "+NAMES[d.kind],"경험치만 성장합니다. 등급·고정 특성·랜덤 옵션은 바뀌지 않습니다.","training",open_roster)
+	modal("동료 육성  ·  "+NAMES[d.kind],"경험치만 성장합니다. 성급·고정 특성·기존 옵션은 바뀌지 않습니다.","training",open_roster)
 	label(overlay,"보유 성장 재료 %d · 1회 3개 · 경험치 +40" % materials,Vector2(235,220),20)
 	growth_card(before,230,"육성 전")
 	growth_card(after,745,"육성 후 예상" if result.is_empty() else "육성 완료")
@@ -1355,9 +1355,10 @@ func show_training(id,result={}):
 		summary="Lv.%d → %d · 최대 체력 +%d · 공격력 +%.1f" % [before.level,after.level,roundi(max_hp(after))-roundi(max_hp(before)),attack(after)-attack(before)]
 	elif not result.is_empty(): summary="경험치 +40 획득 · 다음 레벨까지 %d" % (Management.needed_xp(d)-d.xp)
 	label(overlay,summary,Vector2(235,586),19)
-	var action=button(overlay,"재료 3개로 육성" if result.is_empty() else "한 번 더 · 미리보기",Rect2(230,630,350,55),func(): train_companion(id) if result.is_empty() else show_training(id))
-	action.disabled=result.is_empty() and materials<3
-	button(overlay,"목표 레벨 육성",Rect2(600,630,285,55),func(): show_target_training(id))
+	var action=button(overlay,"승급 규칙 확정 대기" if Loot.is_max_level(d) and Loot.star(d)<3 else ("합성 화면 준비 중" if Loot.is_max_level(d) else ("재료 3개로 육성" if result.is_empty() else "한 번 더 · 미리보기")),Rect2(230,630,350,55),func(): train_companion(id) if not Loot.is_max_level(d) and result.is_empty() else show_training(id))
+	action.disabled=Loot.is_max_level(d) or (result.is_empty() and materials<3)
+	var target_action=button(overlay,"목표 레벨 육성",Rect2(600,630,285,55),func(): show_target_training(id))
+	target_action.disabled=Loot.is_max_level(d)
 	button(overlay,"동료 목록으로",Rect2(925,630,285,55),open_roster)
 
 func show_target_training(id):
@@ -1372,7 +1373,7 @@ func show_target_training(id):
 	target.position=Vector2(450,310)
 	target.size=Vector2(240,65)
 	target.min_value=int(d.level)+1
-	target.max_value=int(d.level)+1000
+	target.max_value=Loot.max_level(d) if Loot.max_level(d)>0 else int(d.level)+1000
 	target.allow_greater=false
 	target.step=1
 	target.value=int(d.level)+1
@@ -1384,7 +1385,7 @@ func preview_target_training(id,target):
 	var d=find_owned(id)
 	var plan=Management.target_plan(d,target)
 	if plan.is_empty(): return
-	modal("목표 레벨 육성 확인","등급·고정 특성·옵션은 유지됩니다. 확인 후 아래 재료를 한 번에 사용합니다.","target_preview",func(): show_target_training(id))
+	modal("목표 레벨 육성 확인","성급·고정 특성·기존 옵션은 유지됩니다. 확인 후 아래 재료를 한 번에 사용합니다.","target_preview",func(): show_target_training(id))
 	label(overlay,"Lv.%d → %d · %d회분 · 필요 재료 %d / 보유 %d · 경험치 +%d" % [d.level,target,plan.charges,plan.cost,materials,plan.xp],Vector2(235,222),20)
 	growth_card(d,230,"육성 전")
 	growth_card(plan.after,745,"일괄 육성 후 예상")
@@ -1417,7 +1418,7 @@ func train_to_level(id,target,expected):
 func train_companion(id):
 	if mode!="camp" or materials<3: return false
 	var d=find_owned(id)
-	if d.is_empty(): return false
+	if d.is_empty() or Loot.is_max_level(d): return false
 	var before=d.duplicate(true)
 	materials-=3
 	gain_xp(d,40)
@@ -1691,12 +1692,12 @@ func repair_party():
 func save_game():
 	if is_test or screenshot_mode or save_blocked: return
 	var f=FileAccess.open(save_path,FileAccess.WRITE)
-	if f: f.store_string(JSON.stringify({"version":1,"owned":owned,"squad":squad,"materials":materials,"tutorial_done":tutorial_done,"unlocked":unlocked,"next_id":next_id,"discovered":discovered,"cleared_stages":cleared_stages,"seen_species":seen_species}))
+	if f: f.store_string(JSON.stringify({"version":2,"owned":owned,"squad":squad,"materials":materials,"tutorial_done":tutorial_done,"unlocked":unlocked,"next_id":next_id,"discovered":discovered,"cleared_stages":cleared_stages,"seen_species":seen_species}))
 
 func load_game():
 	if not FileAccess.file_exists(save_path): return
 	var d=JSON.parse_string(FileAccess.get_file_as_string(save_path))
-	if not d is Dictionary or d.get("version",0)!=1:
+	if not d is Dictionary or int(d.get("version",0)) not in [1,2]:
 		save_blocked = true
 		save_notice = "저장 데이터를 읽을 수 없어 원본을 유지하고 자동 저장을 중지했습니다."
 		return

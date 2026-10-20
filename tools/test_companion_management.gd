@@ -7,10 +7,10 @@ func _initialize(): call_deferred("check_management")
 func check_management():
 	var failures=[]
 	var records=[
-		{"id":1,"kind":"boar","level":3,"xp":100,"trait":"강인함","grade":"common","options":[],"favorite":true},
-		{"id":2,"kind":"fox","level":4,"xp":0,"trait":"용맹함","grade":"epic","options":[],"favorite":false},
-		{"id":3,"kind":"boar","level":5,"xp":5,"trait":"민첩함","grade":"rare","options":[],"favorite":false},
-		{"id":4,"kind":"boar","level":2,"xp":0,"trait":"단단함","grade":"epic","options":[],"favorite":true}]
+		{"id":1,"kind":"boar","level":3,"xp":100,"trait":"강인함","star":1,"grade":"common","options":[],"favorite":true},
+		{"id":2,"kind":"fox","level":4,"xp":0,"trait":"용맹함","star":3,"grade":"epic","options":[],"favorite":false},
+		{"id":3,"kind":"boar","level":5,"xp":5,"trait":"민첩함","star":2,"grade":"rare","options":[],"favorite":false},
+		{"id":4,"kind":"boar","level":2,"xp":0,"trait":"단단함","star":3,"grade":"epic","options":[],"favorite":true}]
 	var original=JSON.stringify(records)
 	var party=[3,1]
 	var order=Manager.filtered(records,party)
@@ -54,7 +54,7 @@ func check_management():
 	if game.materials!=6+reward or game.find_owned(1).level!=3: failures.append("preview spends nothing")
 	var metadata=game.find_owned(1).duplicate(true)
 	if not game.train_companion(1) or game.materials!=3+reward or game.find_owned(1).level!=4 or game.find_owned(1).xp!=35: failures.append("training cost and XP")
-	for key in ["id","kind","trait","grade","options","favorite"]:
+	for key in ["id","kind","trait","star","grade","options","favorite"]:
 		if game.find_owned(1)[key]!=metadata[key]: failures.append("training preserves "+key)
 	game.materials=2
 	if game.train_companion(1) or game.materials!=2 or game.find_owned(1).xp!=35: failures.append("insufficient materials")
