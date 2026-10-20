@@ -1,5 +1,7 @@
 # Grovebound · 야수의 계곡 — Prototype 0.2
 
+새 대화에서 개발을 이어갈 때: [공통 작업 규칙](AGENTS.md) → [확정 설정과 개발 방향](docs/PROJECT_SETTINGS.md) → [최신 구현 상태](STATUS.md) → [다음 작업 인계](docs/NEXT_SESSION.md)를 먼저 읽습니다. 아래 초기 버전 설명보다 최신 인계 문서가 현재 상태의 기준입니다.
+
 모바일 가로 화면 몬스터 수집 RPG의 첫 Godot 플레이 프로토타입입니다.
 **Godot 4.7 stable에서 임포트 및 핵심 규칙 검증을 완료했습니다.** GDScript / Compatibility 렌더러입니다.
 팀과 CI의 기준 버전은 4.7 Standard입니다. 4.3 검증 기록은 이전 버전의 이력입니다.

@@ -3,6 +3,7 @@ extends Node
 const RATE=22050
 const MAX_VOICES=6
 const PROFILES={
+	"hit_bat":[510.0,0.10,0.72],"skill_bat":[730.0,0.28,0.55],
 	"hit_boar":[95.0,0.13,0.65],"hit_wolf":[240.0,0.12,0.8],
 	"hit_marten":[390.0,0.08,0.85],"hit_fox":[740.0,0.16,0.2],
 	"hit_deer":[440.0,0.10,0.25],"hit_turtle":[130.0,0.13,0.45],

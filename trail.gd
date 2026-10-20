@@ -1,4 +1,5 @@
 extends RefCounted
+const Campaign=preload("res://campaign.gd")
 # Reuses the approved meadow and original reward-bearing encounters.
 # Main-path waves alternate dense packs with a small encounter and a rest.
 const PACKS=[Vector2(650,790),Vector2(1000,850),Vector2(1100,510),Vector2(1500,820),Vector2(1850,1040),Vector2(2190,760)]
@@ -27,6 +28,16 @@ var bench:Texture2D
 var fire:Texture2D
 var milestone=""
 var milestone_time=0.0
+var campaign_id=1
+var encounters=ENCOUNTERS
+var rest_name="풀그늘 쉼터"
+func configure(id):
+	campaign_id=id
+	rest_name="풀그늘 쉼터" if id==1 else "채굴터 쉼터" if id==2 else "옛 묘지기 쉼터"
+	encounters=ENCOUNTERS
+	if id>1:
+		encounters={}
+		for pack in CORE_PACKS: encounters[pack]={"name":Campaign.STAGES[id].names[pack],"hint":Campaign.STAGES[id].hints[pack]}
 func reset():
 	visited.clear()
 	milestone=""
@@ -68,8 +79,8 @@ func next_stop(enemies):
 	for pack in CORE_PACKS:
 		if pack_status(enemies,pack).alive>0:
 			if pack==5 and not visited.has("rest"):
-				return {"pos":REST,"name":"풀그늘 쉼터 · 선택 휴식","pack":-1}
-			return {"pos":PACKS[pack],"name":ENCOUNTERS[pack].name,"pack":pack}
+				return {"pos":REST,"name":rest_name+" · 선택 휴식","pack":-1}
+			return {"pos":PACKS[pack],"name":encounters[pack].name,"pack":pack}
 	return {"pos":Vector2(2380,820),"name":"우두머리 공터","pack":-2}
 func nearby_pack(enemies,player_pos):
 	var result=-1
@@ -87,7 +98,7 @@ func objective(enemies,player_pos):
 	var pack=nearby_pack(enemies,player_pos)
 	if pack>=0:
 		var status=pack_status(enemies,pack)
-		return "%s · 남은 %d/%d" % [ENCOUNTERS[pack].name,status.alive,status.total]
+		return "%s · 남은 %d/%d" % [encounters[pack].name,status.alive,status.total]
 	if player_pos.distance_to(REST)<150:
 		return "비전투 중 [F] 편성 · 회복 스킬로 정비"
 	return "다음 · "+next_stop(enemies).name
@@ -97,7 +108,7 @@ func update_progress(g,dt):
 		var key="cleared_"+str(pack)
 		if not visited.has(key) and cleared_pack(g.enemies,pack):
 			visited[key]=true
-			milestone=ENCOUNTERS[pack].name+" 제압 · "+progress_text(g.enemies)
+			milestone=encounters[pack].name+" 제압 · "+progress_text(g.enemies)
 			milestone_time=2.6
 func begin_boss_intro(g):
 	if visited.has("boss_intro"): return false
@@ -109,10 +120,17 @@ func begin_boss_intro(g):
 			e.wind=0.0
 			e.dash=0.0
 			e.cd=maxf(e.cd,0.8)
-			g.notify("거대한 발자국의 주인이 모습을 드러냈습니다. 발구르기와 돌진을 살피세요.")
+			g.notify("거대한 발자국의 주인이 모습을 드러냈습니다. 발구르기와 돌진을 살피세요." if campaign_id==1 else Campaign.STAGES[campaign_id].boss+" · 지면의 공격 예고를 보고 피하세요.")
 			return true
 	return false
 func area(p):
+	if campaign_id>1:
+		var names=Campaign.STAGES[campaign_id].names
+		if p.distance_to(NORTH)<175: return "선택 · "+names[2]
+		if p.distance_to(SOUTH)<175: return "선택 · "+names[4]
+		if p.distance_to(REST)<150: return rest_name
+		if p.x>2300: return "우두머리 공터"
+		return names[0] if p.x<900 else names[1] if p.x<1400 else names[3] if p.x<1850 else names[5]
 	if p.distance_to(NORTH)<175: return "옆길 · 고요한 풀밭"
 	if p.distance_to(SOUTH)<175: return "옆길 · 낮은 덤불길"
 	if p.distance_to(REST)<150: return "풀그늘 쉼터 · 편성 점검"
@@ -128,10 +146,10 @@ func update(g,dt=0.0):
 	for entry in [["north",NORTH,"북쪽 옆길 · 사슴과 늑대가 머무는 조용한 풀밭입니다."],["south",SOUTH,"남쪽 옆길 · 담비가 숨어 있는 낮은 덤불길입니다."],["rest",REST,"풀그늘 쉼터 · 전투 밖에서 동행 편성을 점검할 수 있습니다."]]:
 		if g.player.pos.distance_to(entry[1])<160 and not visited.has(entry[0]):
 			visited[entry[0]]=true
-			g.notify(entry[2])
+			g.notify(entry[2] if campaign_id==1 else rest_name+" · 비전투 중 편성을 점검하세요." if entry[0]=="rest" else "선택 길 · "+Campaign.STAGES[campaign_id].names[2 if entry[0]=="north" else 4])
 	if g.player.pos.x>2290 and not visited.has("boss"):
 		visited.boss=true
-		g.notify("부러진 표지판과 거대한 발자국… 앞은 우두머리 공터입니다. "+progress_text(g.enemies)+" · 지원 스킬을 확인하세요.")
+		g.notify("앞은 "+Campaign.STAGES[campaign_id].boss+"의 공터입니다. "+progress_text(g.enemies)+" · 지원 스킬을 확인하세요.")
 	if g.player.pos.x>2350: begin_boss_intro(g)
 func draw_guidance(g):
 	if milestone_time>0 and not g.boss_panel.visible:
@@ -163,8 +181,8 @@ func draw(g):
 		if p.x<20 or p.x>1200 or p.y<245 or p.y>570: continue
 		var status=pack_status(g.enemies,pack)
 		if status.total==0: continue
-		g.text_at(ENCOUNTERS[pack].name+" · "+str(status.total)+"마리",p,16,Color("e2d3ab"))
-		g.text_at(ENCOUNTERS[pack].hint,p+Vector2(0,22),14,Color("b8c7a0"))
+		g.text_at(encounters[pack].name+" · "+str(status.total)+"마리",p,16,Color("e2d3ab"))
+		g.text_at(encounters[pack].hint,p+Vector2(0,22),14,Color("b8c7a0"))
 	# Sparse stepping stones suggest branches without repainting the whole map.
 	for path in [[Vector2(950,790),Vector2(1050,650),NORTH],[Vector2(1720,820),Vector2(1790,970),SOUTH]]:
 		for segment in 2:
@@ -177,9 +195,9 @@ func draw(g):
 		g.draw_texture(sign,p-g.cam-Vector2(20,42))
 	g.draw_texture(fire,REST-g.cam-Vector2(40,25))
 	g.draw_texture(bench,REST-g.cam+Vector2(35,20))
-	g.text_at("풀그늘 쉼터",REST-g.cam+Vector2(-55,68),15,Color("e0d5bb"))
-	g.text_at("북쪽 풀밭 · 접근 시 교전",Vector2(1010,690)-g.cam,14,Color("d0c59d"))
-	g.text_at("남쪽 덤불길 · 접근 시 교전",Vector2(1740,920)-g.cam,14,Color("d0c59d"))
+	g.text_at(rest_name,REST-g.cam+Vector2(-55,68),15,Color("e0d5bb"))
+	g.text_at(("북쪽 풀밭" if campaign_id==1 else Campaign.STAGES[campaign_id].names[2])+" · 접근 시 교전",Vector2(1010,690)-g.cam,14,Color("d0c59d"))
+	g.text_at(("남쪽 덤불길" if campaign_id==1 else Campaign.STAGES[campaign_id].names[4])+" · 접근 시 교전",Vector2(1740,920)-g.cam,14,Color("d0c59d"))
 	for i in 4:
 		var p=Vector2(2330+i*45,825+(i%2)*16)-g.cam
 		for offset in [Vector2.ZERO,Vector2(5,-8),Vector2(-4,-9)]:

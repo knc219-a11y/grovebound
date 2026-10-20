@@ -1,34 +1,40 @@
-# 다음 대화 인계 · 2026-10-20 구역별 스테이지 개선 후
+# 다음 대화 인계 · 2026-10-20 캠페인 확장 후
 
-최신 main에서 `AGENTS.md`, `STATUS.md`, 이 문서를 읽는다. 이미 구현한 공격·마을·원화를 반복 제작하지 않는다.
+반드시 최신 main에서 AGENTS.md → docs/PROJECT_SETTINGS.md → STATUS.md → 이 문서를 읽는다. 사용자 설정을 새로 확정/변경한 모든 대화에서 PROJECT_SETTINGS를 갱신하고 구현 상태/검증/다음 단계도 함께 기록한다. `python tools/check_handoff.py` 실행 후 범위 파일만 GitHub에 반영하고 ref를 확인한다. 계정 전체 채팅에 자동 적용되었다고 말하지 않는다.
 
-## 가장 최근 변경
-- 구역별 배치 차별화: 입구 대열/중반 여우 전열/보스 앞 두 줄 늑대. 총28/보상12/약한 추가16과 수치는 그대로다.
-- 가까운 무리의 남은 수·한 번 제압 배너·다음 목적지·선택 쉼터·미니맵 본선/선택 경로 표시. 캐릭터·카메라·지형은 그대로다.
-- 생산 보스는 플레이어 x>2350 입구 예고 이후에만 교전한다. 동료 추격/범위 스킬의 조기 보스 교전 차단. 쉼터나 앞 무리 전부 제압을 강제하지 않는다.
-- 전체28/28 PASS `docs/stage-pacing-2026-10-20-tests.json`. 상세 `docs/STAGE_PACING.md`, 새 `tools/test_stage_pacing.gd`.
-- 자동5경로 `docs/stage-pacing-2026-10-20-journeys.json`: 균형Lv2 본선24제압45.8초, 전체28제압55.8초, 공격Lv2 전체28제압32.3초에 보스 제압/귀환. Lv1 멧돼지 단독은 본선/전체 모두 실패했다. 앞 단계의 단독 본선 완주 결과를 현재 결과처럼 사용하지 않는다. 각1회 봇 관찰이며 사람의 난이도 결론은 아니다.
-- 실제 전투 `docs/stage-pacing-battle.gif`/소리 포함 `.mp4`, 보스 접근 `stage-pacing-boss.gif`/`.mp4`. 정적 `stage-pacing-layout.png`/`stage-pacing-rest.png`. 보스/정적 장면은 이전 구역 제압 상태를 준비한 리뷰이며 연속 완주가 아니다. 사용자 세이브 미사용.
+## 확정 방향
+- 현재 주인공은 드루이드 하나. 새 주인공 생성/직업 선택은 아직 추가하지 않는다.
+- 드루이드=야수 교감. 미래 다른 직업의 마물/언데드 테이밍을 위해 종 계열·교감 정책을 적 AI/지역 배치와 분리한다. 계약술사/사령술사 명칭은 가칭이며 편성 제한은 미확정이다.
+- 작은 캐릭터·넓은 시야/승인 도트풍·독립 지팡이·활동4/준비6·기존 동료/세이브/성장 공식을 보존한다. 다수전 특수 스킬로 몰아잡는 손맛과 소규모 교전/휴식/보스의 리듬을 유지한다.
 
-## 현재 적용
-- 멧돼지 **관통 돌진**(.24초 실제 이동/각 적1회/3.5배/1.5초 기절), 여우 **야성 폭발**(.22초 후 고정 지점/반경180/2.5배). 기존 수동 스킬·기본10초 쿨다운/옵션/강화 보정 유지. 야생에게는 없다.
-- 첫 사냥터 본선 **5 → 2 → 7 → 쉼터 → 9 → 보스1**. 선택 북/남 각2. 총28, 기존 보상 대상12는 유지. 추가 약한16마리는 HP28%, 무리별 합산 공격 배율1.6을 나눠 적용(입구40%/중반32%/마지막약22.86%). 제압 수만 증가하고 추가 재료/XP/교감은 주지 않는다.
-- **P1-C 완료**: 북/남 공터175px 내에 플레이어가 들어가야 해당 옆길이 교전 가능해진다. 동료 탐색·주인공 자동 공격·도발·스킬 범위·직접 피해에서 미진입 옆길 제외. 해당 원정 동안 유지/재출발 리셋, 표지에 접근 시 교전 안내.
-- P1-A 공격 방향/P1-B 귀환 자세 초기화도 완료 상태 유지.
+## 현재 구현
+- 계곡(28)→채석장(30)→묘역(30). 마을 동쪽/여정 메뉴의 사냥길 선택, 앞 지역 보스 클리어로 해금, 이전 지역 재방문, 클리어 결과 다음 지역 출발. 권장 레벨1/3/5는 안내만 한다.
+- `creature_species.gd` 계열/조건, `campaign.gd` 지역/해금/배치, `enemy_patterns.gd` 새 적 판정, `animation/creature_visual.gd`6종4자세. 새 배경2개/생물6종은 assets/campaign에 적용.
+- 슬라임·바위 마물·해골병·망령·수호병은 새 적, 동굴박쥐는 새 드루이드 동료로 실제 교감/편성/육성/기본 공격/급강하/저장까지 연결. 마물/언데드는 현재 교감 기회 없음. 미래 정책 식별자 contractor/necromancer는 플레이 가능한 직업이 아니다.
+- 새 지역 본선5/2/8/10+보스1, 선택2+2. 보상 대상12, 약한 추가18은 제압 수만 증가. 기존 일반 보상/성장/교감15%/클리어+10 유지. 보스와 미진입 선택 무리의 조기 교전 차단 유지.
+- version1에 cleared_stages/seen_species 추가, 구세이브 unlocked=true는 계곡1만 클리어 처리. JSON 숫자형 정규화, 보상 중복 차단, 기존 동료 재추첨 없음.
+- 생물 도감12종 스크롤/계열/조건/기존 동료 찾기, 지역별 HUD/쉼터/미니맵/보스 예고, 새 적의 실제 원형 강타/고정 지면 표적 판정.
 
-## 이전 단계 기록
-waves/audit/fix/assault 이름의 JSON과 영상은 각 단계 당시 기록으로 보존한다. 현재 배치의 검증은 가장 최근 변경 항목의 stage-pacing 결과를 사용한다.
+## 검증
+- 전체29/29 PASS: docs/campaign-2026-10-20-tests.json. test_campaign에서 해금/구세이브/실제 저장 왕복/계열 정책/다른 계열 교감 차단/박쥐 고정 옵션/도감/망령 회피/24프레임 경계 검사.
+- 자동4경로: docs/campaign-2026-10-20-journeys.json. 채석장 균형/공격Lv3, 묘역 균형/공격Lv5 모두 본선26제압·보스 제압·마을 귀환. 합성 시작 팀/고정 시드 봇 각1회이며 사람의 난이도/성공률/계곡부터 연속 성장 검증이 아니다.
+- 실제 Godot docs/campaign-quarry.gif/.mp4, campaign-graveyard.gif/.mp4, campaign-boss.gif/.mp4. 격리한 생산 중반 무리/묘역 보스 QA이며 전체 완주 영상이 아니다. campaign-selector.png/collection.png는 검토용 상태의 UI. 사용자 저장 미사용.
+- 단계별 과거 audit/fix/assault/waves/stage-pacing 결과와 영상은 당시 기록으로 보존. 최신 구현의 결과와 혼동하지 않는다.
+- 설정 인계 누락은 tools/check_handoff.py와 GitHub CI 단계에 연결했다. 로컬 검사와 실제 원격 CI 실행 결과는 구분한다.
 
-## 남은 작업
-1. 사용자 스테이지 흐름/무보상 약한 적/난이도 피드백. 현재 Lv1 단독은 본선도 실패하므로 초기1마리 준비/난이도 검토가 남는다. 성장 보상이나 체력부터 무단 조정하지 않는다.
-2. P2-B 밀집전 숫자·방어 문구·스킬명 가독성, P2-A 주인공 일반 공격 support 음원 연결.
-3. 다른 동료 스킬(늑대/담비/거북/사슴)은 후속 제안이며 아직 새 다수전 스킬로 확장하지 않았다. 기존 스킬은 유지.
-4. iPhone 터치/성능/음향·Windows·사람 연속 완주 미검증. headless 오디오 ObjectDB 종료 경고 별도 미해결.
-
-## 보존
-드루이드 전체72px/몸체60px·멧돼지48px·논리1440×810/월드2900×1650. 카메라 줌/캐릭터 확대로 대체하지 않는다. 승인 도트풍/지형/독립 지팡이 API/활동4·준비6·세이브/등급·특성·옵션·성장 공식·기존 보상 대상의 교감15% 유지. 관련 없는 .import/.uid/project.godot 변경을 커밋하지 않는다.
+## 다음 작업
+1. 사용자 새 배경·신규 적/4자세·공격 예고 체감 피드백. 실제 사람의 계곡→채석장→묘역 연속 성장 경로와 초기1마리 편성 난이도 확인. 수치를 무단 증폭하지 않는다.
+2. 박쥐를 포함한 동료 조합 체감, 새 적/보스의 자세·모션 확장. 현재 새 적은4자세의 첫 버전이다.
+3. P2-B 밀집 숫자/스킬명, P2-A 주인공 일반 공격음. iPhone 터치/성능/음향·Windows 실기기·장기 밸런스와 headless 오디오 ObjectDB 종료 경고는 미완료.
+4. 다른 주인공/마물·언데드 동료 AI와 편성 정책은 후속 승인/설계 단계. 현재 정책표만 보고 이미 구현됐다고 설명하지 않는다.
 
 ## 재실행
-- `python tools/audit_suite.py --godot PATH --out docs/stage-pacing-2026-10-20-tests.json`
-- `GROVE_AUDIT_BASELINE=현재커밋 GODOT --headless --path . --script tools/audit_journey.gd -- --out=res://docs/stage-pacing-2026-10-20-journeys.json`
-- `tools/preview.py` + `res://animation/stage_pacing_review.tscn`/`stage_pacing_layout_review.tscn`/`stage_pacing_rest_review.tscn`. Linux는 Xvfb 필요.
+- python tools/audit_suite.py --godot PATH --out docs/campaign-2026-10-20-tests.json
+- GROVE_AUDIT_BASELINE=현재커밋 GODOT --headless --path . --script tools/audit_journey.gd -- --campaign --out=res://docs/campaign-2026-10-20-journeys.json
+- tools/preview.py + res://animation/campaign_quarry_review.tscn / campaign_graveyard_review.tscn / campaign_boss_review.tscn. Linux는 Xvfb 필요.
+- python tools/check_handoff.py (로컬 스테이징 검사), --base COMMIT_SHA (CI 커밋 차이 검사).
+
+새 대화 시작 문장:
+```text
+https://github.com/knc219-a11y/grovebound 최신 main의 AGENTS.md, docs/PROJECT_SETTINGS.md, STATUS.md, docs/NEXT_SESSION.md를 읽고 이어가자. 새 설정이 확정되면 공통 설정과 인계 문서를 함께 갱신해줘. 다른 주인공은 아직 만들지 않고 기존 세이브·작은 캐릭터·넓은 시야·그림풍을 보존해줘.
+```

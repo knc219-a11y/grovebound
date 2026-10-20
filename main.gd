@@ -1,6 +1,17 @@
 extends Node2D
 # A self-contained, data-driven playable slice. All gameplay positions are world coordinates.
 const Trail=preload("res://trail.gd")
+const Campaign=preload("res://campaign.gd")
+const Species=preload("res://creature_species.gd")
+const EnemyPatterns=preload("res://enemy_patterns.gd")
+const CreatureVisual=preload("res://animation/creature_visual.gd")
+var creature_visual=CreatureVisual.new()
+var current_stage=1
+var stage_background:Texture2D
+var cleared_stages=[]
+var seen_species=[]
+var run_success=false
+const PLAYER_CLASS="druid"
 var trail=Trail.new()
 const Roles=preload("res://companion_roles.gd")
 const Expedition=preload("res://expedition.gd")
@@ -47,9 +58,9 @@ var save_notice = ""
 var save_blocked = false
 var save_backup_path = ""
 const Assault=preload("res://companion_assault.gd")
-const NAMES = {"boar":"멧돼지", "marten":"담비", "fox":"여우", "turtle":"거북", "deer":"사슴", "wolf":"늑대", "druid":"드루이드"}
-const ROLES = {"boar":"근접", "marten":"근접", "fox":"원거리", "turtle":"탱커", "deer":"힐러", "wolf":"근접"}
-const STATS = {"boar":[130,14,60,110],"marten":[85,21,62,150],"fox":[80,14,235,125],"turtle":[200,8,65,90],"deer":[95,8,240,120],"wolf":[95,12,60,130]}
+const NAMES = {"boar":"멧돼지", "marten":"담비", "fox":"여우", "turtle":"거북", "deer":"사슴", "wolf":"늑대", "druid":"드루이드","bat":"동굴박쥐"}
+const ROLES = {"boar":"근접", "marten":"근접", "fox":"원거리", "turtle":"탱커", "deer":"힐러", "wolf":"근접","bat":"속공"}
+const STATS = {"boar":[130,14,60,110],"marten":[85,21,62,150],"fox":[80,14,235,125],"turtle":[200,8,65,90],"deer":[95,8,240,120],"wolf":[95,12,60,130],"bat":[70,15,60,150]}
 const TRAITS = ["강인함", "용맹함", "단단함", "민첩함"]
 const BoarRig = preload("res://animation/boar_pixel.gd")
 var boar_rig
@@ -148,6 +159,7 @@ func _ready():
 	for species in ["wolf","fox","marten","deer","turtle"]:
 		animal_rigs[species]=PixelActor.new("res://animation/"+species+"_walk_frames.json","res://animation/"+species+"_trot_frames.json")
 	textures["boar"]=boar_rig.portrait()
+	for kind in Species.NEW: textures[kind]=creature_visual.portrait(kind)
 	build_terrain()
 	build_ui()
 	is_test = "--self-test" in OS.get_cmdline_user_args()
@@ -336,7 +348,15 @@ func open_inventory(selected_id=-1,reset_scroll=false):
 	MenuUI.show_inventory(self,selected_id,reset_scroll)
 
 func open_collection():
-	MenuUI.show_collection(self)
+	preload("res://ui/campaign_menu.gd").collection(self)
+
+func open_stage_select():
+	preload("res://ui/campaign_menu.gd").stages(self)
+
+func depart_stage(id):
+	if mode not in ["camp","result"] or squad.is_empty() or not Campaign.accessible(id,cleared_stages): return false
+	start_stage(false,id)
+	return true
 
 func open_species_roster(kind):
 	roster_kind_filter=kind
@@ -418,16 +438,13 @@ func town_interact():
 		0: open_roster()
 		1:
 			modal("잎그늘 쉼터 · 야영 자리","가칭 / 동료들과 탐험을 준비하는 작은 쉼터","home",resume_game)
-			label(overlay,"함께할 동료 %d마리 · 성장 재료 %d\n동료 쉼터에서 편성과 육성을 준비하세요.\n동쪽 표지판에서 초록물 계곡으로 출발합니다." % [owned.size(),materials],Vector2(250,280),23)
+			label(overlay,"함께할 동료 %d마리 · 성장 재료 %d\n동료 쉼터에서 편성과 육성을 준비하세요.\n동쪽 표지판에서 사냥길을 선택합니다." % [owned.size(),materials],Vector2(250,280),23)
 			button(overlay,"동료 · 편성 · 육성",Rect2(260,510,400,64),open_roster)
 			button(overlay,"마을로",Rect2(760,510,400,64),resume_game)
 			button(overlay,"새 여정",Rect2(960,630,200,50),confirm_reset)
 		2:
 			if not tutorial_done: show_starters()
-			else:
-				modal("초록물 사냥길","편성을 확인하고 계곡으로 출발하세요.","departure",resume_game)
-				button(overlay,"계곡으로 출발",Rect2(300,500,350,65),func(): start_stage(false))
-				button(overlay,"마을로",Rect2(750,500,350,65),resume_game)
+			else: open_stage_select()
 
 func show_starters():
 	modal("첫 인연을 선택하세요", "야수의 경계를 누그러뜨린 뒤 다가가 교감하세요. 첫 인연의 교감 기회는 확정입니다.","starters",resume_game)
@@ -446,6 +463,7 @@ func show_starters():
 		button(overlay,NAMES[kinds[i]]+" 만나기",Rect2(x,560,260,65),func(): tutorial_species=kinds[i]; start_stage(true))
 
 func make_owned(kind, level, rolled={}):
+	if not STATS.has(kind) or not Species.can_tame(kind,PLAYER_CLASS): return {}
 	var d=Loot.roll(kind,level,loot_rng) if rolled.is_empty() else rolled.duplicate(true)
 	d.erase("pos")
 	d.id=next_id
@@ -471,10 +489,15 @@ func make_unit(d, p):
 	if not d is Dictionary or not STATS.has(d.get("kind","")): return {}
 	return {"data":d,"pos":p,"hp":max_hp(d),"maxhp":max_hp(d),"cd":0.0,"skill":0.0,"buff":0.0,"shield":0.0,"face":1.0,"walk":false}
 
-func start_stage(tutorial):
+func start_stage(tutorial,stage_id=1):
+	current_stage=stage_id if Campaign.STAGES.has(stage_id) and not tutorial else 1
+	stage_background=load(Campaign.STAGES[current_stage].background)
+	run_success=false
+	trail.configure(current_stage)
 	trail.reset()
 	report_contributions=false
 	expedition.begin(owned,materials,tutorial)
+	expedition.baseline.stage_id=current_stage
 	bond_hint_seen=false
 	if mode=="camp": town_position=player.pos
 	pending_loot_id=-1
@@ -504,6 +527,9 @@ func start_stage(tutorial):
 	if tutorial:
 		spawn_enemy(tutorial_species,Vector2(650,800),1,false,true)
 		notify("야수에게 다가가 경계를 누그러뜨리세요. 전투 후 쉬고 있는 야수와 교감할 수 있습니다.")
+	elif current_stage>1:
+		Campaign.populate(self,current_stage)
+		notify(Campaign.STAGES[current_stage].name+" · "+Campaign.STAGES[current_stage].theme)
 	else:
 		for i in Trail.PACKS.size():
 			spawn_enemy(Trail.KINDS[i],Trail.PACKS[i],1+i/2)
@@ -525,7 +551,10 @@ func start_stage(tutorial):
 	update_hud()
 
 func spawn_enemy(kind, p, level=1, boss=false, guaranteed=false):
-	var h = 24.0 if mode=="tutorial" else (STATS[kind][0]*0.72+level*10)
+	var h=24.0
+	if mode!="tutorial":
+		var base=Species.NEW[kind].stats if Species.NEW.has(kind) else STATS[kind]
+		h=base[0]*0.72+level*10
 	if boss: h=850.0
 	enemy_visual_id+=1
 	enemies.append({"feedback_id":enemy_visual_id,"kind":kind,"pos":p,"home":p,"hp":h,"maxhp":h,"level":int(level),"boss":boss,"guaranteed":guaranteed,"cd":1.3,"wind":0.0,"aim":p,"stun":0.0,"active":false,"face":-1.0,"pattern":0,"attack_kind":"bite","dash":0.0,"dash_hits":[],"death":0.0})
@@ -579,6 +608,7 @@ func _process(dt):
 				var species=actor.get("kind",actor.get("data",{}).get("kind",""))
 				if species=="boar": boar_rig.advance(actor,minf(dt,0.05))
 				elif animal_rigs.has(species): animal_rigs[species].advance(actor,minf(dt,0.05))
+				elif Species.NEW.has(species): creature_visual.advance(actor,minf(dt,0.05))
 	if mode=="camp" and not overlay.visible and not dropdown.popup.visible:
 		update_town(minf(dt,0.05))
 	cam = (player.pos-Vector2(720,400)).clamp(Vector2.ZERO,(Town.SIZE if mode=="camp" else WORLD_SIZE)-VIEW_SIZE)
@@ -706,6 +736,7 @@ func update_game(dt):
 			e.taunt_time-=dt
 			if e.taunt.hp>0 and e.pos.distance_to(e.taunt.pos)<450: target=e.taunt
 		if not e.active and e.pos.distance_to(target.pos)<270: e.active=true
+		if e.active and e.kind not in seen_species: seen_species.append(e.kind)
 		if not e.active: continue
 		if e.pos.distance_to(player.pos)>650:
 			e.active=false
@@ -722,13 +753,15 @@ func update_game(dt):
 			if e.wind<=0: resolve_enemy_attack(e)
 		elif e.boss and e.cd<=0:
 			begin_boss_attack(e,target)
-		elif e.pos.distance_to(target.pos)>49:
-			move_entity(e,target.pos,80 if e.boss else 95,dt,44)
+		elif e.pos.distance_to(target.pos)>(Species.NEW[e.kind].reach if Species.NEW.has(e.kind) else 49):
+			move_entity(e,target.pos,Species.NEW[e.kind].speed if Species.NEW.has(e.kind) else 80 if e.boss else 95,dt,Species.NEW[e.kind].reach-5 if Species.NEW.has(e.kind) else 44)
 		elif e.cd<=0:
-			e.aim=target.pos
-			e.attack_kind="bite"
-			e.wind=0.65
-			e.wind_total=e.wind
+			if Species.NEW.has(e.kind): EnemyPatterns.begin(e,target)
+			else:
+				e.aim=target.pos
+				e.attack_kind="bite"
+				e.wind=0.65
+				e.wind_total=e.wind
 	in_combat=false
 	for e in enemies:
 		if e.hp>0 and e.active: in_combat=true
@@ -743,6 +776,9 @@ func update_game(dt):
 			finish(true)
 
 func begin_boss_attack(e, target):
+	if Species.NEW.has(e.kind):
+		EnemyPatterns.boss(e,target)
+		return
 	e.attack_kind="stomp" if e.pattern%2==0 else "charge"
 	e.pattern+=1
 	e["origin"]=e.pos
@@ -758,6 +794,9 @@ func begin_boss_attack(e, target):
 	if absf(e.aim.x-e.pos.x)>1: e.face=signf(e.aim.x-e.pos.x)
 
 func resolve_enemy_attack(e):
+	if Species.NEW.has(e.kind):
+		EnemyPatterns.resolve(self,e)
+		return
 	if e.boss and e.attack_kind=="stomp": e.boss_recovery=0.38
 	e["swing"]=0.22
 	motion_actions.start(e,e.kind,"cast" if e.kind=="fox" else "attack")
@@ -843,6 +882,7 @@ func advance_basic_attack(u,dt):
 
 func hit_enemy(e, damage, source,attacker={},animate=true):
 	if mode=="stage" and not trail.engageable(e): return
+	if e.kind not in seen_species: seen_species.append(e.kind)
 	if e.hp<=0: return
 	if not attacker.is_empty() and attacker.has("data") and e.get("stun",0.0)>0:
 		damage*=1.0+Loot.bonus(attacker.data,"stun_hunter")
@@ -870,7 +910,7 @@ func hit_enemy(e, damage, source,attacker={},animate=true):
 		materials+=(0 if e.get("swarm",false) else (1 if not e.boss else 5))
 		if not e.get("swarm",false):
 			for u in units: gain_xp(u.data,12+int(e.level)*4)
-		if not e.boss and not e.get("swarm",false) and (e.guaranteed or rng.randf()<CAPTURE_CHANCE):
+		if not e.boss and not e.get("swarm",false) and Species.can_tame(e.kind,PLAYER_CLASS) and (e.guaranteed or rng.randf()<CAPTURE_CHANCE):
 			var candidate=Loot.roll(e.kind,e.level,loot_rng)
 			candidate.pos=e.pos
 			captures.append(candidate)
@@ -1010,6 +1050,7 @@ func interact():
 		if mode=="stage" and not in_combat and trail.near_rest(player.pos): show_trail_rest()
 		return
 	var c=captures[i]
+	if not STATS.has(c.kind) or not Species.can_tame(c.kind,PLAYER_CLASS): return
 	var d=make_owned(c.kind,int(c.level),c if c.has("grade") else {})
 	expedition.record_bond(d)
 	recent_capture_id=d.id
@@ -1036,8 +1077,8 @@ func interact():
 
 func show_trail_rest():
 	if mode!="stage" or in_combat or not trail.near_rest(player.pos): return
-	modal("풀그늘 쉼터","동료들과 잠시 숨을 고르고 다음 길을 준비하세요.","trail_rest",resume_game)
-	label(overlay,"동행 중인 6마리 안에서 출전 동료를 교체할 수 있습니다.\n회복은 기존 지원 스킬 [Q / 회복 버튼]을 사용하세요.\n\n북쪽 풀밭과 남쪽 덤불길은 선택 동선입니다.\n동쪽의 큰 발자국은 우두머리 공터로 이어집니다.",Vector2(240,270),22)
+	modal(trail.rest_name,"동료들과 잠시 숨을 고르고 다음 길을 준비하세요.","trail_rest",resume_game)
+	label(overlay,"동행 중인 6마리 안에서 출전 동료를 교체할 수 있습니다.\n회복은 기존 지원 스킬 [Q / 회복 버튼]을 사용하세요.\n\n북쪽과 남쪽으로 갈라지는 길은 선택 동선입니다.\n동쪽의 표지판은 우두머리 공터로 이어집니다.",Vector2(240,270),22)
 	button(overlay,"동행 편성",Rect2(240,550,285,60),open_roster)
 	button(overlay,"가방 확인",Rect2(575,550,285,60),open_inventory)
 	button(overlay,"길로 돌아가기",Rect2(925,630,285,55),resume_game)
@@ -1058,7 +1099,9 @@ func finish(success):
 	reset_player_visual_state()
 	if success:
 		materials+=10
-		unlocked=true
+		run_success=true
+		if current_stage not in cleared_stages: cleared_stages.append(current_stage)
+		if current_stage==1: unlocked=true
 	expedition.close(owned,materials,kills,stage_time,"우두머리 제압 · 클리어 보너스 +10" if success else "드루이드가 쓰러져 귀환 · 클리어 보너스 없음",units)
 	save_game()
 	show_run_report()
@@ -1489,7 +1532,7 @@ func confirm_return():
 
 func confirm_reset():
 	modal("새 여정 시작", "이 기기의 프로토타입 저장 데이터를 초기화합니다.","",show_camp)
-	button(overlay,"초기화",Rect2(300,500,350,65),func(): expedition.clear(); preparation_seen=false; owned.clear(); squad.clear(); units.clear(); discovered.clear(); materials=0; tutorial_done=false; unlocked=false; next_id=1; show_camp())
+	button(overlay,"초기화",Rect2(300,500,350,65),func(): expedition.clear(); preparation_seen=false; owned.clear(); squad.clear(); units.clear(); discovered.clear(); cleared_stages.clear(); seen_species.clear(); materials=0; tutorial_done=false; unlocked=false; next_id=1; show_camp())
 	button(overlay,"취소",Rect2(750,500,350,65),show_camp)
 
 func update_hud():
@@ -1525,11 +1568,11 @@ func update_hud():
 	boss_label.text=""
 	for e in enemies:
 		if e.boss and e.hp>0 and e.active:
-			boss_label.text="계곡의 우두머리  ·  %d / %d" % [e.hp,e.maxhp]
+			boss_label.text=Campaign.STAGES[current_stage].boss+"  ·  %d / %d" % [e.hp,e.maxhp]
 			boss_hp_bar.max_value=e.maxhp
 			boss_hp_bar.value=e.hp
 			if e.get("intro",0.0)>0: boss_label.text+="\n거대한 발자국의 주인 · 경계 중"
-			elif e.wind>0: boss_label.text+="\n"+("발구르기! 원 밖으로 이동" if e.attack_kind=="stomp" else "돌진! 옆으로 피하세요")
+			elif e.wind>0: boss_label.text+="\n"+("지면 강타! 원 밖으로 이동" if Species.NEW.has(e.kind) and e.attack_kind=="slam" else "표적 공격! 표시된 원을 피하세요" if Species.NEW.has(e.kind) else "발구르기! 원 밖으로 이동" if e.attack_kind=="stomp" else "돌진! 옆으로 피하세요")
 			elif e.get("dash",0.0)>0: boss_label.text+="\n돌진 중!"
 			else: boss_label.text+="\n공격 기회"
 			break
@@ -1663,7 +1706,7 @@ func repair_party():
 func save_game():
 	if is_test or screenshot_mode or save_blocked: return
 	var f=FileAccess.open(save_path,FileAccess.WRITE)
-	if f: f.store_string(JSON.stringify({"version":1,"owned":owned,"squad":squad,"materials":materials,"tutorial_done":tutorial_done,"unlocked":unlocked,"next_id":next_id,"discovered":discovered}))
+	if f: f.store_string(JSON.stringify({"version":1,"owned":owned,"squad":squad,"materials":materials,"tutorial_done":tutorial_done,"unlocked":unlocked,"next_id":next_id,"discovered":discovered,"cleared_stages":cleared_stages,"seen_species":seen_species}))
 
 func load_game():
 	if not FileAccess.file_exists(save_path): return
@@ -1681,6 +1724,12 @@ func load_game():
 	materials=SaveData.integer(d.get("materials",0),0)
 	tutorial_done=d.get("tutorial_done",false)
 	unlocked=d.get("unlocked",false)
+	cleared_stages=Campaign.progress(d)
+	seen_species=[]
+	var history=d.get("seen_species",[])
+	if history is Array:
+		for kind in history:
+			if kind in Species.kinds() and kind not in seen_species: seen_species.append(kind)
 	next_id=result.next_id
 
 func _draw():
@@ -1688,13 +1737,16 @@ func _draw():
 		Town.draw(self)
 		return
 	draw_rect(Rect2(0,0,1440,810),Color("282a2b"))
-	draw_texture_rect(textures["valley"],Rect2(-cam.round(),WORLD_SIZE),false)
+	draw_texture_rect(stage_background if stage_background!=null else textures["valley"],Rect2(-cam.round(),WORLD_SIZE),false)
 	if mode=="stage": trail.draw(self)
 	for e in enemies: combat_feedback.draw_tell(self,e,cam)
 	var nearest_cap=closest_capture()
 	for i in captures.size():
 		var c=captures[i]
-		capture_visual.draw(self,c.pos-cam,c.kind,sprite_height(c.kind),clock,i==nearest_cap,Loot.grade(c))
+		if c.kind=="bat":
+			creature_visual.draw(self,c.pos-cam,sprite_height(c.kind),1,Color("d5dfbf"),c.kind,{"hp":1})
+			draw_arc(c.pos-cam,22,0,TAU,20,Loot.color(c),2,false)
+		else: capture_visual.draw(self,c.pos-cam,c.kind,sprite_height(c.kind),clock,i==nearest_cap,Loot.grade(c))
 		if i==nearest_cap:
 			text_at(Loot.title(c)+" · 교감 [F]",c.pos-cam+Vector2(-40,-sprite_height(c.kind)-20),15,Loot.color(c))
 	var actors=[]
@@ -1732,7 +1784,9 @@ func _draw():
 			if not a.ally: col.a=state.get("death",0.0)/0.32
 		var front_weapon=a.kind=="druid" and weapon_visual.in_front(state)
 		if a.kind=="druid" and not front_weapon: weapon_visual.draw(self,p+offset,a.size,a.face,col,state)
-		if motion_actions.draw(self,p+offset,a.size,a.face,col,a.kind,state):
+		if Species.NEW.has(a.kind):
+			creature_visual.draw(self,p+offset,a.size,a.face,col,a.kind,state)
+		elif motion_actions.draw(self,p+offset,a.size,a.face,col,a.kind,state):
 			pass
 		elif a.kind=="boar":
 			# The rig owns breathing, gait and attack poses; never stack whole-image shaking.
@@ -1781,7 +1835,7 @@ func _draw():
 func draw_minimap():
 	var box=Rect2(1190,104,225,135)
 	draw_style_box(map_style(),box)
-	text_at("계곡 지도 · 옆길은 선택",box.position+Vector2(12,22),14,Color("edf0d4"))
+	text_at(("계곡" if current_stage==1 else "채석장" if current_stage==2 else "묘역")+" 지도 · 옆길은 선택",box.position+Vector2(12,22),14,Color("edf0d4"))
 	var origin=box.position+Vector2(12,35)
 	var scale_map=Vector2(201.0/2900.0,88.0/1650.0)
 	if mode=="stage":
@@ -1816,6 +1870,7 @@ func map_style():
 	return GroveUI.frame(Color("202823ef"))
 
 func sprite_height(kind,boss=false):
+	if Species.NEW.has(kind): return Species.NEW[kind].height*(1.6 if boss else 1.0)
 	var h=48 if kind=="boar" else textures[kind].get_height()
 	return h*(2 if boss else 1)
 

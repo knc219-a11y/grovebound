@@ -188,7 +188,7 @@ func draw_tell(canvas,enemy,cam):
 			canvas.draw_polyline(PackedVector2Array([q-direction*9+side*0.18,q+direction*3,q-direction*9-side*0.18]),edge,2,false)
 		canvas.draw_line(a,a.lerp(p,ratio),edge,3,false)
 	else:
-		var radius=130.0 if enemy.attack_kind=="stomp" else 56.0
+		var radius=enemy.get("tell_radius",130.0 if enemy.attack_kind=="stomp" else 56.0)
 		canvas.draw_circle(p,radius,fill)
 		canvas.draw_arc(p,radius,0,TAU,48,Color("b88a67"),2,false)
 		canvas.draw_arc(p,radius,-PI/2,-PI/2+maxf(0.001,ratio*TAU),48,edge,3,false)

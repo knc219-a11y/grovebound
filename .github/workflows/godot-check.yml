@@ -11,6 +11,12 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check durable project handoff
+        env:
+          HANDOFF_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: python3 tools/check_handoff.py --base "$HANDOFF_BASE"
       - name: Install Godot 4.7 Standard
         shell: bash
         run: |
@@ -57,6 +63,12 @@ jobs:
           set -euo pipefail
           timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://experiments/boar3d/test_kinematics.gd 2>&1 | tee boar3d-test.log
           grep -q '3D STUDY PASS:' boar3d-test.log
+      - name: Campaign progression and taming compatibility
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_campaign.gd 2>&1 | tee campaign-test.log
+          grep -q 'CAMPAIGN PASS:' campaign-test.log
   windows-launcher:
     runs-on: windows-latest
     timeout-minutes: 10

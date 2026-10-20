@@ -1,0 +1,613 @@
+{
+	"baseline": "Campaign working tree based on 3da208d",
+	"confirmed_probes": [
+		{
+			"action_face": -1.0,
+			"confirmed": false,
+			"id": "attack_facing",
+			"target_left": true
+		},
+		{
+			"confirmed": false,
+			"id": "town_stale_action",
+			"key": "",
+			"remaining_after": 0.0,
+			"remaining_before": 0.0
+		},
+		{
+			"confirmed": true,
+			"id": "player_attack_sound",
+			"support_cue_accepted": false
+		}
+	],
+	"method": "Synthetic fixed common teams, real update_game at dt=.05, scripted movement/Q/E/skills/revive/boss dodge; not a human or device playtest. No damage/HP/cooldown edits.",
+	"runs": [
+		{
+			"bonds": 0,
+			"buffs": 3,
+			"checkpoint": 5,
+			"core": {
+				"cleared": 4,
+				"total": 4
+			},
+			"down_events": 0,
+			"growth": [
+				{
+					"from": 3,
+					"id": 5,
+					"kind": "boar",
+					"to": 4,
+					"xp": 184
+				},
+				{
+					"from": 3,
+					"id": 6,
+					"kind": "fox",
+					"to": 4,
+					"xp": 184
+				},
+				{
+					"from": 3,
+					"id": 7,
+					"kind": "deer",
+					"to": 4,
+					"xp": 184
+				},
+				{
+					"from": 3,
+					"id": 8,
+					"kind": "turtle",
+					"to": 4,
+					"xp": 184
+				}
+			],
+			"heals": 0,
+			"kills": 26,
+			"minimum_player_hp": 140.0,
+			"mode": "result",
+			"outcome": "우두머리 제압 · 클리어 보너스 +10",
+			"packs": {
+				"0": {
+					"alive": 0,
+					"dead": 5
+				},
+				"1": {
+					"alive": 0,
+					"dead": 2
+				},
+				"2": {
+					"alive": 2,
+					"dead": 0
+				},
+				"3": {
+					"alive": 0,
+					"dead": 8
+				},
+				"4": {
+					"alive": 2,
+					"dead": 0
+				},
+				"5": {
+					"alive": 0,
+					"dead": 10
+				},
+				"boss": {
+					"alive": 0,
+					"dead": 1
+				}
+			},
+			"returned_to_town": true,
+			"samples": [
+				{
+					"down": 0,
+					"hp": 163,
+					"kills": 7,
+					"seconds": 10,
+					"x": 1388
+				},
+				{
+					"down": 0,
+					"hp": 140,
+					"kills": 21,
+					"seconds": 20,
+					"x": 2081
+				},
+				{
+					"down": 0,
+					"hp": 180,
+					"kills": 25,
+					"seconds": 30,
+					"x": 2372
+				},
+				{
+					"down": 0,
+					"hp": 180,
+					"kills": 25,
+					"seconds": 40,
+					"x": 2379
+				}
+			],
+			"scenario": {
+				"kinds": [
+					"boar",
+					"fox",
+					"deer",
+					"turtle"
+				],
+				"level": 3,
+				"main_only": true,
+				"name": "quarry_balanced",
+				"stage_id": 2
+			},
+			"seconds": 40.3,
+			"skills": 20,
+			"transitions": [
+				{
+					"hp": 180,
+					"kills": 5,
+					"point": 0,
+					"seconds": 0
+				},
+				{
+					"hp": 163,
+					"kills": 7,
+					"point": 1,
+					"seconds": 7
+				},
+				{
+					"hp": 180,
+					"kills": 15,
+					"point": 3,
+					"seconds": 11
+				},
+				{
+					"hp": 180,
+					"kills": 15,
+					"point": -1,
+					"seconds": 13
+				},
+				{
+					"hp": 175,
+					"kills": 25,
+					"point": 5,
+					"seconds": 20
+				}
+			]
+		},
+		{
+			"bonds": 0,
+			"buffs": 3,
+			"checkpoint": 5,
+			"core": {
+				"cleared": 4,
+				"total": 4
+			},
+			"down_events": 0,
+			"growth": [
+				{
+					"from": 3,
+					"id": 5,
+					"kind": "boar",
+					"to": 4,
+					"xp": 184
+				},
+				{
+					"from": 3,
+					"id": 6,
+					"kind": "wolf",
+					"to": 4,
+					"xp": 184
+				},
+				{
+					"from": 3,
+					"id": 7,
+					"kind": "marten",
+					"to": 4,
+					"xp": 184
+				},
+				{
+					"from": 3,
+					"id": 8,
+					"kind": "fox",
+					"to": 4,
+					"xp": 184
+				}
+			],
+			"heals": 3,
+			"kills": 26,
+			"minimum_player_hp": 124.8,
+			"mode": "result",
+			"outcome": "우두머리 제압 · 클리어 보너스 +10",
+			"packs": {
+				"0": {
+					"alive": 0,
+					"dead": 5
+				},
+				"1": {
+					"alive": 0,
+					"dead": 2
+				},
+				"2": {
+					"alive": 2,
+					"dead": 0
+				},
+				"3": {
+					"alive": 0,
+					"dead": 8
+				},
+				"4": {
+					"alive": 2,
+					"dead": 0
+				},
+				"5": {
+					"alive": 0,
+					"dead": 10
+				},
+				"boss": {
+					"alive": 0,
+					"dead": 1
+				}
+			},
+			"returned_to_town": true,
+			"samples": [
+				{
+					"down": 0,
+					"hp": 180,
+					"kills": 8,
+					"seconds": 10,
+					"x": 1388
+				},
+				{
+					"down": 0,
+					"hp": 130,
+					"kills": 25,
+					"seconds": 20,
+					"x": 2375
+				}
+			],
+			"scenario": {
+				"kinds": [
+					"boar",
+					"wolf",
+					"marten",
+					"fox"
+				],
+				"level": 3,
+				"main_only": true,
+				"name": "quarry_attack",
+				"stage_id": 2
+			},
+			"seconds": 29.9,
+			"skills": 12,
+			"transitions": [
+				{
+					"hp": 180,
+					"kills": 5,
+					"point": 0,
+					"seconds": 0
+				},
+				{
+					"hp": 151,
+					"kills": 7,
+					"point": 1,
+					"seconds": 6
+				},
+				{
+					"hp": 167,
+					"kills": 15,
+					"point": 3,
+					"seconds": 10
+				},
+				{
+					"hp": 167,
+					"kills": 15,
+					"point": -1,
+					"seconds": 12
+				},
+				{
+					"hp": 130,
+					"kills": 25,
+					"point": 5,
+					"seconds": 19
+				}
+			]
+		},
+		{
+			"bonds": 0,
+			"buffs": 3,
+			"checkpoint": 5,
+			"core": {
+				"cleared": 4,
+				"total": 4
+			},
+			"down_events": 0,
+			"growth": [
+				{
+					"from": 5,
+					"id": 5,
+					"kind": "boar",
+					"to": 6,
+					"xp": 216
+				},
+				{
+					"from": 5,
+					"id": 6,
+					"kind": "fox",
+					"to": 6,
+					"xp": 216
+				},
+				{
+					"from": 5,
+					"id": 7,
+					"kind": "deer",
+					"to": 6,
+					"xp": 216
+				},
+				{
+					"from": 5,
+					"id": 8,
+					"kind": "turtle",
+					"to": 6,
+					"xp": 216
+				}
+			],
+			"heals": 1,
+			"kills": 26,
+			"minimum_player_hp": 142.0,
+			"mode": "result",
+			"outcome": "우두머리 제압 · 클리어 보너스 +10",
+			"packs": {
+				"0": {
+					"alive": 0,
+					"dead": 5
+				},
+				"1": {
+					"alive": 0,
+					"dead": 2
+				},
+				"2": {
+					"alive": 2,
+					"dead": 0
+				},
+				"3": {
+					"alive": 0,
+					"dead": 8
+				},
+				"4": {
+					"alive": 2,
+					"dead": 0
+				},
+				"5": {
+					"alive": 0,
+					"dead": 10
+				},
+				"boss": {
+					"alive": 0,
+					"dead": 1
+				}
+			},
+			"returned_to_town": true,
+			"samples": [
+				{
+					"down": 0,
+					"hp": 144,
+					"kills": 8,
+					"seconds": 10,
+					"x": 1388
+				},
+				{
+					"down": 0,
+					"hp": 154,
+					"kills": 17,
+					"seconds": 20,
+					"x": 2081
+				},
+				{
+					"down": 0,
+					"hp": 180,
+					"kills": 25,
+					"seconds": 30,
+					"x": 2377
+				},
+				{
+					"down": 0,
+					"hp": 180,
+					"kills": 25,
+					"seconds": 40,
+					"x": 2377
+				}
+			],
+			"scenario": {
+				"kinds": [
+					"boar",
+					"fox",
+					"deer",
+					"turtle"
+				],
+				"level": 5,
+				"main_only": true,
+				"name": "graveyard_balanced",
+				"stage_id": 3
+			},
+			"seconds": 40.7,
+			"skills": 20,
+			"transitions": [
+				{
+					"hp": 180,
+					"kills": 5,
+					"point": 0,
+					"seconds": 0
+				},
+				{
+					"hp": 178,
+					"kills": 7,
+					"point": 1,
+					"seconds": 6
+				},
+				{
+					"hp": 175,
+					"kills": 15,
+					"point": 3,
+					"seconds": 13
+				},
+				{
+					"hp": 175,
+					"kills": 15,
+					"point": -1,
+					"seconds": 14
+				},
+				{
+					"hp": 180,
+					"kills": 25,
+					"point": 5,
+					"seconds": 20
+				}
+			]
+		},
+		{
+			"bonds": 0,
+			"buffs": 3,
+			"checkpoint": 5,
+			"core": {
+				"cleared": 4,
+				"total": 4
+			},
+			"down_events": 0,
+			"growth": [
+				{
+					"from": 5,
+					"id": 5,
+					"kind": "boar",
+					"to": 6,
+					"xp": 216
+				},
+				{
+					"from": 5,
+					"id": 6,
+					"kind": "wolf",
+					"to": 6,
+					"xp": 216
+				},
+				{
+					"from": 5,
+					"id": 7,
+					"kind": "marten",
+					"to": 6,
+					"xp": 216
+				},
+				{
+					"from": 5,
+					"id": 8,
+					"kind": "fox",
+					"to": 6,
+					"xp": 216
+				}
+			],
+			"heals": 3,
+			"kills": 26,
+			"minimum_player_hp": 72.0,
+			"mode": "result",
+			"outcome": "우두머리 제압 · 클리어 보너스 +10",
+			"packs": {
+				"0": {
+					"alive": 0,
+					"dead": 5
+				},
+				"1": {
+					"alive": 0,
+					"dead": 2
+				},
+				"2": {
+					"alive": 2,
+					"dead": 0
+				},
+				"3": {
+					"alive": 0,
+					"dead": 8
+				},
+				"4": {
+					"alive": 2,
+					"dead": 0
+				},
+				"5": {
+					"alive": 0,
+					"dead": 10
+				},
+				"boss": {
+					"alive": 0,
+					"dead": 1
+				}
+			},
+			"returned_to_town": true,
+			"samples": [
+				{
+					"down": 0,
+					"hp": 164,
+					"kills": 9,
+					"seconds": 10,
+					"x": 1388
+				},
+				{
+					"down": 0,
+					"hp": 72,
+					"kills": 21,
+					"seconds": 20,
+					"x": 2081
+				},
+				{
+					"down": 0,
+					"hp": 72,
+					"kills": 25,
+					"seconds": 30,
+					"x": 2375
+				}
+			],
+			"scenario": {
+				"kinds": [
+					"boar",
+					"wolf",
+					"marten",
+					"fox"
+				],
+				"level": 5,
+				"main_only": true,
+				"name": "graveyard_attack",
+				"stage_id": 3
+			},
+			"seconds": 31.8,
+			"skills": 16,
+			"transitions": [
+				{
+					"hp": 180,
+					"kills": 5,
+					"point": 0,
+					"seconds": 0
+				},
+				{
+					"hp": 166,
+					"kills": 7,
+					"point": 1,
+					"seconds": 5
+				},
+				{
+					"hp": 164,
+					"kills": 15,
+					"point": 3,
+					"seconds": 11
+				},
+				{
+					"hp": 164,
+					"kills": 15,
+					"point": -1,
+					"seconds": 13
+				},
+				{
+					"hp": 72,
+					"kills": 25,
+					"point": 5,
+					"seconds": 20
+				}
+			]
+		}
+	]
+}

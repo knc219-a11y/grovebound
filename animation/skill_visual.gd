@@ -1,6 +1,6 @@
 extends RefCounted
 # Cosmetic silhouettes and pulses; repeated slashes never apply extra damage.
-const TITLES={"boar":"관통 돌진","wolf":"추격 타격","marten":"집중 타격","fox":"야성 폭발","turtle":"도발 · 방어","deer":"숲의 회복","druid_heal":"숲의 손길","druid_buff":"야성 강화","druid_revive":"인연의 소생"}
+const TITLES={"boar":"관통 돌진","wolf":"추격 타격","marten":"집중 타격","fox":"야성 폭발","turtle":"도발 · 방어","deer":"숲의 회복","bat":"급강하 타격","druid_heal":"숲의 손길","druid_buff":"야성 강화","druid_revive":"인연의 소생"}
 const COLORS={"boar":"e8b166","wolf":"9dd7ed","marten":"edbbd0","fox":"f1a35e","turtle":"91dce0","deer":"aee58f","druid_heal":"aee58f","druid_buff":"ecd17e","druid_revive":"c9eab2"}
 static func shard(g,p,d,length,width,c):
 	var side=d.orthogonal()*width
@@ -39,7 +39,7 @@ static func draw(g,event,cam,font):
 				var d=Vector2.RIGHT.rotated(i*TAU/9)
 				shard(g,p+d*(12+burst*26),d,9*(1-t)+2,3,c)
 			if t<0.22: shard(g,p,direction,30,12,white)
-		"wolf","marten":
+		"wolf","marten","bat":
 			var count=3 if kind=="wolf" else 4
 			for i in count:
 				var local=clampf((t-i*0.075)/0.55,0,1)

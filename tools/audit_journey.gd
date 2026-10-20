@@ -6,12 +6,18 @@ var findings=[]
 func _initialize(): call_deferred("run")
 func run():
 	var reports=[]
-	for config in [
+	var configs=[
 		{"name":"starter_boar_lv1","kinds":["boar"],"level":1},
 		{"name":"starter_boar_lv1_main_only","kinds":["boar"],"level":1,"main_only":true},
 		{"name":"balanced_lv2_main_only","kinds":["boar","wolf","deer","turtle"],"level":2,"main_only":true},
 		{"name":"balanced_lv2","kinds":["boar","wolf","deer","turtle"],"level":2},
-		{"name":"offense_lv2","kinds":["boar","wolf","marten","fox"],"level":2}]:
+		{"name":"offense_lv2","kinds":["boar","wolf","marten","fox"],"level":2}]
+	if "--campaign" in OS.get_cmdline_user_args():
+		configs=[]
+		for stage in [2,3]:
+			for attack_team in [false,true]:
+				configs.append({"name":("quarry" if stage==2 else "graveyard")+("_attack" if attack_team else "_balanced"),"stage_id":stage,"kinds":["boar","wolf","marten","fox"] if attack_team else ["boar","fox","deer","turtle"],"level":3 if stage==2 else 5,"main_only":true})
+	for config in configs:
 		var g=Game.new()
 		root.add_child(g)
 		g.set_process(false)
@@ -24,7 +30,7 @@ func run():
 		g.tutorial_done=true
 		g.show_camp()
 		g.clear_overlay()
-		g.start_stage(false)
+		g.start_stage(false,config.get("stage_id",1))
 		var checkpoint=0
 		var route=[0,1,3,-1,5,6] if config.get("main_only",false) else [0,1,2,3,-1,4,5,6]
 		var elapsed=0.0
@@ -62,7 +68,11 @@ func run():
 						break
 				for e in g.enemies:
 					if not e.boss or e.hp<=0 or e.wind<=0: continue
-					if e.attack_kind=="stomp" and g.player.pos.distance_to(e.aim)<165:
+					if e.attack_kind in ["slam","hex"] and g.player.pos.distance_to(e.aim)<e.get("tell_radius",100)+35:
+						g.stick=(g.player.pos-e.aim).normalized()
+						if g.stick.length()<0.1: g.stick=Vector2.LEFT
+						g.holding_revive=false
+					elif e.attack_kind=="stomp" and g.player.pos.distance_to(e.aim)<165:
 						g.stick=(g.player.pos-e.aim).normalized()
 						g.holding_revive=false
 					elif e.attack_kind=="charge":

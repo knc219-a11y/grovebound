@@ -3,7 +3,7 @@ static func show_report(g):
 	var r=g.expedition.report
 	if r.is_empty(): return
 	var leave=g.show_camp if g.mode=="result" else g.resume_game
-	g.modal("이번 탐험의 발자취",r.outcome+" · 이번 탐험에서 맺은 인연과 성장을 확인하세요.","recap",leave)
+	g.modal("이번 탐험의 발자취 · "+g.Campaign.STAGES[int(r.get("stage_id",1))].name,r.outcome+" · 이번 탐험에서 맺은 인연과 성장을 확인하세요.","recap",leave)
 	var values=["새로운 인연  %d" % r.newcomers.size(),"성장 재료  %+d" % r.materials,"제압 %d · %02d:%02d" % [r.kills,r.seconds/60,r.seconds%60]]
 	for i in 3:
 		g.panel(g.overlay,Rect2(230+i*330,215,310,58),Color("202823"))
@@ -63,6 +63,9 @@ static func show_report(g):
 	if g.report_contributions: g.label(g.overlay,"막대는 항목별 최대 동료 대비 비율 · 숫자는 실제 적용량입니다.",Vector2(235,613),14)
 	var b=g.button(g.overlay,"마을에서 준비하기" if g.mode=="result" else "마을로 돌아가기",Rect2(925,640,285,55),leave)
 	g.GroveUI.emphasize(b)
+	var stage_id=int(r.get("stage_id",1))
+	if g.mode=="result" and g.run_success and stage_id<3:
+		g.button(g.overlay,"다음 지역으로",Rect2(565,640,330,55),func(): g.depart_stage(stage_id+1))
 	if g.mode=="camp" and not g.owned.is_empty(): g.button(g.overlay,"동료 · 편성 · 육성",Rect2(230,640,310,55),g.open_roster)
 
 static func show_graphs(g,r,leave):
