@@ -2,11 +2,16 @@
 
 반드시 최신 main에서 AGENTS.md → docs/PROJECT_SETTINGS.md → STATUS.md → 이 문서를 읽는다. 사용자 설정을 새로 확정/변경한 모든 대화에서 PROJECT_SETTINGS를 갱신하고 구현 상태/검증/다음 단계도 함께 기록한다. `python tools/check_handoff.py` 실행 후 범위 파일만 GitHub에 반영하고 ref를 확인한다. 계정 전체 채팅에 자동 적용되었다고 말하지 않는다.
 
+## 이번 대화에서 정한 다음 Work
+- 사용자 요청: 플레이 테스트는 사용자가 맡는다. 다음 Work는 테스트 결과를 기다리지 않고 **5·6성 진화 설계**를 우선 진행한다. 구현 변경에 필요한 자동 검사/격리 QA는 계속 수행한다.
+- 상세 제안과 복사할 시작 프롬프트: `docs/EVOLUTION_NEXT_WORK.md`.
+- 먼저 레벨 보존/6성 상한, 성공률·비용·재료 제한, 능력치·추가 능력 보상을 최소 질문으로 합의한 뒤 **4→5 한 단위**부터 구현한다. 제안서 수치/정책은 아직 확정이 아니다.
+
 ## 최신 작업 경계: 3→4실제합성·4성특수개체
 - 최신STATUS와docs/SYNTHESIS_HANDOFF.md,docs/PROJECT_SETTINGS.md의4성규칙을읽는다.후보확인만인과거상태로돌아가지않는다.
 - 실제합성→고정결과/랜덤2옵션저장→속성1+야수고유1선택→중단복구→성장/7종강화스킬/표식·오라까지구현됐다.저장형식은v2내special.version1필드다.기존ID/옵션/편성/세이브를보존한다.
 - 공통 속성은 불꽃·물·대지·바람. 물은 사용자가 스킬 재사용 대기시간15% 감소를 확정했고 네 속성 모두 선택 가능하다.전용속성명칭·미래직업/계열능력은후속설계다.
-- 다음: 실제 플레이 피드백→4→5/5→6규칙설계.신규특수종/확률/6성상한을임의확정하지않는다.
+- 다음: docs/EVOLUTION_NEXT_WORK.md의 5·6성 진화 설계를 우선한다. 실제 플레이 피드백은 사용자가 추후 전달한다. 신규 특수종/확률/6성 상한은 임의 확정하지 않는다.
 - 회귀:tools/test_special_synthesis.gd(실제파일왕복/원자적소비/선택복구/무재추첨/실패롤백),test_special_combat.gd(성장/속성·고유/7종강화스킬),기존test_synthesis_preview/progression.원격CI와로컬결과는구별한다.
 
 - 최신 검증: Godot4.7.2 전체34/34 PASS(docs/special-companions-tests.json). 실제UI special-choice/detail/confirm.png와7종QA special-battle.gif/.mp4를 확인한다. 준비된팀/강화된적체력의12초 격리 QA이며 사람의 연속성장 검증이 아니다.
@@ -33,7 +38,7 @@
 - 단계별 과거 audit/fix/assault/waves/stage-pacing 결과와 영상은 당시 기록으로 보존. 최신 구현의 결과와 혼동하지 않는다.
 - 설정 인계 누락은 tools/check_handoff.py와 GitHub CI 단계에 연결했다. 로컬 검사와 실제 원격 CI 실행 결과는 구분한다.
 
-## 다음 작업
+## 보관 중인 캠페인 후속 작업 (이번 다음 Work 우선순위와 별개)
 0. mixed-*.json과 실제 PNG 확인 후 사람의 첫 동료3종 계곡 플레이를 우선 확인. 단독 봇15경로는 본선 완료, 실제 튜토리얼 연속 경로 중 담비는 묘역 실패. 수집과 준비를 포함한 사람 난이도 검증·아이폰은 미완료다. 실패 기록을 성공으로 바꾸어 설명하지 않는다.
 1. 사용자 새 배경·신규 적/4자세·공격 예고 체감 피드백. 실제 사람의 계곡→채석장→묘역 연속 성장 경로와 초기1마리 편성 난이도 확인. 수치를 무단 증폭하지 않는다.
 2. 박쥐를 포함한 동료 조합 체감, 새 적/보스의 자세·모션 확장. 현재 새 적은4자세의 첫 버전이다.
@@ -46,7 +51,4 @@
 - tools/preview.py + res://animation/campaign_quarry_review.tscn / campaign_graveyard_review.tscn / campaign_boss_review.tscn. Linux는 Xvfb 필요.
 - python tools/check_handoff.py (로컬 스테이징 검사), --base COMMIT_SHA (CI 커밋 차이 검사).
 
-새 대화 시작 문장:
-```text
-https://github.com/knc219-a11y/grovebound 최신 main의 AGENTS.md, docs/PROJECT_SETTINGS.md, STATUS.md, docs/NEXT_SESSION.md와 docs/SYNTHESIS_HANDOFF.md를 읽고 합성·승급 작업을 이어가자. 확정된 성급/만렙/합성 규칙과 아직 미정인 내용을 구분하고, 중요한 미정부터 정리한 뒤 단계적으로 구현해줘. 기존 동료·랜덤 옵션·세이브와 작은 캐릭터·넓은 시야를 보존하고, 확정 설정과 구현/검증 상태를 문서에 함께 인계해줘.
-```
+새 Work 시작 문장은 `docs/EVOLUTION_NEXT_WORK.md`의 마지막 코드 블록을 사용한다. 이 문서의 옛 캠페인 검증/다음 작업 목록을 최신 진화 작업보다 먼저 수행하지 않는다.
