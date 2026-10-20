@@ -71,6 +71,15 @@ jobs:
           grep -q 'CAMPAIGN PASS:' campaign-test.log
           timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_mixed_stages.gd 2>&1 | tee mixed-test.log
           grep -q 'MIXED STAGES PASS:' mixed-test.log
+      - name: Companion synthesis progression and preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_synthesis_progression.gd 2>&1 | tee synthesis-progression.log
+          grep -q 'SYNTHESIS PROGRESSION PASS:' synthesis-progression.log
+          timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_synthesis_preview.gd 2>&1 | tee synthesis-preview.log
+          grep -q 'SYNTHESIS PREVIEW PASS:' synthesis-preview.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR:' synthesis-progression.log synthesis-preview.log; then exit 1; fi
   windows-launcher:
     runs-on: windows-latest
     timeout-minutes: 10

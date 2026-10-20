@@ -36,6 +36,8 @@ var inventory_selected=-1
 var inventory_category=0
 var inventory_scroll=0
 var discovered=[]
+const Synthesis=preload("res://synthesis_rules.gd")
+const SynthesisUI=preload("res://ui/synthesis_preview.gd")
 const Management=preload("res://companion_management.gd")
 var roster_kind_filter=""
 var roster_grade_filter=""
@@ -1325,7 +1327,9 @@ func open_roster():
 			release.pressed.connect(func(): confirm_release(d.id))
 			row.add_child(release)
 	label(overlay,"성장 재료 %d · 육성 3개 → 경험치 +40 · 즐겨찾기는 자연으로 보낼 수 없습니다." % materials,Vector2(230,600),17)
-	if camp: button(overlay,"일괄 작별",Rect2(230,630,220,55),func(): show_bulk_release(true))
+	if camp:
+		button(overlay,"일괄 작별",Rect2(230,630,220,55),func(): show_bulk_release(true))
+		button(overlay,"특수개체 합성 · 미리보기",Rect2(480,630,380,55),func(): show_synthesis())
 	button(overlay,"완료",Rect2(1000,630,210,55),func(): save_game(); show_camp() if camp else clear_overlay())
 
 func growth_card(d,x,caption):
@@ -1355,8 +1359,8 @@ func show_training(id,result={}):
 		summary="Lv.%d → %d · 최대 체력 +%d · 공격력 +%.1f" % [before.level,after.level,roundi(max_hp(after))-roundi(max_hp(before)),attack(after)-attack(before)]
 	elif not result.is_empty(): summary="경험치 +40 획득 · 다음 레벨까지 %d" % (Management.needed_xp(d)-d.xp)
 	label(overlay,summary,Vector2(235,586),19)
-	var action=button(overlay,("%d성으로 승급" % (Loot.star(d)+1)) if Loot.is_max_level(d) and Loot.star(d)<3 else ("합성 화면 준비 중" if Loot.is_max_level(d) else ("재료 3개로 육성" if result.is_empty() else "한 번 더 · 미리보기")),Rect2(230,630,350,55),func(): show_promotion(id) if Loot.is_max_level(d) and Loot.star(d)<3 else (train_companion(id) if not Loot.is_max_level(d) and result.is_empty() else show_training(id)))
-	action.disabled=(Loot.is_max_level(d) and Loot.star(d)>=3) or (not Loot.is_max_level(d) and result.is_empty() and materials<3)
+	var action=button(overlay,("%d성으로 승급" % (Loot.star(d)+1)) if Loot.is_max_level(d) and Loot.star(d)<3 else ("4성 합성 미리보기" if Loot.is_max_level(d) else ("재료 3개로 육성" if result.is_empty() else "한 번 더 · 미리보기")),Rect2(230,630,350,55),func(): show_promotion(id) if Loot.is_max_level(d) and Loot.star(d)<3 else (show_synthesis([id],id) if Loot.is_max_level(d) and Loot.star(d)==3 else (train_companion(id) if not Loot.is_max_level(d) and result.is_empty() else show_training(id))))
+	action.disabled=(Loot.is_max_level(d) and Loot.star(d)>3) or (not Loot.is_max_level(d) and result.is_empty() and materials<3)
 	var target_action=button(overlay,"목표 레벨 육성",Rect2(600,630,285,55),func(): show_target_training(id))
 	target_action.disabled=Loot.is_max_level(d)
 	button(overlay,"동료 목록으로",Rect2(925,630,285,55),open_roster)
@@ -2068,3 +2072,11 @@ func run_tests():
 	if failures.is_empty(): print("SELF TEST PASS: party limits, reserve XP, overflow capture, wild level, revive, failure retention, fixed traits, tutorial flow, boss tells/dodge/swept charge, touch release")
 	else: push_error(str(failures))
 	get_tree().quit(0 if failures.is_empty() else 1)
+
+func show_synthesis(ids=[],main_id=-1,preserve="species"):
+	if mode!="camp": return
+	SynthesisUI.show_page(self,ids,main_id,preserve)
+
+func preview_synthesis(ids,main_id,preserve):
+	if mode!="camp": return
+	SynthesisUI.show_result(self,ids,main_id,preserve)
