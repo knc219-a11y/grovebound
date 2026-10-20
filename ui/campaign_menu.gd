@@ -35,7 +35,7 @@ static func stages(g):
 			g.label(g.overlay,"%d/8" % count if id<4 and difficulty=="normal" else "구현 예정",pos+Vector2(-28,70),14)
 		g.label(g.overlay,"순환을 잇는 여정",Vector2(930,282),22)
 		wrapped(g,"일반 · 5개 테마\n테마마다 8개 스테이지\n4번 중간보스\n8번 테마 보스",Vector2(930,330),260,19)
-		wrapped(g,"일반 5-8 → 심층\n심층 5-8 → 도전\n계곡·채석장 16개 스테이지를 탐험할 수 있습니다.",Vector2(930,440),260,17)
+		wrapped(g,"일반 5-8 → 심층\n심층 5-8 → 도전\n계곡·채석장·묘역 24개 스테이지를 탐험할 수 있습니다.",Vector2(930,440),260,17)
 		var available=Campaign.tamable_kinds(1,g.PLAYER_CLASS)
 		var bonds=g.label(g.overlay,"계곡 · 교감 가능 %d종" % available.size(),Vector2(930,548),16)
 		bonds.tooltip_text="\n".join(available.map(func(kind): return Species.name_of(kind)))
@@ -76,9 +76,9 @@ static func stages(g):
 	map.queue_redraw()
 	g.label(g.overlay,"지역을 고른 뒤 스테이지를 선택하고 출발하세요. 완료한 길은 다시 탐험할 수 있습니다.",Vector2(235,618),16)
 	if theme>0: g.button(g.overlay,"세계 지도",Rect2(230,655,250,45),func(): g.map_theme=0; stages(g))
-	if theme==2 and difficulty=="normal":
-		var legacy=g.button(g.overlay,"기존 사냥터 탐험",Rect2(500,655,300,45),func(): g.depart_stage(2))
-		legacy.name="DepartLegacy"; legacy.disabled=not Campaign.accessible(2,g.cleared_stages) or g.squad.is_empty()
+	if theme in [2,3] and difficulty=="normal":
+		var legacy=g.button(g.overlay,"기존 사냥터 탐험",Rect2(500,655,300,45),func(): g.depart_stage(theme))
+		legacy.name="DepartLegacy"; legacy.disabled=not Campaign.accessible(theme,g.cleared_stages) or g.squad.is_empty()
 	g.button(g.overlay,"마을로",Rect2(925,655,285,45),g.resume_game)
 
 static func wrapped(g,text,p,width,font_size,values=[]):

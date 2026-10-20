@@ -3,6 +3,7 @@ extends RefCounted
 const Save=preload("res://save_data.gd")
 const Legacy=preload("res://campaign.gd")
 const Quarry=preload("res://quarry_routes.gd")
+const Graveyard=preload("res://graveyard_routes.gd")
 const DIFFICULTIES=["normal","depth","challenge"]
 const DIFFICULTY_NAMES={"normal":"일반","depth":"심층","challenge":"도전"}
 const THEMES={1:"초록물 계곡",2:"버려진 채석장",3:"잊힌 묘역",4:"붉은바람 황야",5:"검은성채"}
@@ -22,13 +23,13 @@ static func valid(c):
 static func key(c):
 	return "%s:%d:%d" % [c.difficulty,int(c.theme),int(c.stage)] if valid(c) else ""
 static func implemented(c):
-	return valid(c) and c.difficulty=="normal" and int(c.theme) in [1,2]
+	return valid(c) and c.difficulty=="normal" and int(c.theme) in [1,2,3]
 static func title(c):
 	if not valid(c): return "탐험 지도"
 	return "%s %d-%d · %s" % [DIFFICULTY_NAMES[c.difficulty],int(c.theme),int(c.stage),profile(c).name if implemented(c) else THEMES[int(c.theme)]]
 static func profile(c):
 	if not implemented(c): return {}
-	return VALLEY[int(c.stage)-1].duplicate(true) if int(c.theme)==1 else Quarry.profile(int(c.stage))
+	return VALLEY[int(c.stage)-1].duplicate(true) if int(c.theme)==1 else Quarry.profile(int(c.stage)) if int(c.theme)==2 else Graveyard.profile(int(c.stage))
 static func boss_level(p):
 	return int(p.get("boss_level",4 if not p.get("midboss",false) else p.level))
 static func migrated(legacy):
@@ -75,11 +76,11 @@ static func populate(g,c):
 	for pack in p.packs.size():
 		for index in p.packs[pack].size():
 			var terminal=p.has("boss") and pack==p.packs.size()-1
-			g.spawn_enemy(p.packs[pack][index],p.points[pack]+Vector2(index*65,index*30),boss_level(p) if terminal else p.level,terminal)
+			g.spawn_enemy(p.packs[pack][index],p.points[pack]+(Vector2(145,-65) if p.get("rear_support",false) and p.packs[pack][index]=="wraith" and index>0 else Vector2(index*65,index*30)),boss_level(p) if terminal else p.level,terminal)
 			var e=g.enemies[-1]
 			e.pack=pack; e.damage_scale=p.get("damage_scale",0.8) if not terminal else 0.8 if p.get("midboss",false) else 1.0
 			if terminal:
-				e.hp=p.boss_hp; e.maxhp=e.hp; e.stage_entry=true; e.route_mid=p.get("midboss",false)
+				e.hp=p.boss_hp; e.maxhp=e.hp; e.stage_entry=true; e.route_mid=p.get("midboss",false); e.boss_pattern=p.get("boss_pattern","")
 		for index in p.crowds[pack]:
 			g.spawn_enemy(p.get("swarm_kind","wolf" if int(c.stage)>=3 else "boar"),p.points[pack]+Vector2(-65+index*38,45 if index%2 else -45),p.level)
 			var e=g.enemies[-1]

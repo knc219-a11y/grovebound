@@ -17,7 +17,7 @@ func check():
 	assert(R.normalize({"campaign_progress":JSON.parse_string(JSON.stringify(progress))})==progress)
 	assert(R.normalize({"campaign_progress":{"version":1,"cleared":[R.coordinate(1,3),R.coordinate(2,1),R.coordinate(1,1,"depth")]}}).cleared.is_empty())
 	assert(R.available(R.coordinate(2,1),progress) and not R.available(R.coordinate(1,1,"depth"),progress))
-	assert(not R.available(R.coordinate(2,1),{"version":1,"cleared":[]}) and not R.available(R.coordinate(3,1),progress))
+	assert(not R.available(R.coordinate(2,1),{"version":1,"cleared":[]}) and R.available(R.coordinate(3,1),progress))
 	assert(not R.valid({"difficulty":"normal","theme":true,"stage":1}) and not R.valid(R.coordinate(1,9)))
 	var g=Preview.new(); root.add_child(g); g.set_process(false)
 	g.expedition.clear(); g.show_camp(); g.clear_overlay()
