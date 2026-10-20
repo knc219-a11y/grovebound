@@ -22,6 +22,7 @@ const UNIQUES={
 }
 # Approved first balance values; tune here after player feedback.
 const EVOLUTION_VALUES={"vital":0.20,"guard":0.08,"barrier":0.15,"barrier_seconds":5.0,"basic":0.20,"skill":0.20,"execute":0.20,"execute_threshold":0.50,"potency":0.20,"haste":0.10,"reach":0.20}
+const SIX_VALUES={"vital":0.30,"guard":0.12,"barrier":0.20,"barrier_seconds":6.0,"basic":0.30,"skill":0.30,"execute":0.30,"execute_threshold":0.50,"potency":0.30,"haste":0.15,"reach":0.30}
 const EVOLUTION_START=1.10
 const EVOLUTION_PER_LEVEL=0.02
 const EVOLUTIONS={
@@ -59,7 +60,14 @@ static func evolution_pending(d):
 static func evolution_choices(kind): return EVOLUTIONS.get(Rules.position_of(kind),{})
 static func evolution(d):
 	return d.special.get("evolution",{}).get("ability","") if ready(d) and int(d.star)>=5 and not evolution_pending(d) else ""
-static func evolution_value(d,key): return EVOLUTION_VALUES[key] if evolution(d)==key else 0.0
+static func evolution_values(d): return SIX_VALUES if int(d.get("star",0))==6 else EVOLUTION_VALUES
+static func evolution_value(d,key): return evolution_values(d)[key] if evolution(d)==key else 0.0
+static func evolution_description(d):
+	var ability=evolution(d)
+	if ability.is_empty(): return ""
+	var info=evolution_choices(d.kind)[ability].description
+	if int(d.star)!=6: return info
+	return info.replace("+20%","+30%").replace("8%","12%").replace("15% 보호막 · 5초","20% 보호막 · 6초").replace("10% 감소","15% 감소")
 static func growth(d):
 	var level=int(d.level)
 	if int(d.star)==5: return (0.70+0.022*49)*(EVOLUTION_START+EVOLUTION_PER_LEVEL*(level-50))
@@ -104,12 +112,13 @@ static func normalize(d):
 		var chosen=e.get("ability","")
 		e.state="ready" if e.get("state")=="ready" and evolution_choices(d.kind).has(chosen) else "pending"
 		e.ability=chosen if e.state=="ready" else ""
+		if int(d.star)==6 and e.state=="ready": e.enhanced=true
 		s.evolution=e
 static func summary(d):
 	if not is_special(d): return ""
 	if not ready(d): return "특수개체 · 속성/고유 능력 선택 대기"
 	if evolution_pending(d): return "5성 진화 · 진화 능력 선택 대기"
-	return "%s · %s · %s" % [ELEMENTS[element(d)].name,choices(d.kind)[unique(d)].name,SKILLS[d.kind]]+(" · 진화: "+evolution_choices(d.kind)[evolution(d)].name if not evolution(d).is_empty() else "")
+	return "%s · %s · %s" % [ELEMENTS[element(d)].name,choices(d.kind)[unique(d)].name,SKILLS[d.kind]]+(" · 진화: "+evolution_choices(d.kind)[evolution(d)].name+(" 강화" if int(d.star)==6 else "") if not evolution(d).is_empty() else "")
 
 static func equivalent(a,b):
 	if (a is int or a is float) and (b is int or b is float): return float(a)==float(b)

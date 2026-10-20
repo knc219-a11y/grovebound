@@ -2,10 +2,13 @@ extends RefCounted
 static func show_page(g,id):
 	var main=g.find_owned(id)
 	if main.is_empty(): return
-	g.modal("5성 진화 · "+g.NAMES[main.kind],"주 동료는 유지하고, 선택한 보조 동료 한 마리를 소비합니다.","evolution",func(): g.show_training(id))
-	g.label(g.overlay,"주 동료: "+g.NAMES[main.kind]+" · 4성 Lv.50 → 5성 Lv.50 / 상한60",Vector2(235,220),21)
+	var source=g.Loot.star(main)
+	var target=source+1
+	var level=source*10+10
+	g.modal("%d성 진화 · " % target+g.NAMES[main.kind],"주 동료는 유지하고, 선택한 보조 동료 한 마리를 소비합니다.","evolution",func(): g.show_training(id))
+	g.label(g.overlay,"주 동료: %s · %d성 Lv.%d → %d성 Lv.%d / 상한%d" % [g.NAMES[main.kind],source,level,target,level,level+10],Vector2(235,220),21)
 	g.label(g.overlay,"성공100% · 추가 비용 없음 · 기존 능력/옵션 보존 · 보조 옵션 계승 없음",Vector2(235,260),18)
-	g.label(g.overlay,"기본 체력·공격 +10% · 역할별 진화 능력 하나 추가 선택",Vector2(235,300),19)
+	g.label(g.overlay,"기본 체력·공격 +10% · "+("기존 진화 능력 자동 강화 · 재선택 없음" if target==6 else "역할별 진화 능력 하나 추가 선택"),Vector2(235,300),19)
 	var scroll=ScrollContainer.new()
 	scroll.position=Vector2(235,350)
 	scroll.size=Vector2(975,245)
@@ -15,7 +18,7 @@ static func show_page(g,id):
 	scroll.add_child(rows)
 	for d in g.owned:
 		if d.id==id: continue
-		var error=g.Evolution.material_error(d,g.squad)
+		var error=g.Evolution.material_error(d,g.squad,false,source)
 		var b=Button.new()
 		b.text="%s · %s Lv.%d · %s" % [g.NAMES[d.kind],g.Loot.title(d),d.level,"보조로 선택" if error.is_empty() else error]
 		b.custom_minimum_size=Vector2(940,52)
@@ -27,15 +30,17 @@ static func show_page(g,id):
 static func show_confirmation(g,id,support_id):
 	var plan=g.Evolution.preview(g.owned,g.squad,id,support_id)
 	if not plan.error.is_empty(): g.notify(plan.error); show_page(g,id); return
-	g.modal("5성 진화 최종 확인","아래 보조 동료는 소비되며 되돌릴 수 없습니다. 주 동료의 인연과 능력은 유지됩니다.","evolution_confirm",func(): show_page(g,id))
+	var target=int(plan.result.star)
+	var level=int(plan.result.level)
+	g.modal("%d성 진화 최종 확인" % target,"아래 보조 동료는 소비되며 되돌릴 수 없습니다. 주 동료의 인연과 능력은 유지됩니다.","evolution_confirm",func(): show_page(g,id))
 	var main=plan.materials[0]
 	var support=plan.materials[1]
 	g.label(g.overlay,"유지: #%d %s · %s" % [main.id,g.NAMES[main.kind],g.Special.summary(main)],Vector2(235,230),19)
-	g.label(g.overlay,"소비: #%d %s · 4성 Lv.50 · %s" % [support.id,g.NAMES[support.kind],support.trait],Vector2(235,290),23)
-	g.label(g.overlay,"5성 Lv.50 / 최대60 · 성공100% · 추가 비용 없음",Vector2(235,365),22)
-	g.label(g.overlay,"기본 체력·공격: 4성 Lv.50의110% → Lv.60에130%",Vector2(235,420),20)
-	g.label(g.overlay,"진화 후 역할별 능력 3개 중1개 선택 · 기존 옵션 재추첨 없음",Vector2(235,475),19)
-	var confirm=g.button(g.overlay,"보조 동료 소비 · 5성 진화",Rect2(745,640,465,55),func(): g.commit_evolution(id,support_id,plan.materials))
+	g.label(g.overlay,"소비: #%d %s · %d성 Lv.%d · %s" % [support.id,g.NAMES[support.kind],target-1,level,support.trait],Vector2(235,290),23)
+	g.label(g.overlay,"%d성 Lv.%d / 최대%d · 성공100%% · 추가 비용 없음" % [target,level,level+10],Vector2(235,365),22)
+	g.label(g.overlay,"기본 체력·공격: %d성 Lv.%d의110%% → Lv.%d에130%%" % [target-1,level,level+10],Vector2(235,420),20)
+	g.label(g.overlay,("기존 능력 자동 강화: "+g.Special.evolution_description(plan.result) if target==6 else "진화 후 역할별 능력 3개 중1개 선택 · 기존 옵션 재추첨 없음"),Vector2(235,475),19)
+	var confirm=g.button(g.overlay,"보조 동료 소비 · %d성 진화" % target,Rect2(745,640,465,55),func(): g.commit_evolution(id,support_id,plan.materials))
 	confirm.name="ConfirmEvolution"
 	g.button(g.overlay,"돌아가기",Rect2(235,640,360,55),func(): show_page(g,id))
 static func show_choice(g,id,selected=""):

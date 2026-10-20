@@ -1158,7 +1158,7 @@ func loot_card(d,x,caption,animate=false):
 		lines.append(Special.SKILL_DESCRIPTIONS[d.kind])
 		lines.append(Special.ELEMENTS[Special.element(d)].description)
 		lines.append(Special.choices(d.kind)[Special.unique(d)].description)
-		if not Special.evolution(d).is_empty(): lines.append("진화 · "+Special.evolution_choices(d.kind)[Special.evolution(d)].description)
+		if not Special.evolution(d).is_empty(): lines.append("진화 · "+Special.evolution_description(d))
 	var scroller=ScrollContainer.new()
 	scroller.position=Vector2(x+18,455)
 	scroller.size=Vector2(425,100)
@@ -1404,8 +1404,8 @@ func show_training(id,result={}):
 		summary="Lv.%d → %d · 최대 체력 +%d · 공격력 +%.1f" % [before.level,after.level,roundi(max_hp(after))-roundi(max_hp(before)),attack(after)-attack(before)]
 	elif not result.is_empty(): summary="경험치 +40 획득 · 다음 레벨까지 %d" % (Management.needed_xp(d)-d.xp)
 	label(overlay,summary,Vector2(235,586),19)
-	var action=button(overlay,("%d성으로 승급" % (Loot.star(d)+1)) if Loot.is_max_level(d) and Loot.star(d)<3 else (("5성 진화" if Loot.star(d)==4 else "6성 진화 · 준비 중" if Loot.star(d)==5 else "4성 합성") if Loot.is_max_level(d) else ("재료 3개로 육성" if result.is_empty() else "한 번 더 · 미리보기")),Rect2(230,630,350,55),func(): EvolutionUI.show_page(self,id) if Loot.is_max_level(d) and Loot.star(d)==4 else show_promotion(id) if Loot.is_max_level(d) and Loot.star(d)<3 else (show_synthesis([id],id) if Loot.is_max_level(d) and Loot.star(d)==3 else (train_companion(id) if not Loot.is_max_level(d) and result.is_empty() else show_training(id))))
-	action.disabled=(Loot.is_max_level(d) and Loot.star(d)>4) or (not Loot.is_max_level(d) and result.is_empty() and materials<3)
+	var action=button(overlay,("%d성으로 승급" % (Loot.star(d)+1)) if Loot.is_max_level(d) and Loot.star(d)<3 else (("5성 진화" if Loot.star(d)==4 else "6성 진화" if Loot.star(d)==5 else "최고 성급" if Loot.star(d)==6 else "4성 합성") if Loot.is_max_level(d) else ("재료 3개로 육성" if result.is_empty() else "한 번 더 · 미리보기")),Rect2(230,630,350,55),func(): EvolutionUI.show_page(self,id) if Loot.is_max_level(d) and Loot.star(d) in [4,5] else show_promotion(id) if Loot.is_max_level(d) and Loot.star(d)<3 else (show_synthesis([id],id) if Loot.is_max_level(d) and Loot.star(d)==3 else (train_companion(id) if not Loot.is_max_level(d) and result.is_empty() else show_training(id))))
+	action.disabled=(Loot.is_max_level(d) and Loot.star(d)>5) or (not Loot.is_max_level(d) and result.is_empty() and materials<3)
 	var target_action=button(overlay,"목표 레벨 육성",Rect2(600,630,285,55),func(): show_target_training(id))
 	target_action.disabled=Loot.is_max_level(d)
 	button(overlay,"동료 목록으로",Rect2(925,630,285,55),open_roster)
@@ -2210,7 +2210,8 @@ func commit_evolution(main_id,support_id,expected):
 		return false
 	owned=next
 	units.clear()
-	show_special_choice(main_id)
+	if int(plan.result.star)==6: show_loot_details(main_id,-1,false,true)
+	else: show_special_choice(main_id)
 	return true
 
 func commit_evolution_choice(id,ability,expected):

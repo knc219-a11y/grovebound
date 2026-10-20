@@ -19,8 +19,8 @@ def main():
     for name, tail in checks:
         start = time.monotonic()
         try:
-            run = subprocess.run([godot, '--headless', '--path', str(root), *tail], cwd=root,
-                                 capture_output=True, text=True, timeout=25)
+            run = subprocess.run([godot, '--headless', '--path', str(root), '--log-file', str(root/'.godot/audit.log'), *tail], cwd=root,
+                                 capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=25)
             log = run.stdout + run.stderr
             # The older cutout check reports metrics and uses its exit status for assertions.
             marker = 'PASS' in log or (name == 'test_boar_cutout.gd' and 'CUTOUT CHECK:' in log)
