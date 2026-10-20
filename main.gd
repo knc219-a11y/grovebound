@@ -475,10 +475,10 @@ func make_owned(kind, level, rolled={}):
 	return d
 
 func max_hp(d):
-	return STATS[d.kind][0] * (1.0 + (d.level-1)*0.12) * (1.2 if d.trait=="강인함" else 1.0)*(1.0+Loot.bonus(d,"vitality"))
+	return STATS[d.kind][0] * (1.0 + (d.level-1)*Loot.hp_growth(d)) * (1.2 if d.trait=="강인함" else 1.0)*(1.0+Loot.bonus(d,"vitality"))
 
 func attack(d):
-	return STATS[d.kind][1] * (1.0 + (d.level-1)*0.1) * (1.18 if d.trait=="용맹함" else 1.0)*(1.0+Loot.bonus(d,"power"))
+	return STATS[d.kind][1] * (1.0 + (d.level-1)*Loot.attack_growth(d)) * (1.18 if d.trait=="용맹함" else 1.0)*(1.0+Loot.bonus(d,"power"))
 
 func find_owned(id):
 	for d in owned:
@@ -1355,8 +1355,8 @@ func show_training(id,result={}):
 		summary="Lv.%d → %d · 최대 체력 +%d · 공격력 +%.1f" % [before.level,after.level,roundi(max_hp(after))-roundi(max_hp(before)),attack(after)-attack(before)]
 	elif not result.is_empty(): summary="경험치 +40 획득 · 다음 레벨까지 %d" % (Management.needed_xp(d)-d.xp)
 	label(overlay,summary,Vector2(235,586),19)
-	var action=button(overlay,"승급 규칙 확정 대기" if Loot.is_max_level(d) and Loot.star(d)<3 else ("합성 화면 준비 중" if Loot.is_max_level(d) else ("재료 3개로 육성" if result.is_empty() else "한 번 더 · 미리보기")),Rect2(230,630,350,55),func(): train_companion(id) if not Loot.is_max_level(d) and result.is_empty() else show_training(id))
-	action.disabled=Loot.is_max_level(d) or (result.is_empty() and materials<3)
+	var action=button(overlay,("%d성으로 승급" % (Loot.star(d)+1)) if Loot.is_max_level(d) and Loot.star(d)<3 else ("합성 화면 준비 중" if Loot.is_max_level(d) else ("재료 3개로 육성" if result.is_empty() else "한 번 더 · 미리보기")),Rect2(230,630,350,55),func(): show_promotion(id) if Loot.is_max_level(d) and Loot.star(d)<3 else (train_companion(id) if not Loot.is_max_level(d) and result.is_empty() else show_training(id)))
+	action.disabled=(Loot.is_max_level(d) and Loot.star(d)>=3) or (not Loot.is_max_level(d) and result.is_empty() and materials<3)
 	var target_action=button(overlay,"목표 레벨 육성",Rect2(600,630,285,55),func(): show_target_training(id))
 	target_action.disabled=Loot.is_max_level(d)
 	button(overlay,"동료 목록으로",Rect2(925,630,285,55),open_roster)
@@ -1393,6 +1393,41 @@ func preview_target_training(id,target):
 	var apply=button(overlay,"재료 %d개로 일괄 육성" % plan.cost,Rect2(230,630,450,55),func(): train_to_level(id,target,plan.before))
 	apply.disabled=materials<plan.cost
 	button(overlay,"목표 다시 선택",Rect2(925,630,285,55),func(): show_target_training(id))
+
+func show_promotion(id):
+	if mode!="camp": return
+	var d=find_owned(id)
+	var after=Management.promotion_preview(d)
+	if after.is_empty(): return
+	modal("동료 승급 확인 · "+NAMES[d.kind],"외형과 인연은 유지됩니다. 다음 성급 Lv.1부터 더 큰 레벨 성장폭을 얻습니다.","promotion",func(): show_training(id))
+	growth_card(d,230,"승급 전 · %d성 만렙" % Loot.star(d))
+	growth_card(after,745,"승급 후 · %d성 Lv.1" % Loot.star(after))
+	label(overlay,"승급 직후 체력·공격력은 낮아집니다. %d성은 레벨업 성장폭이 더 커 빠르게 이전 전투력을 회복합니다." % Loot.star(after),Vector2(235,586),17)
+	button(overlay,"%d성으로 승급" % Loot.star(after),Rect2(230,630,350,55),func(): promote_companion(id,d.duplicate(true)))
+	button(overlay,"취소 · 육성으로",Rect2(925,630,285,55),func(): show_training(id))
+
+func promote_companion(id,expected):
+	if mode!="camp": return false
+	var d=find_owned(id)
+	if d.is_empty() or int(d.get("star",1))!=int(expected.get("star",-1)) or int(d.level)!=int(expected.get("level",-1)) or int(d.xp)!=int(expected.get("xp",-1)):
+		notify("동료의 성장 정보가 바뀌었습니다. 승급 결과를 다시 확인하세요.")
+		return false
+	var promoted=Management.promotion_preview(d)
+	if promoted.is_empty(): return false
+	var before_star=Loot.star(d)
+	d.star=promoted.star
+	d.grade=promoted.grade
+	d.level=promoted.level
+	d.xp=promoted.xp
+	d.erase("legacy_overcap")
+	for u in units:
+		if u.data.id==id:
+			u.maxhp=max_hp(d)
+			u.hp=minf(u.hp,u.maxhp)
+	save_game()
+	show_training(id)
+	notify("%d성 → %d성 승급 · Lv.1부터 다시 성장합니다." % [before_star,Loot.star(d)])
+	return true
 
 func train_to_level(id,target,expected):
 	if mode!="camp": return false

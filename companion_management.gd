@@ -35,6 +35,15 @@ static func project(record,amount):
 		result.level+=1
 	if Loot.is_max_level(result): result.xp=0
 	return result
+static func promotion_preview(record):
+	if record.is_empty() or Loot.star(record)>=3 or not Loot.is_max_level(record): return {}
+	var result=record.duplicate(true)
+	result.star=Loot.star(record)+1
+	result.grade=Loot.grade_for_star(result.star)
+	result.level=1
+	result.xp=0
+	result.erase("legacy_overcap")
+	return result
 static func can_release(record,squad):
 	return not record.is_empty() and not record.get("favorite",false) and not squad.has(record.id)
 

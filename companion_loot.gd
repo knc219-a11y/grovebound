@@ -6,6 +6,8 @@ const COLORS={"common":Color("b8d59c"),"rare":Color("78bdec"),"epic":Color("c599
 const STAR_COLORS={1:Color("b8d59c"),2:Color("78bdec"),3:Color("c599ef"),4:Color("efbd69"),5:Color("f18f71"),6:Color("df82e8")}
 const MAX_LEVELS={1:20,2:30,3:40,4:50,5:60}
 const LEGACY_STARS={"common":1,"rare":2,"epic":3}
+const HP_GROWTH={1:0.12,2:0.17,3:0.26}
+const ATTACK_GROWTH={1:0.10,2:0.14,3:0.22}
 const TRAIT_DESCRIPTIONS={"강인함":"최대 체력 +20%","용맹함":"공격력 +18%","단단함":"받는 피해 -15%","민첩함":"이동 속도 +20%","다정함":"주는 회복량 +25%"}
 const COUNTS={"common":1,"rare":2,"epic":3}
 const OPTIONS={
@@ -31,6 +33,8 @@ static func star(record):
 	var value=int(record.get("star",LEGACY_STARS.get(record.get("grade","common"),1)))
 	return clampi(value,1,6)
 static func max_level(record): return MAX_LEVELS.get(star(record),-1)
+static func hp_growth(record): return HP_GROWTH.get(star(record),HP_GROWTH[3])
+static func attack_growth(record): return ATTACK_GROWTH.get(star(record),ATTACK_GROWTH[3])
 static func is_max_level(record):
 	var cap=max_level(record)
 	return cap>0 and int(record.get("level",1))>=cap

@@ -51,7 +51,7 @@ func check_loot():
 	game.in_combat=false
 	if acquired.options!=options_before: failures.append("roster does not reroll")
 	# Explicit affixes must alter actual stats/damage/healing/cooldown, not just text.
-	var d={"id":999,"kind":"boar","level":1,"xp":0,"trait":"시험","grade":"epic","options":[{"key":"vitality","value":10},{"key":"power","value":8},{"key":"armor","value":5}]}
+	var d={"id":999,"kind":"boar","level":1,"xp":0,"trait":"시험","star":1,"grade":"common","options":[{"key":"vitality","value":10},{"key":"power","value":8},{"key":"armor","value":5}]}
 	if absf(game.max_hp(d)-143)>0.001 or absf(game.attack(d)-15.12)>0.001: failures.append("explicit hp/attack affixes")
 	var unit=game.make_unit(d,game.player.pos)
 	var hp=unit.hp

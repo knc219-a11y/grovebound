@@ -16,11 +16,15 @@ func _ready():
 		d.favorite=i in [0,2]
 		if i<4: squad.append(d.id)
 	selected_id=owned[0].id
+	if screen=="promotion":
+		owned[0].level=20
+		owned[0].xp=0
 	materials=18
 	mode="camp"
 	in_combat=false
 	screenshot_mode=true
-	if screen=="training": show_training(selected_id)
+	if screen=="promotion": show_promotion(selected_id)
+	elif screen=="training": show_training(selected_id)
 	elif screen=="target": show_target_training(selected_id)
 	elif screen=="target_preview": preview_target_training(selected_id,8)
 	elif screen=="receipt": train_companion(selected_id)
@@ -40,7 +44,7 @@ func _process(dt):
 	if "--capture-synthesis-still" in OS.get_cmdline_user_args() and clock>0.8 and not still_captured:
 		still_captured=true
 		await RenderingServer.frame_post_draw
-		get_viewport().get_texture().get_image().save_png("res://docs/synthesis-training-v1.png")
+		get_viewport().get_texture().get_image().save_png("res://docs/synthesis-promotion-v1.png" if screen=="promotion" else "res://docs/synthesis-training-v1.png")
 		get_tree().quit()
 		return
 	if screen=="level":

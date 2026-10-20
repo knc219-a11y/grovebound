@@ -67,6 +67,12 @@ func check_management():
 	for event in game.combat_feedback.events:
 		if event.kind=="level_up": found=true
 	if not found: failures.append("actual active level up has feedback")
+	var capped={"id":9,"kind":"boar","level":20,"xp":0,"trait":"강인함","star":1,"grade":"common","options":[],"favorite":true}
+	game.mode="camp"
+	game.owned.append(capped)
+	var expected=capped.duplicate(true)
+	if not game.promote_companion(9,expected) or capped.star!=2 or capped.level!=1 or capped.id!=9 or not capped.favorite: failures.append("atomic identity-preserving promotion")
+	if game.promote_companion(9,expected): failures.append("stale duplicate promotion blocked")
 	game.queue_free()
 	await process_frame
 	await process_frame
