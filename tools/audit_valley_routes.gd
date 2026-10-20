@@ -4,8 +4,10 @@ const R=preload("res://campaign_routes.gd")
 func _initialize(): call_deferred("run")
 func run():
 	var runs=[]
+	var growth=[]
 	var through_quarry="--through-quarry" in OS.get_cmdline_user_args()
-	var stage_count=16 if through_quarry else 8
+	var through_graveyard="--through-graveyard" in OS.get_cmdline_user_args()
+	var stage_count=24 if through_graveyard else 16 if through_quarry else 8
 	for starter in ["boar","marten","fox"]:
 		for seed_value in [10417,20261020]:
 			var g=Game.new(); root.add_child(g); g.set_process(false)
@@ -19,7 +21,7 @@ func run():
 			g.start_practice(); g.hit_enemy(g.enemies[-1],999999,g.player.pos,g.player)
 			g.update_hud(); g.resume_game(); g.expedition.clear(); g.tutorial_done=true
 			for ordinal in range(1,stage_count+1):
-				var theme=1 if ordinal<=8 else 2
+				var theme=int((ordinal-1)/8)+1
 				var stage=(ordinal-1)%8+1
 				g.show_camp(); g.clear_overlay()
 				if not g.depart_route(R.coordinate(theme,stage)):
@@ -47,7 +49,7 @@ func run():
 								g.holding_revive=g.player.pos.distance_to(u.pos)<=65
 								break
 						for e in g.enemies:
-							if not e.boss or e.hp<=0 or e.wind<=0: continue
+							if e.hp<=0 or e.wind<=0: continue
 							if e.attack_kind in ["slam","hex"] and g.player.pos.distance_to(e.aim)<e.tell_radius+35:
 								g.stick=(g.player.pos-e.aim).normalized(); g.holding_revive=false
 								if g.stick.length()<0.1: g.stick=Vector2.LEFT
@@ -69,10 +71,25 @@ func run():
 				runs.append(result)
 				print("VALLEY JOURNEY ",starter," ",seed_value," ",theme,"-",stage," ",result.success," ",result.seconds,"s")
 				if not result.success: break
+			if through_graveyard and g.run_success:
+				g.show_camp(); g.clear_overlay()
+				var d=g.owned[0]; var before=d.duplicate(true); var materials=g.materials
+				var trained=g.train_to_level(d.id,20,d.duplicate(true))
+				var capped=d.duplicate(true); var hp=g.max_hp(d); var attack=g.attack(d)
+				var promoted=g.promote_companion(d.id,d.duplicate(true)) if trained else false
+				var target=1
+				for level in range(2,31):
+					var plan=g.Management.target_plan(d,level)
+					if not plan.is_empty() and plan.cost<=g.materials: target=level
+				var recovered=g.train_to_level(d.id,target,d.duplicate(true)) if target>1 else false
+				var probe={"starter":starter,"seed":seed_value,"before":before,"materials_before":materials,"trained":trained,"capped":capped,"promoted":promoted,"after":d.duplicate(true),"materials_after":g.materials,"recovered":recovered and g.max_hp(d)>=hp and g.attack(d)>=attack,"hp_before":hp,"hp_after":g.max_hp(d),"attack_before":attack,"attack_after":g.attack(d)}
+				assert(d.id==before.id and d.kind==before.kind and d.trait==before.trait and d.options==before.options)
+				growth.append(probe)
 			g.free()
-	var output={"method":"Six deterministic continuous first-invitation runs through "+("2-8" if through_quarry else "1-8")+"; tutorial kills fast-forwarded, then real update_game dt=.05, nearby bonds/Q/E/skills/revive/dodge/exit. No synthetic high-level team or material training. Bot timing is not human clear time or success rate.","runs":runs}
-	var f=FileAccess.open("res://docs/quarry-route-journeys.json" if through_quarry else "res://docs/campaign-map-journeys.json",FileAccess.WRITE); f.store_string(JSON.stringify(output,"\t")+"\n"); f.close()
+	var output={"method":"Six deterministic continuous first-invitation runs through "+("3-8" if through_graveyard else "2-8" if through_quarry else "1-8")+"; tutorial kills fast-forwarded, then real update_game dt=.05, nearby bonds/Q/E/skills/revive/dodge/exit. No synthetic high-level team/materials in combat. Graveyard post-run growth probes spend earned materials through real training/promotion functions. Bot timing is not human clear time or success rate.","runs":runs,"growth_probes":growth}
+	var f=FileAccess.open("res://docs/graveyard-route-journeys.json" if through_graveyard else "res://docs/quarry-route-journeys.json" if through_quarry else "res://docs/campaign-map-journeys.json",FileAccess.WRITE); f.store_string(JSON.stringify(output,"\t")+"\n"); f.close()
 	var total=stage_count*6
 	var passed=runs.size()==total and runs.all(func(r): return r.success)
-	print("QUARRY JOURNEY " if through_quarry else "VALLEY JOURNEY ","PASS" if passed else "FAIL"," ",runs.filter(func(r): return r.success).size(),"/",total)
+	if through_graveyard: passed=passed and growth.size()==6 and growth.all(func(p): return p.trained and p.promoted and p.recovered)
+	print("GRAVEYARD JOURNEY " if through_graveyard else "QUARRY JOURNEY " if through_quarry else "VALLEY JOURNEY ","PASS" if passed else "FAIL"," ",runs.filter(func(r): return r.success).size(),"/",total)
 	quit(0 if passed else 1)

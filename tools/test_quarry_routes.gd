@@ -79,12 +79,12 @@ func check():
 		total_xp+=reward.xp
 	for i in g.owned.size(): assert(g.owned[i]==g.Management.project(identity[i],total_xp))
 	assert(g.cleared_stages==[1,2] and g.campaign_progress.cleared.size()==16)
-	assert(g.Campaign.accessible(3,g.cleared_stages) and not R.available(R.coordinate(3,1),g.campaign_progress))
+	assert(g.Campaign.accessible(3,g.cleared_stages) and R.available(R.coordinate(3,1),g.campaign_progress))
 	assert(R.normalize(JSON.parse_string(JSON.stringify(g.save_payload()))).cleared.size()==16)
-	var next_region=g.overlay.get_children().filter(func(n): return n is Button and n.text=="잊힌 묘역으로")
+	var next_region=g.overlay.get_children().filter(func(n): return n is Button and n.text=="다음 스테이지")
 	assert(next_region.size()==1)
 	next_region[0].pressed.emit()
-	assert(g.current_stage==3 and g.current_route.is_empty() and g.enemies.size()==30)
+	assert(g.current_stage==3 and g.current_route==R.coordinate(3,1))
 	g.show_camp(); g.clear_overlay()
 	assert(g.depart_route(R.coordinate(2,1)))
 	# The legacy quarry retains its original 30 enemies/1050HP boss and can still be revisited.

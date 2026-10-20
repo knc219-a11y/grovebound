@@ -7,12 +7,12 @@ func _ready():
 	# No production save reads/writes: inherited preview hooks isolate all transactions.
 	owned.clear(); squad.clear(); discovered.clear(); cleared_stages=[]; unlocked=false
 	campaign_progress={"version":1,"cleared":[]}
-	if theme==2:
-		cleared_stages=[1]; unlocked=true
-		campaign_progress=Routes.migrated({"cleared_stages":[1]})
+	if theme>1:
+		cleared_stages=range(1,theme); unlocked=true
+		campaign_progress=Routes.migrated({"cleared_stages":cleared_stages})
 	for stage in range(1,4): campaign_progress=Routes.completed(campaign_progress,Routes.coordinate(theme,stage))
 	for kind in ["boar","fox","deer","turtle"]:
-		var level=3 if theme==1 else 8
+		var level=3 if theme==1 else 8 if theme==2 else 12
 		var d=make_owned(kind,level,{"kind":kind,"level":level,"xp":0,"star":1,"trait":"강인함","grade":"common","options":[]})
 		squad.append(d.id)
 	show_camp(); clear_overlay()
