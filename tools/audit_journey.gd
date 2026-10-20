@@ -17,20 +17,47 @@ func run():
 		for stage in [2,3]:
 			for attack_team in [false,true]:
 				configs.append({"name":("quarry" if stage==2 else "graveyard")+("_attack" if attack_team else "_balanced"),"stage_id":stage,"kinds":["boar","wolf","marten","fox"] if attack_team else ["boar","fox","deer","turtle"],"level":3 if stage==2 else 5,"main_only":true})
+	if "--starters" in OS.get_cmdline_user_args():
+		configs=[]
+		for kind in ["boar","marten","fox"]:
+			for trait_value in ["강인함","용맹함","단단함","민첩함","다정함"]:
+				configs.append({"name":"starter_"+kind+"_no_extra_bonds","kinds":[kind],"level":1,"main_only":true,"no_bonds":true,"trait":trait_value})
+	if "--continuous" in OS.get_cmdline_user_args():
+		configs=[]
+		for kind in ["boar","marten","fox"]:
+			for stage in [1,2,3]:
+				configs.append({"name":"continuous_"+kind,"kinds":[kind],"level":1,"stage_id":stage,"main_only":true,"continue":stage>1,"tutorial":stage==1})
+	var persistent=null
 	for config in configs:
-		var g=Game.new()
-		root.add_child(g)
+		var continuing=config.get("continue",false)
+		var g=persistent if continuing else Game.new()
+		if not continuing: root.add_child(g)
 		g.set_process(false)
-		g.owned.clear(); g.squad.clear()
-		g.loot_rng.seed=10417
-		g.rng.seed=10417
-		for kind in config.kinds:
-			var d=g.make_owned(kind,config.level,{"kind":kind,"level":config.level,"xp":0,"grade":"common","trait":"강인함","options":[]})
-			g.squad.append(d.id)
+		if not continuing:
+			g.owned.clear(); g.squad.clear(); g.discovered.clear(); g.cleared_stages.clear()
+			g.loot_rng.seed=config.get("seed",10417)
+			g.rng.seed=config.get("seed",10417)
+			if config.get("tutorial",false):
+				g.tutorial_done=false; g.tutorial_species=config.kinds[0]
+				g.start_stage(true)
+				g.hit_enemy(g.enemies[0],99999,g.player.pos,g.player)
+				g.player.pos=g.captures[0].pos; g.in_combat=false; g.interact()
+				g.start_practice()
+				g.hit_enemy(g.enemies[-1],99999,g.player.pos,g.player)
+				g.expedition.clear()
+			else:
+				for kind in config.kinds:
+					var d=g.make_owned(kind,config.level,{"kind":kind,"level":config.level,"xp":0,"grade":"common","trait":config.get("trait","강인함"),"options":[]})
+					g.squad.append(d.id)
 		g.tutorial_done=true
 		g.show_camp()
 		g.clear_overlay()
-		g.start_stage(false,config.get("stage_id",1))
+		if "--continuous" in OS.get_cmdline_user_args():
+			if not g.depart_stage(config.stage_id):
+				reports.append({"scenario":config,"outcome":"previous stage not cleared; departure blocked","kills":0})
+				if config.stage_id==3: g.free(); persistent=null
+				continue
+		else: g.start_stage(false,config.get("stage_id",1))
 		var checkpoint=0
 		var route=[0,1,3,-1,5,6] if config.get("main_only",false) else [0,1,2,3,-1,4,5,6]
 		var elapsed=0.0
@@ -50,6 +77,13 @@ func run():
 			g.holding_revive=false
 			g.stick=(target-g.player.pos).normalized() if g.player.pos.distance_to(target)>(60 if waypoint==-1 else 120) else Vector2.ZERO
 			if waypoint==6 and g.player.pos.x<2360: g.stick=Vector2.RIGHT
+			if not config.get("no_bonds",false) and not g.in_combat:
+				var nearby={}
+				var distance=300.0
+				for candidate in g.captures:
+					var next_distance=g.player.pos.distance_to(candidate.pos)
+					if next_distance<distance: nearby=candidate; distance=next_distance
+				if not nearby.is_empty(): g.stick=(nearby.pos-g.player.pos).normalized() if distance>55 else Vector2.ZERO
 			if g.in_combat:
 				var wounded=g.lowest_ally(g.player.pos,430)
 				if not wounded.is_empty() and wounded.hp/wounded.maxhp<0.75 and g.heal_cd<=0:
@@ -99,7 +133,7 @@ func run():
 				transitions.append({"point":waypoint,"seconds":roundi(elapsed),"hp":roundi(g.player.hp),"kills":g.kills})
 				checkpoint+=1
 			# Collect only nearby post-combat opportunities through the real interaction.
-			if not g.in_combat and g.closest_capture()>=0:
+			if not config.get("no_bonds",false) and not g.in_combat and g.closest_capture()>=0:
 				var before=g.owned.size()
 				g.interact(); g.resume_game()
 				bonds+=g.owned.size()-before
@@ -109,19 +143,27 @@ func run():
 			if not packs.has(key): packs[key]={"alive":0,"dead":0}
 			packs[key]["alive" if e.hp>0 else "dead"]+=1
 		var result={"scenario":config,"mode":g.mode,"outcome":g.expedition.report.get("outcome","480s timeout"),"seconds":snappedf(elapsed,0.1),"kills":g.kills,"checkpoint":checkpoint,"minimum_player_hp":snappedf(minimum_hp,0.1),"down_events":downs,"skills":skills,"heals":heals,"buffs":buffs,"bonds":bonds,"core":g.trail.core_progress(g.enemies),"packs":packs,"transitions":transitions,"samples":samples,"growth":g.expedition.report.get("growth",[])}
+		result.party=g.owned.duplicate(true)
+		if elapsed>=480:
+			result.stalled_units=g.units.map(func(u): return {"kind":u.data.kind,"position":str(u.pos),"hp":u.hp})
+			result.stalled_enemies=g.enemies.filter(func(e): return e.hp>0 and e.get("pack",-1) not in [2,4]).map(func(e): return {"kind":e.kind,"position":str(e.pos),"hp":e.hp,"active":e.active})
 		g.show_camp()
 		result.returned_to_town=g.mode=="camp" and g.enemies.is_empty()
 		reports.append(result)
 		print("JOURNEY AUDIT ",JSON.stringify(result))
-		g.free()
+		if "--continuous" in OS.get_cmdline_user_args() and config.stage_id<3:
+			persistent=g
+		else:
+			g.free(); persistent=null
 	probe_visual_state()
-	var output={"baseline":OS.get_environment("GROVE_AUDIT_BASELINE") if not OS.get_environment("GROVE_AUDIT_BASELINE").is_empty() else "P1-A/B working tree based on 4c1855b","method":"Synthetic fixed common teams, real update_game at dt=.05, scripted movement/Q/E/skills/revive/boss dodge; not a human or device playtest. No damage/HP/cooldown edits.","runs":reports,"confirmed_probes":findings}
+	var output={"baseline":OS.get_environment("GROVE_AUDIT_BASELINE") if not OS.get_environment("GROVE_AUDIT_BASELINE").is_empty() else "mixed-stage-layout based on 7e2884d","method":"Synthetic common teams with fixed seeds, real update_game at dt=.05, scripted movement/Q/E/skills/revive/boss dodge; not a human or device playtest. Starters mode skips all extra bonds.","runs":reports,"confirmed_probes":findings}
 	var output_path="res://docs/fix-2026-10-20-journeys.json"
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--out="): output_path=arg.trim_prefix("--out=")
 	var file=FileAccess.open(output_path,FileAccess.WRITE)
 	file.store_string(JSON.stringify(output,"\t")+"\n")
-	quit()
+	var failed=reports.any(func(report): return not report.outcome.contains("우두머리 제압"))
+	quit(1 if failed else 0)
 func probe_visual_state():
 	var g=Game.new(); root.add_child(g); g.set_process(false)
 	g.player.face=1

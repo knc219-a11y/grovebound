@@ -12,10 +12,9 @@ const FORMATIONS={
 	5:[Vector2(-100,-65),Vector2(-50,-45),Vector2(10,-65),Vector2(-100,65),Vector2(-40,45),Vector2(25,65),Vector2(90,-25)]}
 const ENCOUNTERS={
 	0:{"name":"입구 무리","hint":"관통 돌진으로 길을 여세요"},
-	1:{"name":"작은 길목","hint":"적은 수의 야수와 짧은 교전"},
+	1:{"name":"작은 길목","hint":"슬라임과 해골병 · 다른 계열 첫 만남"},
 	3:{"name":"굽은 풀길","hint":"전열을 모아 범위 스킬로 제압"},
 	5:{"name":"늑대 집결지","hint":"두 갈래 무리를 모아 한 번에"}}
-const KINDS=["boar","turtle","deer","fox","marten","wolf"]
 # Four main-path encounters describe progress. North/south packs stay optional.
 const CORE_PACKS=[0,1,3,5]
 const OPTIONAL_PACKS=[2,4]
@@ -143,7 +142,7 @@ func near_rest(p): return p.distance_to(REST)<100
 func update(g,dt=0.0):
 	unlock_paths(g.player.pos)
 	update_progress(g,dt)
-	for entry in [["north",NORTH,"북쪽 옆길 · 사슴과 늑대가 머무는 조용한 풀밭입니다."],["south",SOUTH,"남쪽 옆길 · 담비가 숨어 있는 낮은 덤불길입니다."],["rest",REST,"풀그늘 쉼터 · 전투 밖에서 동행 편성을 점검할 수 있습니다."]]:
+	for entry in [["north",NORTH,"북쪽 옆길 · 사슴과 거북이 머무는 조용한 풀밭입니다."],["south",SOUTH,"남쪽 옆길 · 담비와 해골병을 만나는 낮은 덤불길입니다."],["rest",REST,"풀그늘 쉼터 · 전투 밖에서 동행 편성을 점검할 수 있습니다."]]:
 		if g.player.pos.distance_to(entry[1])<160 and not visited.has(entry[0]):
 			visited[entry[0]]=true
 			g.notify(entry[2] if campaign_id==1 else rest_name+" · 비전투 중 편성을 점검하세요." if entry[0]=="rest" else "선택 길 · "+Campaign.STAGES[campaign_id].names[2 if entry[0]=="north" else 4])
