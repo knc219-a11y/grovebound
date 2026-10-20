@@ -30,7 +30,7 @@ static func advance(g,u,dt):
 		var previous=u.pos
 		u.pos=action.from.lerp(action.to,clampf(action.elapsed/DASH_TIME,0,1))
 		u.walk=true
-		for e in g.enemies:
+		for e in g.combat_enemies():
 			if e.hp<=0 or action.hits.has(e.get("feedback_id",-1)): continue
 			var closest=Geometry2D.get_closest_point_to_segment(e.pos,previous,u.pos)
 			if e.pos.distance_to(closest)>DASH_WIDTH: continue
@@ -43,7 +43,7 @@ static func advance(g,u,dt):
 		u.walk=false
 		if action.elapsed>=BLAST_DELAY:
 			g.combat_feedback.emit("skill_fox",action.from,action.to,0,{"radius":BLAST_RADIUS})
-			for e in g.enemies:
+			for e in g.combat_enemies():
 				if e.hp>0 and e.pos.distance_to(action.to)<=BLAST_RADIUS:
 					g.hit_enemy(e,action.damage,action.from,u,false)
 					if not e.boss: e.pos=(e.pos+(e.pos-action.to).normalized()*20).clamp(Vector2(170,345),Vector2(2740,1130))

@@ -9,6 +9,7 @@ func run():
 	for config in [
 		{"name":"starter_boar_lv1","kinds":["boar"],"level":1},
 		{"name":"starter_boar_lv1_main_only","kinds":["boar"],"level":1,"main_only":true},
+		{"name":"balanced_lv2_main_only","kinds":["boar","wolf","deer","turtle"],"level":2,"main_only":true},
 		{"name":"balanced_lv2","kinds":["boar","wolf","deer","turtle"],"level":2},
 		{"name":"offense_lv2","kinds":["boar","wolf","marten","fox"],"level":2}]:
 		var g=Game.new()

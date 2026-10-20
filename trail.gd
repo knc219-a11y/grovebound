@@ -1,7 +1,10 @@
 extends RefCounted
 # Reuses the approved meadow and original reward-bearing encounters.
-# The entry pack also contains four weak, reward-neutral followers.
+# Main-path waves alternate dense packs with a small encounter and a rest.
 const PACKS=[Vector2(650,790),Vector2(1000,850),Vector2(1100,510),Vector2(1500,820),Vector2(1850,1040),Vector2(2190,760)]
+# Added followers share the existing reward budget: kills only, no extra XP/loot/bonds.
+const FOLLOWERS={0:4,3:5,5:7}
+const FOLLOWER_OFFSETS=[Vector2(-75,-35),Vector2(-20,42),Vector2(50,-42),Vector2(100,35),Vector2(20,-80),Vector2(110,-55),Vector2(-55,80)]
 const KINDS=["boar","turtle","deer","fox","marten","wolf"]
 # Four main-path encounters describe progress. North/south packs stay optional.
 const CORE_PACKS=[0,1,3,5]
@@ -14,6 +17,13 @@ var sign:Texture2D
 var bench:Texture2D
 var fire:Texture2D
 func reset(): visited.clear()
+func engageable(e):
+	var pack=int(e.get("pack",-1))
+	return pack not in OPTIONAL_PACKS or visited.has("engaged_"+str(pack))
+func unlock_paths(p):
+	# Entering the marked side clearing is the player's explicit route choice.
+	for pack in OPTIONAL_PACKS:
+		if p.distance_to(PACKS[pack])<175: visited["engaged_"+str(pack)]=true
 func cleared_pack(enemies,pack):
 	var found=false
 	for e in enemies:
@@ -53,6 +63,7 @@ func area(p):
 	return "05 우두머리 공터"
 func near_rest(p): return p.distance_to(REST)<100
 func update(g):
+	unlock_paths(g.player.pos)
 	for entry in [["north",NORTH,"북쪽 옆길 · 사슴과 늑대가 머무는 조용한 풀밭입니다."],["south",SOUTH,"남쪽 옆길 · 담비가 숨어 있는 낮은 덤불길입니다."],["rest",REST,"풀그늘 쉼터 · 전투 밖에서 동행 편성을 점검할 수 있습니다."]]:
 		if g.player.pos.distance_to(entry[1])<160 and not visited.has(entry[0]):
 			visited[entry[0]]=true
@@ -79,8 +90,8 @@ func draw(g):
 	g.draw_texture(fire,REST-g.cam-Vector2(40,25))
 	g.draw_texture(bench,REST-g.cam+Vector2(35,20))
 	g.text_at("풀그늘 쉼터",REST-g.cam+Vector2(-55,68),15,Color("e0d5bb"))
-	g.text_at("북쪽 풀밭",Vector2(1010,690)-g.cam,14,Color("d0c59d"))
-	g.text_at("남쪽 덤불길",Vector2(1740,920)-g.cam,14,Color("d0c59d"))
+	g.text_at("북쪽 풀밭 · 접근 시 교전",Vector2(1010,690)-g.cam,14,Color("d0c59d"))
+	g.text_at("남쪽 덤불길 · 접근 시 교전",Vector2(1740,920)-g.cam,14,Color("d0c59d"))
 	for i in 4:
 		var p=Vector2(2330+i*45,825+(i%2)*16)-g.cam
 		for offset in [Vector2.ZERO,Vector2(5,-8),Vector2(-4,-9)]:

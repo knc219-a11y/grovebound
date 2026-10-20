@@ -510,14 +510,15 @@ func start_stage(tutorial):
 			enemies[-1].pack=i
 			if i>0: spawn_enemy("wolf",Trail.PACKS[i]+Vector2(85,60),1+i/2)
 			if i>0: enemies[-1].pack=i
-		# Four weaker followers make the first encounter an allied area-skill trial.
-		for offset in [Vector2(-75,-35),Vector2(-20,42),Vector2(50,-42),Vector2(100,35)]:
-			spawn_enemy("boar",Trail.PACKS[0]+offset,1)
-			var follower=enemies[-1]
-			follower.pack=0
-			follower.swarm=true
-			follower.hp*=0.28
-			follower.maxhp=follower.hp
+		for pack in Trail.FOLLOWERS:
+			for j in Trail.FOLLOWERS[pack]:
+				spawn_enemy("wolf" if pack==5 else "boar",Trail.PACKS[pack]+Trail.FOLLOWER_OFFSETS[j],1+int(pack/2))
+				var follower=enemies[-1]
+				follower.pack=pack
+				follower.swarm=true
+				follower.swarm_damage=1.6/float(Trail.FOLLOWERS[pack])
+				follower.hp*=0.28
+				follower.maxhp=follower.hp
 		spawn_enemy("boar",Vector2(2590,850),4,true,false)
 		notify("동료를 모으며 동쪽으로 탐험하세요. 마지막 공터에 우두머리가 있습니다.")
 	update_hud()
@@ -537,10 +538,14 @@ func alive_allies():
 		if u.hp>0: out.append(u)
 	return out
 
+func combat_enemies():
+	if mode!="stage": return enemies
+	return enemies.filter(func(e): return trail.engageable(e))
+
 func nearest_enemy(p, radius=500.0):
 	var result = {}
 	var best = radius
-	for e in enemies:
+	for e in combat_enemies():
 		if e.hp<=0: continue
 		var dist = p.distance_to(e.pos)
 		if dist<best: best=dist; result=e
@@ -647,7 +652,7 @@ func update_game(dt):
 		if advance_basic_attack(u,dt): continue
 		var kind=u.data.kind
 		var speed=STATS[kind][3]*(1.2 if u.data.trait=="민첩함" else 1.0)*(1.0+Loot.bonus(u.data,"speed"))
-		var target=Roles.target(kind,u.pos,enemies,player.pos,410)
+		var target=Roles.target(kind,u.pos,combat_enemies(),player.pos,410)
 		if u.pos.distance_to(player.pos)>430 or (not target.is_empty() and target.pos.distance_to(player.pos)>550):
 			move_entity(u,player.pos,speed*1.7,dt,75)
 			continue
@@ -681,7 +686,7 @@ func update_game(dt):
 			if gap.length()<35 and gap.length()>0.01:
 				a.pos+=gap.normalized()*24*dt
 	for e in enemies:
-		if e.hp<=0: continue
+		if e.hp<=0 or (mode=="stage" and not trail.engageable(e)): continue
 		e.stun=maxf(0,e.stun-dt)
 		e.intro=maxf(0,e.get("intro",0.0)-dt)
 		if e.get("intro",0.0)>0:
@@ -762,7 +767,7 @@ func resolve_enemy_attack(e):
 	var radius=130.0 if e.attack_kind=="stomp" else 56.0
 	for a in alive_allies():
 		if a.pos.distance_to(e.aim)<radius:
-			damage_ally(a,(28.0 if e.boss else (2.0 if mode=="tutorial" else 10.0+e.level*2))*(0.4 if e.get("swarm",false) else 1.0),e.pos)
+			damage_ally(a,(28.0 if e.boss else (2.0 if mode=="tutorial" else 10.0+e.level*2))*(e.get("swarm_damage",0.4) if e.get("swarm",false) else 1.0),e.pos)
 	if e.attack_kind=="stomp":
 		combat_feedback.emit("stomp",e.pos,e.pos,0,{"radius":130.0})
 	e.cd=2.4 if e.boss else 1.5
@@ -836,6 +841,7 @@ func advance_basic_attack(u,dt):
 	return true
 
 func hit_enemy(e, damage, source,attacker={},animate=true):
+	if mode=="stage" and not trail.engageable(e): return
 	if e.hp<=0: return
 	if not attacker.is_empty() and attacker.has("data") and e.get("stun",0.0)>0:
 		damage*=1.0+Loot.bonus(attacker.data,"stun_hunter")
@@ -941,7 +947,7 @@ func use_companion_skill(i):
 	if not can_act() or i>=active_units().size(): return
 	var u=units[i]
 	if u.hp<=0 or u.skill>0 or u.has("assault"): return
-	var target=Roles.target(u.data.kind,u.pos,enemies,player.pos,430)
+	var target=Roles.target(u.data.kind,u.pos,combat_enemies(),player.pos,430)
 	var skill_origin=u.pos
 	match u.data.kind:
 		"deer":
@@ -951,7 +957,7 @@ func use_companion_skill(i):
 		"turtle":
 			motion_actions.start(u,"turtle","guard")
 			u.shield=5.0
-			for e in enemies:
+			for e in combat_enemies():
 				if e.hp>0 and e.pos.distance_to(u.pos)<270:
 					e.active=true
 					e["taunt"]=u

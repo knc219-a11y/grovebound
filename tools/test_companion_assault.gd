@@ -52,16 +52,16 @@ func check():
 	assert(not u.has("assault") and u.skill==10)
 	# New weak followers cannot inflate the old material/XP/bond budget.
 	g.start_stage(false)
-	assert(g.enemies.size()==16)
+	assert(g.enemies.size()==28)
 	var before=g.materials
 	var xp=u.data.xp
 	var followers=0
 	for e in g.enemies:
 		if e.get("swarm",false):
 			followers+=1
-			assert(e.hp<g.attack(g.units[0].data)*2.5)
+			assert(e.hp<=37)
 			g.hit_enemy(e,999,g.player.pos,g.player)
-	assert(followers==4 and g.materials==before and g.captures.is_empty())
+	assert(followers==16 and g.materials==before and g.captures.is_empty())
 	assert(g.units[0].data.xp==xp)
 	g.use_companion_skill(0)
 	g.finish(false)

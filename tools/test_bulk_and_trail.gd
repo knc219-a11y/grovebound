@@ -36,12 +36,12 @@ func check():
 	var filter=g.overlay.get_node("SpeciesFilter")
 	if filter.get_theme_font("font")!=g.heading_font or filter.get_popup().get_theme_font("font")!=g.heading_font: failures.append("filter and popup pixel font")
 	g.start_stage(false)
-	if g.enemies.size()!=16: failures.append("original encounters plus four weak followers")
+	if g.enemies.size()!=28: failures.append("original encounters plus sixteen weak followers")
 	var census={}
 	var bosses=0
 	for e in g.enemies:
 		if e.boss: bosses+=1
-		else: census[e.kind]=census.get(e.kind,0)+1
+		elif not e.get("swarm",false): census[e.kind]=census.get(e.kind,0)+1
 	if bosses!=1 or census.get("wolf")!=6 or census.get("deer")!=1: failures.append("same species/boss budget")
 	if g.trail.core_progress(g.enemies)!={"cleared":0,"total":4}: failures.append("core route starts uncleared")
 	for pack in g.Trail.CORE_PACKS:
