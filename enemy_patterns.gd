@@ -17,7 +17,7 @@ static func boss(e,target):
 static func resolve(g,e):
 	e.swing=0.25
 	var radius=e.get("tell_radius",56.0)
-	var damage=(26.0 if e.boss else Species.NEW[e.kind].stats[1]+e.level*1.5)*(e.get("swarm_damage",0.4) if e.get("swarm",false) else 1.0)
+	var damage=(26.0 if e.boss else Species.NEW[e.kind].stats[1]+e.level*1.5)*(e.get("swarm_damage",0.4) if e.get("swarm",false) else 1.0)*e.get("damage_scale",1.0)
 	for a in g.alive_allies():
 		if a.pos.distance_to(e.aim)<=radius: g.damage_ally(a,damage,e.pos)
 	g.combat_feedback.emit("stomp" if e.attack_kind=="slam" else "fox" if e.attack_kind=="hex" else "melee",e.pos,e.aim,0,{"radius":radius})

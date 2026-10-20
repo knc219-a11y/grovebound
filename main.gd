@@ -448,7 +448,7 @@ func town_interact():
 
 func show_starters():
 	modal("첫 인연을 선택하세요", "야수의 경계를 누그러뜨린 뒤 다가가 교감하세요. 첫 인연의 교감 기회는 확정입니다.","starters",resume_game)
-	var kinds = ["boar","marten","fox"]
+	var kinds = Species.starters(PLAYER_CLASS)
 	var desc = ["든든한 근접형\n관통 돌진 · 무리 제압", "빠른 근접형\n한 적에게 연속 공격", "원거리형\n넓은 야성 폭발"]
 	for i in range(3):
 		var x = 230+i*330
@@ -527,27 +527,9 @@ func start_stage(tutorial,stage_id=1):
 	if tutorial:
 		spawn_enemy(tutorial_species,Vector2(650,800),1,false,true)
 		notify("야수에게 다가가 경계를 누그러뜨리세요. 전투 후 쉬고 있는 야수와 교감할 수 있습니다.")
-	elif current_stage>1:
+	else:
 		Campaign.populate(self,current_stage)
 		notify(Campaign.STAGES[current_stage].name+" · "+Campaign.STAGES[current_stage].theme)
-	else:
-		for i in Trail.PACKS.size():
-			spawn_enemy(Trail.KINDS[i],Trail.PACKS[i],1+i/2)
-			enemies[-1].pack=i
-			if i>0: spawn_enemy("wolf",Trail.PACKS[i]+Trail.escort_offset(i),1+i/2)
-			if i>0: enemies[-1].pack=i
-		for pack in Trail.FOLLOWERS:
-			for j in Trail.FOLLOWERS[pack]:
-				spawn_enemy("wolf" if pack==5 else "boar",Trail.PACKS[pack]+Trail.follower_offsets(pack)[j],1+int(pack/2))
-				var follower=enemies[-1]
-				follower.pack=pack
-				follower.swarm=true
-				follower.swarm_damage=1.6/float(Trail.FOLLOWERS[pack])
-				follower.hp*=0.28
-				follower.maxhp=follower.hp
-		spawn_enemy("boar",Vector2(2590,850),4,true,false)
-		enemies[-1].stage_entry=true
-		notify("동료를 모으며 동쪽으로 탐험하세요. 마지막 공터에 우두머리가 있습니다.")
 	update_hud()
 
 func spawn_enemy(kind, p, level=1, boss=false, guaranteed=false):
@@ -737,7 +719,10 @@ func update_game(dt):
 			if e.taunt.hp>0 and e.pos.distance_to(e.taunt.pos)<450: target=e.taunt
 		if not e.active and e.pos.distance_to(target.pos)<270: e.active=true
 		if e.active and e.kind not in seen_species: seen_species.append(e.kind)
-		if not e.active: continue
+		if not e.active:
+			# A charging boss can cross its leash; finish returning on subsequent frames.
+			if e.pos.distance_to(e.home)>10: move_entity(e,e.home,130,dt,10)
+			continue
 		if e.pos.distance_to(player.pos)>650:
 			e.active=false
 			e.wind=0.0
@@ -807,7 +792,7 @@ func resolve_enemy_attack(e):
 	var radius=130.0 if e.attack_kind=="stomp" else 56.0
 	for a in alive_allies():
 		if a.pos.distance_to(e.aim)<radius:
-			damage_ally(a,(28.0 if e.boss else (2.0 if mode=="tutorial" else 10.0+e.level*2))*(e.get("swarm_damage",0.4) if e.get("swarm",false) else 1.0),e.pos)
+			damage_ally(a,(28.0 if e.boss else (2.0 if mode=="tutorial" else 10.0+e.level*2))*(e.get("swarm_damage",0.4) if e.get("swarm",false) else 1.0)*e.get("damage_scale",1.0),e.pos)
 	if e.attack_kind=="stomp":
 		combat_feedback.emit("stomp",e.pos,e.pos,0,{"radius":130.0})
 	e.cd=2.4 if e.boss else 1.5

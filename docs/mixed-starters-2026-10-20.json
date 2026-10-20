@@ -1,0 +1,2295 @@
+{
+	"baseline": "mixed-stage-layout based on 7e2884d",
+	"confirmed_probes": [
+		{
+			"action_face": -1.0,
+			"confirmed": false,
+			"id": "attack_facing",
+			"target_left": true
+		},
+		{
+			"confirmed": false,
+			"id": "town_stale_action",
+			"key": "",
+			"remaining_after": 0.0,
+			"remaining_before": 0.0
+		},
+		{
+			"confirmed": true,
+			"id": "player_attack_sound",
+			"support_cue_accepted": false
+		}
+	],
+	"method": "Synthetic common teams with fixed seeds, real update_game at dt=.05, scripted movement/Q/E/skills/revive/boss dodge; not a human or device playtest. Starters mode skips all extra bonds.",
+	"runs": [
+		{
+			"bonds": 0,
+			"buffs": 5,
+			"checkpoint": 5,
+			"core": {
+				"cleared": 4,
+				"total": 4
+			},
+			"down_events": 0,
+			"growth": [
+				{
+					"from": 1,
+					"id": 5,
+					"kind": "boar",
+					"to": 3,
+					"xp": 164
+				}
+			],
+			"heals": 6,
+			"kills": 24,
+			"minimum_player_hp": 105.7,
+			"mode": "result",
+			"outcome": "우두머리 제압 · 클리어 보너스 +10",
+			"packs": {
+				"0": {
+					"alive": 0,
+					"dead": 5
+				},
+				"1": {
+					"alive": 0,
+					"dead": 2
+				},
+				"2": {
+					"alive": 2,
+					"dead": 0
+				},
+				"3": {
+					"alive": 0,
+					"dead": 7
+				},
+				"4": {
+					"alive": 2,
+					"dead": 0
+				},
+				"5": {
+					"alive": 0,
+					"dead": 9
+				},
+				"boss": {
+					"alive": 0,
+					"dead": 1
+				}
+			},
+			"party": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"trait": "강인함",
+					"xp": 59
+				}
+			],
+			"returned_to_town": true,
+			"samples": [
+				{
+					"down": 0,
+					"hp": 154,
+					"kills": 7,
+					"seconds": 10,
+					"x": 925
+				},
+				{
+					"down": 0,
+					"hp": 154,
+					"kills": 14,
+					"seconds": 20,
+					"x": 1828
+				},
+				{
+					"down": 0,
+					"hp": 108,
+					"kills": 20,
+					"seconds": 30,
+					"x": 2081
+				},
+				{
+					"down": 0,
+					"hp": 161,
+					"kills": 23,
+					"seconds": 40,
+					"x": 2367
+				},
+				{
+					"down": 0,
+					"hp": 161,
+					"kills": 23,
+					"seconds": 50,
+					"x": 2407
+				},
+				{
+					"down": 0,
+					"hp": 161,
+					"kills": 23,
+					"seconds": 60,
+					"x": 2371
+				}
+			],
+			"scenario": {
+				"kinds": [
+					"boar"
+				],
+				"level": 1,
+				"main_only": true,
+				"name": "starter_boar_no_extra_bonds",
+				"no_bonds": true,
+				"trait": "강인함"
+			},
+			"seconds": 65.0,
+			"skills": 7,
+			"transitions": [
+				{
+					"hp": 180,
+					"kills": 5,
+					"point": 0,
+					"seconds": 3
+				},
+				{
+					"hp": 154,
+					"kills": 7,
+					"point": 1,
+					"seconds": 10
+				},
+				{
+					"hp": 154,
+					"kills": 14,
+					"point": 3,
+					"seconds": 17
+				},
+				{
+					"hp": 154,
+					"kills": 14,
+					"point": -1,
+					"seconds": 19
+				},
+				{
+					"hp": 161,
+					"kills": 23,
+					"point": 5,
+					"seconds": 33
+				}
+			]
+		},
+		{
+			"bonds": 0,
+			"buffs": 4,
+			"checkpoint": 5,
+			"core": {
+				"cleared": 4,
+				"total": 4
+			},
+			"down_events": 0,
+			"growth": [
+				{
+					"from": 1,
+					"id": 5,
+					"kind": "boar",
+					"to": 3,
+					"xp": 164
+				}
+			],
+			"heals": 4,
+			"kills": 24,
+			"minimum_player_hp": 131.3,
+			"mode": "result",
+			"outcome": "우두머리 제압 · 클리어 보너스 +10",
+			"packs": {
+				"0": {
+					"alive": 0,
+					"dead": 5
+				},
+				"1": {
+					"alive": 0,
+					"dead": 2
+				},
+				"2": {
+					"alive": 2,
+					"dead": 0
+				},
+				"3": {
+					"alive": 0,
+					"dead": 7
+				},
+				"4": {
+					"alive": 2,
+					"dead": 0
+				},
+				"5": {
+					"alive": 0,
+					"dead": 9
+				},
+				"boss": {
+					"alive": 0,
+					"dead": 1
+				}
+			},
+			"party": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"trait": "용맹함",
+					"xp": 59
+				}
+			],
+			"returned_to_town": true,
+			"samples": [
+				{
+					"down": 0,
+					"hp": 163,
+					"kills": 7,
+					"seconds": 10,
+					"x": 1345
+				},
+				{
+					"down": 0,
+					"hp": 135,
+					"kills": 14,
+					"seconds": 20,
+					"x": 2081
+				},
+				{
+					"down": 0,
+					"hp": 180,
+					"kills": 23,
+					"seconds": 30,
+					"x": 2368
+				},
+				{
+					"down": 0,
+					"hp": 180,
+					"kills": 23,
+					"seconds": 40,
+					"x": 2358
+				},
+				{
+					"down": 0,
+					"hp": 180,
+					"kills": 23,
+					"seconds": 50,
+					"x": 2416
+				}
+			],
+			"scenario": {
+				"kinds": [
+					"boar"
+				],
+				"level": 1,
+				"main_only": true,
+				"name": "starter_boar_no_extra_bonds",
+				"no_bonds": true,
+				"trait": "용맹함"
+			},
+			"seconds": 55.7,
+			"skills": 6,
+			"transitions": [
+				{
+					"hp": 180,
+					"kills": 5,
+					"point": 0,
+					"seconds": 2
+				},
+				{
+					"hp": 163,
+					"kills": 7,
+					"point": 1,
+					"seconds": 8
+				},
+				{
+					"hp": 159,
+					"kills": 14,
+					"point": 3,
+					"seconds": 14
+				},
+				{
+					"hp": 159,
+					"kills": 14,
+					"point": -1,
+					"seconds": 16
+				},
+				{
+					"hp": 180,
+					"kills": 23,
+					"point": 5,
+					"seconds": 23
+				}
+			]
+		},
+		{
+			"bonds": 0,
+			"buffs": 5,
+			"checkpoint": 5,
+			"core": {
+				"cleared": 4,
+				"total": 4
+			},
+			"down_events": 0,
+			"growth": [
+				{
+					"from": 1,
+					"id": 5,
+					"kind": "boar",
+					"to": 3,
+					"xp": 164
+				}
+			],
+			"heals": 6,
+			"kills": 24,
+			"minimum_player_hp": 105.7,
+			"mode": "result",
+			"outcome": "우두머리 제압 · 클리어 보너스 +10",
+			"packs": {
+				"0": {
+					"alive": 0,
+					"dead": 5
+				},
+				"1": {
+					"alive": 0,
+					"dead": 2
+				},
+				"2": {
+					"alive": 2,
+					"dead": 0
+				},
+				"3": {
+					"alive": 0,
+					"dead": 7
+				},
+				"4": {
+					"alive": 2,
+					"dead": 0
+				},
+				"5": {
+					"alive": 0,
+					"dead": 9
+				},
+				"boss": {
+					"alive": 0,
+					"dead": 1
+				}
+			},
+			"party": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"trait": "단단함",
+					"xp": 59
+				}
+			],
+			"returned_to_town": true,
+			"samples": [
+				{
+					"down": 0,
+					"hp": 154,
+					"kills": 7,
+					"seconds": 10,
+					"x": 925
+				},
+				{
+					"down": 0,
+					"hp": 154,
+					"kills": 14,
+					"seconds": 20,
+					"x": 1828
+				},
+				{
+					"down": 0,
+					"hp": 108,
+					"kills": 20,
+					"seconds": 30,
+					"x": 2081
+				},
+				{
+					"down": 0,
+					"hp": 161,
+					"kills": 23,
+					"seconds": 40,
+					"x": 2367
+				},
+				{
+					"down": 0,
+					"hp": 161,
+					"kills": 23,
+					"seconds": 50,
+					"x": 2407
+				},
+				{
+					"down": 0,
+					"hp": 161,
+					"kills": 23,
+					"seconds": 60,
+					"x": 2371
+				}
+			],
+			"scenario": {
+				"kinds": [
+					"boar"
+				],
+				"level": 1,
+				"main_only": true,
+				"name": "starter_boar_no_extra_bonds",
+				"no_bonds": true,
+				"trait": "단단함"
+			},
+			"seconds": 65.0,
+			"skills": 7,
+			"transitions": [
+				{
+					"hp": 180,
+					"kills": 5,
+					"point": 0,
+					"seconds": 3
+				},
+				{
+					"hp": 154,
+					"kills": 7,
+					"point": 1,
+					"seconds": 10
+				},
+				{
+					"hp": 154,
+					"kills": 14,
+					"point": 3,
+					"seconds": 17
+				},
+				{
+					"hp": 154,
+					"kills": 14,
+					"point": -1,
+					"seconds": 19
+				},
+				{
+					"hp": 161,
+					"kills": 23,
+					"point": 5,
+					"seconds": 33
+				}
+			]
+		},
+		{
+			"bonds": 0,
+			"buffs": 5,
+			"checkpoint": 5,
+			"core": {
+				"cleared": 4,
+				"total": 4
+			},
+			"down_events": 0,
+			"growth": [
+				{
+					"from": 1,
+					"id": 5,
+					"kind": "boar",
+					"to": 3,
+					"xp": 164
+				}
+			],
+			"heals": 7,
+			"kills": 24,
+			"minimum_player_hp": 110.4,
+			"mode": "result",
+			"outcome": "우두머리 제압 · 클리어 보너스 +10",
+			"packs": {
+				"0": {
+					"alive": 0,
+					"dead": 5
+				},
+				"1": {
+					"alive": 0,
+					"dead": 2
+				},
+				"2": {
+					"alive": 2,
+					"dead": 0
+				},
+				"3": {
+					"alive": 0,
+					"dead": 7
+				},
+				"4": {
+					"alive": 2,
+					"dead": 0
+				},
+				"5": {
+					"alive": 0,
+					"dead": 9
+				},
+				"boss": {
+					"alive": 0,
+					"dead": 1
+				}
+			},
+			"party": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"trait": "민첩함",
+					"xp": 59
+				}
+			],
+			"returned_to_town": true,
+			"samples": [
+				{
+					"down": 0,
+					"hp": 163,
+					"kills": 7,
+					"seconds": 10,
+					"x": 1167
+				},
+				{
+					"down": 0,
+					"hp": 159,
+					"kills": 14,
+					"seconds": 20,
+					"x": 2010
+				},
+				{
+					"down": 0,
+					"hp": 112,
+					"kills": 21,
+					"seconds": 30,
+					"x": 2081
+				},
+				{
+					"down": 0,
+					"hp": 165,
+					"kills": 23,
+					"seconds": 40,
+					"x": 2369
+				},
+				{
+					"down": 0,
+					"hp": 165,
+					"kills": 23,
+					"seconds": 50,
+					"x": 2412
+				},
+				{
+					"down": 0,
+					"hp": 165,
+					"kills": 23,
+					"seconds": 60,
+					"x": 2412
+				}
+			],
+			"scenario": {
+				"kinds": [
+					"boar"
+				],
+				"level": 1,
+				"main_only": true,
+				"name": "starter_boar_no_extra_bonds",
+				"no_bonds": true,
+				"trait": "민첩함"
+			},
+			"seconds": 62.2,
+			"skills": 7,
+			"transitions": [
+				{
+					"hp": 180,
+					"kills": 5,
+					"point": 0,
+					"seconds": 3
+				},
+				{
+					"hp": 163,
+					"kills": 7,
+					"point": 1,
+					"seconds": 9
+				},
+				{
+					"hp": 159,
+					"kills": 14,
+					"point": 3,
+					"seconds": 17
+				},
+				{
+					"hp": 159,
+					"kills": 14,
+					"point": -1,
+					"seconds": 18
+				},
+				{
+					"hp": 110,
+					"kills": 23,
+					"point": 5,
+					"seconds": 32
+				}
+			]
+		},
+		{
+			"bonds": 0,
+			"buffs": 5,
+			"checkpoint": 5,
+			"core": {
+				"cleared": 4,
+				"total": 4
+			},
+			"down_events": 0,
+			"growth": [
+				{
+					"from": 1,
+					"id": 5,
+					"kind": "boar",
+					"to": 3,
+					"xp": 164
+				}
+			],
+			"heals": 6,
+			"kills": 24,
+			"minimum_player_hp": 105.7,
+			"mode": "result",
+			"outcome": "우두머리 제압 · 클리어 보너스 +10",
+			"packs": {
+				"0": {
+					"alive": 0,
+					"dead": 5
+				},
+				"1": {
+					"alive": 0,
+					"dead": 2
+				},
+				"2": {
+					"alive": 2,
+					"dead": 0
+				},
+				"3": {
+					"alive": 0,
+					"dead": 7
+				},
+				"4": {
+					"alive": 2,
+					"dead": 0
+				},
+				"5": {
+					"alive": 0,
+					"dead": 9
+				},
+				"boss": {
+					"alive": 0,
+					"dead": 1
+				}
+			},
+			"party": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"trait": "다정함",
+					"xp": 59
+				}
+			],
+			"returned_to_town": true,
+			"samples": [
+				{
+					"down": 0,
+					"hp": 154,
+					"kills": 7,
+					"seconds": 10,
+					"x": 925
+				},
+				{
+					"down": 0,
+					"hp": 154,
+					"kills": 14,
+					"seconds": 20,
+					"x": 1828
+				},
+				{
+					"down": 0,
+					"hp": 108,
+					"kills": 20,
+					"seconds": 30,
+					"x": 2081
+				},
+				{
+					"down": 0,
+					"hp": 106,
+					"kills": 23,
+					"seconds": 40,
+					"x": 2367
+				},
+				{
+					"down": 0,
+					"hp": 161,
+					"kills": 23,
+					"seconds": 50,
+					"x": 2407
+				},
+				{
+					"down": 0,
+					"hp": 161,
+					"kills": 23,
+					"seconds": 60,
+					"x": 2371
+				}
+			],
+			"scenario": {
+				"kinds": [
+					"boar"
+				],
+				"level": 1,
+				"main_only": true,
+				"name": "starter_boar_no_extra_bonds",
+				"no_bonds": true,
+				"trait": "다정함"
+			},
+			"seconds": 65.0,
+			"skills": 7,
+			"transitions": [
+				{
+					"hp": 180,
+					"kills": 5,
+					"point": 0,
+					"seconds": 3
+				},
+				{
+					"hp": 154,
+					"kills": 7,
+					"point": 1,
+					"seconds": 10
+				},
+				{
+					"hp": 154,
+					"kills": 14,
+					"point": 3,
+					"seconds": 17
+				},
+				{
+					"hp": 154,
+					"kills": 14,
+					"point": -1,
+					"seconds": 19
+				},
+				{
+					"hp": 106,
+					"kills": 23,
+					"point": 5,
+					"seconds": 33
+				}
+			]
+		},
+		{
+			"bonds": 0,
+			"buffs": 4,
+			"checkpoint": 5,
+			"core": {
+				"cleared": 4,
+				"total": 4
+			},
+			"down_events": 0,
+			"growth": [
+				{
+					"from": 1,
+					"id": 5,
+					"kind": "marten",
+					"to": 3,
+					"xp": 164
+				}
+			],
+			"heals": 6,
+			"kills": 24,
+			"minimum_player_hp": 73.7,
+			"mode": "result",
+			"outcome": "우두머리 제압 · 클리어 보너스 +10",
+			"packs": {
+				"0": {
+					"alive": 0,
+					"dead": 5
+				},
+				"1": {
+					"alive": 0,
+					"dead": 2
+				},
+				"2": {
+					"alive": 2,
+					"dead": 0
+				},
+				"3": {
+					"alive": 0,
+					"dead": 7
+				},
+				"4": {
+					"alive": 2,
+					"dead": 0
+				},
+				"5": {
+					"alive": 0,
+					"dead": 9
+				},
+				"boss": {
+					"alive": 0,
+					"dead": 1
+				}
+			},
+			"party": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 3,
+					"options": [],
+					"trait": "강인함",
+					"xp": 59
+				}
+			],
+			"returned_to_town": true,
+			"samples": [
+				{
+					"down": 0,
+					"hp": 146,
+					"kills": 6,
+					"seconds": 10,
+					"x": 883
+				},
+				{
+					"down": 0,
+					"hp": 117,
+					"kills": 13,
+					"seconds": 20,
+					"x": 1387
+				},
+				{
+					"down": 0,
+					"hp": 92,
+					"kills": 19,
+					"seconds": 30,
+					"x": 2081
+				},
+				{
+					"down": 0,
+					"hp": 74,
+					"kills": 23,
+					"seconds": 40,
+					"x": 2375
+				},
+				{
+					"down": 0,
+					"hp": 74,
+					"kills": 23,
+					"seconds": 50,
+					"x": 2395
+				}
+			],
+			"scenario": {
+				"kinds": [
+					"marten"
+				],
+				"level": 1,
+				"main_only": true,
+				"name": "starter_marten_no_extra_bonds",
+				"no_bonds": true,
+				"trait": "강인함"
+			},
+			"seconds": 54.3,
+			"skills": 6,
+			"transitions": [
+				{
+					"hp": 154,
+					"kills": 5,
+					"point": 0,
+					"seconds": 6
+				},
+				{
+					"hp": 146,
+					"kills": 7,
+					"point": 1,
+					"seconds": 10
+				},
+				{
+					"hp": 117,
+					"kills": 14,
+					"point": 3,
+					"seconds": 20
+				},
+				{
+					"hp": 117,
+					"kills": 14,
+					"point": -1,
+					"seconds": 22
+				},
+				{
+					"hp": 74,
+					"kills": 23,
+					"point": 5,
+					"seconds": 33
+				}
+			]
+		},
+		{
+			"bonds": 0,
+			"buffs": 113,
+			"checkpoint": 5,
+			"core": {
+				"cleared": 4,
+				"total": 4
+			},
+			"down_events": 2,
+			"growth": [
+				{
+					"from": 1,
+					"id": 5,
+					"kind": "marten",
+					"to": 3,
+					"xp": 164
+				}
+			],
+			"heals": 7,
+			"kills": 24,
+			"minimum_player_hp": 36.9,
+			"mode": "result",
+			"outcome": "우두머리 제압 · 클리어 보너스 +10",
+			"packs": {
+				"0": {
+					"alive": 0,
+					"dead": 5
+				},
+				"1": {
+					"alive": 0,
+					"dead": 2
+				},
+				"2": {
+					"alive": 2,
+					"dead": 0
+				},
+				"3": {
+					"alive": 0,
+					"dead": 7
+				},
+				"4": {
+					"alive": 2,
+					"dead": 0
+				},
+				"5": {
+					"alive": 0,
+					"dead": 9
+				},
+				"boss": {
+					"alive": 0,
+					"dead": 1
+				}
+			},
+			"party": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 3,
+					"options": [],
+					"trait": "용맹함",
+					"xp": 59
+				}
+			],
+			"returned_to_town": true,
+			"samples": [
+				{
+					"down": 0,
+					"hp": 146,
+					"kills": 6,
+					"seconds": 10,
+					"x": 883
+				},
+				{
+					"down": 0,
+					"hp": 117,
+					"kills": 13,
+					"seconds": 20,
+					"x": 1387
+				},
+				{
+					"down": 0,
+					"hp": 37,
+					"kills": 19,
+					"seconds": 30,
+					"x": 2081
+				},
+				{
+					"down": 1,
+					"hp": 129,
+					"kills": 23,
+					"seconds": 40,
+					"x": 2444
+				},
+				{
+					"down": 0,
+					"hp": 129,
+					"kills": 23,
+					"seconds": 50,
+					"x": 2501
+				},
+				{
+					"down": 1,
+					"hp": 180,
+					"kills": 23,
+					"seconds": 60,
+					"x": 2530
+				}
+			],
+			"scenario": {
+				"kinds": [
+					"marten"
+				],
+				"level": 1,
+				"main_only": true,
+				"name": "starter_marten_no_extra_bonds",
+				"no_bonds": true,
+				"trait": "용맹함"
+			},
+			"seconds": 61.5,
+			"skills": 6,
+			"transitions": [
+				{
+					"hp": 154,
+					"kills": 5,
+					"point": 0,
+					"seconds": 6
+				},
+				{
+					"hp": 146,
+					"kills": 7,
+					"point": 1,
+					"seconds": 10
+				},
+				{
+					"hp": 117,
+					"kills": 14,
+					"point": 3,
+					"seconds": 20
+				},
+				{
+					"hp": 117,
+					"kills": 14,
+					"point": -1,
+					"seconds": 22
+				},
+				{
+					"hp": 74,
+					"kills": 23,
+					"point": 5,
+					"seconds": 33
+				}
+			]
+		},
+		{
+			"bonds": 0,
+			"buffs": 4,
+			"checkpoint": 5,
+			"core": {
+				"cleared": 4,
+				"total": 4
+			},
+			"down_events": 0,
+			"growth": [
+				{
+					"from": 1,
+					"id": 5,
+					"kind": "marten",
+					"to": 3,
+					"xp": 164
+				}
+			],
+			"heals": 6,
+			"kills": 24,
+			"minimum_player_hp": 73.7,
+			"mode": "result",
+			"outcome": "우두머리 제압 · 클리어 보너스 +10",
+			"packs": {
+				"0": {
+					"alive": 0,
+					"dead": 5
+				},
+				"1": {
+					"alive": 0,
+					"dead": 2
+				},
+				"2": {
+					"alive": 2,
+					"dead": 0
+				},
+				"3": {
+					"alive": 0,
+					"dead": 7
+				},
+				"4": {
+					"alive": 2,
+					"dead": 0
+				},
+				"5": {
+					"alive": 0,
+					"dead": 9
+				},
+				"boss": {
+					"alive": 0,
+					"dead": 1
+				}
+			},
+			"party": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 3,
+					"options": [],
+					"trait": "단단함",
+					"xp": 59
+				}
+			],
+			"returned_to_town": true,
+			"samples": [
+				{
+					"down": 0,
+					"hp": 146,
+					"kills": 6,
+					"seconds": 10,
+					"x": 883
+				},
+				{
+					"down": 0,
+					"hp": 117,
+					"kills": 13,
+					"seconds": 20,
+					"x": 1387
+				},
+				{
+					"down": 0,
+					"hp": 92,
+					"kills": 19,
+					"seconds": 30,
+					"x": 2081
+				},
+				{
+					"down": 0,
+					"hp": 74,
+					"kills": 23,
+					"seconds": 40,
+					"x": 2375
+				},
+				{
+					"down": 0,
+					"hp": 74,
+					"kills": 23,
+					"seconds": 50,
+					"x": 2395
+				}
+			],
+			"scenario": {
+				"kinds": [
+					"marten"
+				],
+				"level": 1,
+				"main_only": true,
+				"name": "starter_marten_no_extra_bonds",
+				"no_bonds": true,
+				"trait": "단단함"
+			},
+			"seconds": 54.3,
+			"skills": 6,
+			"transitions": [
+				{
+					"hp": 154,
+					"kills": 5,
+					"point": 0,
+					"seconds": 6
+				},
+				{
+					"hp": 146,
+					"kills": 7,
+					"point": 1,
+					"seconds": 10
+				},
+				{
+					"hp": 117,
+					"kills": 14,
+					"point": 3,
+					"seconds": 20
+				},
+				{
+					"hp": 117,
+					"kills": 14,
+					"point": -1,
+					"seconds": 22
+				},
+				{
+					"hp": 74,
+					"kills": 23,
+					"point": 5,
+					"seconds": 33
+				}
+			]
+		},
+		{
+			"bonds": 0,
+			"buffs": 105,
+			"checkpoint": 5,
+			"core": {
+				"cleared": 4,
+				"total": 4
+			},
+			"down_events": 2,
+			"growth": [
+				{
+					"from": 1,
+					"id": 5,
+					"kind": "marten",
+					"to": 3,
+					"xp": 164
+				}
+			],
+			"heals": 44,
+			"kills": 24,
+			"minimum_player_hp": 38.8,
+			"mode": "result",
+			"outcome": "우두머리 제압 · 클리어 보너스 +10",
+			"packs": {
+				"0": {
+					"alive": 0,
+					"dead": 5
+				},
+				"1": {
+					"alive": 0,
+					"dead": 2
+				},
+				"2": {
+					"alive": 2,
+					"dead": 0
+				},
+				"3": {
+					"alive": 0,
+					"dead": 7
+				},
+				"4": {
+					"alive": 2,
+					"dead": 0
+				},
+				"5": {
+					"alive": 0,
+					"dead": 9
+				},
+				"boss": {
+					"alive": 0,
+					"dead": 1
+				}
+			},
+			"party": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 3,
+					"options": [],
+					"trait": "민첩함",
+					"xp": 59
+				}
+			],
+			"returned_to_town": true,
+			"samples": [
+				{
+					"down": 0,
+					"hp": 148,
+					"kills": 6,
+					"seconds": 10,
+					"x": 883
+				},
+				{
+					"down": 0,
+					"hp": 117,
+					"kills": 13,
+					"seconds": 20,
+					"x": 1387
+				},
+				{
+					"down": 0,
+					"hp": 39,
+					"kills": 19,
+					"seconds": 30,
+					"x": 2081
+				},
+				{
+					"down": 1,
+					"hp": 77,
+					"kills": 23,
+					"seconds": 40,
+					"x": 2464
+				},
+				{
+					"down": 0,
+					"hp": 132,
+					"kills": 23,
+					"seconds": 50,
+					"x": 2497
+				},
+				{
+					"down": 1,
+					"hp": 180,
+					"kills": 23,
+					"seconds": 60,
+					"x": 2566
+				}
+			],
+			"scenario": {
+				"kinds": [
+					"marten"
+				],
+				"level": 1,
+				"main_only": true,
+				"name": "starter_marten_no_extra_bonds",
+				"no_bonds": true,
+				"trait": "민첩함"
+			},
+			"seconds": 61.7,
+			"skills": 6,
+			"transitions": [
+				{
+					"hp": 156,
+					"kills": 5,
+					"point": 0,
+					"seconds": 6
+				},
+				{
+					"hp": 148,
+					"kills": 7,
+					"point": 1,
+					"seconds": 10
+				},
+				{
+					"hp": 117,
+					"kills": 14,
+					"point": 3,
+					"seconds": 20
+				},
+				{
+					"hp": 117,
+					"kills": 14,
+					"point": -1,
+					"seconds": 22
+				},
+				{
+					"hp": 77,
+					"kills": 23,
+					"point": 5,
+					"seconds": 33
+				}
+			]
+		},
+		{
+			"bonds": 0,
+			"buffs": 113,
+			"checkpoint": 5,
+			"core": {
+				"cleared": 4,
+				"total": 4
+			},
+			"down_events": 2,
+			"growth": [
+				{
+					"from": 1,
+					"id": 5,
+					"kind": "marten",
+					"to": 3,
+					"xp": 164
+				}
+			],
+			"heals": 7,
+			"kills": 24,
+			"minimum_player_hp": 36.9,
+			"mode": "result",
+			"outcome": "우두머리 제압 · 클리어 보너스 +10",
+			"packs": {
+				"0": {
+					"alive": 0,
+					"dead": 5
+				},
+				"1": {
+					"alive": 0,
+					"dead": 2
+				},
+				"2": {
+					"alive": 2,
+					"dead": 0
+				},
+				"3": {
+					"alive": 0,
+					"dead": 7
+				},
+				"4": {
+					"alive": 2,
+					"dead": 0
+				},
+				"5": {
+					"alive": 0,
+					"dead": 9
+				},
+				"boss": {
+					"alive": 0,
+					"dead": 1
+				}
+			},
+			"party": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 3,
+					"options": [],
+					"trait": "다정함",
+					"xp": 59
+				}
+			],
+			"returned_to_town": true,
+			"samples": [
+				{
+					"down": 0,
+					"hp": 146,
+					"kills": 6,
+					"seconds": 10,
+					"x": 883
+				},
+				{
+					"down": 0,
+					"hp": 117,
+					"kills": 13,
+					"seconds": 20,
+					"x": 1387
+				},
+				{
+					"down": 0,
+					"hp": 37,
+					"kills": 19,
+					"seconds": 30,
+					"x": 2081
+				},
+				{
+					"down": 1,
+					"hp": 129,
+					"kills": 23,
+					"seconds": 40,
+					"x": 2444
+				},
+				{
+					"down": 0,
+					"hp": 129,
+					"kills": 23,
+					"seconds": 50,
+					"x": 2501
+				},
+				{
+					"down": 1,
+					"hp": 180,
+					"kills": 23,
+					"seconds": 60,
+					"x": 2530
+				}
+			],
+			"scenario": {
+				"kinds": [
+					"marten"
+				],
+				"level": 1,
+				"main_only": true,
+				"name": "starter_marten_no_extra_bonds",
+				"no_bonds": true,
+				"trait": "다정함"
+			},
+			"seconds": 62.3,
+			"skills": 6,
+			"transitions": [
+				{
+					"hp": 154,
+					"kills": 5,
+					"point": 0,
+					"seconds": 6
+				},
+				{
+					"hp": 146,
+					"kills": 7,
+					"point": 1,
+					"seconds": 10
+				},
+				{
+					"hp": 117,
+					"kills": 14,
+					"point": 3,
+					"seconds": 20
+				},
+				{
+					"hp": 117,
+					"kills": 14,
+					"point": -1,
+					"seconds": 22
+				},
+				{
+					"hp": 74,
+					"kills": 23,
+					"point": 5,
+					"seconds": 33
+				}
+			]
+		},
+		{
+			"bonds": 0,
+			"buffs": 5,
+			"checkpoint": 5,
+			"core": {
+				"cleared": 4,
+				"total": 4
+			},
+			"down_events": 0,
+			"growth": [
+				{
+					"from": 1,
+					"id": 5,
+					"kind": "fox",
+					"to": 3,
+					"xp": 164
+				}
+			],
+			"heals": 4,
+			"kills": 24,
+			"minimum_player_hp": 129.1,
+			"mode": "result",
+			"outcome": "우두머리 제압 · 클리어 보너스 +10",
+			"packs": {
+				"0": {
+					"alive": 0,
+					"dead": 5
+				},
+				"1": {
+					"alive": 0,
+					"dead": 2
+				},
+				"2": {
+					"alive": 2,
+					"dead": 0
+				},
+				"3": {
+					"alive": 0,
+					"dead": 7
+				},
+				"4": {
+					"alive": 2,
+					"dead": 0
+				},
+				"5": {
+					"alive": 0,
+					"dead": 9
+				},
+				"boss": {
+					"alive": 0,
+					"dead": 1
+				}
+			},
+			"party": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"trait": "강인함",
+					"xp": 59
+				}
+			],
+			"returned_to_town": true,
+			"samples": [
+				{
+					"down": 0,
+					"hp": 144,
+					"kills": 7,
+					"seconds": 10,
+					"x": 957
+				},
+				{
+					"down": 0,
+					"hp": 142,
+					"kills": 14,
+					"seconds": 20,
+					"x": 1726
+				},
+				{
+					"down": 0,
+					"hp": 160,
+					"kills": 23,
+					"seconds": 30,
+					"x": 2375
+				},
+				{
+					"down": 0,
+					"hp": 160,
+					"kills": 23,
+					"seconds": 40,
+					"x": 2396
+				},
+				{
+					"down": 0,
+					"hp": 160,
+					"kills": 23,
+					"seconds": 50,
+					"x": 2460
+				}
+			],
+			"scenario": {
+				"kinds": [
+					"fox"
+				],
+				"level": 1,
+				"main_only": true,
+				"name": "starter_fox_no_extra_bonds",
+				"no_bonds": true,
+				"trait": "강인함"
+			},
+			"seconds": 59.8,
+			"skills": 6,
+			"transitions": [
+				{
+					"hp": 170,
+					"kills": 5,
+					"point": 0,
+					"seconds": 2
+				},
+				{
+					"hp": 144,
+					"kills": 7,
+					"point": 1,
+					"seconds": 10
+				},
+				{
+					"hp": 142,
+					"kills": 14,
+					"point": 3,
+					"seconds": 18
+				},
+				{
+					"hp": 142,
+					"kills": 14,
+					"point": -1,
+					"seconds": 19
+				},
+				{
+					"hp": 160,
+					"kills": 23,
+					"point": 5,
+					"seconds": 28
+				}
+			]
+		},
+		{
+			"bonds": 0,
+			"buffs": 4,
+			"checkpoint": 5,
+			"core": {
+				"cleared": 4,
+				"total": 4
+			},
+			"down_events": 0,
+			"growth": [
+				{
+					"from": 1,
+					"id": 5,
+					"kind": "fox",
+					"to": 3,
+					"xp": 164
+				}
+			],
+			"heals": 3,
+			"kills": 24,
+			"minimum_player_hp": 129.6,
+			"mode": "result",
+			"outcome": "우두머리 제압 · 클리어 보너스 +10",
+			"packs": {
+				"0": {
+					"alive": 0,
+					"dead": 5
+				},
+				"1": {
+					"alive": 0,
+					"dead": 2
+				},
+				"2": {
+					"alive": 2,
+					"dead": 0
+				},
+				"3": {
+					"alive": 0,
+					"dead": 7
+				},
+				"4": {
+					"alive": 2,
+					"dead": 0
+				},
+				"5": {
+					"alive": 0,
+					"dead": 9
+				},
+				"boss": {
+					"alive": 0,
+					"dead": 1
+				}
+			},
+			"party": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"trait": "용맹함",
+					"xp": 59
+				}
+			],
+			"returned_to_town": true,
+			"samples": [
+				{
+					"down": 0,
+					"hp": 163,
+					"kills": 7,
+					"seconds": 10,
+					"x": 1324
+				},
+				{
+					"down": 0,
+					"hp": 158,
+					"kills": 15,
+					"seconds": 20,
+					"x": 2081
+				},
+				{
+					"down": 0,
+					"hp": 145,
+					"kills": 23,
+					"seconds": 30,
+					"x": 2378
+				},
+				{
+					"down": 0,
+					"hp": 145,
+					"kills": 23,
+					"seconds": 40,
+					"x": 2458
+				},
+				{
+					"down": 0,
+					"hp": 145,
+					"kills": 23,
+					"seconds": 50,
+					"x": 2458
+				}
+			],
+			"scenario": {
+				"kinds": [
+					"fox"
+				],
+				"level": 1,
+				"main_only": true,
+				"name": "starter_fox_no_extra_bonds",
+				"no_bonds": true,
+				"trait": "용맹함"
+			},
+			"seconds": 50.3,
+			"skills": 6,
+			"transitions": [
+				{
+					"hp": 180,
+					"kills": 5,
+					"point": 0,
+					"seconds": 2
+				},
+				{
+					"hp": 163,
+					"kills": 7,
+					"point": 1,
+					"seconds": 8
+				},
+				{
+					"hp": 180,
+					"kills": 14,
+					"point": 3,
+					"seconds": 14
+				},
+				{
+					"hp": 180,
+					"kills": 14,
+					"point": -1,
+					"seconds": 16
+				},
+				{
+					"hp": 145,
+					"kills": 23,
+					"point": 5,
+					"seconds": 23
+				}
+			]
+		},
+		{
+			"bonds": 0,
+			"buffs": 5,
+			"checkpoint": 5,
+			"core": {
+				"cleared": 4,
+				"total": 4
+			},
+			"down_events": 0,
+			"growth": [
+				{
+					"from": 1,
+					"id": 5,
+					"kind": "fox",
+					"to": 3,
+					"xp": 164
+				}
+			],
+			"heals": 4,
+			"kills": 24,
+			"minimum_player_hp": 129.1,
+			"mode": "result",
+			"outcome": "우두머리 제압 · 클리어 보너스 +10",
+			"packs": {
+				"0": {
+					"alive": 0,
+					"dead": 5
+				},
+				"1": {
+					"alive": 0,
+					"dead": 2
+				},
+				"2": {
+					"alive": 2,
+					"dead": 0
+				},
+				"3": {
+					"alive": 0,
+					"dead": 7
+				},
+				"4": {
+					"alive": 2,
+					"dead": 0
+				},
+				"5": {
+					"alive": 0,
+					"dead": 9
+				},
+				"boss": {
+					"alive": 0,
+					"dead": 1
+				}
+			},
+			"party": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"trait": "단단함",
+					"xp": 59
+				}
+			],
+			"returned_to_town": true,
+			"samples": [
+				{
+					"down": 0,
+					"hp": 144,
+					"kills": 7,
+					"seconds": 10,
+					"x": 957
+				},
+				{
+					"down": 0,
+					"hp": 142,
+					"kills": 14,
+					"seconds": 20,
+					"x": 1726
+				},
+				{
+					"down": 0,
+					"hp": 160,
+					"kills": 23,
+					"seconds": 30,
+					"x": 2375
+				},
+				{
+					"down": 0,
+					"hp": 160,
+					"kills": 23,
+					"seconds": 40,
+					"x": 2396
+				},
+				{
+					"down": 0,
+					"hp": 160,
+					"kills": 23,
+					"seconds": 50,
+					"x": 2460
+				}
+			],
+			"scenario": {
+				"kinds": [
+					"fox"
+				],
+				"level": 1,
+				"main_only": true,
+				"name": "starter_fox_no_extra_bonds",
+				"no_bonds": true,
+				"trait": "단단함"
+			},
+			"seconds": 59.8,
+			"skills": 6,
+			"transitions": [
+				{
+					"hp": 170,
+					"kills": 5,
+					"point": 0,
+					"seconds": 2
+				},
+				{
+					"hp": 144,
+					"kills": 7,
+					"point": 1,
+					"seconds": 10
+				},
+				{
+					"hp": 142,
+					"kills": 14,
+					"point": 3,
+					"seconds": 18
+				},
+				{
+					"hp": 142,
+					"kills": 14,
+					"point": -1,
+					"seconds": 19
+				},
+				{
+					"hp": 160,
+					"kills": 23,
+					"point": 5,
+					"seconds": 28
+				}
+			]
+		},
+		{
+			"bonds": 0,
+			"buffs": 5,
+			"checkpoint": 5,
+			"core": {
+				"cleared": 4,
+				"total": 4
+			},
+			"down_events": 0,
+			"growth": [
+				{
+					"from": 1,
+					"id": 5,
+					"kind": "fox",
+					"to": 3,
+					"xp": 164
+				}
+			],
+			"heals": 5,
+			"kills": 24,
+			"minimum_player_hp": 127.6,
+			"mode": "result",
+			"outcome": "우두머리 제압 · 클리어 보너스 +10",
+			"packs": {
+				"0": {
+					"alive": 0,
+					"dead": 5
+				},
+				"1": {
+					"alive": 0,
+					"dead": 2
+				},
+				"2": {
+					"alive": 2,
+					"dead": 0
+				},
+				"3": {
+					"alive": 0,
+					"dead": 7
+				},
+				"4": {
+					"alive": 2,
+					"dead": 0
+				},
+				"5": {
+					"alive": 0,
+					"dead": 9
+				},
+				"boss": {
+					"alive": 0,
+					"dead": 1
+				}
+			},
+			"party": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"trait": "민첩함",
+					"xp": 59
+				}
+			],
+			"returned_to_town": true,
+			"samples": [
+				{
+					"down": 0,
+					"hp": 161,
+					"kills": 7,
+					"seconds": 10,
+					"x": 1198
+				},
+				{
+					"down": 0,
+					"hp": 158,
+					"kills": 14,
+					"seconds": 20,
+					"x": 2081
+				},
+				{
+					"down": 0,
+					"hp": 158,
+					"kills": 23,
+					"seconds": 30,
+					"x": 2334
+				},
+				{
+					"down": 0,
+					"hp": 158,
+					"kills": 23,
+					"seconds": 40,
+					"x": 2445
+				},
+				{
+					"down": 0,
+					"hp": 158,
+					"kills": 23,
+					"seconds": 50,
+					"x": 2445
+				}
+			],
+			"scenario": {
+				"kinds": [
+					"fox"
+				],
+				"level": 1,
+				"main_only": true,
+				"name": "starter_fox_no_extra_bonds",
+				"no_bonds": true,
+				"trait": "민첩함"
+			},
+			"seconds": 56.2,
+			"skills": 6,
+			"transitions": [
+				{
+					"hp": 170,
+					"kills": 5,
+					"point": 0,
+					"seconds": 2
+				},
+				{
+					"hp": 161,
+					"kills": 7,
+					"point": 1,
+					"seconds": 8
+				},
+				{
+					"hp": 180,
+					"kills": 14,
+					"point": 3,
+					"seconds": 15
+				},
+				{
+					"hp": 180,
+					"kills": 14,
+					"point": -1,
+					"seconds": 16
+				},
+				{
+					"hp": 158,
+					"kills": 23,
+					"point": 5,
+					"seconds": 22
+				}
+			]
+		},
+		{
+			"bonds": 0,
+			"buffs": 5,
+			"checkpoint": 5,
+			"core": {
+				"cleared": 4,
+				"total": 4
+			},
+			"down_events": 0,
+			"growth": [
+				{
+					"from": 1,
+					"id": 5,
+					"kind": "fox",
+					"to": 3,
+					"xp": 164
+				}
+			],
+			"heals": 5,
+			"kills": 24,
+			"minimum_player_hp": 129.1,
+			"mode": "result",
+			"outcome": "우두머리 제압 · 클리어 보너스 +10",
+			"packs": {
+				"0": {
+					"alive": 0,
+					"dead": 5
+				},
+				"1": {
+					"alive": 0,
+					"dead": 2
+				},
+				"2": {
+					"alive": 2,
+					"dead": 0
+				},
+				"3": {
+					"alive": 0,
+					"dead": 7
+				},
+				"4": {
+					"alive": 2,
+					"dead": 0
+				},
+				"5": {
+					"alive": 0,
+					"dead": 9
+				},
+				"boss": {
+					"alive": 0,
+					"dead": 1
+				}
+			},
+			"party": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"trait": "다정함",
+					"xp": 59
+				}
+			],
+			"returned_to_town": true,
+			"samples": [
+				{
+					"down": 0,
+					"hp": 144,
+					"kills": 7,
+					"seconds": 10,
+					"x": 957
+				},
+				{
+					"down": 0,
+					"hp": 142,
+					"kills": 14,
+					"seconds": 20,
+					"x": 1726
+				},
+				{
+					"down": 0,
+					"hp": 160,
+					"kills": 23,
+					"seconds": 30,
+					"x": 2375
+				},
+				{
+					"down": 0,
+					"hp": 160,
+					"kills": 23,
+					"seconds": 40,
+					"x": 2396
+				},
+				{
+					"down": 0,
+					"hp": 160,
+					"kills": 23,
+					"seconds": 50,
+					"x": 2460
+				}
+			],
+			"scenario": {
+				"kinds": [
+					"fox"
+				],
+				"level": 1,
+				"main_only": true,
+				"name": "starter_fox_no_extra_bonds",
+				"no_bonds": true,
+				"trait": "다정함"
+			},
+			"seconds": 59.8,
+			"skills": 6,
+			"transitions": [
+				{
+					"hp": 170,
+					"kills": 5,
+					"point": 0,
+					"seconds": 2
+				},
+				{
+					"hp": 144,
+					"kills": 7,
+					"point": 1,
+					"seconds": 10
+				},
+				{
+					"hp": 142,
+					"kills": 14,
+					"point": 3,
+					"seconds": 18
+				},
+				{
+					"hp": 142,
+					"kills": 14,
+					"point": -1,
+					"seconds": 19
+				},
+				{
+					"hp": 160,
+					"kills": 23,
+					"point": 5,
+					"seconds": 28
+				}
+			]
+		}
+	]
+}

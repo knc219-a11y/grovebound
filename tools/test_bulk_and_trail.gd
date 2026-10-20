@@ -42,7 +42,7 @@ func check():
 	for e in g.enemies:
 		if e.boss: bosses+=1
 		elif not e.get("swarm",false): census[e.kind]=census.get(e.kind,0)+1
-	if bosses!=1 or census.get("wolf")!=6 or census.get("deer")!=1: failures.append("same species/boss budget")
+	if bosses!=1 or census!={"boar":1,"slime":2,"skeleton":2,"deer":1,"turtle":1,"fox":1,"wolf":2,"marten":1}: failures.append("mixed species/boss budget")
 	if g.trail.core_progress(g.enemies)!={"cleared":0,"total":4}: failures.append("core route starts uncleared")
 	for pack in g.Trail.CORE_PACKS:
 		var members=0

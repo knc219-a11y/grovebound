@@ -69,6 +69,8 @@ jobs:
           set -euo pipefail
           timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_campaign.gd 2>&1 | tee campaign-test.log
           grep -q 'CAMPAIGN PASS:' campaign-test.log
+          timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_mixed_stages.gd 2>&1 | tee mixed-test.log
+          grep -q 'MIXED STAGES PASS:' mixed-test.log
   windows-launcher:
     runs-on: windows-latest
     timeout-minutes: 10
