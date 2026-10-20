@@ -1,0 +1,8508 @@
+{
+	"method": "Six deterministic first-invitation-to-1-8 runs; tutorial enemy kills fast-forwarded, then real update_game dt=.05, real nearby bonds/Q/E/skills/revive/dodge/exit. No synthetic high-level team or material training. Bot timing is not human clear time or success rate.",
+	"runs": [
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 29
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 16
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 6,
+			"minimum_hp": 141.6,
+			"progress": {
+				"cleared": 2,
+				"total": 2
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 276.416,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 1,
+						"id": 5,
+						"kind": "boar",
+						"to": 2,
+						"xp": 48
+					}
+				],
+				"kills": 6,
+				"materials": 13,
+				"newcomers": [],
+				"outcome": "짓밟힌 풀밭 너머로 흉포한 발자국이 이어집니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 1,
+					"theme": 1
+				},
+				"seconds": 13,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 13.9,
+			"seed": 10417,
+			"skills": 2,
+			"stage": 1,
+			"starter": "boar",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 55
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 29
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 10,
+			"minimum_hp": 125.6,
+			"progress": {
+				"cleared": 2,
+				"total": 2
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 541.824,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 2,
+						"id": 5,
+						"kind": "boar",
+						"to": 3,
+						"xp": 96
+					}
+				],
+				"kills": 10,
+				"materials": 16,
+				"newcomers": [],
+				"outcome": "야수뿐 아니라 마물과 죽은 자도 물길 주변을 맴돕니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 2,
+					"theme": 1
+				},
+				"seconds": 14,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 14.4,
+			"seed": 10417,
+			"skills": 2,
+			"stage": 2,
+			"starter": "boar",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 50
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 60
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 55
+				}
+			],
+			"bonds": 1,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 12,
+			"minimum_hp": 171.2,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 375.2968,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 148.428,
+							"skills": 1.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 3,
+						"id": 5,
+						"kind": "boar",
+						"to": 4,
+						"xp": 100
+					},
+					{
+						"from": 2,
+						"id": 6,
+						"kind": "boar",
+						"to": 2,
+						"xp": 60
+					}
+				],
+				"kills": 12,
+				"materials": 15,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 6,
+						"kind": "boar",
+						"level": 2,
+						"options": [],
+						"star": 1,
+						"trait": "용맹함",
+						"xp": 60
+					}
+				],
+				"outcome": "무리는 샘을 등진 채 달려왔습니다. 샘 위쪽에서 둔탁한 소리가 납니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 3,
+					"theme": 1
+				},
+				"seconds": 15,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 15.4,
+			"seed": 10417,
+			"skills": 3,
+			"stage": 3,
+			"starter": "boar",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 50
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 50
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 60
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 2,
+			"kills": 5,
+			"minimum_hp": 180.0,
+			"progress": {
+				"cleared": 2,
+				"total": 2
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 326.4108,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 264.32,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 4,
+						"id": 5,
+						"kind": "boar",
+						"to": 4,
+						"xp": 60
+					},
+					{
+						"from": 2,
+						"id": 6,
+						"kind": "boar",
+						"to": 3,
+						"xp": 60
+					}
+				],
+				"kills": 5,
+				"materials": 17,
+				"newcomers": [],
+				"outcome": "가시등이 물러난 자리에서 말라붙은 물길이 드러납니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 4,
+					"theme": 1
+				},
+				"seconds": 16,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 16.9,
+			"seed": 10417,
+			"skills": 4,
+			"stage": 4,
+			"starter": "boar",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 85
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 30
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 50
+				}
+			],
+			"bonds": 1,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 12,
+			"minimum_hp": 125.6,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 278.8892,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 200.8668,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "boar",
+						"trait": "민첩함",
+						"values": {
+							"damage": 232.052,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 4,
+						"id": 5,
+						"kind": "boar",
+						"to": 5,
+						"xp": 140
+					},
+					{
+						"from": 3,
+						"id": 6,
+						"kind": "boar",
+						"to": 4,
+						"xp": 140
+					},
+					{
+						"from": 2,
+						"id": 7,
+						"kind": "boar",
+						"to": 3,
+						"xp": 100
+					}
+				],
+				"kills": 12,
+				"materials": 17,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 7,
+						"kind": "boar",
+						"level": 3,
+						"options": [],
+						"star": 1,
+						"trait": "민첩함",
+						"xp": 30
+					}
+				],
+				"outcome": "막힌 곳은 자연스럽게 무너진 흔적과 다릅니다. 흐름이 안쪽에서 멎었습니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 5,
+					"theme": 1
+				},
+				"seconds": 15,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 15.3,
+			"seed": 10417,
+			"skills": 6,
+			"stage": 5,
+			"starter": "boar",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 127
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 137
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 117
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "강인함",
+					"xp": 48
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 85
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 30
+				}
+			],
+			"bonds": 1,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 15,
+			"minimum_hp": 128.8,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 392.8388,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 200.978,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "boar",
+						"trait": "민첩함",
+						"values": {
+							"damage": 134.8712,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "강인함",
+						"values": {
+							"damage": 178.176,
+							"skills": 1.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 5,
+						"id": 5,
+						"kind": "boar",
+						"to": 6,
+						"xp": 192
+					},
+					{
+						"from": 4,
+						"id": 6,
+						"kind": "boar",
+						"to": 5,
+						"xp": 192
+					},
+					{
+						"from": 3,
+						"id": 7,
+						"kind": "boar",
+						"to": 4,
+						"xp": 192
+					},
+					{
+						"from": 3,
+						"id": 8,
+						"kind": "fox",
+						"to": 3,
+						"xp": 48
+					}
+				],
+				"kills": 15,
+				"materials": 18,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 8,
+						"kind": "fox",
+						"level": 3,
+						"options": [],
+						"star": 1,
+						"trait": "강인함",
+						"xp": 48
+					}
+				],
+				"outcome": "채석장에서 흘러온 돌조각이 물길에 박혀 있습니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 6,
+					"theme": 1
+				},
+				"seconds": 17,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 17.5,
+			"seed": 10417,
+			"skills": 7,
+			"stage": 6,
+			"starter": "boar",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 85
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 130
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 145
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "강인함",
+					"xp": 111
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 72
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 10,
+					"kind": "wolf",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 24
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 127
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 137
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 117
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "강인함",
+					"xp": 48
+				}
+			],
+			"bonds": 2,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 16,
+			"minimum_hp": 124.5,
+			"progress": {
+				"cleared": 4,
+				"total": 4
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 303.688,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 188.688,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "boar",
+						"trait": "민첩함",
+						"values": {
+							"damage": 64.472,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "강인함",
+						"values": {
+							"damage": 287.148,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 6,
+						"id": 5,
+						"kind": "boar",
+						"to": 7,
+						"xp": 168
+					},
+					{
+						"from": 5,
+						"id": 6,
+						"kind": "boar",
+						"to": 6,
+						"xp": 168
+					},
+					{
+						"from": 4,
+						"id": 7,
+						"kind": "boar",
+						"to": 5,
+						"xp": 168
+					},
+					{
+						"from": 3,
+						"id": 8,
+						"kind": "fox",
+						"to": 4,
+						"xp": 168
+					},
+					{
+						"from": 3,
+						"id": 9,
+						"kind": "fox",
+						"to": 3,
+						"xp": 72
+					},
+					{
+						"from": 3,
+						"id": 10,
+						"kind": "wolf",
+						"to": 3,
+						"xp": 24
+					}
+				],
+				"kills": 16,
+				"materials": 17,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 9,
+						"kind": "fox",
+						"level": 3,
+						"options": [],
+						"star": 1,
+						"trait": "용맹함",
+						"xp": 72
+					},
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 10,
+						"kind": "wolf",
+						"level": 3,
+						"options": [],
+						"star": 1,
+						"trait": "용맹함",
+						"xp": 24
+					}
+				],
+				"outcome": "샘을 막은 바위 곁에서 계곡의 우두머리가 울부짖습니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 7,
+					"theme": 1
+				},
+				"seconds": 16,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 17.0,
+			"seed": 10417,
+			"skills": 8,
+			"stage": 7,
+			"starter": "boar",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 209
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 44
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "boar",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 94
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "강인함",
+					"xp": 95
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 91
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 10,
+					"kind": "wolf",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 43
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 85
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 130
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 145
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "강인함",
+					"xp": 111
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 72
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 10,
+					"kind": "wolf",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 24
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 2,
+			"kills": 11,
+			"minimum_hp": 132.0,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 409.6056,
+							"skills": 3.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 290.652,
+							"skills": 3.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "boar",
+						"trait": "민첩함",
+						"values": {
+							"damage": 246.724,
+							"skills": 3.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "강인함",
+						"values": {
+							"damage": 333.5304,
+							"skills": 3.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 7,
+						"id": 5,
+						"kind": "boar",
+						"to": 7,
+						"xp": 124
+					},
+					{
+						"from": 6,
+						"id": 6,
+						"kind": "boar",
+						"to": 7,
+						"xp": 124
+					},
+					{
+						"from": 5,
+						"id": 7,
+						"kind": "boar",
+						"to": 6,
+						"xp": 124
+					},
+					{
+						"from": 4,
+						"id": 8,
+						"kind": "fox",
+						"to": 5,
+						"xp": 124
+					},
+					{
+						"from": 3,
+						"id": 9,
+						"kind": "fox",
+						"to": 4,
+						"xp": 124
+					},
+					{
+						"from": 3,
+						"id": 10,
+						"kind": "wolf",
+						"to": 4,
+						"xp": 124
+					}
+				],
+				"kills": 11,
+				"materials": 19,
+				"newcomers": [],
+				"outcome": "샘물이 다시 흐릅니다. 그러나 물길 끝의 채석장에서는 대답 없는 울림이 이어집니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 8,
+					"theme": 1
+				},
+				"seconds": 22,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 22.5,
+			"seed": 10417,
+			"skills": 12,
+			"stage": 8,
+			"starter": "boar",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 29
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 32
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 0
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 16
+				}
+			],
+			"bonds": 2,
+			"down_events": 0,
+			"heals": 0,
+			"kills": 6,
+			"minimum_hp": 180.0,
+			"progress": {
+				"cleared": 2,
+				"total": 2
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "boar",
+						"trait": "단단함",
+						"values": {
+							"damage": 150.648,
+							"mitigation": 3.6,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 149.768,
+							"skills": 1.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 1,
+						"id": 5,
+						"kind": "boar",
+						"to": 2,
+						"xp": 48
+					},
+					{
+						"from": 1,
+						"id": 6,
+						"kind": "boar",
+						"to": 1,
+						"xp": 32
+					}
+				],
+				"kills": 6,
+				"materials": 13,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 6,
+						"kind": "boar",
+						"level": 1,
+						"options": [],
+						"star": 1,
+						"trait": "용맹함",
+						"xp": 32
+					},
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 7,
+						"kind": "marten",
+						"level": 1,
+						"options": [],
+						"star": 1,
+						"trait": "민첩함",
+						"xp": 0
+					}
+				],
+				"outcome": "짓밟힌 풀밭 너머로 흉포한 발자국이 이어집니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 1,
+					"theme": 1
+				},
+				"seconds": 11,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 11.5,
+			"seed": 20261020,
+			"skills": 3,
+			"stage": 1,
+			"starter": "boar",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 55
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 23
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 61
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 0
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 29
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 32
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 0
+				}
+			],
+			"bonds": 1,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 10,
+			"minimum_hp": 112.8,
+			"progress": {
+				"cleared": 2,
+				"total": 2
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "boar",
+						"trait": "단단함",
+						"values": {
+							"damage": 214.69,
+							"mitigation": 1.44,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 157.362,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 199.772,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 2,
+						"id": 5,
+						"kind": "boar",
+						"to": 3,
+						"xp": 96
+					},
+					{
+						"from": 1,
+						"id": 6,
+						"kind": "boar",
+						"to": 3,
+						"xp": 96
+					},
+					{
+						"from": 1,
+						"id": 7,
+						"kind": "marten",
+						"to": 2,
+						"xp": 96
+					}
+				],
+				"kills": 10,
+				"materials": 16,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 8,
+						"kind": "fox",
+						"level": 1,
+						"options": [],
+						"star": 1,
+						"trait": "민첩함",
+						"xp": 0
+					}
+				],
+				"outcome": "야수뿐 아니라 마물과 죽은 자도 물길 주변을 맴돕니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 2,
+					"theme": 1
+				},
+				"seconds": 11,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 11.5,
+			"seed": 20261020,
+			"skills": 6,
+			"stage": 2,
+			"starter": "boar",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 50
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 18
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 91
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 65
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 55
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 23
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 61
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 0
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 12,
+			"minimum_hp": 138.0,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "boar",
+						"trait": "단단함",
+						"values": {
+							"damage": 82.808,
+							"mitigation": 5.46,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 88.752,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 216.376,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "민첩함",
+						"values": {
+							"damage": 154.128,
+							"skills": 1.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 3,
+						"id": 5,
+						"kind": "boar",
+						"to": 4,
+						"xp": 100
+					},
+					{
+						"from": 3,
+						"id": 6,
+						"kind": "boar",
+						"to": 4,
+						"xp": 100
+					},
+					{
+						"from": 2,
+						"id": 7,
+						"kind": "marten",
+						"to": 3,
+						"xp": 100
+					},
+					{
+						"from": 1,
+						"id": 8,
+						"kind": "fox",
+						"to": 2,
+						"xp": 100
+					}
+				],
+				"kills": 12,
+				"materials": 15,
+				"newcomers": [],
+				"outcome": "무리는 샘을 등진 채 달려왔습니다. 샘 위쪽에서 둔탁한 소리가 납니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 3,
+					"theme": 1
+				},
+				"seconds": 12,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 12.8,
+			"seed": 20261020,
+			"skills": 7,
+			"stage": 3,
+			"starter": "boar",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 78
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 46
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 55
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 50
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 18
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 91
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 65
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 5,
+			"minimum_hp": 180.0,
+			"progress": {
+				"cleared": 2,
+				"total": 2
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "boar",
+						"trait": "단단함",
+						"values": {
+							"damage": 81.3899999999999,
+							"mitigation": 4.92,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 107.38,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 248.982,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "민첩함",
+						"values": {
+							"damage": 179.752,
+							"skills": 1.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 4,
+						"id": 5,
+						"kind": "boar",
+						"to": 4,
+						"xp": 60
+					},
+					{
+						"from": 4,
+						"id": 6,
+						"kind": "boar",
+						"to": 4,
+						"xp": 60
+					},
+					{
+						"from": 3,
+						"id": 7,
+						"kind": "marten",
+						"to": 4,
+						"xp": 60
+					},
+					{
+						"from": 2,
+						"id": 8,
+						"kind": "fox",
+						"to": 3,
+						"xp": 60
+					}
+				],
+				"kills": 5,
+				"materials": 17,
+				"newcomers": [],
+				"outcome": "가시등이 물러난 자리에서 말라붙은 물길이 드러납니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 4,
+					"theme": 1
+				},
+				"seconds": 11,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 11.5,
+			"seed": 20261020,
+			"skills": 7,
+			"stage": 4,
+			"starter": "boar",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 78
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 46
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 90
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 30
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 10,
+					"kind": "marten",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 20
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 78
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 46
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 55
+				}
+			],
+			"bonds": 2,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 12,
+			"minimum_hp": 131.2,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "boar",
+						"trait": "단단함",
+						"values": {
+							"damage": 147.388,
+							"mitigation": 1.68,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 136.528,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 249.136,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "민첩함",
+						"values": {
+							"damage": 184.756,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 4,
+						"id": 5,
+						"kind": "boar",
+						"to": 5,
+						"xp": 140
+					},
+					{
+						"from": 4,
+						"id": 6,
+						"kind": "boar",
+						"to": 5,
+						"xp": 140
+					},
+					{
+						"from": 4,
+						"id": 7,
+						"kind": "marten",
+						"to": 5,
+						"xp": 140
+					},
+					{
+						"from": 3,
+						"id": 8,
+						"kind": "fox",
+						"to": 4,
+						"xp": 140
+					},
+					{
+						"from": 2,
+						"id": 9,
+						"kind": "boar",
+						"to": 3,
+						"xp": 100
+					},
+					{
+						"from": 2,
+						"id": 10,
+						"kind": "marten",
+						"to": 2,
+						"xp": 20
+					}
+				],
+				"kills": 12,
+				"materials": 17,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 9,
+						"kind": "boar",
+						"level": 3,
+						"options": [],
+						"star": 1,
+						"trait": "민첩함",
+						"xp": 30
+					},
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 10,
+						"kind": "marten",
+						"level": 2,
+						"options": [],
+						"star": 1,
+						"trait": "민첩함",
+						"xp": 20
+					}
+				],
+				"outcome": "막힌 곳은 자연스럽게 무너진 흔적과 다릅니다. 흐름이 안쪽에서 멎었습니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 5,
+					"theme": 1
+				},
+				"seconds": 14,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 14.8,
+			"seed": 20261020,
+			"skills": 8,
+			"stage": 5,
+			"starter": "boar",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 127
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 95
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 63
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 142
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 117
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 10,
+					"kind": "marten",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 37
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 78
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 46
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 90
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 30
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 10,
+					"kind": "marten",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 20
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 15,
+			"minimum_hp": 120.3,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "boar",
+						"trait": "단단함",
+						"values": {
+							"damage": 39.436,
+							"mitigation": 2.56,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 97.064,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 401.584,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "민첩함",
+						"values": {
+							"damage": 378.608,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 5,
+						"id": 5,
+						"kind": "boar",
+						"to": 6,
+						"xp": 192
+					},
+					{
+						"from": 5,
+						"id": 6,
+						"kind": "boar",
+						"to": 6,
+						"xp": 192
+					},
+					{
+						"from": 5,
+						"id": 7,
+						"kind": "marten",
+						"to": 6,
+						"xp": 192
+					},
+					{
+						"from": 4,
+						"id": 8,
+						"kind": "fox",
+						"to": 5,
+						"xp": 192
+					},
+					{
+						"from": 3,
+						"id": 9,
+						"kind": "boar",
+						"to": 4,
+						"xp": 192
+					},
+					{
+						"from": 2,
+						"id": 10,
+						"kind": "marten",
+						"to": 4,
+						"xp": 192
+					}
+				],
+				"kills": 15,
+				"materials": 18,
+				"newcomers": [],
+				"outcome": "채석장에서 흘러온 돌조각이 물길에 박혀 있습니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 6,
+					"theme": 1
+				},
+				"seconds": 16,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 16.0,
+			"seed": 20261020,
+			"skills": 8,
+			"stage": 6,
+			"starter": "boar",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 85
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 53
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 21
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 135
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 145
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 10,
+					"kind": "marten",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 65
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 127
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 95
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 63
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 142
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 117
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 10,
+					"kind": "marten",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 37
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 16,
+			"minimum_hp": 137.3,
+			"progress": {
+				"cleared": 4,
+				"total": 4
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "boar",
+						"trait": "단단함",
+						"values": {
+							"damage": 129.724,
+							"mitigation": 2.56,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 279.256,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 211.492,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "민첩함",
+						"values": {
+							"damage": 237.104,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 6,
+						"id": 5,
+						"kind": "boar",
+						"to": 7,
+						"xp": 168
+					},
+					{
+						"from": 6,
+						"id": 6,
+						"kind": "boar",
+						"to": 7,
+						"xp": 168
+					},
+					{
+						"from": 6,
+						"id": 7,
+						"kind": "marten",
+						"to": 7,
+						"xp": 168
+					},
+					{
+						"from": 5,
+						"id": 8,
+						"kind": "fox",
+						"to": 6,
+						"xp": 168
+					},
+					{
+						"from": 4,
+						"id": 9,
+						"kind": "boar",
+						"to": 5,
+						"xp": 168
+					},
+					{
+						"from": 4,
+						"id": 10,
+						"kind": "marten",
+						"to": 5,
+						"xp": 168
+					}
+				],
+				"kills": 16,
+				"materials": 17,
+				"newcomers": [],
+				"outcome": "샘을 막은 바위 곁에서 계곡의 우두머리가 울부짖습니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 7,
+					"theme": 1
+				},
+				"seconds": 15,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 15.5,
+			"seed": 20261020,
+			"skills": 8,
+			"stage": 7,
+			"starter": "boar",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 209
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 177
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 145
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 49
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "boar",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 94
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 10,
+					"kind": "marten",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 14
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 11,
+					"kind": "wolf",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 0
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "boar",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 85
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 53
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 21
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 135
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 145
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 10,
+					"kind": "marten",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 65
+				}
+			],
+			"bonds": 1,
+			"down_events": 0,
+			"heals": 2,
+			"kills": 11,
+			"minimum_hp": 128.8,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "boar",
+						"trait": "단단함",
+						"values": {
+							"damage": 212.3,
+							"mitigation": 6.6,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 279.436,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 493.184,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "민첩함",
+						"values": {
+							"damage": 312.472,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 7,
+						"id": 5,
+						"kind": "boar",
+						"to": 7,
+						"xp": 124
+					},
+					{
+						"from": 7,
+						"id": 6,
+						"kind": "boar",
+						"to": 7,
+						"xp": 124
+					},
+					{
+						"from": 7,
+						"id": 7,
+						"kind": "marten",
+						"to": 7,
+						"xp": 124
+					},
+					{
+						"from": 6,
+						"id": 8,
+						"kind": "fox",
+						"to": 7,
+						"xp": 124
+					},
+					{
+						"from": 5,
+						"id": 9,
+						"kind": "boar",
+						"to": 6,
+						"xp": 124
+					},
+					{
+						"from": 5,
+						"id": 10,
+						"kind": "marten",
+						"to": 6,
+						"xp": 124
+					}
+				],
+				"kills": 11,
+				"materials": 19,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 11,
+						"kind": "wolf",
+						"level": 3,
+						"options": [],
+						"star": 1,
+						"trait": "단단함",
+						"xp": 0
+					}
+				],
+				"outcome": "샘물이 다시 흐릅니다. 그러나 물길 끝의 채석장에서는 대답 없는 울림이 이어집니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 8,
+					"theme": 1
+				},
+				"seconds": 19,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 19.1,
+			"seed": 20261020,
+			"skills": 8,
+			"stage": 8,
+			"starter": "boar",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 29
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 16
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 6,
+			"minimum_hp": 112.8,
+			"progress": {
+				"cleared": 2,
+				"total": 2
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "marten",
+						"trait": "용맹함",
+						"values": {
+							"damage": 287.424,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 1,
+						"id": 5,
+						"kind": "marten",
+						"to": 2,
+						"xp": 48
+					}
+				],
+				"kills": 6,
+				"materials": 13,
+				"newcomers": [],
+				"outcome": "짓밟힌 풀밭 너머로 흉포한 발자국이 이어집니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 1,
+					"theme": 1
+				},
+				"seconds": 12,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 12.2,
+			"seed": 10417,
+			"skills": 2,
+			"stage": 1,
+			"starter": "marten",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 55
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 29
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 10,
+			"minimum_hp": 119.2,
+			"progress": {
+				"cleared": 2,
+				"total": 2
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "marten",
+						"trait": "용맹함",
+						"values": {
+							"damage": 529.824,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 2,
+						"id": 5,
+						"kind": "marten",
+						"to": 3,
+						"xp": 96
+					}
+				],
+				"kills": 10,
+				"materials": 16,
+				"newcomers": [],
+				"outcome": "야수뿐 아니라 마물과 죽은 자도 물길 주변을 맴돕니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 2,
+					"theme": 1
+				},
+				"seconds": 17,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 17.2,
+			"seed": 10417,
+			"skills": 2,
+			"stage": 2,
+			"starter": "marten",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 50
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 60
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 55
+				}
+			],
+			"bonds": 1,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 12,
+			"minimum_hp": 135.2,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "marten",
+						"trait": "용맹함",
+						"values": {
+							"damage": 333.1864,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 178.8776,
+							"skills": 1.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 3,
+						"id": 5,
+						"kind": "marten",
+						"to": 4,
+						"xp": 100
+					},
+					{
+						"from": 2,
+						"id": 6,
+						"kind": "boar",
+						"to": 2,
+						"xp": 60
+					}
+				],
+				"kills": 12,
+				"materials": 15,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 6,
+						"kind": "boar",
+						"level": 2,
+						"options": [],
+						"star": 1,
+						"trait": "용맹함",
+						"xp": 60
+					}
+				],
+				"outcome": "무리는 샘을 등진 채 달려왔습니다. 샘 위쪽에서 둔탁한 소리가 납니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 3,
+					"theme": 1
+				},
+				"seconds": 16,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 16.1,
+			"seed": 10417,
+			"skills": 3,
+			"stage": 3,
+			"starter": "marten",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 50
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 50
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 60
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 0,
+			"kills": 5,
+			"minimum_hp": 180.0,
+			"progress": {
+				"cleared": 2,
+				"total": 2
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "marten",
+						"trait": "용맹함",
+						"values": {
+							"damage": 316.07,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 307.434,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 4,
+						"id": 5,
+						"kind": "marten",
+						"to": 4,
+						"xp": 60
+					},
+					{
+						"from": 2,
+						"id": 6,
+						"kind": "boar",
+						"to": 3,
+						"xp": 60
+					}
+				],
+				"kills": 5,
+				"materials": 17,
+				"newcomers": [],
+				"outcome": "가시등이 물러난 자리에서 말라붙은 물길이 드러납니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 4,
+					"theme": 1
+				},
+				"seconds": 11,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 12.0,
+			"seed": 10417,
+			"skills": 4,
+			"stage": 4,
+			"starter": "marten",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 85
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 50
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 12,
+			"minimum_hp": 125.6,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "marten",
+						"trait": "용맹함",
+						"values": {
+							"damage": 340.904,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 382.904,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 4,
+						"id": 5,
+						"kind": "marten",
+						"to": 5,
+						"xp": 140
+					},
+					{
+						"from": 3,
+						"id": 6,
+						"kind": "boar",
+						"to": 4,
+						"xp": 140
+					}
+				],
+				"kills": 12,
+				"materials": 17,
+				"newcomers": [],
+				"outcome": "막힌 곳은 자연스럽게 무너진 흔적과 다릅니다. 흐름이 안쪽에서 멎었습니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 5,
+					"theme": 1
+				},
+				"seconds": 14,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 14.3,
+			"seed": 10417,
+			"skills": 4,
+			"stage": 5,
+			"starter": "marten",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 127
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 137
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "강인함",
+					"xp": 48
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 85
+				}
+			],
+			"bonds": 1,
+			"down_events": 0,
+			"heals": 2,
+			"kills": 15,
+			"minimum_hp": 69.1,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "marten",
+						"trait": "용맹함",
+						"values": {
+							"damage": 442.668,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 315.058,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "fox",
+						"trait": "강인함",
+						"values": {
+							"damage": 155.904,
+							"skills": 1.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 5,
+						"id": 5,
+						"kind": "marten",
+						"to": 6,
+						"xp": 192
+					},
+					{
+						"from": 4,
+						"id": 6,
+						"kind": "boar",
+						"to": 5,
+						"xp": 192
+					},
+					{
+						"from": 3,
+						"id": 7,
+						"kind": "fox",
+						"to": 3,
+						"xp": 48
+					}
+				],
+				"kills": 15,
+				"materials": 18,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 7,
+						"kind": "fox",
+						"level": 3,
+						"options": [],
+						"star": 1,
+						"trait": "강인함",
+						"xp": 48
+					}
+				],
+				"outcome": "채석장에서 흘러온 돌조각이 물길에 박혀 있습니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 6,
+					"theme": 1
+				},
+				"seconds": 16,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 16.2,
+			"seed": 10417,
+			"skills": 5,
+			"stage": 6,
+			"starter": "marten",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 85
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 130
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "강인함",
+					"xp": 111
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 72
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "wolf",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 24
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 127
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 137
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "강인함",
+					"xp": 48
+				}
+			],
+			"bonds": 2,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 16,
+			"minimum_hp": 120.3,
+			"progress": {
+				"cleared": 4,
+				"total": 4
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "marten",
+						"trait": "용맹함",
+						"values": {
+							"damage": 213.708,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 315.96,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "fox",
+						"trait": "강인함",
+						"values": {
+							"damage": 86.204,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "용맹함",
+						"values": {
+							"damage": 242.976,
+							"skills": 1.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 6,
+						"id": 5,
+						"kind": "marten",
+						"to": 7,
+						"xp": 168
+					},
+					{
+						"from": 5,
+						"id": 6,
+						"kind": "boar",
+						"to": 6,
+						"xp": 168
+					},
+					{
+						"from": 3,
+						"id": 7,
+						"kind": "fox",
+						"to": 4,
+						"xp": 168
+					},
+					{
+						"from": 3,
+						"id": 8,
+						"kind": "fox",
+						"to": 3,
+						"xp": 72
+					},
+					{
+						"from": 3,
+						"id": 9,
+						"kind": "wolf",
+						"to": 3,
+						"xp": 24
+					}
+				],
+				"kills": 16,
+				"materials": 17,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 8,
+						"kind": "fox",
+						"level": 3,
+						"options": [],
+						"star": 1,
+						"trait": "용맹함",
+						"xp": 72
+					},
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 9,
+						"kind": "wolf",
+						"level": 3,
+						"options": [],
+						"star": 1,
+						"trait": "용맹함",
+						"xp": 24
+					}
+				],
+				"outcome": "샘을 막은 바위 곁에서 계곡의 우두머리가 울부짖습니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 7,
+					"theme": 1
+				},
+				"seconds": 15,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 15.3,
+			"seed": 10417,
+			"skills": 7,
+			"stage": 7,
+			"starter": "marten",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 209
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 44
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "fox",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "강인함",
+					"xp": 95
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 91
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "wolf",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 43
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 85
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 130
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "강인함",
+					"xp": 111
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 72
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "wolf",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 24
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 2,
+			"kills": 11,
+			"minimum_hp": 125.6,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "marten",
+						"trait": "용맹함",
+						"values": {
+							"damage": 505.234,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 457.332,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "fox",
+						"trait": "강인함",
+						"values": {
+							"damage": 162.552,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "용맹함",
+						"values": {
+							"damage": 176.622,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 7,
+						"id": 5,
+						"kind": "marten",
+						"to": 7,
+						"xp": 124
+					},
+					{
+						"from": 6,
+						"id": 6,
+						"kind": "boar",
+						"to": 7,
+						"xp": 124
+					},
+					{
+						"from": 4,
+						"id": 7,
+						"kind": "fox",
+						"to": 5,
+						"xp": 124
+					},
+					{
+						"from": 3,
+						"id": 8,
+						"kind": "fox",
+						"to": 4,
+						"xp": 124
+					},
+					{
+						"from": 3,
+						"id": 9,
+						"kind": "wolf",
+						"to": 4,
+						"xp": 124
+					}
+				],
+				"kills": 11,
+				"materials": 19,
+				"newcomers": [],
+				"outcome": "샘물이 다시 흐릅니다. 그러나 물길 끝의 채석장에서는 대답 없는 울림이 이어집니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 8,
+					"theme": 1
+				},
+				"seconds": 18,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 18.5,
+			"seed": 10417,
+			"skills": 8,
+			"stage": 8,
+			"starter": "marten",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 29
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 32
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 0
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 16
+				}
+			],
+			"bonds": 2,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 6,
+			"minimum_hp": 160.8,
+			"progress": {
+				"cleared": 2,
+				"total": 2
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "marten",
+						"trait": "단단함",
+						"values": {
+							"damage": 220.856,
+							"mitigation": 2.88,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 72.568,
+							"skills": 1.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 1,
+						"id": 5,
+						"kind": "marten",
+						"to": 2,
+						"xp": 48
+					},
+					{
+						"from": 1,
+						"id": 6,
+						"kind": "boar",
+						"to": 1,
+						"xp": 32
+					}
+				],
+				"kills": 6,
+				"materials": 13,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 6,
+						"kind": "boar",
+						"level": 1,
+						"options": [],
+						"star": 1,
+						"trait": "용맹함",
+						"xp": 32
+					},
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 7,
+						"kind": "marten",
+						"level": 1,
+						"options": [],
+						"star": 1,
+						"trait": "민첩함",
+						"xp": 0
+					}
+				],
+				"outcome": "짓밟힌 풀밭 너머로 흉포한 발자국이 이어집니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 1,
+					"theme": 1
+				},
+				"seconds": 11,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 11.5,
+			"seed": 20261020,
+			"skills": 3,
+			"stage": 1,
+			"starter": "marten",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 55
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 23
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 61
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 0
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 29
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 32
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 0
+				}
+			],
+			"bonds": 1,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 10,
+			"minimum_hp": 132.0,
+			"progress": {
+				"cleared": 2,
+				"total": 2
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "marten",
+						"trait": "단단함",
+						"values": {
+							"damage": 267.776,
+							"mitigation": 2.88,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 99.732,
+							"skills": 1.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 206.508,
+							"skills": 1.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 2,
+						"id": 5,
+						"kind": "marten",
+						"to": 3,
+						"xp": 96
+					},
+					{
+						"from": 1,
+						"id": 6,
+						"kind": "boar",
+						"to": 3,
+						"xp": 96
+					},
+					{
+						"from": 1,
+						"id": 7,
+						"kind": "marten",
+						"to": 2,
+						"xp": 96
+					}
+				],
+				"kills": 10,
+				"materials": 16,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 8,
+						"kind": "fox",
+						"level": 1,
+						"options": [],
+						"star": 1,
+						"trait": "민첩함",
+						"xp": 0
+					}
+				],
+				"outcome": "야수뿐 아니라 마물과 죽은 자도 물길 주변을 맴돕니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 2,
+					"theme": 1
+				},
+				"seconds": 11,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 11.4,
+			"seed": 20261020,
+			"skills": 4,
+			"stage": 2,
+			"starter": "marten",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 50
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 18
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 91
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 65
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 55
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 23
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 61
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 0
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 12,
+			"minimum_hp": 143.2,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "marten",
+						"trait": "단단함",
+						"values": {
+							"damage": 116.952,
+							"mitigation": 3.42,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 216.992,
+							"skills": 1.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 103.4,
+							"skills": 1.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "민첩함",
+						"values": {
+							"damage": 111.792,
+							"skills": 1.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 3,
+						"id": 5,
+						"kind": "marten",
+						"to": 4,
+						"xp": 100
+					},
+					{
+						"from": 3,
+						"id": 6,
+						"kind": "boar",
+						"to": 4,
+						"xp": 100
+					},
+					{
+						"from": 2,
+						"id": 7,
+						"kind": "marten",
+						"to": 3,
+						"xp": 100
+					},
+					{
+						"from": 1,
+						"id": 8,
+						"kind": "fox",
+						"to": 2,
+						"xp": 100
+					}
+				],
+				"kills": 12,
+				"materials": 15,
+				"newcomers": [],
+				"outcome": "무리는 샘을 등진 채 달려왔습니다. 샘 위쪽에서 둔탁한 소리가 납니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 3,
+					"theme": 1
+				},
+				"seconds": 11,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 11.5,
+			"seed": 20261020,
+			"skills": 5,
+			"stage": 3,
+			"starter": "marten",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 78
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 46
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 55
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 50
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 18
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 91
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 65
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 5,
+			"minimum_hp": 180.0,
+			"progress": {
+				"cleared": 2,
+				"total": 2
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "marten",
+						"trait": "단단함",
+						"values": {
+							"damage": 164.624,
+							"mitigation": 3.36,
+							"skills": 1.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 231.47,
+							"skills": 1.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 161.252,
+							"skills": 1.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "민첩함",
+						"values": {
+							"damage": 78.158,
+							"skills": 1.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 4,
+						"id": 5,
+						"kind": "marten",
+						"to": 4,
+						"xp": 60
+					},
+					{
+						"from": 4,
+						"id": 6,
+						"kind": "boar",
+						"to": 4,
+						"xp": 60
+					},
+					{
+						"from": 3,
+						"id": 7,
+						"kind": "marten",
+						"to": 4,
+						"xp": 60
+					},
+					{
+						"from": 2,
+						"id": 8,
+						"kind": "fox",
+						"to": 3,
+						"xp": 60
+					}
+				],
+				"kills": 5,
+				"materials": 17,
+				"newcomers": [],
+				"outcome": "가시등이 물러난 자리에서 말라붙은 물길이 드러납니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 4,
+					"theme": 1
+				},
+				"seconds": 9,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 9.9,
+			"seed": 20261020,
+			"skills": 4,
+			"stage": 4,
+			"starter": "marten",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 78
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 46
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 90
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "marten",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 20
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 78
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 46
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 55
+				}
+			],
+			"bonds": 1,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 12,
+			"minimum_hp": 131.2,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "marten",
+						"trait": "단단함",
+						"values": {
+							"damage": 201.052,
+							"mitigation": 1.68,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 193.622,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 195.476,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "민첩함",
+						"values": {
+							"damage": 134.41,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 4,
+						"id": 5,
+						"kind": "marten",
+						"to": 5,
+						"xp": 140
+					},
+					{
+						"from": 4,
+						"id": 6,
+						"kind": "boar",
+						"to": 5,
+						"xp": 140
+					},
+					{
+						"from": 4,
+						"id": 7,
+						"kind": "marten",
+						"to": 5,
+						"xp": 140
+					},
+					{
+						"from": 3,
+						"id": 8,
+						"kind": "fox",
+						"to": 4,
+						"xp": 140
+					},
+					{
+						"from": 2,
+						"id": 9,
+						"kind": "marten",
+						"to": 2,
+						"xp": 20
+					}
+				],
+				"kills": 12,
+				"materials": 17,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 9,
+						"kind": "marten",
+						"level": 2,
+						"options": [],
+						"star": 1,
+						"trait": "민첩함",
+						"xp": 20
+					}
+				],
+				"outcome": "막힌 곳은 자연스럽게 무너진 흔적과 다릅니다. 흐름이 안쪽에서 멎었습니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 5,
+					"theme": 1
+				},
+				"seconds": 13,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 13.3,
+			"seed": 20261020,
+			"skills": 8,
+			"stage": 5,
+			"starter": "marten",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 127
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 95
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 63
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 142
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "marten",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 37
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 78
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 46
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 90
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "marten",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 20
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 15,
+			"minimum_hp": 124.5,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "marten",
+						"trait": "단단함",
+						"values": {
+							"damage": 165.176,
+							"mitigation": 4.48,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 393.718,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 170.68,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "민첩함",
+						"values": {
+							"damage": 207.29,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 5,
+						"id": 5,
+						"kind": "marten",
+						"to": 6,
+						"xp": 192
+					},
+					{
+						"from": 5,
+						"id": 6,
+						"kind": "boar",
+						"to": 6,
+						"xp": 192
+					},
+					{
+						"from": 5,
+						"id": 7,
+						"kind": "marten",
+						"to": 6,
+						"xp": 192
+					},
+					{
+						"from": 4,
+						"id": 8,
+						"kind": "fox",
+						"to": 5,
+						"xp": 192
+					},
+					{
+						"from": 2,
+						"id": 9,
+						"kind": "marten",
+						"to": 4,
+						"xp": 192
+					}
+				],
+				"kills": 15,
+				"materials": 18,
+				"newcomers": [],
+				"outcome": "채석장에서 흘러온 돌조각이 물길에 박혀 있습니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 6,
+					"theme": 1
+				},
+				"seconds": 12,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 13.0,
+			"seed": 20261020,
+			"skills": 8,
+			"stage": 6,
+			"starter": "marten",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 85
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 53
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 21
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 135
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "marten",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 65
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 127
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 95
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 63
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 142
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "marten",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 37
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 16,
+			"minimum_hp": 133.1,
+			"progress": {
+				"cleared": 4,
+				"total": 4
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "marten",
+						"trait": "단단함",
+						"values": {
+							"damage": 104.376,
+							"mitigation": 3.84,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 373.974,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 229.476,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "민첩함",
+						"values": {
+							"damage": 150.942,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 6,
+						"id": 5,
+						"kind": "marten",
+						"to": 7,
+						"xp": 168
+					},
+					{
+						"from": 6,
+						"id": 6,
+						"kind": "boar",
+						"to": 7,
+						"xp": 168
+					},
+					{
+						"from": 6,
+						"id": 7,
+						"kind": "marten",
+						"to": 7,
+						"xp": 168
+					},
+					{
+						"from": 5,
+						"id": 8,
+						"kind": "fox",
+						"to": 6,
+						"xp": 168
+					},
+					{
+						"from": 4,
+						"id": 9,
+						"kind": "marten",
+						"to": 5,
+						"xp": 168
+					}
+				],
+				"kills": 16,
+				"materials": 17,
+				"newcomers": [],
+				"outcome": "샘을 막은 바위 곁에서 계곡의 우두머리가 울부짖습니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 7,
+					"theme": 1
+				},
+				"seconds": 14,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 14.7,
+			"seed": 20261020,
+			"skills": 8,
+			"stage": 7,
+			"starter": "marten",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 209
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 177
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 145
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 49
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "marten",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 14
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 10,
+					"kind": "wolf",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 28
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "marten",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 85
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 53
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 21
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 135
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "marten",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 65
+				}
+			],
+			"bonds": 1,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 11,
+			"minimum_hp": 167.2,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "marten",
+						"trait": "단단함",
+						"values": {
+							"damage": 273.552,
+							"mitigation": 6.12,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 355.44,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 335.044,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "민첩함",
+						"values": {
+							"damage": 358.476,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 7,
+						"id": 5,
+						"kind": "marten",
+						"to": 7,
+						"xp": 124
+					},
+					{
+						"from": 7,
+						"id": 6,
+						"kind": "boar",
+						"to": 7,
+						"xp": 124
+					},
+					{
+						"from": 7,
+						"id": 7,
+						"kind": "marten",
+						"to": 7,
+						"xp": 124
+					},
+					{
+						"from": 6,
+						"id": 8,
+						"kind": "fox",
+						"to": 7,
+						"xp": 124
+					},
+					{
+						"from": 5,
+						"id": 9,
+						"kind": "marten",
+						"to": 6,
+						"xp": 124
+					},
+					{
+						"from": 3,
+						"id": 10,
+						"kind": "wolf",
+						"to": 3,
+						"xp": 28
+					}
+				],
+				"kills": 11,
+				"materials": 19,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 10,
+						"kind": "wolf",
+						"level": 3,
+						"options": [],
+						"star": 1,
+						"trait": "단단함",
+						"xp": 28
+					}
+				],
+				"outcome": "샘물이 다시 흐릅니다. 그러나 물길 끝의 채석장에서는 대답 없는 울림이 이어집니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 8,
+					"theme": 1
+				},
+				"seconds": 15,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 15.5,
+			"seed": 20261020,
+			"skills": 8,
+			"stage": 8,
+			"starter": "marten",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 29
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 16
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 0,
+			"kills": 6,
+			"minimum_hp": 141.6,
+			"progress": {
+				"cleared": 2,
+				"total": 2
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "fox",
+						"trait": "용맹함",
+						"values": {
+							"damage": 296.174,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 1,
+						"id": 5,
+						"kind": "fox",
+						"to": 2,
+						"xp": 48
+					}
+				],
+				"kills": 6,
+				"materials": 13,
+				"newcomers": [],
+				"outcome": "짓밟힌 풀밭 너머로 흉포한 발자국이 이어집니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 1,
+					"theme": 1
+				},
+				"seconds": 11,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 11.7,
+			"seed": 10417,
+			"skills": 2,
+			"stage": 1,
+			"starter": "fox",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 55
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 29
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 10,
+			"minimum_hp": 84.0,
+			"progress": {
+				"cleared": 2,
+				"total": 2
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "fox",
+						"trait": "용맹함",
+						"values": {
+							"damage": 541.784,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 2,
+						"id": 5,
+						"kind": "fox",
+						"to": 3,
+						"xp": 96
+					}
+				],
+				"kills": 10,
+				"materials": 16,
+				"newcomers": [],
+				"outcome": "야수뿐 아니라 마물과 죽은 자도 물길 주변을 맴돕니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 2,
+					"theme": 1
+				},
+				"seconds": 16,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 16.2,
+			"seed": 10417,
+			"skills": 2,
+			"stage": 2,
+			"starter": "fox",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 50
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 60
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 55
+				}
+			],
+			"bonds": 1,
+			"down_events": 0,
+			"heals": 0,
+			"kills": 12,
+			"minimum_hp": 180.0,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "fox",
+						"trait": "용맹함",
+						"values": {
+							"damage": 354.036,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 176.028,
+							"skills": 1.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 3,
+						"id": 5,
+						"kind": "fox",
+						"to": 4,
+						"xp": 100
+					},
+					{
+						"from": 2,
+						"id": 6,
+						"kind": "boar",
+						"to": 2,
+						"xp": 60
+					}
+				],
+				"kills": 12,
+				"materials": 15,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 6,
+						"kind": "boar",
+						"level": 2,
+						"options": [],
+						"star": 1,
+						"trait": "용맹함",
+						"xp": 60
+					}
+				],
+				"outcome": "무리는 샘을 등진 채 달려왔습니다. 샘 위쪽에서 둔탁한 소리가 납니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 3,
+					"theme": 1
+				},
+				"seconds": 12,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 12.8,
+			"seed": 10417,
+			"skills": 3,
+			"stage": 3,
+			"starter": "fox",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 50
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 50
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 60
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 5,
+			"minimum_hp": 180.0,
+			"progress": {
+				"cleared": 2,
+				"total": 2
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "fox",
+						"trait": "용맹함",
+						"values": {
+							"damage": 389.3732,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 222.1308,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 4,
+						"id": 5,
+						"kind": "fox",
+						"to": 4,
+						"xp": 60
+					},
+					{
+						"from": 2,
+						"id": 6,
+						"kind": "boar",
+						"to": 3,
+						"xp": 60
+					}
+				],
+				"kills": 5,
+				"materials": 17,
+				"newcomers": [],
+				"outcome": "가시등이 물러난 자리에서 말라붙은 물길이 드러납니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 4,
+					"theme": 1
+				},
+				"seconds": 13,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 13.7,
+			"seed": 10417,
+			"skills": 4,
+			"stage": 4,
+			"starter": "fox",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 85
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 30
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 50
+				}
+			],
+			"bonds": 1,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 12,
+			"minimum_hp": 125.6,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "fox",
+						"trait": "용맹함",
+						"values": {
+							"damage": 315.4928,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 170.748,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "boar",
+						"trait": "민첩함",
+						"values": {
+							"damage": 218.4472,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 4,
+						"id": 5,
+						"kind": "fox",
+						"to": 5,
+						"xp": 140
+					},
+					{
+						"from": 3,
+						"id": 6,
+						"kind": "boar",
+						"to": 4,
+						"xp": 140
+					},
+					{
+						"from": 2,
+						"id": 7,
+						"kind": "boar",
+						"to": 3,
+						"xp": 100
+					}
+				],
+				"kills": 12,
+				"materials": 17,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 7,
+						"kind": "boar",
+						"level": 3,
+						"options": [],
+						"star": 1,
+						"trait": "민첩함",
+						"xp": 30
+					}
+				],
+				"outcome": "막힌 곳은 자연스럽게 무너진 흔적과 다릅니다. 흐름이 안쪽에서 멎었습니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 5,
+					"theme": 1
+				},
+				"seconds": 15,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 15.5,
+			"seed": 10417,
+			"skills": 6,
+			"stage": 5,
+			"starter": "fox",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 127
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 137
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 117
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "강인함",
+					"xp": 48
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 85
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 30
+				}
+			],
+			"bonds": 1,
+			"down_events": 0,
+			"heals": 2,
+			"kills": 15,
+			"minimum_hp": 114.1,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "fox",
+						"trait": "용맹함",
+						"values": {
+							"damage": 387.1,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 201.656,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "boar",
+						"trait": "민첩함",
+						"values": {
+							"damage": 158.592,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "강인함",
+						"values": {
+							"damage": 166.704,
+							"skills": 1.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 5,
+						"id": 5,
+						"kind": "fox",
+						"to": 6,
+						"xp": 192
+					},
+					{
+						"from": 4,
+						"id": 6,
+						"kind": "boar",
+						"to": 5,
+						"xp": 192
+					},
+					{
+						"from": 3,
+						"id": 7,
+						"kind": "boar",
+						"to": 4,
+						"xp": 192
+					},
+					{
+						"from": 3,
+						"id": 8,
+						"kind": "fox",
+						"to": 3,
+						"xp": 48
+					}
+				],
+				"kills": 15,
+				"materials": 18,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 8,
+						"kind": "fox",
+						"level": 3,
+						"options": [],
+						"star": 1,
+						"trait": "강인함",
+						"xp": 48
+					}
+				],
+				"outcome": "채석장에서 흘러온 돌조각이 물길에 박혀 있습니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 6,
+					"theme": 1
+				},
+				"seconds": 16,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 16.5,
+			"seed": 10417,
+			"skills": 7,
+			"stage": 6,
+			"starter": "fox",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 85
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 130
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 145
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "강인함",
+					"xp": 111
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 72
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 10,
+					"kind": "wolf",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 24
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 127
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 137
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 117
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "강인함",
+					"xp": 48
+				}
+			],
+			"bonds": 2,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 16,
+			"minimum_hp": 128.8,
+			"progress": {
+				"cleared": 4,
+				"total": 4
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "fox",
+						"trait": "용맹함",
+						"values": {
+							"damage": 452.79,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 231.838,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "boar",
+						"trait": "민첩함",
+						"values": {
+							"damage": 77.82,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "강인함",
+						"values": {
+							"damage": 84.32,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 6,
+						"id": 5,
+						"kind": "fox",
+						"to": 7,
+						"xp": 168
+					},
+					{
+						"from": 5,
+						"id": 6,
+						"kind": "boar",
+						"to": 6,
+						"xp": 168
+					},
+					{
+						"from": 4,
+						"id": 7,
+						"kind": "boar",
+						"to": 5,
+						"xp": 168
+					},
+					{
+						"from": 3,
+						"id": 8,
+						"kind": "fox",
+						"to": 4,
+						"xp": 168
+					},
+					{
+						"from": 3,
+						"id": 9,
+						"kind": "fox",
+						"to": 3,
+						"xp": 72
+					},
+					{
+						"from": 3,
+						"id": 10,
+						"kind": "wolf",
+						"to": 3,
+						"xp": 24
+					}
+				],
+				"kills": 16,
+				"materials": 17,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 9,
+						"kind": "fox",
+						"level": 3,
+						"options": [],
+						"star": 1,
+						"trait": "용맹함",
+						"xp": 72
+					},
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 10,
+						"kind": "wolf",
+						"level": 3,
+						"options": [],
+						"star": 1,
+						"trait": "용맹함",
+						"xp": 24
+					}
+				],
+				"outcome": "샘을 막은 바위 곁에서 계곡의 우두머리가 울부짖습니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 7,
+					"theme": 1
+				},
+				"seconds": 16,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 16.3,
+			"seed": 10417,
+			"skills": 8,
+			"stage": 7,
+			"starter": "fox",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 209
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 44
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "boar",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 94
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "강인함",
+					"xp": 95
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 91
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 10,
+					"kind": "wolf",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 43
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 85
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 130
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 145
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "강인함",
+					"xp": 111
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 72
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 10,
+					"kind": "wolf",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 24
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 2,
+			"kills": 11,
+			"minimum_hp": 128.8,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "fox",
+						"trait": "용맹함",
+						"values": {
+							"damage": 515.9648,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 343.768,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "boar",
+						"trait": "민첩함",
+						"values": {
+							"damage": 261.1104,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "강인함",
+						"values": {
+							"damage": 166.8808,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 7,
+						"id": 5,
+						"kind": "fox",
+						"to": 7,
+						"xp": 124
+					},
+					{
+						"from": 6,
+						"id": 6,
+						"kind": "boar",
+						"to": 7,
+						"xp": 124
+					},
+					{
+						"from": 5,
+						"id": 7,
+						"kind": "boar",
+						"to": 6,
+						"xp": 124
+					},
+					{
+						"from": 4,
+						"id": 8,
+						"kind": "fox",
+						"to": 5,
+						"xp": 124
+					},
+					{
+						"from": 3,
+						"id": 9,
+						"kind": "fox",
+						"to": 4,
+						"xp": 124
+					},
+					{
+						"from": 3,
+						"id": 10,
+						"kind": "wolf",
+						"to": 4,
+						"xp": 124
+					}
+				],
+				"kills": 11,
+				"materials": 19,
+				"newcomers": [],
+				"outcome": "샘물이 다시 흐릅니다. 그러나 물길 끝의 채석장에서는 대답 없는 울림이 이어집니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 8,
+					"theme": 1
+				},
+				"seconds": 20,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 20.0,
+			"seed": 10417,
+			"skills": 8,
+			"stage": 8,
+			"starter": "fox",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 29
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 32
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 0
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 16
+				}
+			],
+			"bonds": 2,
+			"down_events": 0,
+			"heals": 0,
+			"kills": 6,
+			"minimum_hp": 170.4,
+			"progress": {
+				"cleared": 2,
+				"total": 2
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "fox",
+						"trait": "단단함",
+						"values": {
+							"damage": 199.816,
+							"skills": 1.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 105.608,
+							"skills": 1.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 1,
+						"id": 5,
+						"kind": "fox",
+						"to": 2,
+						"xp": 48
+					},
+					{
+						"from": 1,
+						"id": 6,
+						"kind": "boar",
+						"to": 1,
+						"xp": 32
+					}
+				],
+				"kills": 6,
+				"materials": 13,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 6,
+						"kind": "boar",
+						"level": 1,
+						"options": [],
+						"star": 1,
+						"trait": "용맹함",
+						"xp": 32
+					},
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 7,
+						"kind": "marten",
+						"level": 1,
+						"options": [],
+						"star": 1,
+						"trait": "민첩함",
+						"xp": 0
+					}
+				],
+				"outcome": "짓밟힌 풀밭 너머로 흉포한 발자국이 이어집니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 1,
+					"theme": 1
+				},
+				"seconds": 10,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 10.6,
+			"seed": 20261020,
+			"skills": 2,
+			"stage": 1,
+			"starter": "fox",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 55
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 23
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 61
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 0
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 29
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 32
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 0
+				}
+			],
+			"bonds": 1,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 10,
+			"minimum_hp": 103.2,
+			"progress": {
+				"cleared": 2,
+				"total": 2
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "fox",
+						"trait": "단단함",
+						"values": {
+							"damage": 175.132,
+							"mitigation": 1.44,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 158.1,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 231.6,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 2,
+						"id": 5,
+						"kind": "fox",
+						"to": 3,
+						"xp": 96
+					},
+					{
+						"from": 1,
+						"id": 6,
+						"kind": "boar",
+						"to": 3,
+						"xp": 96
+					},
+					{
+						"from": 1,
+						"id": 7,
+						"kind": "marten",
+						"to": 2,
+						"xp": 96
+					}
+				],
+				"kills": 10,
+				"materials": 16,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 8,
+						"kind": "fox",
+						"level": 1,
+						"options": [],
+						"star": 1,
+						"trait": "민첩함",
+						"xp": 0
+					}
+				],
+				"outcome": "야수뿐 아니라 마물과 죽은 자도 물길 주변을 맴돕니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 2,
+					"theme": 1
+				},
+				"seconds": 11,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 11.7,
+			"seed": 20261020,
+			"skills": 6,
+			"stage": 2,
+			"starter": "fox",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 50
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 18
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 91
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 65
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 55
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 23
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 61
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 1,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 0
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 12,
+			"minimum_hp": 152.0,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "fox",
+						"trait": "단단함",
+						"values": {
+							"damage": 168.712,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 123.4,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 175.824,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "민첩함",
+						"values": {
+							"damage": 81.2,
+							"skills": 1.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 3,
+						"id": 5,
+						"kind": "fox",
+						"to": 4,
+						"xp": 100
+					},
+					{
+						"from": 3,
+						"id": 6,
+						"kind": "boar",
+						"to": 4,
+						"xp": 100
+					},
+					{
+						"from": 2,
+						"id": 7,
+						"kind": "marten",
+						"to": 3,
+						"xp": 100
+					},
+					{
+						"from": 1,
+						"id": 8,
+						"kind": "fox",
+						"to": 2,
+						"xp": 100
+					}
+				],
+				"kills": 12,
+				"materials": 15,
+				"newcomers": [],
+				"outcome": "무리는 샘을 등진 채 달려왔습니다. 샘 위쪽에서 둔탁한 소리가 납니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 3,
+					"theme": 1
+				},
+				"seconds": 11,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 11.6,
+			"seed": 20261020,
+			"skills": 7,
+			"stage": 3,
+			"starter": "fox",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 78
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 46
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 55
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 50
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 18
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 91
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 65
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 5,
+			"minimum_hp": 180.0,
+			"progress": {
+				"cleared": 2,
+				"total": 2
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "fox",
+						"trait": "단단함",
+						"values": {
+							"damage": 182.552,
+							"skills": 1.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 132.528,
+							"skills": 1.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 222.324,
+							"skills": 1.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "민첩함",
+						"values": {
+							"damage": 92.1,
+							"skills": 1.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 4,
+						"id": 5,
+						"kind": "fox",
+						"to": 4,
+						"xp": 60
+					},
+					{
+						"from": 4,
+						"id": 6,
+						"kind": "boar",
+						"to": 4,
+						"xp": 60
+					},
+					{
+						"from": 3,
+						"id": 7,
+						"kind": "marten",
+						"to": 4,
+						"xp": 60
+					},
+					{
+						"from": 2,
+						"id": 8,
+						"kind": "fox",
+						"to": 3,
+						"xp": 60
+					}
+				],
+				"kills": 5,
+				"materials": 17,
+				"newcomers": [],
+				"outcome": "가시등이 물러난 자리에서 말라붙은 물길이 드러납니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 4,
+					"theme": 1
+				},
+				"seconds": 10,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 10.7,
+			"seed": 20261020,
+			"skills": 4,
+			"stage": 4,
+			"starter": "fox",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 78
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 46
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 90
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "marten",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 20
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 78
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 46
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 55
+				}
+			],
+			"bonds": 1,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 12,
+			"minimum_hp": 131.2,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "fox",
+						"trait": "단단함",
+						"values": {
+							"damage": 214.504,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 199.768,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 218.088,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "민첩함",
+						"values": {
+							"damage": 100.376,
+							"skills": 1.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 4,
+						"id": 5,
+						"kind": "fox",
+						"to": 5,
+						"xp": 140
+					},
+					{
+						"from": 4,
+						"id": 6,
+						"kind": "boar",
+						"to": 5,
+						"xp": 140
+					},
+					{
+						"from": 4,
+						"id": 7,
+						"kind": "marten",
+						"to": 5,
+						"xp": 140
+					},
+					{
+						"from": 3,
+						"id": 8,
+						"kind": "fox",
+						"to": 4,
+						"xp": 140
+					},
+					{
+						"from": 2,
+						"id": 9,
+						"kind": "marten",
+						"to": 2,
+						"xp": 20
+					}
+				],
+				"kills": 12,
+				"materials": 17,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 9,
+						"kind": "marten",
+						"level": 2,
+						"options": [],
+						"star": 1,
+						"trait": "민첩함",
+						"xp": 20
+					}
+				],
+				"outcome": "막힌 곳은 자연스럽게 무너진 흔적과 다릅니다. 흐름이 안쪽에서 멎었습니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 5,
+					"theme": 1
+				},
+				"seconds": 12,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 12.9,
+			"seed": 20261020,
+			"skills": 7,
+			"stage": 5,
+			"starter": "fox",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 127
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 95
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 63
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 142
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "marten",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 37
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 110
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 78
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 46
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 90
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "marten",
+					"level": 2,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 20
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 15,
+			"minimum_hp": 124.5,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "fox",
+						"trait": "단단함",
+						"values": {
+							"damage": 268.652,
+							"mitigation": 1.92,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 116.248,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 310.128,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "민첩함",
+						"values": {
+							"damage": 238.264,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 5,
+						"id": 5,
+						"kind": "fox",
+						"to": 6,
+						"xp": 192
+					},
+					{
+						"from": 5,
+						"id": 6,
+						"kind": "boar",
+						"to": 6,
+						"xp": 192
+					},
+					{
+						"from": 5,
+						"id": 7,
+						"kind": "marten",
+						"to": 6,
+						"xp": 192
+					},
+					{
+						"from": 4,
+						"id": 8,
+						"kind": "fox",
+						"to": 5,
+						"xp": 192
+					},
+					{
+						"from": 2,
+						"id": 9,
+						"kind": "marten",
+						"to": 4,
+						"xp": 192
+					}
+				],
+				"kills": 15,
+				"materials": 18,
+				"newcomers": [],
+				"outcome": "채석장에서 흘러온 돌조각이 물길에 박혀 있습니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 6,
+					"theme": 1
+				},
+				"seconds": 14,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 14.1,
+			"seed": 20261020,
+			"skills": 8,
+			"stage": 6,
+			"starter": "fox",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 85
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 53
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 21
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 135
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "marten",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 65
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 127
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 95
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 63
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 142
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "marten",
+					"level": 4,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 37
+				}
+			],
+			"bonds": 0,
+			"down_events": 0,
+			"heals": 2,
+			"kills": 16,
+			"minimum_hp": 128.8,
+			"progress": {
+				"cleared": 4,
+				"total": 4
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "fox",
+						"trait": "단단함",
+						"values": {
+							"damage": 245.726,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 290.614,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 213.708,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "민첩함",
+						"values": {
+							"damage": 108.3,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 6,
+						"id": 5,
+						"kind": "fox",
+						"to": 7,
+						"xp": 168
+					},
+					{
+						"from": 6,
+						"id": 6,
+						"kind": "boar",
+						"to": 7,
+						"xp": 168
+					},
+					{
+						"from": 6,
+						"id": 7,
+						"kind": "marten",
+						"to": 7,
+						"xp": 168
+					},
+					{
+						"from": 5,
+						"id": 8,
+						"kind": "fox",
+						"to": 6,
+						"xp": 168
+					},
+					{
+						"from": 4,
+						"id": 9,
+						"kind": "marten",
+						"to": 5,
+						"xp": 168
+					}
+				],
+				"kills": 16,
+				"materials": 17,
+				"newcomers": [],
+				"outcome": "샘을 막은 바위 곁에서 계곡의 우두머리가 울부짖습니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 7,
+					"theme": 1
+				},
+				"seconds": 15,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 15.4,
+			"seed": 20261020,
+			"skills": 8,
+			"stage": 7,
+			"starter": "fox",
+			"success": true
+		},
+		{
+			"after": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 209
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 177
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 145
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 49
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "marten",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 14
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 10,
+					"kind": "wolf",
+					"level": 3,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 28
+				}
+			],
+			"before": [
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 5,
+					"kind": "fox",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "단단함",
+					"xp": 85
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 6,
+					"kind": "boar",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "용맹함",
+					"xp": 53
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 7,
+					"kind": "marten",
+					"level": 7,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 21
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 8,
+					"kind": "fox",
+					"level": 6,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 135
+				},
+				{
+					"favorite": false,
+					"grade": "common",
+					"id": 9,
+					"kind": "marten",
+					"level": 5,
+					"options": [],
+					"star": 1,
+					"trait": "민첩함",
+					"xp": 65
+				}
+			],
+			"bonds": 1,
+			"down_events": 0,
+			"heals": 1,
+			"kills": 11,
+			"minimum_hp": 148.0,
+			"progress": {
+				"cleared": 3,
+				"total": 3
+			},
+			"report": {
+				"contributions": [
+					{
+						"id": 5,
+						"kind": "fox",
+						"trait": "단단함",
+						"values": {
+							"damage": 324.344,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 6,
+						"kind": "boar",
+						"trait": "용맹함",
+						"values": {
+							"damage": 271.904,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 7,
+						"kind": "marten",
+						"trait": "민첩함",
+						"values": {
+							"damage": 476.544,
+							"skills": 2.0
+						}
+					},
+					{
+						"id": 8,
+						"kind": "fox",
+						"trait": "민첩함",
+						"values": {
+							"damage": 236.6,
+							"skills": 2.0
+						}
+					}
+				],
+				"growth": [
+					{
+						"from": 7,
+						"id": 5,
+						"kind": "fox",
+						"to": 7,
+						"xp": 124
+					},
+					{
+						"from": 7,
+						"id": 6,
+						"kind": "boar",
+						"to": 7,
+						"xp": 124
+					},
+					{
+						"from": 7,
+						"id": 7,
+						"kind": "marten",
+						"to": 7,
+						"xp": 124
+					},
+					{
+						"from": 6,
+						"id": 8,
+						"kind": "fox",
+						"to": 7,
+						"xp": 124
+					},
+					{
+						"from": 5,
+						"id": 9,
+						"kind": "marten",
+						"to": 6,
+						"xp": 124
+					},
+					{
+						"from": 3,
+						"id": 10,
+						"kind": "wolf",
+						"to": 3,
+						"xp": 28
+					}
+				],
+				"kills": 11,
+				"materials": 19,
+				"newcomers": [
+					{
+						"favorite": false,
+						"grade": "common",
+						"id": 10,
+						"kind": "wolf",
+						"level": 3,
+						"options": [],
+						"star": 1,
+						"trait": "단단함",
+						"xp": 28
+					}
+				],
+				"outcome": "샘물이 다시 흐릅니다. 그러나 물길 끝의 채석장에서는 대답 없는 울림이 이어집니다.",
+				"route": {
+					"difficulty": "normal",
+					"stage": 8,
+					"theme": 1
+				},
+				"seconds": 17,
+				"stage_id": 1,
+				"tutorial": false
+			},
+			"seconds": 17.6,
+			"seed": 20261020,
+			"skills": 8,
+			"stage": 8,
+			"starter": "fox",
+			"success": true
+		}
+	]
+}

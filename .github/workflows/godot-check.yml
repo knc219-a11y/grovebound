@@ -84,6 +84,15 @@ jobs:
           timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_special_combat.gd 2>&1 | tee special-combat.log
           grep -q 'SPECIAL COMBAT PASS:' special-combat.log
           if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR:' synthesis-progression.log synthesis-preview.log special-synthesis.log special-combat.log; then exit 1; fi
+      - name: Map progression and eight-stage valley
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_campaign_routes.gd 2>&1 | tee campaign-routes.log
+          grep -q 'CAMPAIGN ROUTES PASS:' campaign-routes.log
+          timeout 90s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/audit_valley_routes.gd 2>&1 | tee valley-journey.log
+          grep -q 'VALLEY JOURNEY PASS 48/48' valley-journey.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR:' campaign-routes.log valley-journey.log; then exit 1; fi
       - name: Companion evolution transaction and combat
         shell: bash
         run: |

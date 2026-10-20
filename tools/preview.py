@@ -11,11 +11,19 @@ import tempfile
 ERROR_MARKERS = ("SCRIPT ERROR:", "Parse Error:", "ERROR:")
 
 
-def run(command, *, cwd, check_godot=False, timeout=180):
+def run(command, *, cwd, check_godot=False, timeout=180, allow_shader_cache_warning=False):
+    startup = None
+    if sys.platform == "win32":
+        startup = subprocess.STARTUPINFO()
+        startup.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        startup.wShowWindow = subprocess.SW_HIDE
     result = subprocess.run(command, cwd=cwd, capture_output=True, stdin=subprocess.DEVNULL, text=True,
-                            encoding="utf-8", errors="replace", timeout=timeout)
+                            encoding="utf-8", errors="replace", timeout=timeout, startupinfo=startup)
     log = result.stdout + result.stderr
-    if result.returncode or (check_godot and any(s in log for s in ERROR_MARKERS)):
+    error_lines = [line for line in log.splitlines() if any(s in line for s in ERROR_MARKERS)]
+    if allow_shader_cache_warning:
+        error_lines = [line for line in error_lines if line.strip() != "ERROR: Can't create shader cache folder, no shader caching will happen: user://"]
+    if result.returncode or (check_godot and error_lines):
         raise RuntimeError(f"Failed: {command[0]}\n{log[-10000:]}")
     return log
 
@@ -34,6 +42,8 @@ def main():
     p.add_argument("--gif-seconds", type=float, default=0.0, help="0 keeps the entire clip")
     p.add_argument("--skip-import", action="store_true")
     p.add_argument("--audio", action="store_true", help="Keep Godot movie audio in MP4 (GIF stays silent)")
+    p.add_argument("--frames-only", action="store_true", help="Export actual PNG frames without requiring FFmpeg")
+    p.add_argument("--allow-shader-cache-warning", action="store_true", help="Allow only the exact user:// shader cache warning on restricted hosts")
     args = p.parse_args()
     if not (0 < args.seconds <= 30 and 1 <= args.fps <= 60 and 1 <= args.gif_fps <= 30
             and 320 <= args.width <= 1920 and args.width % 2 == 0
@@ -48,7 +58,7 @@ def main():
         candidate = Path(args.godot).expanduser().resolve()
         if candidate.is_file(): godot = str(candidate)
     ffmpeg = shutil.which("ffmpeg")
-    if not godot or not ffmpeg:
+    if not godot or (not ffmpeg and not args.frames_only):
         p.error("Godot and FFmpeg are required; pass --godot PATH and put FFmpeg on PATH")
     if sys.platform.startswith("linux") and not (os.getenv("DISPLAY") or os.getenv("WAYLAND_DISPLAY")):
         p.error("Recording needs a graphics display (local desktop or Xvfb); headless mode cannot render images")
@@ -57,16 +67,26 @@ def main():
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="grove-preview-") as temp:
         movie = Path(temp) / "capture.avi"
+        if args.frames_only:
+            frame_dir = output.parent / (output.name + "-frames")
+            frame_dir.mkdir(parents=True, exist_ok=True)
+            movie = frame_dir / "capture.png"
         if not args.skip_import:
             run([godot, "--headless", "--path", str(project), "--editor", "--import", "--quit"],
                 cwd=project, check_godot=True)
         frames = max(3, round(args.seconds * args.fps)) if args.mode == "clip" else 3
-        command = [godot, "--path", str(project), "--audio-driver", "Dummy",
+        command = [godot, "--path", str(project), "--log-file", str(project/".godot/preview.log"), "--audio-driver", "Dummy",
                    "--write-movie", str(movie), "--fixed-fps", str(args.fps),
                    "--quit-after", str(frames), args.scene]
         if sys.platform.startswith("linux") and os.getenv("DISPLAY"):
             command[1:1] = ["--display-driver", "x11"]
-        run(command, cwd=project, check_godot=True)
+        log = run(command, cwd=project, check_godot=True, allow_shader_cache_warning=args.allow_shader_cache_warning)
+        if args.frames_only:
+            if len(list(frame_dir.glob("capture????????.png"))) != frames:
+                raise RuntimeError("Godot did not produce the requested frame count")
+            (frame_dir/"render.log").write_text(log, encoding="utf-8")
+            print(f"OK {frame_dir} ({frames} actual Godot frames)")
+            return
         if not movie.is_file() or movie.stat().st_size == 0:
             raise RuntimeError("Godot produced no movie")
         base = [ffmpeg, "-nostdin", "-y", "-loglevel", "error", "-i", str(movie)]

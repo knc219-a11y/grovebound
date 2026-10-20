@@ -33,6 +33,7 @@ func close(owned,materials,kills,seconds,outcome,units=[]):
 		contributions.append({"id":u.data.id,"kind":u.data.kind,"trait":u.data.trait,"values":u.contribution.duplicate(true)})
 	report={"contributions":contributions,"outcome":outcome,"newcomers":newcomers,"growth":growth,"materials":materials-int(baseline.materials),"kills":kills,"seconds":int(seconds),"tutorial":baseline.tutorial}
 	report.stage_id=baseline.get("stage_id",1)
+	report.route=baseline.get("route",{}).duplicate(true)
 	return true
 func clear():
 	active=false
