@@ -1,6 +1,14 @@
-# 다음 대화 인계 · 2026-10-20 다수전 진행 적용 후
+# 다음 대화 인계 · 2026-10-20 구역별 스테이지 개선 후
 
 최신 main에서 `AGENTS.md`, `STATUS.md`, 이 문서를 읽는다. 이미 구현한 공격·마을·원화를 반복 제작하지 않는다.
+
+## 가장 최근 변경
+- 구역별 배치 차별화: 입구 대열/중반 여우 전열/보스 앞 두 줄 늑대. 총28/보상12/약한 추가16과 수치는 그대로다.
+- 가까운 무리의 남은 수·한 번 제압 배너·다음 목적지·선택 쉼터·미니맵 본선/선택 경로 표시. 캐릭터·카메라·지형은 그대로다.
+- 생산 보스는 플레이어 x>2350 입구 예고 이후에만 교전한다. 동료 추격/범위 스킬의 조기 보스 교전 차단. 쉼터나 앞 무리 전부 제압을 강제하지 않는다.
+- 전체28/28 PASS `docs/stage-pacing-2026-10-20-tests.json`. 상세 `docs/STAGE_PACING.md`, 새 `tools/test_stage_pacing.gd`.
+- 자동5경로 `docs/stage-pacing-2026-10-20-journeys.json`: 균형Lv2 본선24제압45.8초, 전체28제압55.8초, 공격Lv2 전체28제압32.3초에 보스 제압/귀환. Lv1 멧돼지 단독은 본선/전체 모두 실패했다. 앞 단계의 단독 본선 완주 결과를 현재 결과처럼 사용하지 않는다. 각1회 봇 관찰이며 사람의 난이도 결론은 아니다.
+- 실제 전투 `docs/stage-pacing-battle.gif`/소리 포함 `.mp4`, 보스 접근 `stage-pacing-boss.gif`/`.mp4`. 정적 `stage-pacing-layout.png`/`stage-pacing-rest.png`. 보스/정적 장면은 이전 구역 제압 상태를 준비한 리뷰이며 연속 완주가 아니다. 사용자 세이브 미사용.
 
 ## 현재 적용
 - 멧돼지 **관통 돌진**(.24초 실제 이동/각 적1회/3.5배/1.5초 기절), 여우 **야성 폭발**(.22초 후 고정 지점/반경180/2.5배). 기존 수동 스킬·기본10초 쿨다운/옵션/강화 보정 유지. 야생에게는 없다.
@@ -8,14 +16,11 @@
 - **P1-C 완료**: 북/남 공터175px 내에 플레이어가 들어가야 해당 옆길이 교전 가능해진다. 동료 탐색·주인공 자동 공격·도발·스킬 범위·직접 피해에서 미진입 옆길 제외. 해당 원정 동안 유지/재출발 리셋, 표지에 접근 시 교전 안내.
 - P1-A 공격 방향/P1-B 귀환 자세 초기화도 완료 상태 유지.
 
-## 검증
-- 전체27/27 PASS `docs/waves-2026-10-20-tests.json`. 새 `tools/test_wave_progression.gd`로 개수/보상/합산 공격력/본선·범위 공격의 옆길 비접촉/직접 진입·독립 해제·리셋/튜토리얼 격리 검사.
-- 실제 격리 Godot `docs/progressive-waves.gif`/소리 포함 `.mp4`10초. 중반7과 마지막9를 각각 생산 배치에서 분리한 두 전투 시연이다. 연속 완주/리스폰으로 설명하지 않는다. 사용자 저장 미사용.
-- 고정 시드 자동5경로 `docs/waves-2026-10-20-journeys.json`: 멧돼지Lv1 본선24제압·65.3초·최저HP30.1, 균형Lv2 본선24제압·50.1초·122.4. 두 경로 모두 북/남 각2마리 생존. 전체 옆길 포함 균형/공격Lv2는28제압·보스 클리어. 멧돼지Lv1 전체 옆길은16제압 후 쓰러짐. 각1회 봇 관찰이며 사람 난이도/승률 결론이 아니다.
-- 이전 audit/fix/assault JSON과 영상은 각 단계 당시 기록으로 보존한다.
+## 이전 단계 기록
+waves/audit/fix/assault 이름의 JSON과 영상은 각 단계 당시 기록으로 보존한다. 현재 배치의 검증은 가장 최근 변경 항목의 stage-pacing 결과를 사용한다.
 
 ## 남은 작업
-1. 사용자 다수전 손맛/무보상 약한 적/현재 난이도 피드백. 동료가 적으면 옆길까지 도는 부담이 남는다. 성장 보상이나 체력부터 무단 조정하지 않는다.
+1. 사용자 스테이지 흐름/무보상 약한 적/난이도 피드백. 현재 Lv1 단독은 본선도 실패하므로 초기1마리 준비/난이도 검토가 남는다. 성장 보상이나 체력부터 무단 조정하지 않는다.
 2. P2-B 밀집전 숫자·방어 문구·스킬명 가독성, P2-A 주인공 일반 공격 support 음원 연결.
 3. 다른 동료 스킬(늑대/담비/거북/사슴)은 후속 제안이며 아직 새 다수전 스킬로 확장하지 않았다. 기존 스킬은 유지.
 4. iPhone 터치/성능/음향·Windows·사람 연속 완주 미검증. headless 오디오 ObjectDB 종료 경고 별도 미해결.
@@ -24,6 +29,6 @@
 드루이드 전체72px/몸체60px·멧돼지48px·논리1440×810/월드2900×1650. 카메라 줌/캐릭터 확대로 대체하지 않는다. 승인 도트풍/지형/독립 지팡이 API/활동4·준비6·세이브/등급·특성·옵션·성장 공식·기존 보상 대상의 교감15% 유지. 관련 없는 .import/.uid/project.godot 변경을 커밋하지 않는다.
 
 ## 재실행
-- `python tools/audit_suite.py --godot PATH --out docs/waves-2026-10-20-tests.json`
-- `GROVE_AUDIT_BASELINE=현재커밋 GODOT --headless --path . --script tools/audit_journey.gd -- --out=res://docs/waves-2026-10-20-journeys.json`
-- `tools/preview.py` + `res://animation/waves_review.tscn`. Linux는 Xvfb 필요.
+- `python tools/audit_suite.py --godot PATH --out docs/stage-pacing-2026-10-20-tests.json`
+- `GROVE_AUDIT_BASELINE=현재커밋 GODOT --headless --path . --script tools/audit_journey.gd -- --out=res://docs/stage-pacing-2026-10-20-journeys.json`
+- `tools/preview.py` + `res://animation/stage_pacing_review.tscn`/`stage_pacing_layout_review.tscn`/`stage_pacing_rest_review.tscn`. Linux는 Xvfb 필요.

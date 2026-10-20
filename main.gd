@@ -508,11 +508,11 @@ func start_stage(tutorial):
 		for i in Trail.PACKS.size():
 			spawn_enemy(Trail.KINDS[i],Trail.PACKS[i],1+i/2)
 			enemies[-1].pack=i
-			if i>0: spawn_enemy("wolf",Trail.PACKS[i]+Vector2(85,60),1+i/2)
+			if i>0: spawn_enemy("wolf",Trail.PACKS[i]+Trail.escort_offset(i),1+i/2)
 			if i>0: enemies[-1].pack=i
 		for pack in Trail.FOLLOWERS:
 			for j in Trail.FOLLOWERS[pack]:
-				spawn_enemy("wolf" if pack==5 else "boar",Trail.PACKS[pack]+Trail.FOLLOWER_OFFSETS[j],1+int(pack/2))
+				spawn_enemy("wolf" if pack==5 else "boar",Trail.PACKS[pack]+Trail.follower_offsets(pack)[j],1+int(pack/2))
 				var follower=enemies[-1]
 				follower.pack=pack
 				follower.swarm=true
@@ -520,6 +520,7 @@ func start_stage(tutorial):
 				follower.hp*=0.28
 				follower.maxhp=follower.hp
 		spawn_enemy("boar",Vector2(2590,850),4,true,false)
+		enemies[-1].stage_entry=true
 		notify("동료를 모으며 동쪽으로 탐험하세요. 마지막 공터에 우두머리가 있습니다.")
 	update_hud()
 
@@ -588,7 +589,7 @@ func _process(dt):
 
 func update_game(dt):
 	stage_time += dt
-	if mode=="stage": trail.update(self)
+	if mode=="stage": trail.update(self,dt)
 	combat_feedback.advance(dt)
 	for a in [player]+units+enemies:
 		if not a.get("walk",false): a.move_speed=0.0
@@ -1519,7 +1520,7 @@ func update_hud():
 	status_label.text="드루이드  ·  %d / %d" % [player.hp,player.maxhp]
 	player_hp_bar.max_value=player.maxhp
 	player_hp_bar.value=player.hp
-	quest_label.text=("첫 인연 · 쉬는 야수에게 교감 [F / 화면 버튼]" if not captures.is_empty() else "동료와 협동 연습 · Q 회복 / E 강화 / 동료 초상" if tutorial_species=="practice" else "첫 인연 · 야수에게 다가가 경계를 누그러뜨리세요") if mode=="tutorial" else (trail.area(player.pos)+"   →   동쪽 우두머리\n%s · 동행 %d/6 · 제압 %d · %02d:%02d · %s") % [trail.progress_text(enemies),squad.size(),kills,int(stage_time)/60,int(stage_time)%60,"전투 중" if in_combat else "탐험 중"]
+	quest_label.text=("첫 인연 · 쉬는 야수에게 교감 [F / 화면 버튼]" if not captures.is_empty() else "동료와 협동 연습 · Q 회복 / E 강화 / 동료 초상" if tutorial_species=="practice" else "첫 인연 · 야수에게 다가가 경계를 누그러뜨리세요") if mode=="tutorial" else (trail.area(player.pos)+" · "+trail.progress_text(enemies)+" · 동행 "+str(squad.size())+"/6\n%s · 제압 %d · %02d:%02d") % [trail.objective(enemies,player.pos),kills,int(stage_time)/60,int(stage_time)%60]
 	toast_label.text=message if message_time>0 else ""
 	boss_label.text=""
 	for e in enemies:
@@ -1775,23 +1776,36 @@ func _draw():
 		var p=player.pos-cam+Vector2(-42,20)
 		draw_rect(Rect2(p,Vector2(84,9)),Color("213f32"))
 		draw_rect(Rect2(p,Vector2(84*revive_progress/3.0,9)),Color("bcf3b1"))
+	if mode=="stage" and hud.visible and not overlay.visible: trail.draw_guidance(self)
 
 func draw_minimap():
 	var box=Rect2(1190,104,225,135)
 	draw_style_box(map_style(),box)
-	text_at("계곡 지도",box.position+Vector2(12,22),15,Color("edf0d4"))
+	text_at("계곡 지도 · 옆길은 선택",box.position+Vector2(12,22),14,Color("edf0d4"))
 	var origin=box.position+Vector2(12,35)
 	var scale_map=Vector2(201.0/2900.0,88.0/1650.0)
-	draw_line(origin+Vector2(0,810)*scale_map,origin+Vector2(2900,810)*scale_map,Color("b2a879"),3,true)
+	if mode=="stage":
+		var route=[Vector2(340,800),Trail.PACKS[0],Trail.PACKS[1],Trail.PACKS[3],Trail.PACKS[5],Vector2(2590,850)]
+		for i in range(route.size()-1):
+			draw_line(origin+route[i]*scale_map,origin+route[i+1]*scale_map,Color("b2a879"),2,false)
+		for branch in [[Trail.PACKS[1],Trail.NORTH],[Vector2(1720,820),Trail.SOUTH],[Trail.PACKS[3],Trail.REST],[Trail.REST,Trail.PACKS[5]]]:
+			for i in 4:
+				draw_line(origin+branch[0].lerp(branch[1],i/4.0)*scale_map,origin+branch[0].lerp(branch[1],(i+0.5)/4.0)*scale_map,Color("8c9372"),1,false)
+	else:
+		draw_line(origin+Vector2(0,810)*scale_map,origin+Vector2(2900,810)*scale_map,Color("b2a879"),3,true)
 	for e in enemies:
 		if e.hp>0:
-			draw_circle(origin+e.pos*scale_map,5 if e.boss else 3,Color("ffbc67") if e.boss else Color("e78a75"))
+			var color=Color("ffbc67") if e.boss else Color("e78a75")
+			if mode=="stage" and not trail.engageable(e): color=Color("8e947d")
+			draw_circle(origin+e.pos*scale_map,5 if e.boss else 3,color)
 	for c in captures: draw_arc(origin+c.pos*scale_map,4,0,TAU,12,Color("ffec96"),1.5,true)
 	if mode=="stage":
 		for point in [Trail.NORTH,Trail.SOUTH,Trail.REST]: draw_circle(origin+point*scale_map,2,Color("d9c68b"))
 		for pack in Trail.CORE_PACKS:
 			var cleared=trail.cleared_pack(enemies,pack)
 			draw_circle(origin+Trail.PACKS[pack]*scale_map,3,Color("69735d") if cleared else Color("e0c27d"))
+		var next=trail.next_stop(enemies)
+		draw_arc(origin+next.pos*scale_map,6,0,TAU,16,Color("e9d49b"),1,false)
 	for u in active_units():
 		draw_circle(origin+u.pos*scale_map,2.5,Color("bce78b") if u.hp>0 else Color("777e71"))
 	draw_circle(origin+player.pos*scale_map,4,Color("eaf7ea"))
