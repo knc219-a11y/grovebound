@@ -4,6 +4,8 @@ const R=preload("res://campaign_routes.gd")
 func _initialize(): call_deferred("run")
 func run():
 	var runs=[]
+	var through_quarry="--through-quarry" in OS.get_cmdline_user_args()
+	var stage_count=16 if through_quarry else 8
 	for starter in ["boar","marten","fox"]:
 		for seed_value in [10417,20261020]:
 			var g=Game.new(); root.add_child(g); g.set_process(false)
@@ -16,10 +18,12 @@ func run():
 			g.player.pos=g.captures[0].pos; g.in_combat=false; g.interact(); g.resume_game()
 			g.start_practice(); g.hit_enemy(g.enemies[-1],999999,g.player.pos,g.player)
 			g.update_hud(); g.resume_game(); g.expedition.clear(); g.tutorial_done=true
-			for stage in range(1,9):
+			for ordinal in range(1,stage_count+1):
+				var theme=1 if ordinal<=8 else 2
+				var stage=(ordinal-1)%8+1
 				g.show_camp(); g.clear_overlay()
-				if not g.depart_route(R.coordinate(1,stage)):
-					runs.append({"starter":starter,"seed":seed_value,"stage":stage,"success":false,"reason":"departure blocked"})
+				if not g.depart_route(R.coordinate(theme,stage)):
+					runs.append({"starter":starter,"seed":seed_value,"theme":theme,"stage":stage,"success":false,"reason":"departure blocked"})
 					break
 				var elapsed=0.0; var minimum=g.player.hp; var casts=0; var heals=0; var downs=0; var old_down=0; var bonds=0
 				var baseline=g.owned.duplicate(true)
@@ -44,7 +48,10 @@ func run():
 								break
 						for e in g.enemies:
 							if not e.boss or e.hp<=0 or e.wind<=0: continue
-							if e.attack_kind=="stomp" and g.player.pos.distance_to(e.aim)<165:
+							if e.attack_kind in ["slam","hex"] and g.player.pos.distance_to(e.aim)<e.tell_radius+35:
+								g.stick=(g.player.pos-e.aim).normalized(); g.holding_revive=false
+								if g.stick.length()<0.1: g.stick=Vector2.LEFT
+							elif e.attack_kind=="stomp" and g.player.pos.distance_to(e.aim)<165:
 								g.stick=(g.player.pos-e.aim).normalized(); g.holding_revive=false
 							elif e.attack_kind=="charge":
 								var near=Geometry2D.get_closest_point_to_segment(g.player.pos,e.origin,e.aim)
@@ -58,13 +65,14 @@ func run():
 					if not g.in_combat and g.closest_capture()>=0:
 						var before=g.owned.size(); g.interact(); g.resume_game(); bonds+=g.owned.size()-before
 					if g.route_can_exit(): g.interact()
-				var result={"starter":starter,"seed":seed_value,"stage":stage,"success":g.mode=="result" and g.run_success,"seconds":snappedf(elapsed,0.1),"minimum_hp":snappedf(minimum,0.1),"down_events":downs,"skills":casts,"heals":heals,"bonds":bonds,"kills":g.kills,"before":baseline,"after":g.owned.duplicate(true),"report":g.expedition.report.duplicate(true),"progress":g.trail.core_progress(g.enemies)}
+				var result={"starter":starter,"seed":seed_value,"theme":theme,"stage":stage,"success":g.mode=="result" and g.run_success,"seconds":snappedf(elapsed,0.1),"minimum_hp":snappedf(minimum,0.1),"down_events":downs,"skills":casts,"heals":heals,"bonds":bonds,"kills":g.kills,"before":baseline,"after":g.owned.duplicate(true),"report":g.expedition.report.duplicate(true),"progress":g.trail.core_progress(g.enemies)}
 				runs.append(result)
-				print("VALLEY JOURNEY ",starter," ",seed_value," 1-",stage," ",result.success," ",result.seconds,"s")
+				print("VALLEY JOURNEY ",starter," ",seed_value," ",theme,"-",stage," ",result.success," ",result.seconds,"s")
 				if not result.success: break
 			g.free()
-	var output={"method":"Six deterministic first-invitation-to-1-8 runs; tutorial enemy kills fast-forwarded, then real update_game dt=.05, real nearby bonds/Q/E/skills/revive/dodge/exit. No synthetic high-level team or material training. Bot timing is not human clear time or success rate.","runs":runs}
-	var f=FileAccess.open("res://docs/campaign-map-journeys.json",FileAccess.WRITE); f.store_string(JSON.stringify(output,"\t")+"\n"); f.close()
-	var passed=runs.size()==48 and runs.all(func(r): return r.success)
-	print("VALLEY JOURNEY ","PASS" if passed else "FAIL"," ",runs.filter(func(r): return r.success).size(),"/48")
+	var output={"method":"Six deterministic continuous first-invitation runs through "+("2-8" if through_quarry else "1-8")+"; tutorial kills fast-forwarded, then real update_game dt=.05, nearby bonds/Q/E/skills/revive/dodge/exit. No synthetic high-level team or material training. Bot timing is not human clear time or success rate.","runs":runs}
+	var f=FileAccess.open("res://docs/quarry-route-journeys.json" if through_quarry else "res://docs/campaign-map-journeys.json",FileAccess.WRITE); f.store_string(JSON.stringify(output,"\t")+"\n"); f.close()
+	var total=stage_count*6
+	var passed=runs.size()==total and runs.all(func(r): return r.success)
+	print("QUARRY JOURNEY " if through_quarry else "VALLEY JOURNEY ","PASS" if passed else "FAIL"," ",runs.filter(func(r): return r.success).size(),"/",total)
 	quit(0 if passed else 1)

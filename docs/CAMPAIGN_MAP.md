@@ -1,6 +1,6 @@
 # 탐험 지도와 계곡 1-1~1-8
 
-2026-10-20. main 43f9d74541cdcc10e68239cdc19344b9d5e31727에서 시작. 이번 구현 범위는 지도/진행 기반과 일반 계곡8개다. 40/120개 전체 구현으로 해석하지 않는다. 세계관·진행 방향은 PROJECT_SETTINGS.md, 후속 전체 설계는 WORLD_CAMPAIGN_DESIGN.md를 따른다.
+2026-10-20. main 43f9d74541cdcc10e68239cdc19344b9d5e31727에서 시작. 이 문서는 지도/일반 계곡8개 구현 당시 기록이다. 후속 채석장8개 확장과 최신16스테이지/검증은 docs/QUARRY_ROUTES.md를 따른다. 40/120개 전체 구현으로 해석하지 않는다. 세계관·진행 방향은 PROJECT_SETTINGS.md, 후속 전체 설계는 WORLD_CAMPAIGN_DESIGN.md를 따른다.
 
 ## 플레이
 
@@ -61,4 +61,4 @@ python tools/check_handoff.py
 
 world/locked/result도 같은 review 장면과 preview.py로 캡처한다. FFmpeg 없는 Windows에서는 preview.py --frames-only와 OS Media Foundation/Pillow로 PNG→MP4/GIF를 인코딩했다. MP4의 실제 디코딩과 GIF 프레임/길이,실제 원본의 여러 시점을 확인했다. --allow-shader-cache-warning은 정확한 cache 폴더 경고 한 줄만 허용하며 다른 오류는 숨기지 않는다.
 
-다음은 채석장2-1~2-8 구현과 기존 완료/재방문 연결,그 뒤 묘역·4/5테마·일반 전체 성장곡선이다. 상위 난이도는 일반 전체 수급을 확인한 후 구현한다.
+채석장2-1~2-8 확장은 QUARRY_ROUTES.md에서 구현했다. 다음은 묘역3-1~3-8,그 뒤4/5테마·일반 전체 성장곡선이다. 상위 난이도는 일반 전체 수급을 확인한 후 구현한다.
