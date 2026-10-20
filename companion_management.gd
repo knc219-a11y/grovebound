@@ -28,7 +28,7 @@ static func filtered(records,squad,kind="",grade="",favorites_only=false,order=0
 static func needed_xp(record): return int(record.level)*35
 static func project(record,amount):
 	var result=record.duplicate(true)
-	if Loot.is_max_level(result): return result
+	if Loot.Special.pending(result) or Loot.is_max_level(result): return result
 	result.xp+=maxi(0,int(amount))
 	while not Loot.is_max_level(result) and result.xp>=needed_xp(result):
 		result.xp-=needed_xp(result)
@@ -45,7 +45,7 @@ static func promotion_preview(record):
 	result.erase("legacy_overcap")
 	return result
 static func can_release(record,squad):
-	return not record.is_empty() and not record.get("favorite",false) and not squad.has(record.id)
+	return not record.is_empty() and not Loot.Special.pending(record) and not record.get("favorite",false) and not squad.has(record.id)
 
 static func farewell_reward(record):
 	# Level +1 adds one material; even one training charge costs three.
@@ -54,7 +54,7 @@ static func farewell_reward(record):
 static func target_plan(record,target):
 	target=int(target)
 	var cap=Loot.max_level(record)
-	if record.is_empty() or target<=int(record.level) or (cap>0 and target>cap) or target>1000000: return {}
+	if record.is_empty() or Loot.Special.pending(record) or target<=int(record.level) or (cap>0 and target>cap) or target>1000000: return {}
 	var current=35*int(record.level)*(int(record.level)-1)/2+int(record.xp)
 	var total=35*target*(target-1)/2
 	var charges=ceili(maxf(0,total-current)/40.0)

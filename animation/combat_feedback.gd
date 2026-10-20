@@ -17,7 +17,7 @@ func emit(kind,source,target,amount=0.0,options={}):
 	elif kind.begins_with("skill_"): duration=0.85
 	elif kind=="stomp": duration=0.45
 	if events.size()>=MAX_EVENTS: events.pop_front()
-	events.append({"kind":kind,"a":source,"b":target,"age":0.0,"duration":duration,"radius":options.get("radius",130.0)})
+	events.append({"kind":kind,"a":source,"b":target,"age":0.0,"duration":duration,"radius":options.get("radius",130.0),"tint":options.get("tint","efbd69"),"caption":options.get("caption","")})
 	if amount<=0: return
 	var category="heal" if kind=="heal" else ("hurt" if kind in ["hurt","block"] else "damage")
 	var id=options.get("target_id",str(target.round()))
@@ -68,6 +68,12 @@ func draw(canvas,cam,font):
 		var a=(event.a-cam-Vector2(0,28)).round()
 		var c=color_for(event.kind)
 		c.a=1.0-smoothstep(0.45,1.0,t)
+		if event.kind=="special_rune":
+			var tint=Color(event.tint)
+			tint.a=1.0-t
+			ground_pulse(canvas,event.b-cam,15+t*24,tint)
+			spark(canvas,p-Vector2(0,12),4+t*3,tint)
+			canvas.draw_string(font,p+Vector2(-30,-36-t*12),event.caption,HORIZONTAL_ALIGNMENT_LEFT,-1,15,tint)
 		if event.kind.begins_with("capture_"):
 			ground_pulse(canvas,event.b-cam,12+t*36,c)
 			var rank=Loot.COUNTS.get(event.kind.trim_prefix("capture_"),1)

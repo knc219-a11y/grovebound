@@ -43,6 +43,7 @@ static func normalize(data: Dictionary, valid_kinds: Array):
 		record.favorite=raw.get("favorite",false) if raw.get("favorite",false) is bool else false
 		if not raw.get("favorite",null) is bool or raw.favorite!=record.favorite: repaired=true
 		Loot.normalize(record)
+		if not Loot.Special.equivalent(raw.get("special",{}),record.get("special",{})): repaired=true
 		var cap=Loot.max_level(record)
 		if cap>0 and record.level>cap:
 			record.legacy_overcap=true

@@ -36,6 +36,8 @@ var inventory_selected=-1
 var inventory_category=0
 var inventory_scroll=0
 var discovered=[]
+const Special=preload("res://special_companions.gd")
+const SpecialCombat=preload("res://special_combat.gd")
 const Synthesis=preload("res://synthesis_rules.gd")
 const SynthesisUI=preload("res://ui/synthesis_preview.gd")
 const Management=preload("res://companion_management.gd")
@@ -381,7 +383,7 @@ func open_controls():
 
 func reset_player_visual_state():
 	# Transitions stop combat animation without changing equipment or saved progression.
-	for key in ["action_key","action_duration","action_remaining","action_face","pending_basic","channel_time","hit","swing","death","recoil","pixel_phase","pixel_running","pixel_moving","pixel_down"]:
+	for key in ["action_key","action_duration","action_remaining","action_face","pending_basic","channel_time","hit","swing","death","recoil","pixel_phase","pixel_running","pixel_moving","pixel_down","team_guard","special_barrier","barrier_time"]:
 		player.erase(key)
 	player.walk=false
 	player.channeling=false
@@ -418,6 +420,8 @@ func show_camp():
 	combat_feedback.clear()
 	clear_overlay()
 	save_game()
+	for d in owned:
+		if Special.pending(d): show_special_choice(d.id); return
 	if show_recap: show_run_report()
 
 func show_run_report():
@@ -477,10 +481,10 @@ func make_owned(kind, level, rolled={}):
 	return d
 
 func max_hp(d):
-	return STATS[d.kind][0] * (1.0 + (d.level-1)*Loot.hp_growth(d)) * (1.2 if d.trait=="강인함" else 1.0)*(1.0+Loot.bonus(d,"vitality"))
+	return STATS[d.kind][0] * (Special.hp_scale(d) if Special.is_special(d) else (1.0 + (d.level-1)*Loot.hp_growth(d))) * (1.2 if d.trait=="강인함" else 1.0)*(1.0+Loot.bonus(d,"vitality"))*(1.0+Special.hp_bonus(d))
 
 func attack(d):
-	return STATS[d.kind][1] * (1.0 + (d.level-1)*Loot.attack_growth(d)) * (1.18 if d.trait=="용맹함" else 1.0)*(1.0+Loot.bonus(d,"power"))
+	return STATS[d.kind][1] * (Special.attack_scale(d) if Special.is_special(d) else (1.0 + (d.level-1)*Loot.attack_growth(d))) * (1.18 if d.trait=="용맹함" else 1.0)*(1.0+Loot.bonus(d,"power"))
 
 func find_owned(id):
 	for d in owned:
@@ -492,6 +496,11 @@ func make_unit(d, p):
 	return {"data":d,"pos":p,"hp":max_hp(d),"maxhp":max_hp(d),"cd":0.0,"skill":0.0,"buff":0.0,"shield":0.0,"face":1.0,"walk":false}
 
 func start_stage(tutorial,stage_id=1):
+	for d in owned:
+		if Special.pending(d):
+			show_special_choice(d.id)
+			notify("특수개체의 속성·고유 능력 선택을 마쳐 주세요.")
+			return
 	current_stage=stage_id if Campaign.STAGES.has(stage_id) and not tutorial else 1
 	stage_background=load(Campaign.STAGES[current_stage].background)
 	run_success=false
@@ -602,6 +611,7 @@ func _process(dt):
 		take_screenshot()
 
 func update_game(dt):
+	SpecialCombat.advance(self,player,dt)
 	stage_time += dt
 	if mode=="stage": trail.update(self,dt)
 	combat_feedback.advance(dt)
@@ -659,14 +669,15 @@ func update_game(dt):
 		u.buff=maxf(0,u.buff-dt)
 		u.shield=maxf(0,u.shield-dt)
 		u.walk=false
+		SpecialCombat.advance(self,u,dt)
 		u.role_flash=maxf(0,u.get("role_flash",0.0)-dt)
 		if u.hp<=0: u.erase("assault")
 		if i>=4 or u.hp<=0: continue
-		if Assault.advance(self,u,dt): continue
+		if Assault.advance(self,u,dt) or u.has("special_action"): continue
 		u.cd-=dt
 		if advance_basic_attack(u,dt): continue
 		var kind=u.data.kind
-		var speed=STATS[kind][3]*(1.2 if u.data.trait=="민첩함" else 1.0)*(1.0+Loot.bonus(u.data,"speed"))
+		var speed=STATS[kind][3]*(1.2 if u.data.trait=="민첩함" else 1.0)*(1.0+Loot.bonus(u.data,"speed"))*Special.speed(u.data)
 		var target=Roles.target(kind,u.pos,combat_enemies(),player.pos,410)
 		if u.pos.distance_to(player.pos)>430 or (not target.is_empty() and target.pos.distance_to(player.pos)>550):
 			move_entity(u,player.pos,speed*1.7,dt,75)
@@ -701,6 +712,7 @@ func update_game(dt):
 			if gap.length()<35 and gap.length()>0.01:
 				a.pos+=gap.normalized()*24*dt
 	for e in enemies:
+		e["hunt_time"]=maxf(0,e.get("hunt_time",0.0)-dt)
 		if e.hp<=0 or (mode=="stage" and not trail.engageable(e)): continue
 		e.stun=maxf(0,e.stun-dt)
 		e.intro=maxf(0,e.get("intro",0.0)-dt)
@@ -821,7 +833,13 @@ func damage_ally(a, damage, source):
 	if a.has("data"):
 		if a.data.trait=="단단함": damage*=0.85
 		damage*=1.0-Loot.bonus(a.data,"armor")
-		if a.shield>0: damage*=0.4
+		damage*=Special.armor(a.data)
+		damage*=0.75 if a.get("special_guard",0.0)>0 else 1.0
+	damage*=0.85 if a.get("team_guard",0.0)>0 else 1.0
+	if a.has("data") and a.shield>0: damage*=0.4
+	var absorbed=minf(damage,a.get("special_barrier",0.0))
+	a["special_barrier"]=maxf(0,a.get("special_barrier",0.0)-absorbed)
+	damage-=absorbed
 	var taken=minf(a.hp,damage)
 	if a.has("data"):
 		var prevented=maxf(0,minf(a.hp,incoming)-taken)
@@ -867,12 +885,15 @@ func advance_basic_attack(u,dt):
 			hit_enemy(target,pending.damage,u.pos,u,false)
 	return true
 
-func hit_enemy(e, damage, source,attacker={},animate=true):
+func hit_enemy(e, damage, source,attacker={},animate=true,is_skill=false):
 	if mode=="stage" and not trail.engageable(e): return
 	if e.kind not in seen_species: seen_species.append(e.kind)
 	if e.hp<=0: return
 	if not attacker.is_empty() and attacker.has("data") and e.get("stun",0.0)>0:
 		damage*=1.0+Loot.bonus(attacker.data,"stun_hunter")
+	if not attacker.is_empty() and attacker.has("data"):
+		damage*=Special.damage(attacker.data,is_skill,e)
+		if e.get("hunt_owner",-1)==attacker.data.id and e.get("hunt_time",0.0)>0: damage*=1.20
 	var dealt=minf(e.hp,damage)
 	if not attacker.is_empty() and attacker.has("data"):
 		Roles.add_metric(attacker,"damage",dealt)
@@ -936,7 +957,7 @@ func heal(a, amount, source,healer={}):
 			var species="druid" if caster==player else caster.data.kind
 			motion_actions.start(caster,species,"heal")
 			break
-	if not healer.is_empty() and healer.has("data"): amount*=1.0+Loot.bonus(healer.data,"healing")
+	if not healer.is_empty() and healer.has("data"): amount*=(1.0+Loot.bonus(healer.data,"healing"))*Special.healing(healer.data)
 	var restored=minf(amount,a.maxhp-a.hp)
 	a.hp=minf(a.maxhp,a.hp+amount)
 	if restored>0 and not healer.is_empty() and healer.has("data"):
@@ -974,9 +995,10 @@ func can_act():
 func use_companion_skill(i):
 	if not can_act() or i>=active_units().size(): return
 	var u=units[i]
-	if u.hp<=0 or u.skill>0 or u.has("assault"): return
+	if u.hp<=0 or u.skill>0 or u.has("assault") or u.has("special_action"): return
 	var target=Roles.target(u.data.kind,u.pos,combat_enemies(),player.pos,430)
 	var skill_origin=u.pos
+	if SpecialCombat.cast(self,u,target): return
 	match u.data.kind:
 		"deer":
 			for a in alive_allies():
@@ -1008,7 +1030,7 @@ func use_companion_skill(i):
 				combat_feedback.emit("skill_"+u.data.kind,skill_origin,target.pos)
 	Roles.signal_action(u,Roles.SKILLS[u.data.kind])
 	Roles.add_metric(u,"skills",1)
-	u.skill=10.0*(1.0-Loot.bonus(u.data,"skill_haste"))
+	u.skill=10.0*(1.0-Loot.bonus(u.data,"skill_haste"))*Special.haste(u.data)
 
 func closest_down():
 	var best=85.0
@@ -1082,7 +1104,9 @@ func start_practice():
 func finish(success):
 	if mode=="result": return
 	mode="result"
-	for u in units: u.erase("assault")
+	for u in units:
+		u.erase("assault")
+		u.erase("special_action")
 	reset_player_visual_state()
 	if success:
 		materials+=10
@@ -1120,17 +1144,33 @@ func loot_card(d,x,caption,animate=false):
 	var color=Loot.color(d)
 	var card=panel(overlay,Rect2(x,265,465,330),Color("202823"))
 	card.add_theme_stylebox_override("panel",GroveUI.frame(Color("202823"),color,2))
-	label(overlay,caption+" · "+Roles.LABELS[d.kind]+" / "+Roles.SKILLS[d.kind],Vector2(x+18,278),16)
+	label(overlay,caption+" · "+Roles.LABELS[d.kind]+" / "+(Special.SKILLS[d.kind] if Special.ready(d) else Roles.SKILLS[d.kind]),Vector2(x+18,278),16)
 	var title=label(overlay,"[%s] %s  Lv.%d" % [Loot.title(d),NAMES[d.kind],d.level],Vector2(x+18,312),25)
 	title.add_theme_color_override("font_color",color)
 	label(overlay,"고정 특성 · "+d.trait,Vector2(x+18,359),21)
 	label(overlay,Loot.TRAIT_DESCRIPTIONS.get(d.trait,"고정된 개체 특성")+(" · 회복량에는 적용 안 됨" if d.kind=="deer" and d.trait=="용맹함" else ""),Vector2(x+18,389),16)
 	label(overlay,"체력 %d   공격력 %.1f" % [max_hp(d),attack(d)],Vector2(x+18,421),19)
 	var lines=Loot.lines(d)
-	if lines.is_empty(): lines.append("기존 동료 · 옵션 없음 (능력 유지)")
+	if lines.is_empty(): lines.append("고정 특성만 보유")
+	if Special.ready(d):
+		lines.append(Special.SKILL_DESCRIPTIONS[d.kind])
+		lines.append(Special.ELEMENTS[Special.element(d)].description)
+		lines.append(Special.choices(d.kind)[Special.unique(d)].description)
+	var scroller=ScrollContainer.new()
+	scroller.position=Vector2(x+18,455)
+	scroller.size=Vector2(425,100)
+	overlay.add_child(scroller)
+	var rows=VBoxContainer.new()
+	rows.size_flags_horizontal=Control.SIZE_EXPAND_FILL
+	scroller.add_child(rows)
 	for i in lines.size():
-		var line=label(overlay,lines[i],Vector2(x+18,459+i*34),18)
+		var line=Label.new()
+		line.text=lines[i]
+		line.custom_minimum_size=Vector2(395,27)
+		line.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		line.add_theme_font_size_override("font_size",17)
 		line.add_theme_color_override("font_color",color)
+		rows.add_child(line)
 		if animate:
 			line.modulate.a=0
 			var tween=create_tween().bind_node(line)
@@ -1154,8 +1194,9 @@ func show_loot_details(id,compare_id=-1,animate=true,from_roster=false):
 		for other in candidates:
 			if compare_id<0 or other.kind==d.kind: compare_id=other.id
 			if other.kind==d.kind: break
-	modal("맺어진 인연  ·  "+NAMES[d.kind],Roles.DESCRIPTIONS[d.kind]+" · 스킬 대기 %.1f초" % (10.0*(1.0-Loot.bonus(d,"skill_haste"))),"detail",return_from_details)
-	label(overlay,"교감한 야수가 새로운 동료로 합류했습니다.",Vector2(232,222),18)
+	modal(("4성 특수개체  ·  " if Special.is_special(d) else "맺어진 인연  ·  ")+NAMES[d.kind],Roles.DESCRIPTIONS[d.kind]+" · 스킬 대기 %.1f초" % (10.0*(1.0-Loot.bonus(d,"skill_haste"))*Special.haste(d)),"detail",return_from_details)
+	label(overlay,Special.summary(d) if Special.is_special(d) else "교감한 야수가 새로운 동료로 합류했습니다.",Vector2(232,222),18)
+	if Special.pending(d): show_special_choice(id); return
 	loot_card(d,230,"선택한 동료",animate)
 	var comparison=find_owned(compare_id)
 	if not comparison.is_empty(): loot_card(comparison,745,"동행 동료와 비교")
@@ -1312,7 +1353,7 @@ func open_roster():
 			equip.pressed.connect(func(): toggle_squad(d.id); open_roster())
 			row.add_child(equip)
 			var grow=Button.new()
-			grow.text="육성 미리보기"
+			grow.text="능력 선택" if Special.pending(d) else "육성 미리보기"
 			grow.custom_minimum_size=Vector2(126,64)
 			grow.size_flags_vertical=Control.SIZE_SHRINK_CENTER
 			GroveUI.emphasize(grow)
@@ -1329,7 +1370,7 @@ func open_roster():
 	label(overlay,"성장 재료 %d · 육성 3개 → 경험치 +40 · 즐겨찾기는 자연으로 보낼 수 없습니다." % materials,Vector2(230,600),17)
 	if camp:
 		button(overlay,"일괄 작별",Rect2(230,630,220,55),func(): show_bulk_release(true))
-		button(overlay,"특수개체 합성 · 미리보기",Rect2(480,630,380,55),func(): show_synthesis())
+		button(overlay,"특수개체 합성",Rect2(480,630,380,55),func(): show_synthesis())
 	button(overlay,"완료",Rect2(1000,630,210,55),func(): save_game(); show_camp() if camp else clear_overlay())
 
 func growth_card(d,x,caption):
@@ -1348,6 +1389,7 @@ func show_training(id,result={}):
 	if mode!="camp": notify("육성은 캠프에서 할 수 있습니다."); return
 	var d=find_owned(id)
 	if d.is_empty(): return
+	if Special.pending(d): show_special_choice(id); return
 	var before=d if result.is_empty() else result.before
 	var after=Management.project(d,40) if result.is_empty() else result.after
 	modal("동료 육성  ·  "+NAMES[d.kind],"경험치만 성장합니다. 성급·고정 특성·기존 옵션은 바뀌지 않습니다.","training",open_roster)
@@ -1359,7 +1401,7 @@ func show_training(id,result={}):
 		summary="Lv.%d → %d · 최대 체력 +%d · 공격력 +%.1f" % [before.level,after.level,roundi(max_hp(after))-roundi(max_hp(before)),attack(after)-attack(before)]
 	elif not result.is_empty(): summary="경험치 +40 획득 · 다음 레벨까지 %d" % (Management.needed_xp(d)-d.xp)
 	label(overlay,summary,Vector2(235,586),19)
-	var action=button(overlay,("%d성으로 승급" % (Loot.star(d)+1)) if Loot.is_max_level(d) and Loot.star(d)<3 else ("4성 합성 미리보기" if Loot.is_max_level(d) else ("재료 3개로 육성" if result.is_empty() else "한 번 더 · 미리보기")),Rect2(230,630,350,55),func(): show_promotion(id) if Loot.is_max_level(d) and Loot.star(d)<3 else (show_synthesis([id],id) if Loot.is_max_level(d) and Loot.star(d)==3 else (train_companion(id) if not Loot.is_max_level(d) and result.is_empty() else show_training(id))))
+	var action=button(overlay,("%d성으로 승급" % (Loot.star(d)+1)) if Loot.is_max_level(d) and Loot.star(d)<3 else ("4성 합성" if Loot.is_max_level(d) else ("재료 3개로 육성" if result.is_empty() else "한 번 더 · 미리보기")),Rect2(230,630,350,55),func(): show_promotion(id) if Loot.is_max_level(d) and Loot.star(d)<3 else (show_synthesis([id],id) if Loot.is_max_level(d) and Loot.star(d)==3 else (train_companion(id) if not Loot.is_max_level(d) and result.is_empty() else show_training(id))))
 	action.disabled=(Loot.is_max_level(d) and Loot.star(d)>3) or (not Loot.is_max_level(d) and result.is_empty() and materials<3)
 	var target_action=button(overlay,"목표 레벨 육성",Rect2(600,630,285,55),func(): show_target_training(id))
 	target_action.disabled=Loot.is_max_level(d)
@@ -1442,7 +1484,7 @@ func train_to_level(id,target,expected):
 		show_target_training(id)
 		return false
 	var plan=Management.target_plan(d,target)
-	if plan.is_empty() or materials<plan.cost: return false
+	if Special.pending(d) or plan.is_empty() or materials<plan.cost: return false
 	materials-=plan.cost
 	var old_level=d.level
 	d.level=plan.after.level
@@ -1457,7 +1499,7 @@ func train_to_level(id,target,expected):
 func train_companion(id):
 	if mode!="camp" or materials<3: return false
 	var d=find_owned(id)
-	if d.is_empty() or Loot.is_max_level(d): return false
+	if d.is_empty() or Special.pending(d) or Loot.is_max_level(d): return false
 	var before=d.duplicate(true)
 	materials-=3
 	gain_xp(d,40)
@@ -1608,7 +1650,7 @@ func update_hud():
 		var b=party_buttons[i]
 		if i<units.size():
 			var u=units[i]
-			b.configure(textures[u.data.kind],NAMES[u.data.kind],Roles.LABELS[u.data.kind],u.hp,u.maxhp,u.skill,Loot.grade(u.data),10.0*(1.0-Loot.bonus(u.data,"skill_haste")))
+			b.configure(textures[u.data.kind],NAMES[u.data.kind],Roles.LABELS[u.data.kind],u.hp,u.maxhp,u.skill,Loot.grade(u.data),10.0*(1.0-Loot.bonus(u.data,"skill_haste"))*Special.haste(u.data))
 			b.insight(u.data.trait,Roles.describe(u.data,Loot),u.get("role_action",""),u.get("role_flash",0.0))
 			b.disabled=u.hp<=0 or u.skill>0 or revive_target>=0
 		else:
@@ -1728,10 +1770,24 @@ func repair_party():
 	squad = result.squad
 	next_id = result.next_id
 
+func save_payload():
+	return {"version":2,"owned":owned,"squad":squad,"materials":materials,"tutorial_done":tutorial_done,"unlocked":unlocked,"next_id":next_id,"discovered":discovered,"cleared_stages":cleared_stages,"seen_species":seen_species}
+
+func persist_payload(data):
+	if save_blocked: return false
+	if is_test or screenshot_mode: return true
+	var temporary=save_path+".writing"
+	var f=FileAccess.open(temporary,FileAccess.WRITE)
+	if f==null: return false
+	f.store_string(JSON.stringify(data))
+	f.flush()
+	var written=f.get_error()==OK
+	f.close()
+	if not written: return false
+	return DirAccess.rename_absolute(ProjectSettings.globalize_path(temporary),ProjectSettings.globalize_path(save_path))==OK
+
 func save_game():
-	if is_test or screenshot_mode or save_blocked: return
-	var f=FileAccess.open(save_path,FileAccess.WRITE)
-	if f: f.store_string(JSON.stringify({"version":2,"owned":owned,"squad":squad,"materials":materials,"tutorial_done":tutorial_done,"unlocked":unlocked,"next_id":next_id,"discovered":discovered,"cleared_stages":cleared_stages,"seen_species":seen_species}))
+	return persist_payload(save_payload())
 
 func load_game():
 	if not FileAccess.file_exists(save_path): return
@@ -1822,7 +1878,10 @@ func _draw():
 			animal_rigs[a.kind].draw(self,p+offset,a.size,a.face,col,state,textures[a.kind])
 		else:
 			draw_sprite(a.kind,p+Vector2(0,bob)+offset,a.size,a.face,col,tilt,deformation)
+		if a.has("unit") and Special.ready(a.unit.data): preload("res://ui/special_visual.gd").mark(self,p+offset,a.size,a.unit.data)
 		if front_weapon: weapon_visual.draw(self,p+offset,a.size,a.face,col,state)
+		if state.get("special_barrier",0.0)>0:
+			draw_arc(p-Vector2(0,a.size*0.4),a.size*0.45,0,TAU,16,Color("a2d9e0"),1,false)
 		var bar_height=motion_actions.boss_action.headroom(state,a.size)
 		var bar=Rect2(p+Vector2(-27,-bar_height-10),Vector2(54,6))
 		draw_rect(bar,Color("25392b"))
@@ -2080,3 +2139,50 @@ func show_synthesis(ids=[],main_id=-1,preserve="species"):
 func preview_synthesis(ids,main_id,preserve):
 	if mode!="camp": return
 	SynthesisUI.show_result(self,ids,main_id,preserve)
+
+func show_special_choice(id):
+	if mode!="camp": return
+	preload("res://ui/special_choice.gd").show_page(self,id)
+
+func commit_synthesis(ids,main_id,preserve,expected):
+	if mode!="camp" or save_blocked: return false
+	var plan=Synthesis.preview(owned,squad,ids,main_id,preserve)
+	if not plan.error.is_empty() or plan.materials!=expected:
+		notify("동료 정보가 바뀌었습니다. 재료와 보호 상태를 다시 확인하세요.")
+		return false
+	var old_rng=loot_rng.state
+	var kind=plan.pool[loot_rng.randi_range(0,plan.pool.size()-1)]
+	var result=Loot.roll_special(plan.main,kind,loot_rng)
+	var next=[]
+	for d in owned:
+		if d.id==main_id: next.append(result)
+		elif not ids.has(d.id): next.append(d.duplicate(true))
+	var payload=save_payload().duplicate(true)
+	payload.owned=next
+	if not payload.discovered.has(kind): payload.discovered.append(kind)
+	if not persist_payload(payload):
+		loot_rng.state=old_rng
+		notify("저장에 실패해 합성을 취소했습니다. 동료는 소모되지 않았습니다.")
+		return false
+	owned=next
+	discovered=payload.discovered
+	units.clear()
+	show_special_choice(main_id)
+	return true
+
+func commit_special_choice(id,element,unique,expected):
+	if mode!="camp" or save_blocked: return false
+	var d=find_owned(id)
+	if not Special.pending(d) or d!=expected or not Special.ELEMENTS.has(element) or Special.ELEMENTS[element].get("pending",false) or not Special.choices(d.kind).has(unique): return false
+	var next=owned.duplicate(true)
+	for record in next:
+		if record.id==id:
+			record.special.element=element
+			record.special.unique=unique
+			record.special.state="ready"
+	var payload=save_payload().duplicate(true)
+	payload.owned=next
+	if not persist_payload(payload): notify("저장에 실패했습니다. 선택을 다시 확인하세요."); return false
+	owned=next
+	show_loot_details(id,-1,false,true)
+	return true

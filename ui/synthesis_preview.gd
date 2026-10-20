@@ -1,8 +1,8 @@
 extends RefCounted
-# UI state is passed by value; no save/owned/squad mutation and no RNG calls.
+# Selection and candidate previews are read-only; final confirmation calls the saved transaction.
 static func show_page(g,ids,main_id,preserve):
 	ids=ids.duplicate()
-	g.modal("4성 특수개체 합성 · 미리보기","3성 Lv.40 세 마리 · 성공 100% · 추가 비용 없음 · 현재는 소비·소환하지 않습니다.","synthesis",g.open_roster)
+	g.modal("4성 특수개체 합성 · 재료 선택","3성 Lv.40 세 마리 · 성공 100% · 추가 비용 없음 · 보조 두 마리는 소모됩니다.","synthesis",g.open_roster)
 	g.label(g.overlay,"주재료를 먼저 지정하세요. 동행·즐겨찾기 동료도 주재료로는 선택할 수 있습니다.",Vector2(230,215),18)
 	var scroll=ScrollContainer.new()
 	scroll.name="SynthesisScroll"
@@ -72,8 +72,22 @@ static func show_result(g,ids,main_id,preserve):
 	var parts=PackedStringArray()
 	for d in plan.materials:
 		if d.id!=main_id: parts.append("%s #%d" % [g.NAMES[d.kind],d.id])
-	g.label(g.overlay,"향후 소비될 보조 동료: "+" / ".join(parts),Vector2(235,510),20)
-	g.label(g.overlay,"특수 능력·성장률·옵션 규칙 확정 후 실제 소환을 연결합니다.",Vector2(235,565),18)
-	var summon=g.button(g.overlay,"실제 소환 · 후속 구현",Rect2(850,640,360,55),func(): pass)
-	summon.disabled=true
+	g.label(g.overlay,"합성 시 소비될 보조 동료: "+" / ".join(parts),Vector2(235,510),20)
+	g.label(g.overlay,"4성 Lv.1 기본 체력·공격은 같은 종 3성 만렙의70% · 소환 후 속성/고유 능력 선택",Vector2(235,565),18)
+	g.button(g.overlay,"합성 최종 확인",Rect2(850,640,360,55),func(): show_confirmation(g,ids,main_id,preserve))
 	g.button(g.overlay,"재료·보존 방식 다시 선택",Rect2(230,640,400,55),func(): g.show_synthesis(ids,main_id,preserve))
+
+static func show_confirmation(g,ids,main_id,preserve):
+	var plan=g.Synthesis.preview(g.owned,g.squad,ids,main_id,preserve)
+	if not plan.error.is_empty(): g.notify(plan.error); return
+	g.modal("합성을 실행할까요?","보조 두 마리는 소모되며 되돌릴 수 없습니다. 결과 종과 랜덤 옵션을 확정해 저장합니다.","synthesis_confirm",func(): show_result(g,ids,main_id,preserve))
+	var y=245
+	for d in plan.materials:
+		g.label(g.overlay,("계승 · 주재료: " if d.id==main_id else "소모 · 보조 재료: ")+"%s #%d · %s" % [g.NAMES[d.kind],d.id,d.trait],Vector2(240,y),22)
+		y+=65
+	g.label(g.overlay,"결과: 4성 Lv.1 · 신규 랜덤 옵션2개 · 속성1개/고유 능력1개 선택
+주재료 ID·특성·즐겨찾기·편성·기존 옵션은 유지됩니다.",Vector2(240,480),20)
+	g.button(g.overlay,"취소 · 후보 확인",Rect2(240,630,350,60),func(): show_result(g,ids,main_id,preserve))
+	var b=g.button(g.overlay,"보조 두 마리로 합성",Rect2(850,630,350,60),func(): g.commit_synthesis(ids,main_id,preserve,plan.materials))
+	b.name="CommitSynthesis"
+	g.GroveUI.emphasize(b,"danger")

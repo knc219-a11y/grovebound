@@ -1,5 +1,6 @@
 extends RefCounted
 # No hidden IVs. Only species/level, one fixed trait, and explicit affixes.
+const Special=preload("res://special_companions.gd")
 const GRADES=["common","rare","epic"]
 const NAMES={"common":"1성","rare":"2성","epic":"3성"}
 const COLORS={"common":Color("b8d59c"),"rare":Color("78bdec"),"epic":Color("c599ef")}
@@ -64,7 +65,7 @@ static func normalize(record):
 		for entry in source:
 			if not entry is Dictionary: continue
 			var key=entry.get("key","")
-			if not OPTIONS.has(key) or seen.has(key) or not pool(record.kind).has(key): continue
+			if not OPTIONS.has(key) or seen.has(key) or (not Special.is_special(record) and not pool(record.kind).has(key)): continue
 			var value=entry.get("value",0)
 			if not (value is int or value is float) or not is_finite(float(value)): continue
 			options.append({"key":key,"value":clampi(int(value),OPTIONS[key].min,OPTIONS[key].max)})
@@ -74,16 +75,24 @@ static func normalize(record):
 	record.star=normalized_star
 	record.grade=grade_for_star(normalized_star)
 	record.options=options
+	if Special.is_special(record):
+		record.special.affixes=normalize_affixes(record.special.get("affixes",[]),record.kind)
+		Special.normalize(record)
 	return record
 static func bonus(record,key):
 	var amount=0.0
-	for option in record.get("options",[]):
-		if option.key==key: amount+=float(option.value)/100.0
+	for option in all_options(record):
+		if option.key==key and pool(record.kind).has(key): amount+=float(option.value)/100.0
 	return amount
 static func lines(record):
 	var result=PackedStringArray()
-	for option in record.get("options",[]):
-		result.append("%s +%d%%" % [OPTIONS[option.key].name,int(option.value)])
+	var index=0
+	for option in all_options(record):
+		var prefix=("계승 · " if index<record.get("options",[]).size() else "신규 · ") if Special.is_special(record) else ""
+		index+=1
+		var inactive=not pool(record.kind).has(option.key)
+		result.append("%s%s +%d%% %s" % [prefix,OPTIONS[option.key].name,int(option.value),"(현재 종 미적용)" if inactive else ""])
+	if Special.is_special(record): result.append(Special.summary(record))
 	return result
 static func grade(record): return grade_for_star(star(record))
 static func color(record): return STAR_COLORS.get(star(record),STAR_COLORS[1])
@@ -96,3 +105,36 @@ static func same_options(raw,normalized):
 		var value=raw[i].get("value")
 		if not (value is int or value is float) or float(value)!=float(normalized[i].value): return false
 	return true
+
+static func normalize_affixes(source,kind):
+	var result=[]
+	var seen=[]
+	if not source is Array: return result
+	for e in source:
+		if not e is Dictionary or not pool(kind).has(e.get("key","")) or seen.has(e.get("key")): continue
+		var value=e.get("value")
+		if not (value is int or value is float) or not is_finite(float(value)): continue
+		result.append({"key":e.key,"value":clampi(int(value),OPTIONS[e.key].min,OPTIONS[e.key].max)})
+		seen.append(e.key)
+		if result.size()==2: break
+	return result
+static func all_options(record):
+	var result=record.get("options",[]).duplicate(true)
+	if Special.is_special(record): result.append_array(record.special.get("affixes",[]))
+	return result
+static func roll_special(main,kind,rng):
+	var d=main.duplicate(true)
+	d.kind=kind
+	d.star=4
+	d.grade="special"
+	d.level=1
+	d.xp=0
+	d.erase("legacy_overcap")
+	var keys=pool(kind,d.trait)
+	var affixes=[]
+	for i in 2:
+		var index=rng.randi_range(0,keys.size()-1)
+		var key=keys.pop_at(index)
+		affixes.append({"key":key,"value":rng.randi_range(OPTIONS[key].min,OPTIONS[key].max)})
+	d.special={"version":1,"state":"pending","element":"","unique":"","affixes":affixes}
+	return d

@@ -41,7 +41,7 @@ static func show_page(g):
 		description.add_theme_color_override("font_color",g.Loot.color(d))
 		row.add_child(description)
 		var protected=Label.new()
-		protected.text="동행 중" if g.squad.has(d.id) else "즐겨찾기 보호" if d.get("favorite",false) else "재료 %d개" % g.Management.farewell_reward(d)
+		protected.text="속성·능력 선택 대기" if g.Special.pending(d) else "동행 중" if g.squad.has(d.id) else "즐겨찾기 보호" if d.get("favorite",false) else "재료 %d개" % g.Management.farewell_reward(d)
 		protected.vertical_alignment=VERTICAL_ALIGNMENT_CENTER
 		row.add_child(protected)
 	if visible.is_empty(): g.label(g.overlay,"현재 필터에 맞는 동료가 없습니다.",Vector2(250,320),20)

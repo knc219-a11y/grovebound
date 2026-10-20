@@ -1,6 +1,9 @@
 extends RefCounted
 const Loot=preload("res://companion_loot.gd")
 static func draw(canvas,position,height,record,time):
+	if Loot.Special.ready(record):
+		preload("res://ui/special_visual.gd").aura(canvas,position,height,record,time)
+		return
 	var grade=Loot.grade(record)
 	if grade=="common": return
 	var c=Loot.color(record)

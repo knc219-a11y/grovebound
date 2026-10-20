@@ -1,5 +1,5 @@
 extends RefCounted
-# Read-only synthesis planning. Consumption, rolling and result creation remain disabled.
+# Read-only policy and planning. Actual consumption and saved result creation live in main.gd.
 const POSITIONS={
 	"frontline":{"name":"전열","kinds":["boar","turtle"]},
 	"striker":{"name":"공격","kinds":["marten","wolf","bat"]},
