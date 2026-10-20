@@ -8,7 +8,7 @@ static func begin(e,target):
 	if absf(target.pos.x-e.pos.x)>1: e.face=signf(target.pos.x-e.pos.x)
 static func boss(e,target):
 	e.pattern+=1
-	e.attack_kind="slam" if e.pattern%2 else "hex"
+	e.attack_kind="slam" if e.get("route_mid",false) or e.pattern%2 else "hex"
 	e.aim=e.pos if e.attack_kind=="slam" else target.pos
 	e.tell_radius=150.0 if e.attack_kind=="slam" else 100.0
 	e.wind=1.2 if e.attack_kind=="slam" else 1.0

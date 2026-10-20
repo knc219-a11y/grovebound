@@ -385,7 +385,7 @@ func finish_route(success):
 	var legacy=cleared_stages.duplicate()
 	if success:
 		progress=Routes.completed(progress,current_route)
-		if int(current_route.stage)==8 and 1 not in legacy: legacy.append(1)
+		if int(current_route.stage)==8 and int(current_route.theme) not in legacy: legacy.append(int(current_route.theme))
 	var payload=save_payload().duplicate(true)
 	payload.campaign_progress=progress
 	payload.cleared_stages=legacy
@@ -1152,6 +1152,7 @@ func show_trail_rest():
 	if mode!="stage" or in_combat or not trail.near_rest(player.pos): return
 	modal(trail.rest_name,"동료들과 잠시 숨을 고르고 다음 길을 준비하세요.","trail_rest",resume_game)
 	var hint="북쪽과 남쪽으로 갈라지는 길은 선택 동선입니다.\n동쪽의 표지판은 우두머리 공터로 이어집니다." if current_route.is_empty() else "옆길의 사슴과 거북은 선택해서 만날 수 있습니다.\n길목을 제압한 뒤 물길 표식에서 [F]로 탐험을 완료하세요."
+	if not current_route.is_empty(): hint=trail.data.get("side_name","옆길 · 사슴과 거북")+" · 선택 동선입니다.\n길목 제압 후 "+trail.data.get("exit_name","물길 표식")+"에서 [F]로 탐험을 완료하세요."
 	label(overlay,"동행 중인 6마리 안에서 출전 동료를 교체할 수 있습니다.\n회복은 기존 지원 스킬 [Q / 회복 버튼]을 사용하세요.\n\n"+hint,Vector2(240,270),22)
 	button(overlay,"동행 편성",Rect2(240,550,285,60),open_roster)
 	button(overlay,"가방 확인",Rect2(575,550,285,60),open_inventory)
@@ -1713,7 +1714,7 @@ func update_hud():
 			boss_label.text=(Campaign.STAGES[current_stage].boss if current_route.is_empty() else Routes.profile(current_route).get("boss","정예"))+"  ·  %d / %d" % [e.hp,e.maxhp]
 			boss_hp_bar.max_value=e.maxhp
 			boss_hp_bar.value=e.hp
-			if e.get("intro",0.0)>0: boss_label.text+="\n거대한 발자국의 주인 · 경계 중"
+			if e.get("intro",0.0)>0: boss_label.text+="\n"+("우두머리 · 경계 중" if Species.NEW.has(e.kind) else "거대한 발자국의 주인 · 경계 중")
 			elif e.wind>0: boss_label.text+="\n"+("지면 강타! 원 밖으로 이동" if Species.NEW.has(e.kind) and e.attack_kind=="slam" else "표적 공격! 표시된 원을 피하세요" if Species.NEW.has(e.kind) else "발구르기! 원 밖으로 이동" if e.attack_kind=="stomp" else "돌진! 옆으로 피하세요")
 			elif e.get("dash",0.0)>0: boss_label.text+="\n돌진 중!"
 			else: boss_label.text+="\n공격 기회"

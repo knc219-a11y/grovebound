@@ -14,6 +14,7 @@ var sign:Texture2D
 var fire:Texture2D
 func configure_route(c,p):
 	route=c.duplicate(true); data=p.duplicate(true); points=data.points
+	campaign_id=int(c.theme); rest_name=data.get("rest_name","물길 쉼터")
 	side=points[0]+Vector2(60,-235 if points[0].y>700 else 235)
 	rest=points[mini(1,points.size()-1)]+Vector2(-180,-200 if points[1].y>750 else 210)
 func reset():
@@ -43,11 +44,11 @@ func near_exit(p): return p.distance_to(data.exit)<105
 func next_stop(enemies):
 	for pack in points.size():
 		if not cleared_pack(enemies,pack): return {"pos":points[pack],"name":data.boss if data.has("boss") and pack==points.size()-1 else "%d번째 길목" % (pack+1),"pack":pack}
-	return {"pos":data.exit,"name":"물길 표식 · 탐험 완료 [F]","pack":-1}
+	return {"pos":data.exit,"name":data.get("exit_name","물길 표식")+" · 탐험 완료 [F]","pack":-1}
 func objective(enemies,p):
-	if ready_to_clear(enemies): return "물길 표식으로 이동 · [F] 길 잇기"
+	if ready_to_clear(enemies): return data.get("exit_name","물길 표식")+"으로 이동 · [F] 길 잇기"
 	return "다음 · "+next_stop(enemies).name
-func area(_p): return "1-%d · %s" % [int(route.stage),data.name]
+func area(_p): return "%d-%d · %s" % [campaign_id,int(route.stage),data.name]
 func begin_boss_intro(g):
 	if visited.has("boss_intro"): return false
 	for pack in points.size()-1:
@@ -56,7 +57,7 @@ func begin_boss_intro(g):
 	for e in g.enemies:
 		if e.boss:
 			e.active=true; e.intro=1.35; e.cd=maxf(e.cd,0.8); e.wind=0.0; e.dash=0.0
-			g.notify(data.boss+" · "+("발구르기의 원 밖으로 이동하세요." if data.get("midboss",false) else "발구르기와 직선 돌진의 예고를 살피세요."))
+			g.notify(data.boss+" · "+data.get("boss_hint","발구르기의 원 밖으로 이동하세요." if data.get("midboss",false) else "발구르기와 직선 돌진의 예고를 살피세요."))
 	return true
 func update(g,dt=0.0):
 	milestone_time=maxf(0,milestone_time-dt)
@@ -87,7 +88,7 @@ func draw(g):
 		g.draw_texture(sign,point-g.cam-Vector2(25,90))
 	g.draw_texture(fire,rest-g.cam-Vector2(30,30))
 	g.text_at(rest_name,rest-g.cam+Vector2(-45,45),14,Color("d9cda8"))
-	g.text_at("옆길 · 사슴과 거북",side-g.cam+Vector2(-60,-75),14,Color("c3c9ac"))
+	g.text_at(data.get("side_name","옆길 · 사슴과 거북"),side-g.cam+Vector2(-60,-75),14,Color("c3c9ac"))
 	var exit=data.exit-g.cam
 	var ready=ready_to_clear(g.enemies)
 	g.draw_arc(exit,40,0,TAU,20,Color("b8d99c") if ready else Color("777e66"),2,false)

@@ -65,7 +65,9 @@ def main():
     output = Path(args.out)
     if not output.is_absolute(): output = project / output
     output.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix="grove-preview-") as temp:
+    preview_temp = project / ".godot" / "previews"
+    preview_temp.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="grove-preview-", dir=preview_temp) as temp:
         movie = Path(temp) / "capture.avi"
         if args.frames_only:
             frame_dir = output.parent / (output.name + "-frames")

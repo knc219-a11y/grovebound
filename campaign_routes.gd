@@ -2,6 +2,7 @@ extends RefCounted
 # Separate identifiers keep legacy region IDs from becoming stage numbers.
 const Save=preload("res://save_data.gd")
 const Legacy=preload("res://campaign.gd")
+const Quarry=preload("res://quarry_routes.gd")
 const DIFFICULTIES=["normal","depth","challenge"]
 const DIFFICULTY_NAMES={"normal":"일반","depth":"심층","challenge":"도전"}
 const THEMES={1:"초록물 계곡",2:"버려진 채석장",3:"잊힌 묘역",4:"붉은바람 황야",5:"검은성채"}
@@ -21,12 +22,15 @@ static func valid(c):
 static func key(c):
 	return "%s:%d:%d" % [c.difficulty,int(c.theme),int(c.stage)] if valid(c) else ""
 static func implemented(c):
-	return valid(c) and c.difficulty=="normal" and int(c.theme)==1
+	return valid(c) and c.difficulty=="normal" and int(c.theme) in [1,2]
 static func title(c):
 	if not valid(c): return "탐험 지도"
-	return "%s %d-%d · %s" % [DIFFICULTY_NAMES[c.difficulty],int(c.theme),int(c.stage),VALLEY[int(c.stage)-1].name if int(c.theme)==1 else THEMES[int(c.theme)]]
+	return "%s %d-%d · %s" % [DIFFICULTY_NAMES[c.difficulty],int(c.theme),int(c.stage),profile(c).name if implemented(c) else THEMES[int(c.theme)]]
 static func profile(c):
-	return VALLEY[int(c.stage)-1].duplicate(true) if implemented(c) else {}
+	if not implemented(c): return {}
+	return VALLEY[int(c.stage)-1].duplicate(true) if int(c.theme)==1 else Quarry.profile(int(c.stage))
+static func boss_level(p):
+	return int(p.get("boss_level",4 if not p.get("midboss",false) else p.level))
 static func migrated(legacy):
 	var result={"version":1,"cleared":[]}
 	for theme in Legacy.progress(legacy):
@@ -55,7 +59,8 @@ static func contains(progress,c):
 	return false
 static func available(c,progress):
 	if not implemented(c): return false
-	return int(c.stage)==1 or contains(progress,coordinate(1,int(c.stage)-1,c.difficulty))
+	if int(c.stage)>1: return contains(progress,coordinate(int(c.theme),int(c.stage)-1,c.difficulty))
+	return int(c.theme)==1 or contains(progress,coordinate(int(c.theme)-1,8,c.difficulty))
 static func completed(progress,c):
 	var result=progress.duplicate(true)
 	if not contains(result,c): result.cleared.append(c.duplicate(true))
@@ -70,20 +75,20 @@ static func populate(g,c):
 	for pack in p.packs.size():
 		for index in p.packs[pack].size():
 			var terminal=p.has("boss") and pack==p.packs.size()-1
-			g.spawn_enemy(p.packs[pack][index],p.points[pack]+Vector2(index*65,index*30),4 if terminal and not p.get("midboss",false) else p.level,terminal)
+			g.spawn_enemy(p.packs[pack][index],p.points[pack]+Vector2(index*65,index*30),boss_level(p) if terminal else p.level,terminal)
 			var e=g.enemies[-1]
-			e.pack=pack; e.damage_scale=0.8 if not terminal else 0.8 if p.get("midboss",false) else 1.0
+			e.pack=pack; e.damage_scale=p.get("damage_scale",0.8) if not terminal else 0.8 if p.get("midboss",false) else 1.0
 			if terminal:
 				e.hp=p.boss_hp; e.maxhp=e.hp; e.stage_entry=true; e.route_mid=p.get("midboss",false)
 		for index in p.crowds[pack]:
-			g.spawn_enemy("wolf" if int(c.stage)>=3 else "boar",p.points[pack]+Vector2(-65+index*38,45 if index%2 else -45),p.level)
+			g.spawn_enemy(p.get("swarm_kind","wolf" if int(c.stage)>=3 else "boar"),p.points[pack]+Vector2(-65+index*38,45 if index%2 else -45),p.level)
 			var e=g.enemies[-1]
-			e.pack=pack; e.swarm=true; e.swarm_damage=1.6/p.crowds[pack]; e.damage_scale=0.5
+			e.pack=pack; e.swarm=true; e.swarm_damage=1.6/p.crowds[pack]; e.damage_scale=p.get("swarm_damage_scale",0.5)
 			e.hp*=0.28; e.maxhp=e.hp
 	# Side encounters retain two optional opportunities without blocking completion.
 	for index in 2:
-		g.spawn_enemy("deer" if index==0 else "turtle",g.trail.side+Vector2(index*65,25*index),p.level)
-		g.enemies[-1].pack=8; g.enemies[-1].damage_scale=0.8
+		g.spawn_enemy(p.get("side_kinds",["deer","turtle"])[index],g.trail.side+Vector2(index*65,25*index),p.level)
+		g.enemies[-1].pack=8; g.enemies[-1].damage_scale=p.get("damage_scale",0.8)
 static func rewards(c):
 	var p=profile(c)
 	if p.is_empty(): return {}
@@ -92,6 +97,6 @@ static func rewards(c):
 	for pack in p.packs.size():
 		var boss=p.has("boss") and pack==p.packs.size()-1
 		for kind in p.packs[pack]:
-			xp+=12+(4 if boss and not p.get("midboss",false) else p.level)*4
+			xp+=12+(boss_level(p) if boss else p.level)*4
 			materials+=5 if boss else 1
 	return {"xp":xp,"materials":materials+10,"bonus":10,"optional_xp":2*(12+p.level*4),"optional_materials":2}

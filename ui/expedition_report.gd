@@ -68,6 +68,8 @@ static func show_report(g):
 		var next=g.Routes.next(r.route)
 		if g.Routes.available(next,g.Routes.progress_for(g)):
 			g.button(g.overlay,"다음 스테이지",Rect2(565,640,330,55),func(): g.depart_route(next))
+		elif g.Routes.valid(next) and next.difficulty=="normal" and int(next.stage)==1 and g.Campaign.accessible(int(next.theme),g.cleared_stages):
+			g.button(g.overlay,g.Campaign.STAGES[int(next.theme)].name+"으로",Rect2(565,640,330,55),func(): g.depart_stage(int(next.theme)))
 		else:
 			g.button(g.overlay,"탐험 지도",Rect2(565,640,330,55),func(): g.show_camp(); g.open_stage_select())
 	elif g.mode=="result" and g.run_success and stage_id<3:

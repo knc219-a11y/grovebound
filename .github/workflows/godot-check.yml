@@ -93,6 +93,15 @@ jobs:
           timeout 90s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/audit_valley_routes.gd 2>&1 | tee valley-journey.log
           grep -q 'VALLEY JOURNEY PASS 48/48' valley-journey.log
           if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR:' campaign-routes.log valley-journey.log; then exit 1; fi
+      - name: Quarry stages and continuous valley-to-quarry growth
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_quarry_routes.gd 2>&1 | tee quarry-routes.log
+          grep -q 'QUARRY ROUTES PASS:' quarry-routes.log
+          timeout 90s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/audit_valley_routes.gd -- --through-quarry 2>&1 | tee quarry-journey.log
+          grep -q 'QUARRY JOURNEY PASS 96/96' quarry-journey.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR:' quarry-routes.log quarry-journey.log; then exit 1; fi
       - name: Companion evolution transaction and combat
         shell: bash
         run: |

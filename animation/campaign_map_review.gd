@@ -1,24 +1,29 @@
 extends "res://animation/pixel_gameplay_preview.gd"
 @export var view="world"
+@export var theme=1
 var review_time=0.0
 func _ready():
 	super()
 	# No production save reads/writes: inherited preview hooks isolate all transactions.
 	owned.clear(); squad.clear(); discovered.clear(); cleared_stages=[]; unlocked=false
 	campaign_progress={"version":1,"cleared":[]}
-	for stage in range(1,4): campaign_progress.cleared.append(Routes.coordinate(1,stage))
+	if theme==2:
+		cleared_stages=[1]; unlocked=true
+		campaign_progress=Routes.migrated({"cleared_stages":[1]})
+	for stage in range(1,4): campaign_progress=Routes.completed(campaign_progress,Routes.coordinate(theme,stage))
 	for kind in ["boar","fox","deer","turtle"]:
-		var d=make_owned(kind,3,{"kind":kind,"level":3,"xp":0,"star":1,"trait":"강인함","grade":"common","options":[]})
+		var level=3 if theme==1 else 8
+		var d=make_owned(kind,level,{"kind":kind,"level":level,"xp":0,"star":1,"trait":"강인함","grade":"common","options":[]})
 		squad.append(d.id)
 	show_camp(); clear_overlay()
 	if view in ["world","stages","locked"]:
-		map_theme=1 if view=="stages" else 0
+		map_theme=theme if view=="stages" else 0
 		map_stage=4; map_difficulty="depth" if view=="locked" else "normal"
 		open_stage_select(); screenshot_mode=true
 		return
 	var stage=4 if view=="midboss" else 8
-	for i in range(4,9): campaign_progress=Routes.completed(campaign_progress,Routes.coordinate(1,i))
-	depart_route(Routes.coordinate(1,stage))
+	for i in range(4,9): campaign_progress=Routes.completed(campaign_progress,Routes.coordinate(theme,i))
+	depart_route(Routes.coordinate(theme,stage))
 	for e in enemies:
 		if not e.boss: e.hp=0
 	player.pos=trail.points[-1]+Vector2(-200,20)
@@ -40,7 +45,10 @@ func _process(dt):
 		stick=Vector2.ZERO
 		for e in enemies:
 			if not e.boss or e.hp<=0 or e.wind<=0: continue
-			if e.attack_kind=="stomp" and player.pos.distance_to(e.aim)<160: stick=(player.pos-e.aim).normalized()
+			if e.attack_kind in ["slam","hex"] and player.pos.distance_to(e.aim)<e.tell_radius+30:
+				stick=(player.pos-e.aim).normalized()
+				if stick.length()<0.1: stick=Vector2.LEFT
+			elif e.attack_kind=="stomp" and player.pos.distance_to(e.aim)<160: stick=(player.pos-e.aim).normalized()
 			elif e.attack_kind=="charge":
 				var near=Geometry2D.get_closest_point_to_segment(player.pos,e.origin,e.aim)
 				if player.pos.distance_to(near)<85: stick=(e.aim-e.origin).normalized().orthogonal()
