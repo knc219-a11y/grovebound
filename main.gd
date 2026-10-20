@@ -356,6 +356,22 @@ func open_controls():
 	label(overlay,"동료 초상의 강·용·단·민·정은 상시 특성입니다. 가방의 상세 화면에서 효과를 확인하세요.",Vector2(245,575),16)
 	button(overlay,"메뉴로",Rect2(925,630,285,55),open_game_menu)
 
+func reset_player_visual_state():
+	# Transitions stop combat animation without changing equipment or saved progression.
+	for key in ["action_key","action_duration","action_remaining","action_face","pending_basic","channel_time","hit","swing","death","recoil","pixel_phase","pixel_running","pixel_moving","pixel_down"]:
+		player.erase(key)
+	player.walk=false
+	player.channeling=false
+	player.move_speed=0.0
+	player.pixel_last=player.pos
+	revive_target=-1
+	revive_progress=0.0
+	holding_revive=false
+	stick=Vector2.ZERO
+
+func face_player_target(target):
+	if absf(target.x-player.pos.x)>1.0: player.face=signf(target.x-player.pos.x)
+
 func show_camp():
 	var show_recap=false
 	if expedition.active: show_recap=expedition.close(owned,materials,kills,stage_time,"마을로 중도 귀환",units)
@@ -366,6 +382,7 @@ func show_camp():
 	mode="camp"
 	in_combat=false
 	player.hp=player.maxhp
+	reset_player_visual_state()
 	player.walk=false
 	player.channeling=false
 	revive_target=-1
@@ -464,6 +481,7 @@ func start_stage(tutorial):
 	clear_overlay()
 	mode = "tutorial" if tutorial else "stage"
 	player.pos = Vector2(340,800)
+	reset_player_visual_state()
 	player.hp = player.maxhp
 	player.cd = 0.0
 	kills = 0
@@ -601,6 +619,7 @@ func update_game(dt):
 		if target.is_empty() and player.get("action_key","")=="attack" and player.get("action_remaining",0.0)>DruidAttack.DURATION-DruidAttack.IMPACT:
 			player.action_remaining=0.0
 		if not target.is_empty() and player.cd>0 and player.cd<=DruidAttack.IMPACT and not player.walk and player.get("action_remaining",0.0)<=0:
+			face_player_target(target.pos)
 			DruidAttack.start(player,player.cd)
 		if not target.is_empty() and player.cd<=0:
 			hit_enemy(target,6.0,player.pos,player)
@@ -818,7 +837,9 @@ func hit_enemy(e, damage, source,attacker={},animate=true):
 	e.active=true
 	e["hit"]=0.16
 	e["recoil"]=(e.pos-source).normalized()*7
-	if animate: animate_attack(source,attacker)
+	if animate:
+		if attacker==player or (attacker.is_empty() and player.pos.distance_to(source)<2): face_player_target(e.pos)
+		animate_attack(source,attacker)
 	var visual="melee"
 	if not attacker.is_empty():
 		visual="support" if attacker==player else ("fox" if attacker.data.kind=="fox" else "melee")
@@ -1015,6 +1036,7 @@ func start_practice():
 func finish(success):
 	if mode=="result": return
 	mode="result"
+	reset_player_visual_state()
 	if success:
 		materials+=10
 		unlocked=true

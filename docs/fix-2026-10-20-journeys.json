@@ -1,0 +1,590 @@
+{
+  "baseline": "P1-A/B working tree based on 4c1855b",
+  "confirmed_probes": [
+    {
+      "action_face": -1.0,
+      "confirmed": false,
+      "id": "attack_facing",
+      "target_left": true
+    },
+    {
+      "confirmed": false,
+      "id": "town_stale_action",
+      "key": "",
+      "remaining_after": 0.0,
+      "remaining_before": 0.0
+    },
+    {
+      "confirmed": true,
+      "id": "player_attack_sound",
+      "support_cue_accepted": false
+    }
+  ],
+  "method": "Synthetic fixed common teams, real update_game at dt=.05, scripted movement/Q/E/skills/revive/boss dodge; not a human or device playtest. No damage/HP/cooldown edits.",
+  "runs": [
+    {
+      "bonds": 0,
+      "buffs": 3,
+      "checkpoint": 5,
+      "core": {
+        "cleared": 3,
+        "total": 4
+      },
+      "down_events": 1,
+      "growth": [
+        {
+          "from": 1,
+          "id": 5,
+          "kind": "boar",
+          "to": 3,
+          "xp": 128
+        }
+      ],
+      "heals": 4,
+      "kills": 7,
+      "minimum_player_hp": 0.0,
+      "mode": "result",
+      "outcome": "드루이드가 쓰러져 귀환 · 클리어 보너스 없음",
+      "packs": {
+        "0": {
+          "alive": 0,
+          "dead": 1
+        },
+        "1": {
+          "alive": 0,
+          "dead": 2
+        },
+        "2": {
+          "alive": 0,
+          "dead": 2
+        },
+        "3": {
+          "alive": 0,
+          "dead": 2
+        },
+        "4": {
+          "alive": 2,
+          "dead": 0
+        },
+        "5": {
+          "alive": 2,
+          "dead": 0
+        },
+        "boss": {
+          "alive": 1,
+          "dead": 0
+        }
+      },
+      "returned_to_town": true,
+      "samples": [
+        {
+          "down": 0,
+          "hp": 180,
+          "kills": 2,
+          "seconds": 10,
+          "x": 884
+        },
+        {
+          "down": 0,
+          "hp": 98,
+          "kills": 4,
+          "seconds": 20,
+          "x": 1039
+        },
+        {
+          "down": 0,
+          "hp": 55,
+          "kills": 5,
+          "seconds": 30,
+          "x": 1400
+        }
+      ],
+      "scenario": {
+        "kinds": [
+          "boar"
+        ],
+        "level": 1,
+        "name": "starter_boar_lv1"
+      },
+      "seconds": 38.6,
+      "skills": 4,
+      "transitions": [
+        {
+          "hp": 180,
+          "kills": 1,
+          "point": 0,
+          "seconds": 0
+        },
+        {
+          "hp": 168,
+          "kills": 3,
+          "point": 1,
+          "seconds": 12
+        },
+        {
+          "hp": 98,
+          "kills": 5,
+          "point": 2,
+          "seconds": 20
+        },
+        {
+          "hp": 55,
+          "kills": 7,
+          "point": 3,
+          "seconds": 31
+        },
+        {
+          "hp": 55,
+          "kills": 7,
+          "point": -1,
+          "seconds": 32
+        }
+      ]
+    },
+    {
+      "bonds": 0,
+      "buffs": 3,
+      "checkpoint": 4,
+      "core": {
+        "cleared": 3,
+        "total": 4
+      },
+      "down_events": 0,
+      "growth": [
+        {
+          "from": 1,
+          "id": 5,
+          "kind": "boar",
+          "to": 3,
+          "xp": 176
+        }
+      ],
+      "heals": 4,
+      "kills": 9,
+      "minimum_player_hp": 0.0,
+      "mode": "result",
+      "outcome": "드루이드가 쓰러져 귀환 · 클리어 보너스 없음",
+      "packs": {
+        "0": {
+          "alive": 0,
+          "dead": 1
+        },
+        "1": {
+          "alive": 0,
+          "dead": 2
+        },
+        "2": {
+          "alive": 0,
+          "dead": 2
+        },
+        "3": {
+          "alive": 0,
+          "dead": 2
+        },
+        "4": {
+          "alive": 0,
+          "dead": 2
+        },
+        "5": {
+          "alive": 2,
+          "dead": 0
+        },
+        "boss": {
+          "alive": 1,
+          "dead": 0
+        }
+      },
+      "returned_to_town": true,
+      "samples": [
+        {
+          "down": 0,
+          "hp": 180,
+          "kills": 2,
+          "seconds": 10,
+          "x": 884
+        },
+        {
+          "down": 0,
+          "hp": 98,
+          "kills": 4,
+          "seconds": 20,
+          "x": 1388
+        },
+        {
+          "down": 0,
+          "hp": 55,
+          "kills": 7,
+          "seconds": 30,
+          "x": 1587
+        }
+      ],
+      "scenario": {
+        "kinds": [
+          "boar"
+        ],
+        "level": 1,
+        "main_only": true,
+        "name": "starter_boar_lv1_main_only"
+      },
+      "seconds": 37.4,
+      "skills": 4,
+      "transitions": [
+        {
+          "hp": 180,
+          "kills": 1,
+          "point": 0,
+          "seconds": 0
+        },
+        {
+          "hp": 168,
+          "kills": 3,
+          "point": 1,
+          "seconds": 12
+        },
+        {
+          "hp": 55,
+          "kills": 7,
+          "point": 3,
+          "seconds": 29
+        },
+        {
+          "hp": 55,
+          "kills": 7,
+          "point": -1,
+          "seconds": 30
+        }
+      ]
+    },
+    {
+      "bonds": 1,
+      "buffs": 4,
+      "checkpoint": 7,
+      "core": {
+        "cleared": 4,
+        "total": 4
+      },
+      "down_events": 0,
+      "growth": [
+        {
+          "from": 2,
+          "id": 5,
+          "kind": "boar",
+          "to": 4,
+          "xp": 252
+        },
+        {
+          "from": 2,
+          "id": 6,
+          "kind": "wolf",
+          "to": 4,
+          "xp": 252
+        },
+        {
+          "from": 2,
+          "id": 7,
+          "kind": "deer",
+          "to": 4,
+          "xp": 252
+        },
+        {
+          "from": 2,
+          "id": 8,
+          "kind": "turtle",
+          "to": 4,
+          "xp": 252
+        },
+        {
+          "from": 3,
+          "id": 9,
+          "kind": "wolf",
+          "to": 3,
+          "xp": 28
+        }
+      ],
+      "heals": 1,
+      "kills": 12,
+      "minimum_player_hp": 152.0,
+      "mode": "result",
+      "outcome": "우두머리 제압 · 클리어 보너스 +10",
+      "packs": {
+        "0": {
+          "alive": 0,
+          "dead": 1
+        },
+        "1": {
+          "alive": 0,
+          "dead": 2
+        },
+        "2": {
+          "alive": 0,
+          "dead": 2
+        },
+        "3": {
+          "alive": 0,
+          "dead": 2
+        },
+        "4": {
+          "alive": 0,
+          "dead": 2
+        },
+        "5": {
+          "alive": 0,
+          "dead": 2
+        },
+        "boss": {
+          "alive": 0,
+          "dead": 1
+        }
+      },
+      "returned_to_town": true,
+      "samples": [
+        {
+          "down": 0,
+          "hp": 156,
+          "kills": 3,
+          "seconds": 10,
+          "x": 976
+        },
+        {
+          "down": 0,
+          "hp": 164,
+          "kills": 7,
+          "seconds": 20,
+          "x": 1423
+        },
+        {
+          "down": 0,
+          "hp": 164,
+          "kills": 10,
+          "seconds": 30,
+          "x": 2087
+        },
+        {
+          "down": 0,
+          "hp": 180,
+          "kills": 11,
+          "seconds": 40,
+          "x": 2407
+        }
+      ],
+      "scenario": {
+        "kinds": [
+          "boar",
+          "wolf",
+          "deer",
+          "turtle"
+        ],
+        "level": 2,
+        "name": "balanced_lv2"
+      },
+      "seconds": 45.4,
+      "skills": 20,
+      "transitions": [
+        {
+          "hp": 180,
+          "kills": 1,
+          "point": 0,
+          "seconds": 0
+        },
+        {
+          "hp": 156,
+          "kills": 3,
+          "point": 1,
+          "seconds": 9
+        },
+        {
+          "hp": 180,
+          "kills": 5,
+          "point": 2,
+          "seconds": 13
+        },
+        {
+          "hp": 164,
+          "kills": 7,
+          "point": 3,
+          "seconds": 20
+        },
+        {
+          "hp": 164,
+          "kills": 7,
+          "point": -1,
+          "seconds": 21
+        },
+        {
+          "hp": 180,
+          "kills": 9,
+          "point": 4,
+          "seconds": 25
+        },
+        {
+          "hp": 164,
+          "kills": 11,
+          "point": 5,
+          "seconds": 31
+        }
+      ]
+    },
+    {
+      "bonds": 1,
+      "buffs": 3,
+      "checkpoint": 7,
+      "core": {
+        "cleared": 4,
+        "total": 4
+      },
+      "down_events": 0,
+      "growth": [
+        {
+          "from": 2,
+          "id": 5,
+          "kind": "boar",
+          "to": 4,
+          "xp": 252
+        },
+        {
+          "from": 2,
+          "id": 6,
+          "kind": "wolf",
+          "to": 4,
+          "xp": 252
+        },
+        {
+          "from": 2,
+          "id": 7,
+          "kind": "marten",
+          "to": 4,
+          "xp": 252
+        },
+        {
+          "from": 2,
+          "id": 8,
+          "kind": "fox",
+          "to": 4,
+          "xp": 252
+        },
+        {
+          "from": 3,
+          "id": 9,
+          "kind": "wolf",
+          "to": 3,
+          "xp": 28
+        }
+      ],
+      "heals": 4,
+      "kills": 12,
+      "minimum_player_hp": 112.0,
+      "mode": "result",
+      "outcome": "우두머리 제압 · 클리어 보너스 +10",
+      "packs": {
+        "0": {
+          "alive": 0,
+          "dead": 1
+        },
+        "1": {
+          "alive": 0,
+          "dead": 2
+        },
+        "2": {
+          "alive": 0,
+          "dead": 2
+        },
+        "3": {
+          "alive": 0,
+          "dead": 2
+        },
+        "4": {
+          "alive": 0,
+          "dead": 2
+        },
+        "5": {
+          "alive": 0,
+          "dead": 2
+        },
+        "boss": {
+          "alive": 0,
+          "dead": 1
+        }
+      },
+      "returned_to_town": true,
+      "samples": [
+        {
+          "down": 0,
+          "hp": 128,
+          "kills": 4,
+          "seconds": 10,
+          "x": 1039
+        },
+        {
+          "down": 0,
+          "hp": 112,
+          "kills": 9,
+          "seconds": 20,
+          "x": 1906
+        },
+        {
+          "down": 0,
+          "hp": 112,
+          "kills": 11,
+          "seconds": 30,
+          "x": 2369
+        }
+      ],
+      "scenario": {
+        "kinds": [
+          "boar",
+          "wolf",
+          "marten",
+          "fox"
+        ],
+        "level": 2,
+        "name": "offense_lv2"
+      },
+      "seconds": 32.8,
+      "skills": 15,
+      "transitions": [
+        {
+          "hp": 180,
+          "kills": 1,
+          "point": 0,
+          "seconds": 0
+        },
+        {
+          "hp": 156,
+          "kills": 3,
+          "point": 1,
+          "seconds": 6
+        },
+        {
+          "hp": 128,
+          "kills": 5,
+          "point": 2,
+          "seconds": 10
+        },
+        {
+          "hp": 128,
+          "kills": 7,
+          "point": 3,
+          "seconds": 14
+        },
+        {
+          "hp": 128,
+          "kills": 7,
+          "point": -1,
+          "seconds": 15
+        },
+        {
+          "hp": 112,
+          "kills": 9,
+          "point": 4,
+          "seconds": 19
+        },
+        {
+          "hp": 112,
+          "kills": 11,
+          "point": 5,
+          "seconds": 21
+        }
+      ]
+    }
+  ]
+}

@@ -104,8 +104,9 @@ func run():
 		print("JOURNEY AUDIT ",JSON.stringify(result))
 		g.free()
 	probe_visual_state()
-	var output={"baseline":"f30301241904df812ec0962bbc2cee54401cf564","method":"Synthetic fixed common teams, real update_game at dt=.05, scripted movement/Q/E/skills/revive/boss dodge; not a human or device playtest. No damage/HP/cooldown edits.","runs":reports,"confirmed_probes":findings}
-	var file=FileAccess.open("res://docs/audit-2026-10-20-journeys.json",FileAccess.WRITE)
+	var output={"baseline":"P1-A/B working tree based on 4c1855b","method":"Synthetic fixed common teams, real update_game at dt=.05, scripted movement/Q/E/skills/revive/boss dodge; not a human or device playtest. No damage/HP/cooldown edits.","runs":reports,"confirmed_probes":findings}
+	var output_path="res://docs/fix-2026-10-20-journeys.json"
+	var file=FileAccess.open(output_path,FileAccess.WRITE)
 	file.store_string(JSON.stringify(output,"\t")+"\n")
 	quit()
 func probe_visual_state():
@@ -119,9 +120,9 @@ func probe_visual_state():
 	g.player.walk=false; g.player.pixel_moving=false
 	Attack.start(g.player)
 	g.show_camp()
-	var before=g.player.action_remaining
+	var before=g.player.get("action_remaining",0.0)
 	for i in 60: g.update_town(1.0/60)
-	findings.append({"id":"town_stale_action","key":Pose.active_key(g.player),"remaining_before":before,"remaining_after":g.player.action_remaining,"confirmed":Pose.active_key(g.player)=="attack" and g.player.action_remaining==before})
+	findings.append({"id":"town_stale_action","key":Pose.active_key(g.player),"remaining_before":before,"remaining_after":g.player.get("action_remaining",0.0),"confirmed":Pose.active_key(g.player)=="attack" and g.player.get("action_remaining",0.0)==before})
 	var sound=preload("res://animation/combat_audio.gd").new(); root.add_child(sound)
 	findings.append({"id":"player_attack_sound","support_cue_accepted":sound.cue("support"),"confirmed":not sound.PROFILES.has("support")})
 	sound.free(); g.free()
