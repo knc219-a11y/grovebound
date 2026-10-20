@@ -20,6 +20,7 @@ func check():
 		var unit_hp=g.units[0].hp
 		g.combat_feedback.clear()
 		g.use_companion_skill(0)
+		if kind in ["boar","fox"]: g.Assault.advance(g,g.units[0],0.25)
 		var count=0
 		for e in g.combat_feedback.events:
 			if e.kind=="skill_"+kind: count+=1
@@ -31,7 +32,7 @@ func check():
 		var events=g.combat_feedback.events.size()
 		g.use_companion_skill(0)
 		if g.combat_feedback.events.size()!=events: failures.append(kind+" cooldown repeats visual")
-	if failures.is_empty(): print("SKILL VISUAL PASS: six successful casts each emit one distinct cue, failed cooldown silent, original damage/healing/cooldown preserved")
+	if failures.is_empty(): print("SKILL VISUAL PASS: six successful casts each emit one distinct cue, failed cooldown silent, single-target damage/healing/cooldown preserved, assault resolved at impact")
 	else: push_error(str(failures))
 	g.free()
 	quit(0 if failures.is_empty() else 1)

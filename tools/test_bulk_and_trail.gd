@@ -36,7 +36,7 @@ func check():
 	var filter=g.overlay.get_node("SpeciesFilter")
 	if filter.get_theme_font("font")!=g.heading_font or filter.get_popup().get_theme_font("font")!=g.heading_font: failures.append("filter and popup pixel font")
 	g.start_stage(false)
-	if g.enemies.size()!=12: failures.append("same encounter budget")
+	if g.enemies.size()!=16: failures.append("original encounters plus four weak followers")
 	var census={}
 	var bosses=0
 	for e in g.enemies:

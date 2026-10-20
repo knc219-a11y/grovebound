@@ -1,6 +1,6 @@
 extends RefCounted
 # Cosmetic silhouettes and pulses; repeated slashes never apply extra damage.
-const TITLES={"boar":"돌진 제압","wolf":"추격 타격","marten":"집중 타격","fox":"기운 폭발","turtle":"도발 · 방어","deer":"숲의 회복","druid_heal":"숲의 손길","druid_buff":"야성 강화","druid_revive":"인연의 소생"}
+const TITLES={"boar":"관통 돌진","wolf":"추격 타격","marten":"집중 타격","fox":"야성 폭발","turtle":"도발 · 방어","deer":"숲의 회복","druid_heal":"숲의 손길","druid_buff":"야성 강화","druid_revive":"인연의 소생"}
 const COLORS={"boar":"e8b166","wolf":"9dd7ed","marten":"edbbd0","fox":"f1a35e","turtle":"91dce0","deer":"aee58f","druid_heal":"aee58f","druid_buff":"ecd17e","druid_revive":"c9eab2"}
 static func shard(g,p,d,length,width,c):
 	var side=d.orthogonal()*width
@@ -51,7 +51,7 @@ static func draw(g,event,cam,font):
 				shard(g,center,Vector2.RIGHT.rotated(angle),22*(1-local)+5,3,white)
 			ring(g,ground,17+burst*24,Color(c,fade*0.5))
 		"fox":
-			ring(g,ground,22+burst*65,c)
+			ring(g,ground,22+burst*(event.radius-22),c)
 			g.draw_arc(p,15+burst*33,0,TAU,32,Color(c,fade*0.65),3,false)
 			for i in 12:
 				var d=Vector2.RIGHT.rotated(i*TAU/12+t*0.25)

@@ -104,8 +104,10 @@ func run():
 		print("JOURNEY AUDIT ",JSON.stringify(result))
 		g.free()
 	probe_visual_state()
-	var output={"baseline":"P1-A/B working tree based on 4c1855b","method":"Synthetic fixed common teams, real update_game at dt=.05, scripted movement/Q/E/skills/revive/boss dodge; not a human or device playtest. No damage/HP/cooldown edits.","runs":reports,"confirmed_probes":findings}
+	var output={"baseline":OS.get_environment("GROVE_AUDIT_BASELINE") if not OS.get_environment("GROVE_AUDIT_BASELINE").is_empty() else "P1-A/B working tree based on 4c1855b","method":"Synthetic fixed common teams, real update_game at dt=.05, scripted movement/Q/E/skills/revive/boss dodge; not a human or device playtest. No damage/HP/cooldown edits.","runs":reports,"confirmed_probes":findings}
 	var output_path="res://docs/fix-2026-10-20-journeys.json"
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--out="): output_path=arg.trim_prefix("--out=")
 	var file=FileAccess.open(output_path,FileAccess.WRITE)
 	file.store_string(JSON.stringify(output,"\t")+"\n")
 	quit()

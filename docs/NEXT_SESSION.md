@@ -1,15 +1,19 @@
-# 다음 대화 인계 · 2026-10-20 P1-A/B 수정 후
+# 다음 대화 인계 · 2026-10-20 동료 다수전 1차 후
 
 ## 현재 상태
-최신 main에서 `AGENTS.md`, `STATUS.md`, 이 문서, `docs/REVIEW_2026-10-20.md` 순서로 읽는다. 검토 때 발견한 **P1-A 공격 방향 / P1-B 귀환 상태 잔류는 수정 완료**다. 마을·공격 원화를 처음부터 다시 만들지 않는다.
+최신 main의 `AGENTS.md`, `STATUS.md`, 이 문서를 읽는다. 사용자 승인으로 기존 P1-C 전에 **적 밀도 + 아군 다수전 특수 스킬**을 먼저 시범 적용했다.
 
-- 일반 공격 준비/타격 때 실제 대상의 좌우를 반영한다. 준비 중 대상 교차도 검사했다.
-- 마을/결과/재출발 시 행동·채널·보행·피격/쓰러짐 시각 상태와 소생 입력을 정리한다. 기본 지팡이로 복귀하며 마을 위치는 보존한다.
-- 전체25/25 PASS: `docs/fix-2026-10-20-tests.json`. 새 회귀 검사 `tools/test_druid_transitions.gd`.
-- 실제 격리 Godot6초: `docs/druid-transition-fix.gif` / `.mp4` (좌우 공격·이동·공격 중 마을 귀환). 렌더 오류/영상 디코딩 검사와 화면 확인 완료.
-- 자동4경로 결과는 기존과 동일. `docs/fix-2026-10-20-journeys.json`의 attack_facing/town_stale_action confirmed=false. 이 JSON의 confirmed는 버그 재현 여부이며 PASS가 아니다. 정상 기대값은 회귀 검사로 보장한다. 예전 audit JSON/영상은 수정 전 증거다.
+- P1-A 공격 방향/P1-B 귀환 자세는 수정 완료 상태를 유지한다.
+- 멧돼지 관통 돌진: .24초 실제 이동, 경로 반폭52px, 적마다1회 기존3.5배 타격/1.5초 기절/일반 적 밀기.
+- 여우 야성 폭발: 고정한 대상 지점에 .22초 뒤 반경180px/기존2.5배 타격/일반 적 밀기. 시전 뒤 이동한 적은 실제 폭발 위치에서 판정한다.
+- 기존 수동 스킬 버튼/10초 기본 쿨다운·옵션/강화 보정 유지. 야생은 사용하지 않는다. 시전자 사망·귀환·결과 시 예약 취소.
+- 첫 무리1→5, 전체12→16. 추가4마리 HP28%·타격40%, 제압 수만 증가하고 재료/XP/교감은 주지 않는다. 기존 보상 대상11일반+보스와 튜토리얼은 보존. 세이브/등급/특성/옵션 재추첨 없음.
+- 전체26/26 PASS `docs/assault-2026-10-20-tests.json`. 새 `tools/test_companion_assault.gd` 및 기존 스킬 검사 갱신.
+- 실제 `docs/companion-assault.gif` / 소리 포함 `.mp4`7초. 첫 무리 돌진 + 시연용 두 번째 약한 무리 폭발. 두 번째 무리는 리뷰 장면에서만 재배치하며 실제 리스폰 기능이 아니다.
+- 자동4경로 모두16제압/보스 제압·귀환. Lv1 멧돼지64.8/64.7초, Lv2 균형50.4초/공격32.8초. `docs/assault-2026-10-20-journeys.json`. 각1회 봇 관찰이며 사람 난이도나 성공률 검증이 아니다.
 
 ## 다음 작업
+0. 사용자 다수전 손맛 피드백. 우선 두 종·첫 무리만 적용했으므로 다른 무리/동료로 확대하기 전에 조합별 체감 확인. 성장 보상은 무단 증폭하지 않는다.
 1. **P1-C 선택 옆길의 실제 선택성**: 본선 전용 자동 동선에서도 북/남 무리가 함께 교전한다. `trail.gd` 배치와 동료 탐색/범위/진입 조건을 함께 검토하고 본선·옆길 선택 재현 검사와 실제 이동 영상을 만든다. 수치부터 바꾸지 않는다.
 2. **P2-A 일반 공격음**: 주인공 `support` 이벤트에 음원 프로필이 없어 무음. 명시 지원 스킬과 구분하고 실패 입력 무음/중복음/6음성 상한을 유지한다.
 3. **P2-B 밀집전 가독성**: 숫자·방어 문구·스킬명의 위치/개수/우선순위 조정. 작은 캐릭터/카메라와 피해 판정 유지.
@@ -23,9 +27,9 @@
 - 관련 없는 .import/.uid/project.godot 변경은 커밋하지 않는다. GitHub ref 확인 후 반영 완료라고 말한다.
 
 ## 재현
-- `python tools/audit_suite.py --godot PATH --out docs/fix-2026-10-20-tests.json`
-- `GODOT --headless --path . --script tools/audit_journey.gd` → fix journeys JSON.
-- `tools/preview.py` + `res://animation/druid_transition_review.tscn`. Linux는 Xvfb 필요. 사용자 세이브를 쓰지 않는 격리 장면이다.
+- `python tools/audit_suite.py --godot PATH --out docs/assault-2026-10-20-tests.json`
+- `GROVE_AUDIT_BASELINE=현재커밋 GODOT --headless --path . --script tools/audit_journey.gd -- --out=res://docs/assault-2026-10-20-journeys.json`
+- `tools/preview.py` + `res://animation/assault_review.tscn`. Linux는 Xvfb 필요. 사용자 세이브를 쓰지 않는 격리 장면이다.
 
 ## 시작 프롬프트
 ```text

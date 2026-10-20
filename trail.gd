@@ -1,6 +1,6 @@
 extends RefCounted
-# Reuses the approved open meadow. Same 11 ordinary enemies + one boss,
-# same species/levels/rewards. Side paths are optional, not extra farming packs.
+# Reuses the approved meadow and original reward-bearing encounters.
+# The entry pack also contains four weak, reward-neutral followers.
 const PACKS=[Vector2(650,790),Vector2(1000,850),Vector2(1100,510),Vector2(1500,820),Vector2(1850,1040),Vector2(2190,760)]
 const KINDS=["boar","turtle","deer","fox","marten","wolf"]
 # Four main-path encounters describe progress. North/south packs stay optional.

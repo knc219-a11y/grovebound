@@ -46,6 +46,7 @@ var save_path = SAVE_PATH
 var save_notice = ""
 var save_blocked = false
 var save_backup_path = ""
+const Assault=preload("res://companion_assault.gd")
 const NAMES = {"boar":"멧돼지", "marten":"담비", "fox":"여우", "turtle":"거북", "deer":"사슴", "wolf":"늑대", "druid":"드루이드"}
 const ROLES = {"boar":"근접", "marten":"근접", "fox":"원거리", "turtle":"탱커", "deer":"힐러", "wolf":"근접"}
 const STATS = {"boar":[130,14,60,110],"marten":[85,21,62,150],"fox":[80,14,235,125],"turtle":[200,8,65,90],"deer":[95,8,240,120],"wolf":[95,12,60,130]}
@@ -431,7 +432,7 @@ func town_interact():
 func show_starters():
 	modal("첫 인연을 선택하세요", "야수의 경계를 누그러뜨린 뒤 다가가 교감하세요. 첫 인연의 교감 기회는 확정입니다.","starters",resume_game)
 	var kinds = ["boar","marten","fox"]
-	var desc = ["든든한 근접형\n돌진 · 잠깐 기절", "빠른 근접형\n한 적에게 연속 공격", "원거리형\n범위 기운탄"]
+	var desc = ["든든한 근접형\n관통 돌진 · 무리 제압", "빠른 근접형\n한 적에게 연속 공격", "원거리형\n넓은 야성 폭발"]
 	for i in range(3):
 		var x = 230+i*330
 		var t = TextureRect.new()
@@ -509,6 +510,14 @@ func start_stage(tutorial):
 			enemies[-1].pack=i
 			if i>0: spawn_enemy("wolf",Trail.PACKS[i]+Vector2(85,60),1+i/2)
 			if i>0: enemies[-1].pack=i
+		# Four weaker followers make the first encounter an allied area-skill trial.
+		for offset in [Vector2(-75,-35),Vector2(-20,42),Vector2(50,-42),Vector2(100,35)]:
+			spawn_enemy("boar",Trail.PACKS[0]+offset,1)
+			var follower=enemies[-1]
+			follower.pack=0
+			follower.swarm=true
+			follower.hp*=0.28
+			follower.maxhp=follower.hp
 		spawn_enemy("boar",Vector2(2590,850),4,true,false)
 		notify("동료를 모으며 동쪽으로 탐험하세요. 마지막 공터에 우두머리가 있습니다.")
 	update_hud()
@@ -631,7 +640,9 @@ func update_game(dt):
 		u.shield=maxf(0,u.shield-dt)
 		u.walk=false
 		u.role_flash=maxf(0,u.get("role_flash",0.0)-dt)
+		if u.hp<=0: u.erase("assault")
 		if i>=4 or u.hp<=0: continue
+		if Assault.advance(self,u,dt): continue
 		u.cd-=dt
 		if advance_basic_attack(u,dt): continue
 		var kind=u.data.kind
@@ -751,7 +762,7 @@ func resolve_enemy_attack(e):
 	var radius=130.0 if e.attack_kind=="stomp" else 56.0
 	for a in alive_allies():
 		if a.pos.distance_to(e.aim)<radius:
-			damage_ally(a,28.0 if e.boss else (2.0 if mode=="tutorial" else 10.0+e.level*2),e.pos)
+			damage_ally(a,(28.0 if e.boss else (2.0 if mode=="tutorial" else 10.0+e.level*2))*(0.4 if e.get("swarm",false) else 1.0),e.pos)
 	if e.attack_kind=="stomp":
 		combat_feedback.emit("stomp",e.pos,e.pos,0,{"radius":130.0})
 	e.cd=2.4 if e.boss else 1.5
@@ -849,9 +860,10 @@ func hit_enemy(e, damage, source,attacker={},animate=true):
 	if e.hp<=0:
 		e["death"]=0.32
 		kills+=1
-		materials+=1 if not e.boss else 5
-		for u in units: gain_xp(u.data,12+int(e.level)*4)
-		if not e.boss and (e.guaranteed or rng.randf()<CAPTURE_CHANCE):
+		materials+=(0 if e.get("swarm",false) else (1 if not e.boss else 5))
+		if not e.get("swarm",false):
+			for u in units: gain_xp(u.data,12+int(e.level)*4)
+		if not e.boss and not e.get("swarm",false) and (e.guaranteed or rng.randf()<CAPTURE_CHANCE):
 			var candidate=Loot.roll(e.kind,e.level,loot_rng)
 			candidate.pos=e.pos
 			captures.append(candidate)
@@ -928,7 +940,7 @@ func can_act():
 func use_companion_skill(i):
 	if not can_act() or i>=active_units().size(): return
 	var u=units[i]
-	if u.hp<=0 or u.skill>0: return
+	if u.hp<=0 or u.skill>0 or u.has("assault"): return
 	var target=Roles.target(u.data.kind,u.pos,enemies,player.pos,430)
 	var skill_origin=u.pos
 	match u.data.kind:
@@ -952,15 +964,14 @@ func use_companion_skill(i):
 		_:
 			if target.is_empty(): return
 			u.erase("pending_basic")
-			if u.data.kind=="fox":
-				for e in enemies:
-					if e.hp>0 and e.pos.distance_to(target.pos)<125: hit_enemy(e,attack(u.data)*2.5*(1.6 if u.buff>0 else 1.0),u.pos,u)
+			var multiplier=1.6 if u.buff>0 else 1.0
+			if u.data.kind=="boar":
+				Assault.begin_dash(self,u,target,attack(u.data)*3.5*multiplier)
+			elif u.data.kind=="fox":
+				Assault.begin_blast(self,u,target,attack(u.data)*2.5*multiplier)
 			else:
-				if u.data.kind=="boar":
-					u.pos=target.pos+Vector2(-48,0)
-					target.stun=1.5
-				hit_enemy(target,attack(u.data)*3.5*(1.6 if u.buff>0 else 1.0),u.pos,u)
-			combat_feedback.emit("skill_"+u.data.kind,skill_origin,target.pos)
+				hit_enemy(target,attack(u.data)*3.5*multiplier,u.pos,u)
+				combat_feedback.emit("skill_"+u.data.kind,skill_origin,target.pos)
 	Roles.signal_action(u,Roles.SKILLS[u.data.kind])
 	Roles.add_metric(u,"skills",1)
 	u.skill=10.0*(1.0-Loot.bonus(u.data,"skill_haste"))
@@ -1036,6 +1047,7 @@ func start_practice():
 func finish(success):
 	if mode=="result": return
 	mode="result"
+	for u in units: u.erase("assault")
 	reset_player_visual_state()
 	if success:
 		materials+=10

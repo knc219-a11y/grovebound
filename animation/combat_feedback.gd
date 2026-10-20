@@ -97,6 +97,9 @@ func draw(canvas,cam,font):
 				for i in 2:
 					var offset=side*(i*2-1)*5
 					canvas.draw_line((p+offset-side*9-direction*4).round(),(p+offset+side*7+direction*5).round(),outer,2,false)
+		if event.kind=="fox_charge":
+			ground_pulse(canvas,event.b-cam,event.radius*(1-t*0.25),Color("e2b46c",(1-t)*0.6))
+			canvas.draw_line(a,a.lerp(p,t),Color("ffe0a0",1-t),3,false)
 		match event.kind:
 			"melee","hurt":
 				var direction=(p-a).normalized()

@@ -54,6 +54,7 @@ func check_feedback():
 		enemy.hp=enemy.maxhp
 		game.units=[game.make_unit(game.make_owned(kind,1),enemy.pos-Vector2(80,0))]
 		game.use_companion_skill(0)
+		if kind in ["boar","fox"]: game.Assault.advance(game,game.units[0],0.25)
 		var found=false
 		for event in game.combat_feedback.events:
 			if event.kind=="skill_"+kind: found=true
