@@ -2,6 +2,13 @@ extends Node2D
 # A self-contained, data-driven playable slice. All gameplay positions are world coordinates.
 const Trail=preload("res://trail.gd")
 const Campaign=preload("res://campaign.gd")
+const Routes=preload("res://campaign_routes.gd")
+const ValleyTrail=preload("res://valley_trail.gd")
+var campaign_progress={}
+var current_route={}
+var map_theme=0
+var map_stage=1
+var map_difficulty="normal"
 const Species=preload("res://creature_species.gd")
 const EnemyPatterns=preload("res://enemy_patterns.gd")
 const CreatureVisual=preload("res://animation/creature_visual.gd")
@@ -359,6 +366,44 @@ func open_collection():
 func open_stage_select():
 	preload("res://ui/campaign_menu.gd").stages(self)
 
+func depart_route(c):
+	if mode not in ["camp","result"] or squad.is_empty() or not Routes.available(c,Routes.progress_for(self)): return false
+	for d in owned:
+		if Special.pending(d):
+			show_special_choice(d.id)
+			return false
+	start_stage(false,int(c.theme),c)
+	return mode=="stage" and Routes.key(current_route)==Routes.key(c)
+
+func route_can_exit():
+	return mode=="stage" and not current_route.is_empty() and trail.ready_to_clear(enemies) and trail.near_exit(player.pos) and not in_combat
+
+func finish_route(success):
+	if mode!="stage" or current_route.is_empty(): return false
+	if success and not route_can_exit(): return false
+	var progress=Routes.progress_for(self).duplicate(true)
+	var legacy=cleared_stages.duplicate()
+	if success:
+		progress=Routes.completed(progress,current_route)
+		if int(current_route.stage)==8 and 1 not in legacy: legacy.append(1)
+	var payload=save_payload().duplicate(true)
+	payload.campaign_progress=progress
+	payload.cleared_stages=legacy
+	payload.unlocked=unlocked or 1 in legacy
+	payload.materials=materials+(10 if success else 0)
+	if not persist_payload(payload):
+		notify("탐험 결과 저장에 실패했습니다. 길 잇기를 다시 눌러 주세요.")
+		return false
+	campaign_progress=progress; cleared_stages=legacy; unlocked=payload.unlocked; materials=payload.materials
+	mode="result"; run_success=success
+	for u in units:
+		u.erase("assault"); u.erase("special_action")
+	reset_player_visual_state()
+	var ending=Routes.profile(current_route).ending if success else "드루이드가 쓰러져 귀환 · 클리어 보너스 없음"
+	expedition.close(owned,materials,kills,stage_time,ending,units)
+	show_run_report()
+	return true
+
 func depart_stage(id):
 	if mode not in ["camp","result"] or squad.is_empty() or not Campaign.accessible(id,cleared_stages): return false
 	start_stage(false,id)
@@ -497,7 +542,7 @@ func make_unit(d, p):
 	if not d is Dictionary or not STATS.has(d.get("kind","")): return {}
 	return {"data":d,"pos":p,"hp":max_hp(d),"maxhp":max_hp(d),"cd":0.0,"skill":0.0,"buff":0.0,"shield":0.0,"face":1.0,"walk":false}
 
-func start_stage(tutorial,stage_id=1):
+func start_stage(tutorial,stage_id=1,route={}):
 	for d in owned:
 		if Special.pending(d):
 			show_special_choice(d.id)
@@ -505,12 +550,19 @@ func start_stage(tutorial,stage_id=1):
 			return
 	current_stage=stage_id if Campaign.STAGES.has(stage_id) and not tutorial else 1
 	stage_background=load(Campaign.STAGES[current_stage].background)
+	current_route=route.duplicate(true) if Routes.implemented(route) and not tutorial else {}
 	run_success=false
-	trail.configure(current_stage)
+	if current_route.is_empty():
+		trail=Trail.new()
+		trail.configure(current_stage)
+	else:
+		trail=ValleyTrail.new()
+		trail.configure_route(current_route,Routes.profile(current_route))
 	trail.reset()
 	report_contributions=false
 	expedition.begin(owned,materials,tutorial)
 	expedition.baseline.stage_id=current_stage
+	expedition.baseline.route=current_route.duplicate(true)
 	bond_hint_seen=false
 	if mode=="camp": town_position=player.pos
 	pending_loot_id=-1
@@ -541,8 +593,12 @@ func start_stage(tutorial,stage_id=1):
 		spawn_enemy(tutorial_species,Vector2(650,800),1,false,true)
 		notify("야수에게 다가가 경계를 누그러뜨리세요. 전투 후 쉬고 있는 야수와 교감할 수 있습니다.")
 	else:
-		Campaign.populate(self,current_stage)
-		notify(Campaign.STAGES[current_stage].name+" · "+Campaign.STAGES[current_stage].theme)
+		if current_route.is_empty():
+			Campaign.populate(self,current_stage)
+			notify(Campaign.STAGES[current_stage].name+" · "+Campaign.STAGES[current_stage].theme)
+		else:
+			Routes.populate(self,current_route)
+			notify(Routes.profile(current_route).story)
 	update_hud()
 
 func spawn_enemy(kind, p, level=1, boss=false, guaranteed=false):
@@ -769,7 +825,7 @@ func update_game(dt):
 	if player.hp<=0:
 		finish(false)
 		return
-	if mode=="stage":
+	if mode=="stage" and current_route.is_empty():
 		var boss_alive=false
 		for e in enemies:
 			if e.boss and e.hp>0: boss_alive=true
@@ -780,7 +836,7 @@ func begin_boss_attack(e, target):
 	if Species.NEW.has(e.kind):
 		EnemyPatterns.boss(e,target)
 		return
-	e.attack_kind="stomp" if e.pattern%2==0 else "charge"
+	e.attack_kind="stomp" if e.get("route_mid",false) or e.pattern%2==0 else "charge"
 	e.pattern+=1
 	e["origin"]=e.pos
 	if e.attack_kind=="stomp":
@@ -822,7 +878,7 @@ func advance_charge(e, dt):
 		var id=a.data.id if a.has("data") else -1
 		var closest=Geometry2D.get_closest_point_to_segment(a.pos,previous,e.pos)
 		if a.pos.distance_to(closest)<48 and not e.dash_hits.has(id):
-			damage_ally(a,35.0,e.pos)
+			damage_ally(a,35.0*e.get("damage_scale",1.0),e.pos)
 			e.dash_hits.append(id)
 	if e.pos.distance_to(e.aim)<2 or e.dash<=0:
 		e.dash=0.0
@@ -1055,9 +1111,15 @@ func interact():
 	if mode=="camp":
 		town_interact()
 		return
+	if route_can_exit() and not overlay.visible and not dropdown.popup.visible and closest_capture()<0:
+		finish_route(true)
+		return
 	if not can_act() or closest_down()>=0: return
 	var i=closest_capture()
 	if i<0:
+		if route_can_exit():
+			finish_route(true)
+			return
 		if mode=="stage" and not in_combat and trail.near_rest(player.pos): show_trail_rest()
 		return
 	var c=captures[i]
@@ -1089,7 +1151,8 @@ func interact():
 func show_trail_rest():
 	if mode!="stage" or in_combat or not trail.near_rest(player.pos): return
 	modal(trail.rest_name,"동료들과 잠시 숨을 고르고 다음 길을 준비하세요.","trail_rest",resume_game)
-	label(overlay,"동행 중인 6마리 안에서 출전 동료를 교체할 수 있습니다.\n회복은 기존 지원 스킬 [Q / 회복 버튼]을 사용하세요.\n\n북쪽과 남쪽으로 갈라지는 길은 선택 동선입니다.\n동쪽의 표지판은 우두머리 공터로 이어집니다.",Vector2(240,270),22)
+	var hint="북쪽과 남쪽으로 갈라지는 길은 선택 동선입니다.\n동쪽의 표지판은 우두머리 공터로 이어집니다." if current_route.is_empty() else "옆길의 사슴과 거북은 선택해서 만날 수 있습니다.\n길목을 제압한 뒤 물길 표식에서 [F]로 탐험을 완료하세요."
+	label(overlay,"동행 중인 6마리 안에서 출전 동료를 교체할 수 있습니다.\n회복은 기존 지원 스킬 [Q / 회복 버튼]을 사용하세요.\n\n"+hint,Vector2(240,270),22)
 	button(overlay,"동행 편성",Rect2(240,550,285,60),open_roster)
 	button(overlay,"가방 확인",Rect2(575,550,285,60),open_inventory)
 	button(overlay,"길로 돌아가기",Rect2(925,630,285,55),resume_game)
@@ -1104,6 +1167,9 @@ func start_practice():
 	tutorial_species="practice"
 
 func finish(success):
+	if not current_route.is_empty():
+		finish_route(success)
+		return
 	if mode=="result": return
 	mode="result"
 	for u in units:
@@ -1115,6 +1181,12 @@ func finish(success):
 		run_success=true
 		if current_stage not in cleared_stages: cleared_stages.append(current_stage)
 		if current_stage==1: unlocked=true
+		# Legacy revisits may add completed themes but never discard new stage progress.
+		var progress=Routes.progress_for(self).duplicate(true)
+		for stage in range(1,9):
+			var c=Routes.coordinate(current_stage,stage)
+			if not Routes.contains(progress,c): progress.cleared.append(c)
+		campaign_progress=Routes.normalize({"campaign_progress":progress})
 	expedition.close(owned,materials,kills,stage_time,"우두머리 제압 · 클리어 보너스 +10" if success else "드루이드가 쓰러져 귀환 · 클리어 보너스 없음",units)
 	save_game()
 	show_run_report()
@@ -1602,7 +1674,7 @@ func confirm_return():
 
 func confirm_reset():
 	modal("새 여정 시작", "이 기기의 프로토타입 저장 데이터를 초기화합니다.","",show_camp)
-	button(overlay,"초기화",Rect2(300,500,350,65),func(): expedition.clear(); preparation_seen=false; owned.clear(); squad.clear(); units.clear(); discovered.clear(); cleared_stages.clear(); seen_species.clear(); materials=0; tutorial_done=false; unlocked=false; next_id=1; show_camp())
+	button(overlay,"초기화",Rect2(300,500,350,65),func(): expedition.clear(); preparation_seen=false; owned.clear(); squad.clear(); units.clear(); discovered.clear(); cleared_stages.clear(); campaign_progress.clear(); current_route.clear(); seen_species.clear(); materials=0; tutorial_done=false; unlocked=false; next_id=1; show_camp())
 	button(overlay,"취소",Rect2(750,500,350,65),show_camp)
 
 func update_hud():
@@ -1638,7 +1710,7 @@ func update_hud():
 	boss_label.text=""
 	for e in enemies:
 		if e.boss and e.hp>0 and e.active:
-			boss_label.text=Campaign.STAGES[current_stage].boss+"  ·  %d / %d" % [e.hp,e.maxhp]
+			boss_label.text=(Campaign.STAGES[current_stage].boss if current_route.is_empty() else Routes.profile(current_route).get("boss","정예"))+"  ·  %d / %d" % [e.hp,e.maxhp]
 			boss_hp_bar.max_value=e.maxhp
 			boss_hp_bar.value=e.hp
 			if e.get("intro",0.0)>0: boss_label.text+="\n거대한 발자국의 주인 · 경계 중"
@@ -1665,7 +1737,7 @@ func update_hud():
 	buff_button.disabled=buff_cd>0 or revive_target>=0
 	var down=closest_down()
 	var cap=closest_capture()
-	interact_button.visible=down>=0 or cap>=0 or (mode=="stage" and not in_combat and trail.near_rest(player.pos))
+	interact_button.visible=down>=0 or cap>=0 or (mode=="stage" and not in_combat and trail.near_rest(player.pos)) or route_can_exit()
 	interact_progress.visible=down>=0
 	interact_progress.value=revive_progress
 	if down>=0:
@@ -1681,6 +1753,8 @@ func update_hud():
 			expedition.close(owned,materials,kills,stage_time,"첫 인연 · 협동 연습 완료",units)
 			show_camp()
 			show_run_report()
+
+	if route_can_exit() and cap<0: interact_button.text="길 잇기 [F]"
 
 func _input(event):
 	if event is InputEventScreenTouch and not event.pressed:
@@ -1774,7 +1848,7 @@ func repair_party():
 	next_id = result.next_id
 
 func save_payload():
-	return {"version":2,"owned":owned,"squad":squad,"materials":materials,"tutorial_done":tutorial_done,"unlocked":unlocked,"next_id":next_id,"discovered":discovered,"cleared_stages":cleared_stages,"seen_species":seen_species}
+	return {"version":2,"owned":owned,"squad":squad,"materials":materials,"tutorial_done":tutorial_done,"unlocked":unlocked,"next_id":next_id,"discovered":discovered,"cleared_stages":cleared_stages,"seen_species":seen_species,"campaign_progress":Routes.progress_for(self)}
 
 func persist_payload(data):
 	if save_blocked: return false
@@ -1800,8 +1874,13 @@ func load_game():
 		save_notice = "저장 데이터를 읽을 수 없어 원본을 유지하고 자동 저장을 중지했습니다."
 		return
 	var result = SaveData.normalize(d,STATS.keys())
-	if result.repaired:
+	if d.has("campaign_progress") and (not d.campaign_progress is Dictionary or SaveData.id_value(d.campaign_progress.get("version",0))!=1):
+		save_blocked=true
+		save_notice="알 수 없는 탐험 진행 형식입니다. 원본을 유지하고 자동 저장을 중지했습니다."
+		return
+	if result.repaired or not d.has("campaign_progress"):
 		if backup_save(): save_notice = "저장 정보를 새 기능에 맞게 정리했습니다. 원본은 백업했습니다."
+	campaign_progress=Routes.normalize(d)
 	discovered=result.discovered
 	owned=result.owned
 	squad=result.squad
@@ -1920,6 +1999,9 @@ func _draw():
 	if mode=="stage" and hud.visible and not overlay.visible: trail.draw_guidance(self)
 
 func draw_minimap():
+	if mode=="stage" and not current_route.is_empty():
+		trail.draw_minimap(self)
+		return
 	var box=Rect2(1190,104,225,135)
 	draw_style_box(map_style(),box)
 	text_at(("계곡" if current_stage==1 else "채석장" if current_stage==2 else "묘역")+" 지도 · 옆길은 선택",box.position+Vector2(12,22),14,Color("edf0d4"))

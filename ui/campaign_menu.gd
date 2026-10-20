@@ -3,26 +3,99 @@ const Campaign=preload("res://campaign.gd")
 const Species=preload("res://creature_species.gd")
 static func stages(g):
 	if g.mode!="camp": return
-	g.modal("사냥길 선택","드루이드는 야수와 교감합니다. 마물과 언데드는 다른 계열의 인연을 기다립니다.","stages",g.resume_game)
-	for id in [1,2,3]:
-		var stage=Campaign.STAGES[id]
-		var x=230+(id-1)*330
-		var accessible=Campaign.accessible(id,g.cleared_stages)
-		g.panel(g.overlay,Rect2(x,235,310,340),g.GroveUI.INK)
-		g.label(g.overlay,"%02d · %s" % [id,stage.name],Vector2(x+16,260),23)
-		g.label(g.overlay,"권장 동료 Lv.%d" % stage.level,Vector2(x+16,310),18)
-		var description=stage.theme.replace(" · ","\n")
-		g.label(g.overlay,description,Vector2(x+16,352),18)
-		var available=Campaign.tamable_kinds(id,g.PLAYER_CLASS)
-		var missing=available.filter(func(kind): return kind not in g.discovered)
-		var bonds=g.label(g.overlay,"교감 가능 %d종 · 미확보 %d종" % [available.size(),missing.size()],Vector2(x+16,442),16)
-		bonds.tooltip_text="\n".join(available.map(func(kind): return Species.name_of(kind)))+"\n일반 보상 대상에게 교감 기회 15%"
-		var status="우두머리 제압 완료" if id in g.cleared_stages else "탐험 가능" if accessible else "앞 지역의 우두머리를 제압하세요"
-		g.label(g.overlay,status,Vector2(x+16,470),16)
-		var b=g.button(g.overlay,"출발" if accessible else "아직 닫힌 길",Rect2(x+16,510,278,48),func(): g.depart_stage(id))
-		b.disabled=not accessible or g.squad.is_empty()
-	g.label(g.overlay,"권장 레벨은 입장 제한이 아닙니다. 활동 동료와 지원 스킬을 준비하세요.",Vector2(235,610),17)
-	g.button(g.overlay,"마을로",Rect2(925,650,285,45),g.resume_game)
+	var R=g.Routes
+	var progress=R.progress_for(g)
+	var theme=g.map_theme
+	var difficulty=g.map_difficulty
+	g.modal("탐험 지도" if theme==0 else R.THEMES[theme]+" · 스테이지", "끊어진 물길을 따라 동료들과 순환의 흔적을 찾으세요.","stages",g.resume_game)
+	for i in 3:
+		var value=R.DIFFICULTIES[i]
+		var text=R.DIFFICULTY_NAMES[value]+(" · 준비 중" if i>0 else "")
+		var b=g.button(g.overlay,text,Rect2(230+i*220,205,208,42),func(): g.map_difficulty=value; g.map_theme=0; stages(g))
+		b.name="Difficulty_"+value
+		if value==difficulty: g.GroveUI.emphasize(b)
+	var map=preload("res://ui/exploration_map.gd").new()
+	map.name="ExplorationMap"; map.position=Vector2(230,260); map.size=Vector2(660,340)
+	map.theme_id=theme
+	g.overlay.add_child(map)
+	g.panel(g.overlay,Rect2(910,260,300,340),g.GroveUI.INK)
+	if theme==0:
+		map.points=[Vector2(75,220),Vector2(205,110),Vector2(335,225),Vector2(460,125),Vector2(580,240)]
+		for id in range(1,6):
+			var count=0
+			for stage in range(1,9):
+				if R.contains(progress,R.coordinate(id,stage,difficulty)): count+=1
+			if count==8: map.cleared.append(id-1)
+			var pos=map.position+map.points[id-1]
+			var b=g.button(g.overlay,str(id),Rect2(pos-Vector2(28,24),Vector2(56,48)),func(): g.map_theme=id; g.map_stage=1; stages(g))
+			b.name="Theme_"+str(id)
+			g.GroveUI.quiet(b)
+			var label=g.label(g.overlay,R.THEMES[id],pos+Vector2(-65,44),17)
+			label.mouse_filter=Control.MOUSE_FILTER_IGNORE
+			g.label(g.overlay,"%d/8" % count if id<4 and difficulty=="normal" else "구현 예정",pos+Vector2(-28,70),14)
+		g.label(g.overlay,"순환을 잇는 여정",Vector2(930,282),22)
+		wrapped(g,"일반 · 5개 테마\n테마마다 8개 스테이지\n4번 중간보스\n8번 테마 보스",Vector2(930,330),260,19)
+		wrapped(g,"일반 5-8 → 심층\n심층 5-8 → 도전\n현재 일반 계곡 1-1~1-8을 탐험할 수 있습니다.",Vector2(930,440),260,17)
+		var available=Campaign.tamable_kinds(1,g.PLAYER_CLASS)
+		var bonds=g.label(g.overlay,"계곡 · 교감 가능 %d종" % available.size(),Vector2(930,548),16)
+		bonds.tooltip_text="\n".join(available.map(func(kind): return Species.name_of(kind)))
+		if difficulty!="normal": wrapped(g,"이 난이도는 아직 준비 중입니다. 먼저 일반 탐험을 이어가세요.",Vector2(255,275),450,17)
+	else:
+		map.points=[Vector2(70,100),Vector2(230,85),Vector2(390,110),Vector2(555,90),Vector2(555,245),Vector2(390,225),Vector2(230,250),Vector2(70,230)]
+		map.selected=g.map_stage-1
+		for stage in range(1,9):
+			var c=R.coordinate(theme,stage,difficulty)
+			var done=R.contains(progress,c)
+			if done: map.cleared.append(stage-1)
+			var p=map.position+map.points[stage-1]
+			var b=g.button(g.overlay,"%d-%d" % [theme,stage],Rect2(p-Vector2(36,25),Vector2(72,50)),func(): g.map_stage=stage; stages(g))
+			b.name="Stage_"+str(stage)
+			g.GroveUI.quiet(b)
+			b.tooltip_text="중간보스" if stage==4 else "테마 보스" if stage==8 else "일반 길목"
+			g.label(g.overlay,"완료" if done else "탐험 가능" if R.available(c,progress) else "준비 중" if not R.implemented(c) else "미해금",p+Vector2(-27,32),14)
+		var selected=R.coordinate(theme,g.map_stage,difficulty)
+		var data=R.profile(selected)
+		g.label(g.overlay,"%d-%d · %s" % [theme,g.map_stage,"중간보스" if g.map_stage==4 else "테마 보스" if g.map_stage==8 else "탐험"],Vector2(930,280),21)
+		if not data.is_empty():
+			wrapped(g,data.name,Vector2(930,318),260,22)
+			wrapped(g,data.story,Vector2(930,355),260,17)
+			var reward=R.rewards(selected)
+			wrapped(g,"적 Lv.%d · 활동4 / 준비6\n본선 전투 XP %d / 동행 각각\n재료 %d · 옆길 보상 별도\n야수 교감 15%% · 1성",Vector2(930,433),260,16,[data.level,reward.xp,reward.materials])
+			var available=R.available(selected,progress)
+			var b=g.button(g.overlay,"선택한 스테이지 출발" if available else "이전 스테이지를 완료하세요",Rect2(925,548,270,42),func(): g.depart_route(selected))
+			b.name="DepartRoute"; b.disabled=not available or g.squad.is_empty()
+			g.GroveUI.emphasize(b)
+		else:
+			wrapped(g,"스테이지 확장을 준비 중입니다. 완료 기록은 보존됩니다.",Vector2(930,330),260,19)
+			if difficulty=="normal" and theme in [2,3]:
+				wrapped(g,"기존 사냥터는 계속 탐험할 수 있습니다. 지역 보스를 제압하면 해당 테마의 완료 기록을 보존합니다.",Vector2(930,420),260,17)
+				var b=g.button(g.overlay,"기존 사냥터 탐험",Rect2(925,548,270,42),func(): g.depart_stage(theme))
+				b.name="DepartLegacy"; b.disabled=not Campaign.accessible(theme,g.cleared_stages) or g.squad.is_empty()
+				if b.disabled: b.tooltip_text="앞 테마의 우두머리를 제압하세요."
+			else: wrapped(g,"앞 테마 완료 후 순서대로 해금됩니다. 아직 출발할 수 없습니다.",Vector2(930,440),260,17)
+	map.queue_redraw()
+	g.label(g.overlay,"지역을 고른 뒤 스테이지를 선택하고 출발하세요. 완료한 길은 다시 탐험할 수 있습니다.",Vector2(235,618),16)
+	if theme>0: g.button(g.overlay,"세계 지도",Rect2(230,655,250,45),func(): g.map_theme=0; stages(g))
+	g.button(g.overlay,"마을로",Rect2(925,655,285,45),g.resume_game)
+
+static func wrapped(g,text,p,width,font_size,values=[]):
+	# Labels added to a plain Control can retain their initial natural minimum width.
+	# Measure explicit lines with the actual pixel font so long Korean text stays inside.
+	var source=text % values if not values.is_empty() else text
+	var lines=[]
+	for paragraph in source.split("\n"):
+		var line=""
+		for letter in paragraph:
+			if not line.is_empty() and g.font.get_string_size(line+letter,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x>width:
+				var space=line.rfind(" ")
+				if space>0:
+					lines.append(line.substr(0,space)); line=line.substr(space+1)
+				else:
+					lines.append(line); line=""
+			line+=letter
+		lines.append(line)
+	return g.label(g.overlay,"\n".join(lines),p,font_size)
+
 static func collection(g):
 	g.modal("생물 도감","만난 생물의 계열과 교감 조건을 확인합니다. 보유 동료의 기록은 계속 보존됩니다.","collection",g.open_game_menu)
 	var scroll=ScrollContainer.new()
