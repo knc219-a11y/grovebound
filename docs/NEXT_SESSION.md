@@ -128,3 +128,5 @@ https://github.com/knc219-a11y/grovebound 의 AGENTS.md, STATUS.md, docs/NEXT_SE
 
 최신(2026-10-20): 주인공 자동 공격 크기 오류 수정. 새 몸체72px↔기본 몸체60px 교차가 원인. 원본 전체72px/카메라는 유지하고 새 자세만 실제 몸체60px/중심에 맞춰 재패킹, 지팡이 손잡이 보정. STATUS 맨 위/DRUID_SUPPORT_ART.md 기준. 실제 druid-scale-gameplay.gif/MP4, 제작용 druid-scale-detail.gif/MP4. 관련 검사 PASS, 사용자 확인 대기.
 
+최신(2026-10-20): 주인공 일반 공격을 단일 강화 자세에서 전용6신규+대기 양끝8셀로 분리. STATUS 맨 위/DRUID_ATTACK_ART.md 우선. 준비→실제 타격 발동→팔 회수, 지팡이 손잡이/각도 연결. 기존 몸체60px/피해6/.85초/카메라/세이브 유지. 실제 druid-attack-gameplay.gif/MP4/PNG와 제작3배 druid-attack-detail.gif/MP4. 검사 PASS, 사용자 자연스러움 평가 대기.
+

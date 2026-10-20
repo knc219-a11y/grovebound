@@ -7,7 +7,10 @@ var support_textures={}
 var boss_action=preload("res://animation/boss_action.gd").new()
 const DruidPose=preload("res://animation/druid_pose.gd")
 var druid_support:Texture2D
+const DruidAttack=preload("res://animation/druid_attack.gd")
+var druid_attack:Texture2D
 func _init():
+	if not DruidAttack.data().is_empty(): druid_attack=load(DruidAttack.data().texture)
 	catalog=JSON.parse_string(FileAccess.get_file_as_string("res://animation/actions-v1.json"))
 	for kind in catalog: textures[kind]=load(catalog[kind].texture)
 	for kind in ["boar","wolf","marten","fox"]:
@@ -40,6 +43,8 @@ func advance(actor,dt):
 		actor.channeling=false
 func selection(kind,actor):
 	if actor.hp<=0 or not catalog.has(kind): return {}
+	if kind=="druid" and druid_attack!=null and DruidAttack.active(actor):
+		return {"key":"attack","region":[DruidAttack.frame(actor)*112,0,112,104],"druid_attack":true}
 	var key=actor.get("action_key","")
 	var phase=0.0
 	# Enemy bite anticipation keeps its existing .65s wind-up and hit timing.
@@ -85,6 +90,7 @@ func draw(canvas,position,height,face,tint,kind,actor):
 	var texture=attack_textures[kind] if chosen.get("dedicated",false) else textures[kind]
 	if chosen.get("support_art",false): texture=support_textures[kind]
 	if chosen.get("druid_art",false): texture=druid_support
+	if chosen.get("druid_attack",false): texture=druid_attack
 	canvas.draw_texture_rect_region(texture,Rect2(-Vector2(data.ground[0],data.ground[1]),region.size),region,tint)
 	canvas.draw_set_transform(Vector2.ZERO)
 	return true

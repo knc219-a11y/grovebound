@@ -59,6 +59,7 @@ var weapon_visual
 var druid_body:Texture2D
 var animal_rigs={}
 const ActionPlayer=preload("res://animation/action_player.gd")
+const DruidAttack=preload("res://animation/druid_attack.gd")
 var motion_actions
 const PIXEL_KINDS = ["druid","marten","fox","turtle","deer","wolf"]
 var textures = {}
@@ -597,6 +598,10 @@ func update_game(dt):
 		if absf(motion.x)>0.1: player.face=signf(motion.x)
 		player.cd-=dt
 		var target=nearest_enemy(player.pos,250)
+		if target.is_empty() and player.get("action_key","")=="attack" and player.get("action_remaining",0.0)>DruidAttack.DURATION-DruidAttack.IMPACT:
+			player.action_remaining=0.0
+		if not target.is_empty() and player.cd>0 and player.cd<=DruidAttack.IMPACT and not player.walk and player.get("action_remaining",0.0)<=0:
+			DruidAttack.start(player,player.cd)
 		if not target.is_empty() and player.cd<=0:
 			hit_enemy(target,6.0,player.pos,player)
 			player.cd=0.85
@@ -770,7 +775,8 @@ func animate_attack(source,attacker={}):
 		if a.pos.distance_to(source)<2:
 			a["swing"]=0.22
 			var species="druid" if a==player else a.data.kind
-			motion_actions.start(a,species,"support" if species=="druid" else ("cast" if species=="fox" else "attack"))
+			if species=="druid": DruidAttack.start(a)
+			else: motion_actions.start(a,species,"cast" if species=="fox" else "attack")
 			# Immediate skills already applied damage; show the impact, not a late wind-up.
 			if species in ["boar","wolf","marten","fox"]: a.action_remaining=a.action_duration*2.0/3.0
 			return

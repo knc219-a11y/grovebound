@@ -56,7 +56,7 @@ func check():
 		g.player.channeling=false
 		g.player.action_remaining=0.0
 		g.animate_attack(g.player.pos,g.player)
-		if not g.motion_actions.selection("druid",g.player).get("druid_art",false): failures.append("automatic attack route")
+		if not g.motion_actions.selection("druid",g.player).get("druid_attack",false): failures.append("automatic attack route")
 	if failures.is_empty(): print("DRUID SUPPORT PASS: body/weapon routing, original60px standing body/center across automatic attack and recovery, Q55/8s, E14s, actual 3s/30% revive, interrupt")
 	else: push_error(str(failures))
 	g.free()
