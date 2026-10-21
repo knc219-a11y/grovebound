@@ -111,6 +111,15 @@ jobs:
           timeout 120s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/audit_valley_routes.gd -- --through-graveyard 2>&1 | tee graveyard-journey.log
           grep -q 'GRAVEYARD JOURNEY PASS 144/144' graveyard-journey.log
           if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR:' graveyard-routes.log graveyard-journey.log; then exit 1; fi
+      - name: Wasteland, citadel and full normal campaign
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_frontier_routes.gd 2>&1 | tee frontier-routes.log
+          grep -q 'FRONTIER ROUTES PASS:' frontier-routes.log
+          timeout 180s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/audit_valley_routes.gd -- --through-normal 2>&1 | tee normal-campaign.log
+          grep -q 'NORMAL CAMPAIGN PASS 240/240' normal-campaign.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR:' frontier-routes.log normal-campaign.log; then exit 1; fi
       - name: Companion evolution transaction and combat
         shell: bash
         run: |

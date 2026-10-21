@@ -1,0 +1,130 @@
+[
+	{
+		"level": 12,
+		"materials": 14,
+		"name": "마른 물길",
+		"stage": 1,
+		"theme": 4,
+		"xp": 240
+	},
+	{
+		"level": 12,
+		"materials": 16,
+		"name": "가시의 그늘",
+		"stage": 2,
+		"theme": 4,
+		"xp": 360
+	},
+	{
+		"level": 13,
+		"materials": 16,
+		"name": "붉은바람 길목",
+		"stage": 3,
+		"theme": 4,
+		"xp": 384
+	},
+	{
+		"level": 13,
+		"materials": 17,
+		"name": "추적자의 공터",
+		"stage": 4,
+		"theme": 4,
+		"xp": 192
+	},
+	{
+		"level": 14,
+		"materials": 16,
+		"name": "버려진 초소",
+		"stage": 5,
+		"theme": 4,
+		"xp": 408
+	},
+	{
+		"level": 14,
+		"materials": 16,
+		"name": "재의 메아리",
+		"stage": 6,
+		"theme": 4,
+		"xp": 408
+	},
+	{
+		"level": 15,
+		"materials": 18,
+		"name": "바람길 정예",
+		"stage": 7,
+		"theme": 4,
+		"xp": 576
+	},
+	{
+		"level": 15,
+		"materials": 19,
+		"name": "황야의 마지막 초소",
+		"stage": 8,
+		"theme": 4,
+		"xp": 364
+	},
+	{
+		"level": 16,
+		"materials": 14,
+		"name": "닫힌 성문",
+		"stage": 1,
+		"theme": 5,
+		"xp": 304
+	},
+	{
+		"level": 16,
+		"materials": 16,
+		"name": "세 갈래 경비",
+		"stage": 2,
+		"theme": 5,
+		"xp": 456
+	},
+	{
+		"level": 17,
+		"materials": 16,
+		"name": "장치로 가는 회랑",
+		"stage": 3,
+		"theme": 5,
+		"xp": 480
+	},
+	{
+		"level": 17,
+		"materials": 17,
+		"name": "수문장의 뜰",
+		"stage": 4,
+		"theme": 5,
+		"xp": 240
+	},
+	{
+		"level": 18,
+		"materials": 16,
+		"name": "멈춘 뿌리의 방",
+		"stage": 5,
+		"theme": 5,
+		"xp": 504
+	},
+	{
+		"level": 18,
+		"materials": 16,
+		"name": "돌아오지 않는 빛",
+		"stage": 6,
+		"theme": 5,
+		"xp": 504
+	},
+	{
+		"level": 19,
+		"materials": 18,
+		"name": "수호자의 앞마당",
+		"stage": 7,
+		"theme": 5,
+		"xp": 704
+	},
+	{
+		"level": 19,
+		"materials": 19,
+		"name": "다시 흐르는 순환",
+		"stage": 8,
+		"theme": 5,
+		"xp": 444
+	}
+]

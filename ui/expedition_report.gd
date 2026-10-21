@@ -3,7 +3,7 @@ static func show_report(g):
 	var r=g.expedition.report
 	if r.is_empty(): return
 	var leave=g.show_camp if g.mode=="result" else g.resume_game
-	g.modal("이번 탐험의 발자취 · "+(g.Routes.title(r.route) if not r.get("route",{}).is_empty() else g.Campaign.STAGES[int(r.get("stage_id",1))].name),r.outcome+" · 이번 탐험에서 맺은 인연과 성장을 확인하세요.","recap",leave)
+	g.modal("이번 탐험의 발자취 · "+(g.Routes.title(r.route) if not r.get("route",{}).is_empty() else g.Campaign.STAGES[int(r.get("stage_id",1))].name),r.outcome if not r.get("route",{}).is_empty() else r.outcome+" · 이번 탐험에서 맺은 인연과 성장을 확인하세요.","recap",leave)
 	var values=["새로운 인연  %d" % r.newcomers.size(),"성장 재료  %+d" % r.materials,"제압 %d · %02d:%02d" % [r.kills,r.seconds/60,r.seconds%60]]
 	for i in 3:
 		g.panel(g.overlay,Rect2(230+i*330,215,310,58),Color("202823"))
@@ -68,6 +68,8 @@ static func show_report(g):
 		var next=g.Routes.next(r.route)
 		if g.Routes.available(next,g.Routes.progress_for(g)):
 			g.button(g.overlay,"다음 스테이지",Rect2(565,640,330,55),func(): g.depart_route(next))
+		elif g.Routes.valid(next) and next.difficulty!=r.route.difficulty:
+			g.button(g.overlay,g.Routes.DIFFICULTY_NAMES[next.difficulty]+" 해금 · 지도",Rect2(565,640,330,55),func(): g.show_camp(); g.map_difficulty=next.difficulty; g.map_theme=0; g.open_stage_select())
 		elif g.Routes.valid(next) and next.difficulty=="normal" and int(next.stage)==1 and g.Campaign.accessible(int(next.theme),g.cleared_stages):
 			g.button(g.overlay,g.Campaign.STAGES[int(next.theme)].name+"으로",Rect2(565,640,330,55),func(): g.depart_stage(int(next.theme)))
 		else:

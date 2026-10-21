@@ -46,7 +46,7 @@ func check():
 	assert(g.owned.size()==owned+1 and g.owned[-1].trait==fixed.trait and g.owned[-1].options==fixed.options)
 	g.clear_overlay()
 	g.open_collection()
-	assert(g.overlay.get_node("CreatureCollection").get_child(0).get_child_count()==12)
+	assert(g.overlay.get_node("CreatureCollection").get_child(0).get_child_count()==16)
 	g.clear_overlay()
 	# Real save/load on a unique test path; never touches the user's production save.
 	var persisted=load("res://main.gd").new()
@@ -83,5 +83,5 @@ func check():
 		for frame in 4:
 			var bounds=image.get_region(Rect2i(frame*112,0,112,104)).get_used_rect()
 			assert(bounds.position.x>0 and bounds.end.x<112 and bounds.position.y>0 and bounds.end.y<=94)
-	print("CAMPAIGN PASS: ordered unlock/legacy save, stage2/3 encounters, duplicate reward guard, family-based future taming policy, no incompatible bonds, bat identity/collection/save roundtrip, dodgeable wraith, six four-pose sheets")
+	print("CAMPAIGN PASS: ordered unlock/legacy save, stage2/3 encounters, duplicate reward guard, family-based future taming policy, no incompatible bonds, bat identity/collection/save roundtrip, dodgeable wraith, ten four-pose sheets")
 	g.free(); quit()

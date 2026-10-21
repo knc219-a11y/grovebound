@@ -7,7 +7,8 @@ func run():
 	var growth=[]
 	var through_quarry="--through-quarry" in OS.get_cmdline_user_args()
 	var through_graveyard="--through-graveyard" in OS.get_cmdline_user_args()
-	var stage_count=24 if through_graveyard else 16 if through_quarry else 8
+	var through_normal="--through-normal" in OS.get_cmdline_user_args()
+	var stage_count=40 if through_normal else 24 if through_graveyard else 16 if through_quarry else 8
 	for starter in ["boar","marten","fox"]:
 		for seed_value in [10417,20261020]:
 			var g=Game.new(); root.add_child(g); g.set_process(false)
@@ -24,6 +25,13 @@ func run():
 				var theme=int((ordinal-1)/8)+1
 				var stage=(ordinal-1)%8+1
 				g.show_camp(); g.clear_overlay()
+				if through_normal and ordinal==25:
+					var first=g.owned[0]; var earned=g.materials; var before=first.duplicate(true)
+					assert(g.train_to_level(first.id,20,first.duplicate(true)))
+					assert(g.promote_companion(first.id,first.duplicate(true)))
+					assert(g.train_to_level(first.id,15,first.duplicate(true)))
+					growth.append({"starter":starter,"seed":seed_value,"stage":"before 4-1","before":before,"after":first.duplicate(true),"materials_before":earned,"materials_after":g.materials})
+					g.clear_overlay()
 				if not g.depart_route(R.coordinate(theme,stage)):
 					runs.append({"starter":starter,"seed":seed_value,"theme":theme,"stage":stage,"success":false,"reason":"departure blocked"})
 					break
@@ -50,7 +58,9 @@ func run():
 								break
 						for e in g.enemies:
 							if e.hp<=0 or e.wind<=0: continue
-							if e.attack_kind in ["slam","hex"] and g.player.pos.distance_to(e.aim)<e.tell_radius+35:
+							if e.attack_kind=="cone" and g.EnemyPatterns.contains(e,g.player.pos):
+								g.stick=e.cone_direction.orthogonal()
+							elif e.attack_kind in ["slam","hex"] and g.player.pos.distance_to(e.aim)<e.tell_radius+35:
 								g.stick=(g.player.pos-e.aim).normalized(); g.holding_revive=false
 								if g.stick.length()<0.1: g.stick=Vector2.LEFT
 							elif e.attack_kind=="stomp" and g.player.pos.distance_to(e.aim)<165:
@@ -85,11 +95,12 @@ func run():
 				var probe={"starter":starter,"seed":seed_value,"before":before,"materials_before":materials,"trained":trained,"capped":capped,"promoted":promoted,"after":d.duplicate(true),"materials_after":g.materials,"recovered":recovered and g.max_hp(d)>=hp and g.attack(d)>=attack,"hp_before":hp,"hp_after":g.max_hp(d),"attack_before":attack,"attack_after":g.attack(d)}
 				assert(d.id==before.id and d.kind==before.kind and d.trait==before.trait and d.options==before.options)
 				growth.append(probe)
+			if through_normal and g.run_success: assert(R.difficulty_unlocked("depth",g.campaign_progress))
 			g.free()
-	var output={"method":"Six deterministic continuous first-invitation runs through "+("3-8" if through_graveyard else "2-8" if through_quarry else "1-8")+"; tutorial kills fast-forwarded, then real update_game dt=.05, nearby bonds/Q/E/skills/revive/dodge/exit. No synthetic high-level team/materials in combat. Graveyard post-run growth probes spend earned materials through real training/promotion functions. Bot timing is not human clear time or success rate.","runs":runs,"growth_probes":growth}
-	var f=FileAccess.open("res://docs/graveyard-route-journeys.json" if through_graveyard else "res://docs/quarry-route-journeys.json" if through_quarry else "res://docs/campaign-map-journeys.json",FileAccess.WRITE); f.store_string(JSON.stringify(output,"\t")+"\n"); f.close()
+	var output={"method":"Six deterministic continuous first-invitation runs through "+("5-8" if through_normal else "3-8" if through_graveyard else "2-8" if through_quarry else "1-8")+"; tutorial kills fast-forwarded, then real update_game dt=.05, nearby bonds/Q/E/skills/revive/dodge/exit. No synthetic high-level team/materials in combat. Graveyard post-run growth probes spend earned materials through real training/promotion functions; normal full runs spend the same earned materials before 4-1 on first companion 1-star20 to 2-star15. Bot timing is not human clear time or success rate.","runs":runs,"growth_probes":growth}
+	var f=FileAccess.open("res://docs/normal-campaign-journeys.json" if through_normal else "res://docs/graveyard-route-journeys.json" if through_graveyard else "res://docs/quarry-route-journeys.json" if through_quarry else "res://docs/campaign-map-journeys.json",FileAccess.WRITE); f.store_string(JSON.stringify(output,"\t")+"\n"); f.close()
 	var total=stage_count*6
 	var passed=runs.size()==total and runs.all(func(r): return r.success)
 	if through_graveyard: passed=passed and growth.size()==6 and growth.all(func(p): return p.trained and p.promoted and p.recovered)
-	print("GRAVEYARD JOURNEY " if through_graveyard else "QUARRY JOURNEY " if through_quarry else "VALLEY JOURNEY ","PASS" if passed else "FAIL"," ",runs.filter(func(r): return r.success).size(),"/",total)
+	print("NORMAL CAMPAIGN " if through_normal else "GRAVEYARD JOURNEY " if through_graveyard else "QUARRY JOURNEY " if through_quarry else "VALLEY JOURNEY ","PASS" if passed else "FAIL"," ",runs.filter(func(r): return r.success).size(),"/",total)
 	quit(0 if passed else 1)

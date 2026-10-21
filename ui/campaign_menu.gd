@@ -10,7 +10,7 @@ static func stages(g):
 	g.modal("탐험 지도" if theme==0 else R.THEMES[theme]+" · 스테이지", "끊어진 물길을 따라 동료들과 순환의 흔적을 찾으세요.","stages",g.resume_game)
 	for i in 3:
 		var value=R.DIFFICULTIES[i]
-		var text=R.DIFFICULTY_NAMES[value]+(" · 준비 중" if i>0 else "")
+		var text=R.DIFFICULTY_NAMES[value]+(" · 해금/준비 중" if i>0 and R.difficulty_unlocked(value,progress) else " · 미해금" if i>0 else "")
 		var b=g.button(g.overlay,text,Rect2(230+i*220,205,208,42),func(): g.map_difficulty=value; g.map_theme=0; stages(g))
 		b.name="Difficulty_"+value
 		if value==difficulty: g.GroveUI.emphasize(b)
@@ -32,14 +32,14 @@ static func stages(g):
 			g.GroveUI.quiet(b)
 			var label=g.label(g.overlay,R.THEMES[id],pos+Vector2(-65,44),17)
 			label.mouse_filter=Control.MOUSE_FILTER_IGNORE
-			g.label(g.overlay,"%d/8" % count if id<4 and difficulty=="normal" else "구현 예정",pos+Vector2(-28,70),14)
+			g.label(g.overlay,"%d/8" % count if R.implemented(R.coordinate(id,1,difficulty)) else "준비 중",pos+Vector2(-28,70),14)
 		g.label(g.overlay,"순환을 잇는 여정",Vector2(930,282),22)
 		wrapped(g,"일반 · 5개 테마\n테마마다 8개 스테이지\n4번 중간보스\n8번 테마 보스",Vector2(930,330),260,19)
-		wrapped(g,"일반 5-8 → 심층\n심층 5-8 → 도전\n계곡·채석장·묘역 24개 스테이지를 탐험할 수 있습니다.",Vector2(930,440),260,17)
+		wrapped(g,"일반 5-8 → 심층\n심층 5-8 → 도전\n일반 40개 스테이지를 탐험할 수 있습니다.",Vector2(930,440),260,17)
 		var available=Campaign.tamable_kinds(1,g.PLAYER_CLASS)
 		var bonds=g.label(g.overlay,"계곡 · 교감 가능 %d종" % available.size(),Vector2(930,548),16)
 		bonds.tooltip_text="\n".join(available.map(func(kind): return Species.name_of(kind)))
-		if difficulty!="normal": wrapped(g,"이 난이도는 아직 준비 중입니다. 먼저 일반 탐험을 이어가세요.",Vector2(255,275),450,17)
+		if difficulty!="normal": wrapped(g,"이 난이도는 아직 준비 중입니다. 완료한 일반 탐험은 다시 플레이할 수 있습니다.",Vector2(255,275),450,17)
 	else:
 		map.points=[Vector2(70,100),Vector2(230,85),Vector2(390,110),Vector2(555,90),Vector2(555,245),Vector2(390,225),Vector2(230,250),Vector2(70,230)]
 		map.selected=g.map_stage-1
@@ -126,7 +126,7 @@ static func collection(g):
 		content.add_child(picture)
 		g.label(content,Species.FAMILIES.get(Species.family(kind),""),Vector2(108,50),17)
 		g.label(content,Species.condition(kind,g.PLAYER_CLASS) if found else "탐험에서 만나보세요",Vector2(12,112),16)
-		var places=Campaign.habitats(kind)
+		var places=g.Routes.habitats(kind)
 		var location="출현 · "+str(places[0])+(" 외 %d곳" % (places.size()-1) if places.size()>1 else "") if found and not places.is_empty() else "출현 지역 미확인"
 		var habitat=g.label(content,location,Vector2(12,142),15)
 		habitat.tooltip_text="\n".join(places) if found else ""

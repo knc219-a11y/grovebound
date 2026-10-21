@@ -82,7 +82,7 @@ func check():
 		total_xp+=reward.xp
 	for i in g.owned.size(): assert(g.owned[i]==g.Management.project(identity[i],total_xp))
 	assert(g.cleared_stages==[1,2,3] and g.campaign_progress.cleared.size()==24)
-	assert(not R.available(R.coordinate(4,1),g.campaign_progress))
+	assert(R.available(R.coordinate(4,1),g.campaign_progress))
 	assert(R.normalize(JSON.parse_string(JSON.stringify(g.save_payload()))).cleared.size()==24)
 	g.show_camp(); g.clear_overlay()
 	# The legacy graveyard retains its original 30 enemies/1250HP boss and can still be revisited.
