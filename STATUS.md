@@ -1,5 +1,9 @@
 # Grovebound 작업 인계
 
+## 최신: 선택 호출·사용량 최적화 (2026-10-21 한국)
+- PR #12 진행 중 사용자 추가 요청 반영. 기획은 조건부 호출이며 전체 자동 실행 금지. 범위·위험도·의존성별 직접/독립 QA와 병렬화 기준은 MULTI_AGENT_DEVELOPMENT, 복사용 표준문은 WORK_PROMPT를 따른다.
+- 이번 추가 문서 수정은 총괄 직접 수행. 새 기획·개발·QA 호출/웹 조사/병렬 작업은 생략했으며 앞선 독립 검토와 구분한다. 필수 CI는 갱신된 PR head에서 확인 후 병합한다. 게임·밸런스·저장 변경 없음.
+
 ## 최신: 게임 기획 에이전트 운영 확장 (2026-10-21 한국, 문서/인계 검사만)
 - 기준 원격 main `03a3d0c98dd3f491dbc7615cb2695e29cdf36962` (#11). 열린 PR 없음, 이전 roster worktree와 기존 미커밋 변경 보존. 총괄이 별도 `work/designer-ops`, `integrate/game-designer-agent`에서 문서/검사만 수정한다. 로컬 시작 de9313f의 전체 tree는 원격 기준 tree와 동일하며 셸 DNS 제한으로 원격 Git 작업은 GitHub 앱을 사용한다.
 - 기존 통합 리드·전투성장·캠페인데이터·UI·아트·독립 QA에 기획 역할을 추가했다. 기획 사전/사후 검토·조사 강도·사실/추론/가설·수용 기준 전달·승인 권한은 `docs/agents/GAME_DESIGNER.md`, 실행/소유권은 `docs/MULTI_AGENT_DEVELOPMENT.md`, 복사용 표준문은 `docs/WORK_PROMPT.md`.

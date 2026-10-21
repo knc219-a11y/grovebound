@@ -1,7 +1,7 @@
 # 다음 Work 인계 · 일반 캠페인 확장
 
 ## 최신: 모든 Work의 기획 검토 진입점 (2026-10-21 한국)
-- 새 Work는 `docs/WORK_PROMPT.md`를 사용한다. AGENTS→PROJECT_SETTINGS.md→STATUS→이 문서와 MULTI_AGENT_DEVELOPMENT→agents/GAME_DESIGNER.md→관련 계약/실제 소스를 읽고, 실제 호출 지원 확인→기획 사전 검토→총괄 범위/승인→독립 개발→독립 QA→기획 사후 검토→통합/CI/PR/원격 main 확인 순서를 따른다.
+- 새 Work는 `docs/WORK_PROMPT.md`를 사용한다. AGENTS→PROJECT_SETTINGS.md→STATUS→이 문서와 MULTI_AGENT_DEVELOPMENT→agents/GAME_DESIGNER.md→관련 계약/실제 소스를 읽고, 범위·위험도·의존성 판단→필요 역할만 선택 호출→필요한 기획 사전 검토→총괄 범위/승인→직접 또는 독립 개발→위험도별 직접/독립 QA→참여한 기획 사후 검토→통합/CI/PR/원격 main 확인 순서를 따른다. 전체 자동 호출을 금지하고 기존 조사·관련 범위 읽기를 재사용한다. 필수 검증은 유지하며 호출·생략 역할과 이유를 보고한다.
 - 기획 역할의 문서 추가는 영구 등록/자동 실행 보장이 아니다. 현재 Work의 실제 호출·모의 전달·미검증 기록은 `docs/design-reviews/game-designer-operations.md`. 실행 불가 시 순차 대체와 독립성 한계를 밝힌다. 미해결 필수 결함은 병합하지 않는다.
 - 이번은 운영 문서와 인계 검사 확장만이며 게임/밸런스/저장 변경 없음. 현재 게임 우선순위는 #11 좌우 동료 관리의 사람 탐색/편성 체감·모바일 터치 확인과 사용자 신규 요청이다. 아래 오래된 '첫 파일럿 입장 재화' 항목은 이력이며, 입장 재화는 별도 요청 전 마무리 단계로 유보한다. 심층도 보류한다.
 
