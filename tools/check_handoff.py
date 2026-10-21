@@ -7,14 +7,21 @@ import subprocess
 import sys
 
 root = Path(__file__).resolve().parent.parent
-required = ["AGENTS.md", "docs/PROJECT_SETTINGS.md", "STATUS.md", "docs/NEXT_SESSION.md"]
+required = [
+    "AGENTS.md",
+    "docs/PROJECT_SETTINGS.md",
+    "STATUS.md",
+    "docs/NEXT_SESSION.md",
+    "docs/MULTI_AGENT_DEVELOPMENT.md",
+    "docs/contracts/README.md",
+]
 failures = []
 for name in required:
     path = root / name
     if not path.is_file() or len(path.read_text(encoding="utf-8").strip()) < 100:
         failures.append(f"Missing or empty handoff document: {name}")
 agents = (root / "AGENTS.md").read_text(encoding="utf-8")
-for name in required[1:]:
+for name in required[1:4]:
     if name not in agents:
         failures.append(f"AGENTS.md must link {name}")
 next_session = (root / "docs/NEXT_SESSION.md").read_text(encoding="utf-8")
