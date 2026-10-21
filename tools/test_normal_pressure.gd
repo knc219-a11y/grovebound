@@ -27,7 +27,7 @@ func check():
 			assert(p.enemy_hp_scale>1.0 and p.damage_scale>=0.95)
 			if stage in [4,8]: assert(p.boss_pressure and p.boss_damage in [60.0,75.0,95.0])
 	e.cycle_guard=true; e.cycle_open=0; e.hp=24000; e.maxhp=e.hp
-	var before=e.hp; g.hit_enemy(e,1000,g.player.pos,g.player,false); assert(is_equal_approx(before-e.hp,300.0))
+	var before=e.hp; g.hit_enemy(e,1000,g.player.pos,g.player,false); assert(is_equal_approx(before-e.hp,0.0))
 	for kind in ["boar","turtle","marten","wolf","bat","fox","deer"]:
 		var d=g.Loot.roll_special(g.owned[0],kind,g.loot_rng)
 		d.level=15; d.special.state="ready"; d.special.element="earth"; d.special.unique=g.Special.choices(kind).keys()[0]

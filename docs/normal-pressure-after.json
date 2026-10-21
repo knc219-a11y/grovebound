@@ -1,6 +1,6 @@
 {
 	"configuration": "adjusted boss settings",
-	"method": "Prepared mixed 2/2/3/2 or all-3-star parties at Lv24/30, or one 4-star Lv15 boar/fox with 3-star Lv24/30 allies; isolated final boss arenas; passive=no movement/support/skills, assisted=Q/E/skills/revive and fixed-tell avoidance; deterministic not human success rate",
+	"method": "Prepared mixed 2/2/3/2 or all-3-star parties at Lv24/30 (also Lv40 with --hero-max; normalized to each star cap), or one 4-star Lv15 boar/fox with 3-star Lv24/30 allies; isolated final boss arenas; passive=no movement/support/skills, assisted=Q/E/skills/revive and fixed-tell avoidance; deterministic not human success rate",
 	"runs": [
 		{
 			"ally_hp": [
@@ -12,6 +12,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -42,6 +43,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -72,6 +74,7 @@
 			"assisted": true,
 			"downs": 0,
 			"heals": 2,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 180.0,
 			"party": [
@@ -102,6 +105,7 @@
 			"assisted": true,
 			"downs": 5,
 			"heals": 34,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -132,6 +136,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -162,6 +167,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -192,6 +198,7 @@
 			"assisted": true,
 			"downs": 0,
 			"heals": 1,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 180.0,
 			"party": [
@@ -222,6 +229,7 @@
 			"assisted": true,
 			"downs": 5,
 			"heals": 16,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -252,6 +260,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -282,6 +291,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -312,6 +322,7 @@
 			"assisted": true,
 			"downs": 0,
 			"heals": 1,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 180.0,
 			"party": [
@@ -342,6 +353,7 @@
 			"assisted": true,
 			"downs": 5,
 			"heals": 18,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -372,6 +384,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -402,6 +415,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -432,6 +446,7 @@
 			"assisted": true,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 180.0,
 			"party": [
@@ -462,6 +477,7 @@
 			"assisted": true,
 			"downs": 5,
 			"heals": 19,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 5.0,
 			"party": [
@@ -492,6 +508,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -522,6 +539,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -552,6 +570,7 @@
 			"assisted": true,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 180.0,
 			"party": [
@@ -575,13 +594,14 @@
 		{
 			"ally_hp": [
 				0.63,
-				0.23,
+				0.09,
 				0.0,
-				0.18
+				0.1
 			],
 			"assisted": true,
 			"downs": 1,
 			"heals": 9,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 180.0,
 			"party": [
@@ -591,7 +611,7 @@
 				"deer"
 			],
 			"scenario": "four_boar",
-			"seconds": 74.0,
+			"seconds": 79.0,
 			"skills": 32,
 			"stars": [
 				4,
@@ -612,6 +632,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -642,6 +663,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -672,6 +694,7 @@
 			"assisted": true,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 180.0,
 			"party": [
@@ -694,14 +717,15 @@
 		},
 		{
 			"ally_hp": [
-				0.7,
-				0.33,
-				0.2,
-				0.29
+				0.68,
+				0.38,
+				0.18,
+				0.33
 			],
 			"assisted": true,
 			"downs": 0,
 			"heals": 8,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 180.0,
 			"party": [
@@ -711,8 +735,8 @@
 				"deer"
 			],
 			"scenario": "four_boar",
-			"seconds": 64.8,
-			"skills": 29,
+			"seconds": 70.0,
+			"skills": 32,
 			"stars": [
 				4,
 				3,
@@ -732,6 +756,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -762,6 +787,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -792,6 +818,7 @@
 			"assisted": true,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 180.0,
 			"party": [
@@ -814,14 +841,15 @@
 		},
 		{
 			"ally_hp": [
-				0.38,
+				0.2,
 				0.31,
-				0.21,
-				0.21
+				0.09,
+				0.22
 			],
 			"assisted": true,
 			"downs": 0,
-			"heals": 7,
+			"heals": 8,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 180.0,
 			"party": [
@@ -831,8 +859,8 @@
 				"deer"
 			],
 			"scenario": "four_fox",
-			"seconds": 61.3,
-			"skills": 28,
+			"seconds": 67.1,
+			"skills": 29,
 			"stars": [
 				3,
 				4,
@@ -852,6 +880,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -882,6 +911,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -912,6 +942,7 @@
 			"assisted": true,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 180.0,
 			"party": [
@@ -934,14 +965,15 @@
 		},
 		{
 			"ally_hp": [
-				0.46,
-				0.39,
+				0.49,
 				0.34,
-				0.39
+				0.29,
+				0.33
 			],
 			"assisted": true,
 			"downs": 0,
 			"heals": 6,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 180.0,
 			"party": [
@@ -951,8 +983,8 @@
 				"deer"
 			],
 			"scenario": "four_fox",
-			"seconds": 57.0,
-			"skills": 25,
+			"seconds": 60.0,
+			"skills": 28,
 			"stars": [
 				3,
 				4,
@@ -972,6 +1004,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -1002,6 +1035,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -1032,6 +1066,7 @@
 			"assisted": true,
 			"downs": 0,
 			"heals": 1,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 180.0,
 			"party": [
@@ -1062,6 +1097,7 @@
 			"assisted": true,
 			"downs": 4,
 			"heals": 11,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -1092,6 +1128,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -1122,6 +1159,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -1152,6 +1190,7 @@
 			"assisted": true,
 			"downs": 0,
 			"heals": 1,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 180.0,
 			"party": [
@@ -1182,6 +1221,7 @@
 			"assisted": true,
 			"downs": 4,
 			"heals": 11,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -1212,6 +1252,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -1242,6 +1283,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -1272,6 +1314,7 @@
 			"assisted": true,
 			"downs": 0,
 			"heals": 1,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 180.0,
 			"party": [
@@ -1302,6 +1345,7 @@
 			"assisted": true,
 			"downs": 4,
 			"heals": 13,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -1332,6 +1376,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -1362,6 +1407,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -1392,6 +1438,7 @@
 			"assisted": true,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 180.0,
 			"party": [
@@ -1422,6 +1469,7 @@
 			"assisted": true,
 			"downs": 4,
 			"heals": 13,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -1452,6 +1500,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -1482,6 +1531,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -1512,6 +1562,7 @@
 			"assisted": true,
 			"downs": 0,
 			"heals": 1,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 180.0,
 			"party": [
@@ -1534,14 +1585,15 @@
 		},
 		{
 			"ally_hp": [
-				0.51,
+				0.46,
 				0.0,
 				0.0,
 				0.0
 			],
 			"assisted": true,
 			"downs": 3,
-			"heals": 8,
+			"heals": 9,
+			"hero_max": false,
 			"level": 24,
 			"minimum_player_hp": 180.0,
 			"party": [
@@ -1551,8 +1603,8 @@
 				"bat"
 			],
 			"scenario": "four_boar",
-			"seconds": 64.8,
-			"skills": 20,
+			"seconds": 74.0,
+			"skills": 21,
 			"stars": [
 				4,
 				3,
@@ -1572,6 +1624,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -1602,6 +1655,7 @@
 			"assisted": false,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 0.0,
 			"party": [
@@ -1632,6 +1686,7 @@
 			"assisted": true,
 			"downs": 0,
 			"heals": 0,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 180.0,
 			"party": [
@@ -1654,14 +1709,15 @@
 		},
 		{
 			"ally_hp": [
-				0.68,
-				0.24,
-				0.02,
+				0.64,
+				0.13,
+				0.0,
 				0.0
 			],
 			"assisted": true,
-			"downs": 1,
-			"heals": 4,
+			"downs": 2,
+			"heals": 5,
+			"hero_max": false,
 			"level": 30,
 			"minimum_player_hp": 180.0,
 			"party": [
@@ -1671,8 +1727,8 @@
 				"bat"
 			],
 			"scenario": "four_boar",
-			"seconds": 39.2,
-			"skills": 17,
+			"seconds": 41.6,
+			"skills": 19,
 			"stars": [
 				4,
 				3,
@@ -1682,5 +1738,6 @@
 			"theme": 5,
 			"win": true
 		}
-	]
+	],
+	"hero_configuration": "Lv1, no equipment, starting skills"
 }

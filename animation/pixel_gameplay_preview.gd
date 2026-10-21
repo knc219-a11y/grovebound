@@ -6,7 +6,7 @@ func _ready():
 func load_game():
 	pass
 func save_game():
-	pass
+	return super()
 func persist_payload(_data):
 	# Transactional actions bypass save_game; previews must isolate those as well.
 	return not save_blocked

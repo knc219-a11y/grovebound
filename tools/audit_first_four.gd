@@ -8,6 +8,7 @@ func run():
 	var fixed=g.SaveData.normalize(state,g.STATS.keys())
 	g.owned=fixed.owned; g.squad=fixed.squad; g.next_id=fixed.next_id; g.materials=int(state.materials)
 	g.discovered=fixed.discovered; g.cleared_stages=[1,2,3]; g.unlocked=true; g.campaign_progress=R.normalize(state)
+	g.hero=state.get("hero",g.Hero.fresh()).duplicate(true); g.sync_hero()
 	var initial=g.save_payload().duplicate(true); var repeats=[]; var actions=[]
 	var ids=[g.squad[0],g.squad[4],g.squad[5]]
 	while not ids.all(func(id): return g.Loot.star(g.find_owned(id))==3 and g.find_owned(id).level==40) and repeats.size()<240:
@@ -37,13 +38,28 @@ func run():
 	var d=g.find_owned(ids[0]); assert(g.commit_special_choice(d.id,"earth","guard",d.duplicate(true)))
 	d=g.find_owned(ids[0])
 	assert(g.train_to_level(d.id,15,d.duplicate(true))); g.clear_overlay()
+	# Spend only naturally earned gold through the actual camp transactions.
+	var purchases=[]
+	for pair in [["grove_staff" if g.hero.level>=18 else "oak_staff","weapon"],["guardian_robe" if g.hero.level>=18 else "bark_robe","armor"],["vitality_charm","charm1"],["stream_charm","charm2"]]:
+		var offer=g.Hero.CATALOG[pair[0]]
+		if g.hero.level<offer.level or g.hero.gold<offer.price: continue
+		assert(g.commit_hero_action("buy",pair[0],g.hero.duplicate(true)))
+		var item=g.hero.items[-1]
+		assert(g.commit_hero_action("equip",{"id":item.id,"slot":pair[1]},g.hero.duplicate(true)))
+		purchases.append(pair[0])
+	for key in g.Hero.SKILLS:
+		for step in 5:
+			var upgrade=g.Hero.plan(g.hero,"skill",key)
+			if not upgrade.error.is_empty(): break
+			assert(g.commit_hero_action("skill",key,g.hero.duplicate(true)))
+	g.clear_overlay()
 	var prepared=g.save_payload().duplicate(true)
 	assert(g.depart_route(R.coordinate(5,7)))
 	var approach=play_route(g,5,7,"boar",10417); assert(approach.success)
 	g.show_camp(); g.clear_overlay()
 	assert(g.depart_route(R.coordinate(5,8)))
 	var final=play_route(g,5,8,"boar",10417)
-	var out={"method":"Continues the real first-invitation boar/10417 path after 5-6; repeats actual 4-1 fights, spends only earned materials, promotes six travelers at cap, synthesizes three real 3-star40 records, selects earth/guard and trains 4-star15 before the final. No XP/material/companion injection.","initial":initial,"repeats":repeats,"promotions":actions,"prepared":prepared,"approach":approach,"final":final}
+	var out={"method":"Continues the real first-invitation boar/10417 path after 5-6; repeats actual 4-1 fights, spends only earned materials, promotes six travelers at cap, synthesizes three real 3-star40 records, selects earth/guard and trains 4-star15 before the final. No XP/material/companion injection.","hero_purchases":purchases,"initial":initial,"repeats":repeats,"promotions":actions,"prepared":prepared,"approach":approach,"final":final}
 	var f=FileAccess.open("res://docs/first-four-journey.json",FileAccess.WRITE); f.store_string(JSON.stringify(out,"\t")+"\n"); f.close()
 	var passed=final.success and repeats.size()>=15 and repeats.size()<=20
 	print("FIRST FOUR ","PASS" if passed else "FAIL",": replays=",repeats.size(),", final=",final.success)

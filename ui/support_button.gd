@@ -2,6 +2,8 @@ extends Button
 const UI=preload("res://ui/grove_ui.gd")
 var healing=true
 var cooldown=0.0
+var full_cooldown=8.0
+var description=""
 func refresh(wait):
 	cooldown=wait
 	queue_redraw()
@@ -10,7 +12,7 @@ func _draw():
 	var col=UI.GREEN if healing else Color("d1ad6d")
 	var p=Vector2(25,29)
 	UI.medallion(self,p,17,col)
-	if cooldown>0: draw_arc(p,18,-PI/2,-PI/2+TAU*clampf(cooldown/(8.0 if healing else 14.0),0,1),24,col,2,false)
+	if cooldown>0: draw_arc(p,18,-PI/2,-PI/2+TAU*clampf(cooldown/full_cooldown,0,1),24,col,2,false)
 	if healing:
 		draw_rect(Rect2(p-Vector2(3,10),Vector2(6,20)),col)
 		draw_rect(Rect2(p-Vector2(10,3),Vector2(20,6)),col)
@@ -22,4 +24,4 @@ func _draw():
 		draw_string(font,Vector2(17,75),str(ceili(cooldown))+"초",HORIZONTAL_ALIGNMENT_LEFT,-1,25,col)
 	else:
 		draw_string(font,Vector2(17,75),"사용 가능",HORIZONTAL_ALIGNMENT_LEFT,-1,19,col)
-	draw_string(font,Vector2(16,101),"체력 낮은 아군" if healing else "공격력 +60%",HORIZONTAL_ALIGNMENT_LEFT,-1,14,UI.MUTED)
+	draw_string(font,Vector2(16,101),"체력 낮은 아군" if healing else description if not description.is_empty() else "공격력 +60%",HORIZONTAL_ALIGNMENT_LEFT,-1,14,UI.MUTED)

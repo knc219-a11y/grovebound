@@ -27,7 +27,7 @@ func check_menu():
 	await process_frame
 	await process_frame
 	var grid=game.dropdown.grid
-	if grid.columns!=5 or grid.get_child_count()!=7: failures.append("five-column menu with seven real actions")
+	if grid.columns!=5 or grid.get_child_count()!=11: failures.append("five-column menu with eleven real actions")
 	for i in grid.get_child_count():
 		var tile=grid.get_child(i)
 		if not Rect2(0,0,1440,810).encloses(tile.get_global_rect()): failures.append("dropdown within viewport")

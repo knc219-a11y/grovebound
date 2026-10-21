@@ -1,0 +1,2611 @@
+{
+	"configuration": "adjusted boss settings",
+	"method": "Prepared mixed 2/2/3/2 or all-3-star parties at Lv24/30 (also Lv40 with --hero-max; normalized to each star cap), or one 4-star Lv15 boar/fox with 3-star Lv24/30 allies; isolated final boss arenas; passive=no movement/support/skills, assisted=Q/E/skills/revive and fixed-tell avoidance; deterministic not human success rate",
+	"runs": [
+		{
+			"ally_hp": [
+				0.69,
+				0.16,
+				0.32,
+				0.14
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 131.9,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "mixed",
+			"seconds": 32.4,
+			"skills": 0,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"assisted": false,
+			"downs": 4,
+			"heals": 0,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "mixed",
+			"seconds": 39.0,
+			"skills": 0,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				1.0,
+				0.95,
+				0.91,
+				0.93
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 1,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "mixed",
+			"seconds": 20.1,
+			"skills": 12,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.3,
+				0.54,
+				0.3,
+				0.61
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 31,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "mixed",
+			"seconds": 180.0,
+			"skills": 72,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.74,
+				0.35,
+				0.51,
+				0.34
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 202.6,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "mixed",
+			"seconds": 27.6,
+			"skills": 0,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.18,
+				0.0,
+				0.0,
+				0.0
+			],
+			"assisted": false,
+			"downs": 3,
+			"heals": 0,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "mixed",
+			"seconds": 39.0,
+			"skills": 0,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.97,
+				0.94,
+				0.93,
+				0.93
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "mixed",
+			"seconds": 16.3,
+			"skills": 8,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.53,
+				0.6,
+				0.45,
+				0.67
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 29,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "mixed",
+			"seconds": 180.0,
+			"skills": 72,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.85,
+				0.59,
+				0.72,
+				0.6
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 320.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "mixed",
+			"seconds": 22.2,
+			"skills": 0,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.36,
+				0.0,
+				0.07,
+				0.02
+			],
+			"assisted": false,
+			"downs": 1,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "mixed",
+			"seconds": 42.3,
+			"skills": 0,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.98,
+				0.93,
+				0.93,
+				0.93
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "mixed",
+			"seconds": 11.5,
+			"skills": 8,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.67,
+				0.65,
+				0.65,
+				0.69
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 28,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "mixed",
+			"seconds": 180.0,
+			"skills": 72,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.83,
+				0.5,
+				0.5,
+				0.49
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 273.3,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "three",
+			"seconds": 26.4,
+			"skills": 0,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.3,
+				0.0,
+				0.0,
+				0.04
+			],
+			"assisted": false,
+			"downs": 2,
+			"heals": 0,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "three",
+			"seconds": 39.0,
+			"skills": 0,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.98,
+				0.93,
+				0.92,
+				0.92
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "three",
+			"seconds": 15.6,
+			"skills": 8,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.57,
+				0.69,
+				0.61,
+				0.57
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 30,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "three",
+			"seconds": 180.0,
+			"skills": 72,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.86,
+				0.63,
+				0.63,
+				0.63
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 344.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "three",
+			"seconds": 22.6,
+			"skills": 0,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.43,
+				0.0,
+				0.0,
+				0.12
+			],
+			"assisted": false,
+			"downs": 2,
+			"heals": 0,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "three",
+			"seconds": 42.3,
+			"skills": 0,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.98,
+				0.93,
+				0.94,
+				0.93
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "three",
+			"seconds": 12.0,
+			"skills": 8,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.68,
+				0.75,
+				0.6,
+				0.66
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 29,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "three",
+			"seconds": 180.0,
+			"skills": 72,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.93,
+				0.74,
+				0.76,
+				0.76
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 390.6,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "three",
+			"seconds": 17.8,
+			"skills": 0,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.51,
+				0.11,
+				0.05,
+				0.25
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "three",
+			"seconds": 45.5,
+			"skills": 0,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.99,
+				0.94,
+				0.94,
+				0.94
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "three",
+			"seconds": 10.1,
+			"skills": 8,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.7,
+				0.79,
+				0.74,
+				0.7
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 27,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "three",
+			"seconds": 180.0,
+			"skills": 72,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.92,
+				0.57,
+				0.56,
+				0.56
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 308.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_boar",
+			"seconds": 21.8,
+			"skills": 0,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.66,
+				0.0,
+				0.0,
+				0.04
+			],
+			"assisted": false,
+			"downs": 2,
+			"heals": 0,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_boar",
+			"seconds": 39.0,
+			"skills": 0,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.99,
+				0.91,
+				0.92,
+				0.91
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_boar",
+			"seconds": 11.5,
+			"skills": 8,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.82,
+				0.84,
+				0.83,
+				0.85
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 8,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_boar",
+			"seconds": 64.8,
+			"skills": 29,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.92,
+				0.62,
+				0.63,
+				0.63
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 344.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_boar",
+			"seconds": 20.2,
+			"skills": 0,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.66,
+				0.0,
+				0.0,
+				0.12
+			],
+			"assisted": false,
+			"downs": 2,
+			"heals": 0,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_boar",
+			"seconds": 42.3,
+			"skills": 0,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.99,
+				0.93,
+				0.93,
+				0.93
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_boar",
+			"seconds": 10.3,
+			"skills": 8,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.84,
+				0.82,
+				0.67,
+				0.85
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 6,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_boar",
+			"seconds": 59.3,
+			"skills": 25,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.95,
+				0.74,
+				0.76,
+				0.76
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 390.6,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_boar",
+			"seconds": 17.1,
+			"skills": 0,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.62,
+				0.11,
+				0.05,
+				0.25
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_boar",
+			"seconds": 45.5,
+			"skills": 0,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.97,
+				0.91,
+				0.91,
+				0.91
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_boar",
+			"seconds": 9.6,
+			"skills": 5,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.91,
+				0.91,
+				0.8,
+				0.81
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 3,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_boar",
+			"seconds": 51.5,
+			"skills": 24,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.83,
+				0.67,
+				0.59,
+				0.59
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 320.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_fox",
+			"seconds": 20.6,
+			"skills": 0,
+			"stars": [
+				3,
+				4,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.21,
+				0.21,
+				0.0,
+				0.0
+			],
+			"assisted": false,
+			"downs": 2,
+			"heals": 0,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_fox",
+			"seconds": 42.3,
+			"skills": 0,
+			"stars": [
+				3,
+				4,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.98,
+				0.92,
+				0.92,
+				0.92
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_fox",
+			"seconds": 10.1,
+			"skills": 8,
+			"stars": [
+				3,
+				4,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.68,
+				0.72,
+				0.73,
+				0.77
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 7,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_fox",
+			"seconds": 56.4,
+			"skills": 25,
+			"stars": [
+				3,
+				4,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.91,
+				0.72,
+				0.72,
+				0.7
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 378.6,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_fox",
+			"seconds": 19.2,
+			"skills": 0,
+			"stars": [
+				3,
+				4,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.43,
+				0.21,
+				0.0,
+				0.12
+			],
+			"assisted": false,
+			"downs": 1,
+			"heals": 0,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_fox",
+			"seconds": 42.3,
+			"skills": 0,
+			"stars": [
+				3,
+				4,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.98,
+				0.93,
+				0.94,
+				0.93
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_fox",
+			"seconds": 10.1,
+			"skills": 8,
+			"stars": [
+				3,
+				4,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.86,
+				0.79,
+				0.89,
+				0.79
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 5,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_fox",
+			"seconds": 50.9,
+			"skills": 24,
+			"stars": [
+				3,
+				4,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.93,
+				0.8,
+				0.81,
+				0.81
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 425.3,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_fox",
+			"seconds": 16.8,
+			"skills": 0,
+			"stars": [
+				3,
+				4,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.51,
+				0.12,
+				0.05,
+				0.25
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_fox",
+			"seconds": 45.5,
+			"skills": 0,
+			"stars": [
+				3,
+				4,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.97,
+				0.91,
+				0.91,
+				0.91
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_fox",
+			"seconds": 9.5,
+			"skills": 5,
+			"stars": [
+				3,
+				4,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.81,
+				0.86,
+				0.81,
+				0.84
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 2,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"fox",
+				"wolf",
+				"deer"
+			],
+			"scenario": "four_fox",
+			"seconds": 47.0,
+			"skills": 21,
+			"stars": [
+				3,
+				4,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.53,
+				0.64,
+				0.55,
+				0.13
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 272.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "mixed",
+			"seconds": 20.9,
+			"skills": 0,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"assisted": false,
+			"downs": 4,
+			"heals": 0,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "mixed",
+			"seconds": 39.0,
+			"skills": 0,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.92,
+				0.76,
+				0.85,
+				1.0
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 1,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "mixed",
+			"seconds": 10.2,
+			"skills": 8,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"assisted": true,
+			"downs": 4,
+			"heals": 18,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 375.5,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "mixed",
+			"seconds": 180.0,
+			"skills": 23,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.68,
+				0.8,
+				0.69,
+				0.4
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 318.6,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "mixed",
+			"seconds": 18.0,
+			"skills": 0,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"assisted": false,
+			"downs": 4,
+			"heals": 0,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "mixed",
+			"seconds": 39.0,
+			"skills": 0,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.94,
+				0.8,
+				0.88,
+				1.0
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 1,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "mixed",
+			"seconds": 10.1,
+			"skills": 6,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"assisted": true,
+			"downs": 4,
+			"heals": 19,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 375.5,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "mixed",
+			"seconds": 180.0,
+			"skills": 29,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.8,
+				0.85,
+				0.81,
+				0.63
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 365.3,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "mixed",
+			"seconds": 14.4,
+			"skills": 0,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.12,
+				0.0,
+				0.18,
+				0.0
+			],
+			"assisted": false,
+			"downs": 2,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "mixed",
+			"seconds": 39.0,
+			"skills": 0,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.95,
+				0.85,
+				0.91,
+				0.81
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "mixed",
+			"seconds": 8.3,
+			"skills": 4,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.51,
+				0.0,
+				0.0,
+				0.0
+			],
+			"assisted": true,
+			"downs": 3,
+			"heals": 31,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "mixed",
+			"seconds": 180.0,
+			"skills": 44,
+			"stars": [
+				2,
+				2,
+				3,
+				2
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.78,
+				0.83,
+				0.7,
+				0.59
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 365.3,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "three",
+			"seconds": 16.2,
+			"skills": 0,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.04,
+				0.0,
+				0.0,
+				0.0
+			],
+			"assisted": false,
+			"downs": 3,
+			"heals": 0,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "three",
+			"seconds": 39.0,
+			"skills": 0,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.94,
+				0.83,
+				0.85,
+				1.0
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 1,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "three",
+			"seconds": 9.6,
+			"skills": 4,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.52,
+				0.0,
+				0.0,
+				0.0
+			],
+			"assisted": true,
+			"downs": 3,
+			"heals": 31,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "three",
+			"seconds": 180.0,
+			"skills": 41,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.82,
+				0.86,
+				0.75,
+				0.67
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 365.3,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "three",
+			"seconds": 13.8,
+			"skills": 0,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.22,
+				0.02,
+				0.0,
+				0.0
+			],
+			"assisted": false,
+			"downs": 2,
+			"heals": 0,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "three",
+			"seconds": 39.0,
+			"skills": 0,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.95,
+				0.86,
+				0.88,
+				0.83
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "three",
+			"seconds": 7.4,
+			"skills": 4,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.38,
+				0.0,
+				0.0,
+				0.0
+			],
+			"assisted": true,
+			"downs": 3,
+			"heals": 31,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "three",
+			"seconds": 180.0,
+			"skills": 44,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.9,
+				0.95,
+				0.86,
+				0.81
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 412.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "three",
+			"seconds": 10.8,
+			"skills": 0,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.34,
+				0.33,
+				0.1,
+				0.0
+			],
+			"assisted": false,
+			"downs": 1,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "three",
+			"seconds": 39.0,
+			"skills": 0,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				1.0,
+				0.95,
+				0.95,
+				0.94
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "three",
+			"seconds": 4.9,
+			"skills": 4,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.25,
+				0.0,
+				0.0,
+				0.0
+			],
+			"assisted": true,
+			"downs": 3,
+			"heals": 31,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "three",
+			"seconds": 180.0,
+			"skills": 52,
+			"stars": [
+				3,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.89,
+				0.83,
+				0.7,
+				0.59
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 365.3,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "four_boar",
+			"seconds": 14.9,
+			"skills": 0,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.53,
+				0.0,
+				0.0,
+				0.0
+			],
+			"assisted": false,
+			"downs": 3,
+			"heals": 0,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "four_boar",
+			"seconds": 39.0,
+			"skills": 0,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				0.97,
+				0.83,
+				0.85,
+				1.0
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 1,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "four_boar",
+			"seconds": 8.3,
+			"skills": 4,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.76,
+				0.37,
+				0.27,
+				0.35
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 7,
+			"hero_max": true,
+			"level": 24,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "four_boar",
+			"seconds": 42.8,
+			"skills": 20,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.92,
+				0.93,
+				0.82,
+				0.75
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 412.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "four_boar",
+			"seconds": 13.2,
+			"skills": 0,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.53,
+				0.02,
+				0.0,
+				0.0
+			],
+			"assisted": false,
+			"downs": 2,
+			"heals": 0,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "four_boar",
+			"seconds": 39.0,
+			"skills": 0,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				1.0,
+				0.93,
+				0.94,
+				0.92
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "four_boar",
+			"seconds": 6.6,
+			"skills": 4,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.8,
+				0.59,
+				0.53,
+				0.47
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 6,
+			"hero_max": true,
+			"level": 30,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "four_boar",
+			"seconds": 37.2,
+			"skills": 17,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.92,
+				0.95,
+				0.86,
+				0.81
+			],
+			"assisted": false,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 412.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "four_boar",
+			"seconds": 10.8,
+			"skills": 0,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.49,
+				0.33,
+				0.1,
+				0.0
+			],
+			"assisted": false,
+			"downs": 1,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 0.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "four_boar",
+			"seconds": 39.0,
+			"skills": 0,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": false
+		},
+		{
+			"ally_hp": [
+				1.0,
+				0.95,
+				0.95,
+				0.94
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 0,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "four_boar",
+			"seconds": 4.9,
+			"skills": 4,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 4,
+			"win": true
+		},
+		{
+			"ally_hp": [
+				0.88,
+				0.77,
+				0.72,
+				0.7
+			],
+			"assisted": true,
+			"downs": 0,
+			"heals": 4,
+			"hero_max": true,
+			"level": 40,
+			"minimum_player_hp": 552.0,
+			"party": [
+				"boar",
+				"marten",
+				"wolf",
+				"bat"
+			],
+			"scenario": "four_boar",
+			"seconds": 30.1,
+			"skills": 14,
+			"stars": [
+				4,
+				3,
+				3,
+				3
+			],
+			"theme": 5,
+			"win": true
+		}
+	],
+	"hero_configuration": "Lv30, all hero skills rank5, grove staff/guardian robe/wind charm/stream charm all +5"
+}
