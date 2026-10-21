@@ -13,3 +13,9 @@
 - 새 4→5 진화만 `special.evolution.growth_version=2`를 저장한다. 누락은 기존 성장곡선이며 기존 5성의 레벨·XP·능력은 그대로 보존한다. 새 곡선은 Lv1=4성Lv50 기본값×1.10, Lv60=×1.30의 선형 성장이다. 선택 확정/정규화/왕복에서 marker를 보존한다. 6성은 기존 곡선이다. root/special 버전은 유지한다.
 - `party_formation`은 root v2 선택 문자열 `front`/`rear`/`surround`, 누락·잘못된 값은 `surround`. 변경은 저장 성공 후 공개하며 실패 시 메모리·편성·진행을 유지한다. 마지막 이동방향은 일시 상태이며 저장하지 않는다.
 - 롤백은 원본 백업에서 복구한다. 새 growth_version=2 동료가 있는 파일을 이전 엔진에서 열면 다른 곡선으로 계산될 수 있으므로 다운그레이드 저장은 지원하지 않는다. 기존 파일은 자동 레벨/XP 이행하지 않는다.
+
+### 이전/이후 예시와 필수 검사
+- 구5성: `{"star":5,"level":55,"xp":20,"special":{"version":1,"evolution":{"version":1,"state":"ready","ability":"basic"}}}`는 이 필드 그대로 유지한다. 정규화로 growth_version을 자동 추가하지 않는다.
+- 신규4→5 결과: `{"star":5,"level":1,"xp":0,"special":{"version":1,"evolution":{"version":1,"state":"pending","ability":"","growth_version":2}}}`. 기존 속성/고유/옵션 필드는 생략한 예시다. 능력 선택 뒤 state/ability만 갱신한다.
+- root 이전 `{"version":2}` → 읽기 기본 surround, 선택 저장 후 `{"version":2,"party_formation":"front"}`. 기존 모든 root 필드는 유지한다.
+- G1:구5성50~60 레벨/XP/능력불변, G2:새5성1~60 곡선·선택/정규화/JSON왕복, G3:6성연결 유지, S1:구파일 진형기본·잘못된값·세종왕복, S2:저장실패시 진형/동료/재화/RNG 무변경. 제품PR에서 실제 실행결과를 기록한다.
