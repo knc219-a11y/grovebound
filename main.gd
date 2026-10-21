@@ -1520,7 +1520,7 @@ func growth_card(d,x,caption):
 	bar.max_value=maxi(1,Management.needed_xp(d))
 	bar.value=0 if Loot.is_max_level(d) else d.xp
 	label(overlay,"최대 레벨" if Loot.is_max_level(d) else "경험치 %d / %d" % [d.xp,Management.needed_xp(d)],Vector2(x+20,499),19)
-	label(overlay,("승급 준비 완료" if Loot.star(d)<3 else "합성 재료 조건 충족") if Loot.is_max_level(d) else "다음 레벨까지 %d" % maxi(0,Management.needed_xp(d)-d.xp),Vector2(x+20,531),17)
+	label(overlay,preload("res://ui/growth_guidance.gd").level_status(d),Vector2(x+20,531),17)
 
 func show_training(id,result={}):
 	if mode!="camp": notify("육성은 캠프에서 할 수 있습니다."); return
@@ -1572,7 +1572,8 @@ func preview_target_training(id,target):
 	label(overlay,"Lv.%d → %d · %d회분 · 필요 재료 %d / 보유 %d · 경험치 +%d" % [d.level,target,plan.charges,plan.cost,materials,plan.xp],Vector2(235,222),20)
 	growth_card(d,230,"육성 전")
 	growth_card(plan.after,745,"일괄 육성 후 예상")
-	label(overlay,"남는 경험치도 동료에게 보존됩니다. 목표 레벨이 바뀌면 다시 계산하세요.",Vector2(235,586),17)
+	label(overlay,"부족 재료 %d개 · 탐험에서 XP와 재료를 함께 얻을 수 있습니다." % maxi(0,plan.cost-materials),Vector2(235,586),17)
+	button(overlay,"추천 탐험 확인",Rect2(695,630,215,55),func(): preload("res://ui/growth_guidance.gd").open_recommended(self))
 	var apply=button(overlay,"재료 %d개로 일괄 육성" % plan.cost,Rect2(230,630,450,55),func(): train_to_level(id,target,plan.before))
 	apply.disabled=materials<plan.cost
 	button(overlay,"목표 다시 선택",Rect2(925,630,285,55),func(): show_target_training(id))
@@ -1760,6 +1761,7 @@ func update_hud():
 		quest_label.text="동료 쉼터 · 편성 / 육성    →    동쪽 사냥길\nWASD / 이동 스틱 · 가까이에서 F / 상호작용"
 		if not tutorial_done: quest_label.text="첫 걸음  ·  동쪽 사냥길 → 첫 인연 만나기\nWASD / 왼쪽 이동 스틱 · 가까이에서 F / 화면 버튼"
 		elif not unlocked and not preparation_seen: quest_label.text="탐험 준비  ·  동료 쉼터에서 역할·편성 확인\n재료 3개 → 경험치 40 · 준비되면 동쪽 사냥길"
+		toast_label.position.y=210
 		toast_label.text=save_notice if not save_notice.is_empty() else message if message_time>0 else ""
 		boss_panel.hide()
 		boss_label.hide()
@@ -1792,11 +1794,12 @@ func update_hud():
 			else: boss_label.text+="\n공격 기회"
 			if e.get("cycle_guard",false):
 				boss_panel.size.y=108; boss_hp_bar.position.y=204
-				boss_label.text+="\n갑주 해제 %.1f초 · 집중 공격" % e.cycle_open if e.get("cycle_open",0.0)>0 else "\n순환 갑주 · 피해 차단 · 4성 스킬로 해제"
+				boss_label.text+="\n갑주 해제 %.1f초 · 집중 공격" % e.cycle_open if e.get("cycle_open",0.0)>0 else "\n순환 갑주 · 피해 차단 · 가까이서 4성+ 스킬"
 			break
 	boss_panel.visible=not boss_label.text.is_empty()
 	boss_hp_bar.visible=boss_panel.visible
 	boss_label.visible=boss_panel.visible
+	toast_label.position.y=boss_panel.position.y+boss_panel.size.y+12 if boss_panel.visible else 210
 	for i in range(4):
 		var b=party_buttons[i]
 		if i<units.size():
