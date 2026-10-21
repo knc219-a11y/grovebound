@@ -527,9 +527,13 @@ func show_camp():
 	if show_recap: show_run_report()
 
 func show_run_report():
-	if not expedition.report.is_empty() and expedition.baseline.has("hero") and not expedition.report.has("hero_growth"):
+	if not expedition.report.is_empty() and expedition.baseline.has("hero"):
 		var before=expedition.baseline.hero
-		expedition.report.hero_growth="골드 +%d G · 드루이드 Lv.%d → %d · 장비 +%d" % [hero.gold-before.gold,before.level,hero.level,hero.items.size()-before.items.size()]
+		if not hero_pending.is_empty():
+			expedition.report.hero_growth="주인공 보상 저장 대기 · 귀환 후 저장을 다시 시도합니다."
+		elif not expedition.report.has("equipment"):
+			expedition.report.equipment=preload("res://ui/equipment_loot.gd").acquired(before,hero)
+			expedition.report.hero_growth="골드 +%d G · 드루이드 Lv.%d → %d · 장비 +%d" % [hero.gold-before.gold,before.level,hero.level,expedition.report.equipment.size()]
 	preload("res://ui/expedition_report.gd").show_report(self)
 
 func update_town(dt):

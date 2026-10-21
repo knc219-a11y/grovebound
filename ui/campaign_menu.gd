@@ -26,6 +26,7 @@ static func stages(g):
 			for stage in range(1,9):
 				if R.contains(progress,R.coordinate(id,stage,difficulty)): count+=1
 			if count==8: map.cleared.append(id-1)
+			if not R.available(R.coordinate(id,1,difficulty),progress): map.locked.append(id-1)
 			var pos=map.position+map.points[id-1]
 			var b=g.button(g.overlay,str(id),Rect2(pos-Vector2(28,24),Vector2(56,48)),func(): g.map_theme=id; g.map_stage=1; stages(g))
 			b.name="Theme_"+str(id)
@@ -47,6 +48,7 @@ static func stages(g):
 			var c=R.coordinate(theme,stage,difficulty)
 			var done=R.contains(progress,c)
 			if done: map.cleared.append(stage-1)
+			if not R.available(c,progress): map.locked.append(stage-1)
 			var p=map.position+map.points[stage-1]
 			var b=g.button(g.overlay,"%d-%d" % [theme,stage],Rect2(p-Vector2(36,25),Vector2(72,50)),func(): g.map_stage=stage; stages(g))
 			b.name="Stage_"+str(stage)

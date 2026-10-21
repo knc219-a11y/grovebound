@@ -2,7 +2,7 @@ extends RefCounted
 const H=preload("res://hero_progression.gd")
 const UI=preload("res://ui/grove_ui.gd")
 const SLOT_NAMES={"weapon":"무기","armor":"방어구","charm1":"부적 1","charm2":"부적 2"}
-static func show_page(g,page=0,selected=0):
+static func show_page(g,page=0,selected=0,filter=0,order=0,scroll_y=0):
 	g.modal("드루이드 · 성장과 장비","Lv.%d   /   %s   /   골드 %d G" % [g.hero.level,"최대 레벨" if g.hero.level==H.CAP else "경험치 %d / %d" % [g.hero.xp,g.hero.level*100],g.hero.gold],"hero",g.open_game_menu)
 	for i in 4:
 		var b=g.button(g.overlay,["능력치","장비","지원 스킬","장비 상점"][i],Rect2(230+i*247,213,235,44),func(): show_page(g,i))
@@ -34,9 +34,13 @@ static func show_page(g,page=0,selected=0):
 			var d=H.CATALOG[key]
 			var row=HBoxContainer.new()
 			scroll.add_child(row)
+			var picture=Control.new()
+			picture.custom_minimum_size=Vector2(54,50)
+			row.add_child(picture)
+			preload("res://ui/equipment_inventory.gd").add_icon(picture,key,Rect2(0,0,48,48))
 			var label=Label.new()
 			label.text="%s · Lv.%d    %s" % [d.name,d.level,stat_line(H.item_stats({"catalog":key,"enhance":0}))]
-			label.custom_minimum_size=Vector2(745,50)
+			label.custom_minimum_size=Vector2(680,50)
 			label.add_theme_font_size_override("font_size",18)
 			row.add_child(label)
 			var b=Button.new()
@@ -46,38 +50,9 @@ static func show_page(g,page=0,selected=0):
 			b.pressed.connect(func(): confirm(g,"buy",key,page,selected,d.name))
 			row.add_child(b)
 	else:
-		for i in 4:
-			var slot=H.SLOTS[i]
-			var item=H.find(g.hero,g.hero.equipped[slot])
-			var b=g.button(g.overlay,SLOT_NAMES[slot]+" · "+("비어 있음" if item.is_empty() else H.title(item))+"  해제",Rect2(230,278+i*52,435,46),func(): confirm(g,"unequip",slot,page,selected,SLOT_NAMES[slot]+" 해제"))
-			b.add_theme_font_size_override("font_size",17)
-			b.disabled=item.is_empty() or g.mode!="camp"
-		var scroll=list_box(g,Vector2(230,495),Vector2(435,105))
-		for item in g.hero.items:
-			var b=Button.new()
-			b.text=H.title(item)+(" · 장착" if item.id in g.hero.equipped.values() else "")
-			b.custom_minimum_size=Vector2(410,43)
-			b.pressed.connect(func(): show_page(g,page,item.id))
-			scroll.add_child(b)
-		if g.hero.items.is_empty(): g.label(g.overlay,"상점과 사냥에서 장비를 얻으세요.",Vector2(245,523),18)
-		var item=H.find(g.hero,selected)
-		if item.is_empty() and not g.hero.items.is_empty(): item=g.hero.items[0]
-		if not item.is_empty():
-			selected=item.id
-			var d=H.CATALOG[item.catalog]
-			g.label(g.overlay,H.title(item)+" · 필요 Lv.%d" % d.level,Vector2(705,283),24)
-			g.label(g.overlay,stat_line(H.item_stats(item)),Vector2(705,325),17)
-			var slots=[d.slot] if d.slot!="charm" else ["charm1","charm2"]
-			for i in slots.size():
-				var slot=slots[i]
-				var plan=H.plan(g.hero,"equip",{"id":selected,"slot":slot})
-				var now=H.stats(g.hero)
-				var after=H.stats(plan.after)
-				g.label(g.overlay,SLOT_NAMES[slot]+" 교체 후 변화: "+delta_line(now,after),Vector2(705,365+i*65),15)
-				g.button(g.overlay,SLOT_NAMES[slot]+" 장착",Rect2(705+i*235,505,225,44),func(): confirm(g,"equip",{"id":selected,"slot":slot},page,selected,H.title(item))).disabled=g.mode!="camp" or not plan.error.is_empty()
-			var enhance=H.plan(g.hero,"enhance",selected)
-			g.button(g.overlay,"강화 %d G" % enhance.cost if enhance.error.is_empty() else enhance.error,Rect2(705,557,225,44),func(): confirm(g,"enhance",selected,page,selected,H.title(item))).disabled=g.mode!="camp" or not enhance.error.is_empty()
-			g.button(g.overlay,"판매 %d G" % int(d.price/4),Rect2(940,557,260,44),func(): confirm(g,"sell",selected,page,selected,H.title(item))).disabled=g.mode!="camp" or selected in g.hero.equipped.values()
+		preload("res://ui/equipment_inventory.gd").show(g,selected,filter,order,scroll_y,
+			func(id,type,sort,y): show_page(g,page,id,type,sort,y),
+			func(action,arg,id,caption,y): confirm(g,action,arg,page,id,caption,filter,order,y))
 	g.button(g.overlay,"메뉴로",Rect2(230,630,235,55),g.open_game_menu)
 	g.label(g.overlay,"캠프에서 관리 가능" if g.mode!="camp" else "자동 저장 · 동료 성장 재료와 별도 재화",Vector2(500,648),17)
 	g.button(g.overlay,"돌아가기",Rect2(975,630,235,55),g.resume_game)
@@ -100,19 +75,19 @@ static func delta_line(before,after):
 		var delta=(after[k]-before[k])*(100 if k=="haste" else 1)
 		if absf(delta)>0.001: parts.append({"hp":"체력","attack":"공격","defense":"방어","support":"회복%","haste":"감소%"}[k]+" %+.1f" % delta)
 	return " · ".join(parts) if not parts.is_empty() else "변화 없음"
-static func confirm(g,action,arg,page,selected,caption):
+static func confirm(g,action,arg,page,selected,caption,filter=0,order=0,scroll_y=0):
 	var expected=g.hero.duplicate(true)
 	var plan=H.plan(expected,action,arg)
 	if not plan.error.is_empty(): g.notify(plan.error); return
-	g.modal(caption,"%s · %s" % [{"buy":"구매","equip":"장착","unequip":"해제","sell":"판매","enhance":"강화","skill":"스킬 성장"}[action],"캠프에서 골드를 사용합니다." if plan.cost>0 else "변경 내용을 확인하세요."],"hero",func(): show_page(g,page,selected))
+	g.modal(caption,"%s · %s" % [{"buy":"구매","equip":"장착","unequip":"해제","sell":"판매","enhance":"강화","skill":"스킬 성장"}[action],"캠프에서 골드를 사용합니다." if plan.cost>0 else "변경 내용을 확인하세요."],"hero",func(): show_page(g,page,selected,filter,order,scroll_y))
 	g.label(g.overlay,"골드 %d → %d G\n\n%s" % [expected.gold,plan.after.gold,delta_line(H.stats(expected),H.stats(plan.after))],Vector2(260,290),24)
 	if action=="skill": g.label(g.overlay,H.skill_text(expected,arg)+"\n→ "+H.skill_text(plan.after,arg),Vector2(260,430),20)
 	if action=="enhance": g.label(g.overlay,H.title(H.find(expected,arg))+" → "+H.title(H.find(plan.after,arg))+"\n확정 강화 · 최대 +5",Vector2(260,430),22)
 	if action=="sell": g.label(g.overlay,"판매하면 해당 장비가 사라집니다.",Vector2(260,430),22)
 	g.button(g.overlay,"확인",Rect2(230,630,450,55),func():
-		if g.commit_hero_action(action,arg,expected): show_page(g,page,selected)
+		if g.commit_hero_action(action,arg,expected): show_page(g,page,selected,filter,order,scroll_y)
 		else:
-			g.modal("변경하지 못했습니다",g.message,"hero",func(): show_page(g,page,selected))
+			g.modal("변경하지 못했습니다",g.message,"hero",func(): show_page(g,page,selected,filter,order,scroll_y))
 			g.label(g.overlay,"골드와 장비는 소모되지 않았습니다.\n캠프에서 현재 정보를 다시 확인하세요.",Vector2(260,330),24)
-			g.button(g.overlay,"돌아가기",Rect2(925,630,285,55),func(): show_page(g,page,selected)))
-	g.button(g.overlay,"취소",Rect2(925,630,285,55),func(): show_page(g,page,selected))
+			g.button(g.overlay,"돌아가기",Rect2(925,630,285,55),func(): show_page(g,page,selected,filter,order,scroll_y)))
+	g.button(g.overlay,"취소",Rect2(925,630,285,55),func(): show_page(g,page,selected,filter,order,scroll_y))

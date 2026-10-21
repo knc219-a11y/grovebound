@@ -1,0 +1,43 @@
+{
+  "base_main": "5bed96131eb1879d53a188f38e82de91152d4825",
+  "date": "2026-10-22",
+  "role": "independent QA",
+  "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+  "checks": 979,
+  "pass": true,
+  "command": "godot_console.exe --headless --path . --script res://tools/test_equipment_map.gd",
+  "errors": [],
+  "scope": [
+    "0/1/36 items and scroll to final item",
+    "9 icon catalog/region correspondence and requested 48px bounds",
+    "filters and newest/level/enhance sorting preserve save payload/RNG",
+    "two charm slots compare actual replacement stats",
+    "level/gold/enhancement/field/sale guards",
+    "failed transaction leaves inventory and gold unchanged",
+    "failed reward save/retry preserves candidate/RNG and no false acquisitions",
+    "confirmed reward summary snapshot unchanged after later purchases",
+    "world and 5 theme nodes, boss labels, legacy entry and unimplemented departure guards"
+  ],
+  "reviewed_captures": [
+    "equipment-map-inventory.png",
+    "equipment-map-shop.png",
+    "equipment-map-loot.png",
+    "equipment-map-pending.png",
+    "equipment-map-world.png",
+    "equipment-map-theme-1.png",
+    "equipment-map-theme-2.png",
+    "equipment-map-theme-3.png",
+    "equipment-map-theme-4.png",
+    "equipment-map-theme-5.png"
+  ],
+  "defects_resolved": [
+    "reward summary changed after subsequent purchase: leader fixed snapshot; regression passed",
+    "TextureRect atlas expanded icon bounds: leader fixed initialization order; 48/52px regression passed"
+  ],
+  "unverified": [
+    "human play and loot enjoyment",
+    "mobile touch and device performance",
+    "remote CI and merge, owned by leader"
+  ],
+  "verdict": "No blocking defect found in final supplied product files"
+}
