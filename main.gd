@@ -385,7 +385,7 @@ func finish_route(success):
 	var legacy=cleared_stages.duplicate()
 	if success:
 		progress=Routes.completed(progress,current_route)
-		if int(current_route.stage)==8 and int(current_route.theme) not in legacy: legacy.append(int(current_route.theme))
+		if int(current_route.stage)==8 and int(current_route.theme)<=3 and int(current_route.theme) not in legacy: legacy.append(int(current_route.theme))
 	var payload=save_payload().duplicate(true)
 	payload.campaign_progress=progress
 	payload.cleared_stages=legacy
@@ -549,8 +549,9 @@ func start_stage(tutorial,stage_id=1,route={}):
 			notify("특수개체의 속성·고유 능력 선택을 마쳐 주세요.")
 			return
 	current_stage=stage_id if Campaign.STAGES.has(stage_id) and not tutorial else 1
-	stage_background=load(Campaign.STAGES[current_stage].background)
 	current_route=route.duplicate(true) if Routes.implemented(route) and not tutorial else {}
+	if not current_route.is_empty(): current_stage=int(current_route.theme)
+	stage_background=load(Routes.profile(current_route).get("background",Campaign.STAGES.get(current_stage,Campaign.STAGES[1]).background) if not current_route.is_empty() else Campaign.STAGES[current_stage].background)
 	run_success=false
 	if current_route.is_empty():
 		trail=Trail.new()
@@ -1715,7 +1716,7 @@ func update_hud():
 			boss_hp_bar.max_value=e.maxhp
 			boss_hp_bar.value=e.hp
 			if e.get("intro",0.0)>0: boss_label.text+="\n"+("우두머리 · 경계 중" if Species.NEW.has(e.kind) else "거대한 발자국의 주인 · 경계 중")
-			elif e.wind>0: boss_label.text+="\n"+("지면 강타! 원 밖으로 이동" if Species.NEW.has(e.kind) and e.attack_kind=="slam" else "표적 공격! 표시된 원을 피하세요" if Species.NEW.has(e.kind) else "발구르기! 원 밖으로 이동" if e.attack_kind=="stomp" else "돌진! 옆으로 피하세요")
+			elif e.wind>0: boss_label.text+="\n"+("가시 공격! 부채꼴 밖으로 이동" if e.attack_kind=="cone" else "지면 강타! 원 밖으로 이동" if Species.NEW.has(e.kind) and e.attack_kind=="slam" else "표적 공격! 표시된 원을 피하세요" if Species.NEW.has(e.kind) else "발구르기! 원 밖으로 이동" if e.attack_kind=="stomp" else "돌진! 옆으로 피하세요")
 			elif e.get("dash",0.0)>0: boss_label.text+="\n돌진 중!"
 			else: boss_label.text+="\n공격 기회"
 			break
@@ -2005,7 +2006,7 @@ func draw_minimap():
 		return
 	var box=Rect2(1190,104,225,135)
 	draw_style_box(map_style(),box)
-	text_at(("계곡" if current_stage==1 else "채석장" if current_stage==2 else "묘역")+" 지도 · 옆길은 선택",box.position+Vector2(12,22),14,Color("edf0d4"))
+	text_at(Routes.THEMES.get(current_stage,"탐험")+" 지도 · 옆길은 선택",box.position+Vector2(12,22),14,Color("edf0d4"))
 	var origin=box.position+Vector2(12,35)
 	var scale_map=Vector2(201.0/2900.0,88.0/1650.0)
 	if mode=="stage":

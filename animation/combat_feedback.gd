@@ -179,7 +179,16 @@ func draw_tell(canvas,enemy,cam):
 	var fill=Color(0.72,0.22,0.14,0.16+ratio*0.12)
 	var edge=Color("f0c08a") if enemy.wind>0.2 else Color("f3e4bc")
 	var p=enemy.aim-cam
-	if enemy.attack_kind=="charge":
+	if enemy.attack_kind=="cone":
+		var origin=enemy.origin-cam
+		var angle=enemy.cone_direction.angle(); var half=enemy.cone_half_angle; var radius=enemy.tell_radius
+		var sector=PackedVector2Array([origin])
+		for index in 25: sector.append(origin+Vector2.from_angle(angle-half+2*half*index/24.0)*radius)
+		canvas.draw_colored_polygon(sector,fill)
+		canvas.draw_polyline(sector,edge,2,false)
+		canvas.draw_line(sector[-1],origin,edge,2,false)
+		canvas.draw_arc(origin,radius*ratio,angle-half,angle+half,24,edge,2,false)
+	elif enemy.attack_kind=="charge":
 		var a=enemy.origin-cam
 		var direction=(p-a).normalized()
 		var side=direction.orthogonal()*48

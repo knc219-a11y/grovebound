@@ -7,15 +7,15 @@ var selected=0
 func _ready():
 	mouse_filter=Control.MOUSE_FILTER_IGNORE
 func _draw():
-	draw_rect(Rect2(Vector2.ZERO,size),Color("222c25"))
+	draw_rect(Rect2(Vector2.ZERO,size),Color("3b3028") if theme_id==4 else Color("2b3030") if theme_id==5 else Color("222c25"))
 	# Low-contrast contour islands and a river keep the route readable.
 	for i in 7:
 		var center=Vector2(65+i*82,100+(i%3)*72)
 		var polygon=PackedVector2Array()
 		for j in 8: polygon.append((center+Vector2(cos(j*TAU/8)*82,sin(j*TAU/8)*46)).snapped(Vector2(4,4)))
-		draw_colored_polygon(polygon,Color("29372a"))
+		draw_colored_polygon(polygon,Color("51402c") if theme_id==4 else Color("363d39") if theme_id==5 else Color("29372a"))
 	var river=PackedVector2Array([Vector2(15,300),Vector2(110,270),Vector2(210,310),Vector2(320,240),Vector2(430,260),Vector2(550,185),Vector2(660,210)])
-	draw_polyline(river,Color("36514a"),12,false)
+	draw_polyline(river,Color("756043") if theme_id==4 else Color("47514b") if theme_id==5 else Color("36514a"),12,false)
 	draw_polyline(river,Color("52695b"),2,false)
 	for i in points.size()-1:
 		var delta=points[i+1]-points[i]

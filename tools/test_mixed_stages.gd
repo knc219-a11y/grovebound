@@ -77,6 +77,6 @@ func check():
 	assert(g.overlay.get_children().any(func(n): return n is Label and n.text.contains("교감 가능 6종")))
 	g.seen_species=Species.kinds(); g.open_collection()
 	var cards=g.overlay.get_node("CreatureCollection").get_child(0)
-	assert(cards.get_child_count()==12)
+	assert(cards.get_child_count()==16)
 	print("MIXED STAGES PASS: 7/2/2 reward families, 28/30/30 totals, main-path bonds, rear wraith, unchanged reward/15% policy, class-aware conditions, original guaranteed starters, production selector/collection")
 	g.free(); quit()

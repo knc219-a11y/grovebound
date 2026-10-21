@@ -10,6 +10,10 @@ const NEW={
 	"golem":{"name":"바위 마물","family":"monster","height":60,"stats":[160,15,90,65],"reach":85,"wind":1.05,"radius":95,"speed":65},
 	"skeleton":{"name":"해골병","family":"undead","height":52,"stats":[70,10,55,95],"reach":55,"wind":0.65,"radius":60,"speed":95},
 	"wraith":{"name":"묘역의 망령","family":"undead","height":50,"stats":[75,10,210,80],"reach":210,"wind":0.95,"radius":75,"speed":80},
+	"thornling":{"name":"붉은가시 마물","family":"monster","height":46,"stats":[110,10,130,85],"reach":130,"wind":1.15,"radius":145,"speed":82},
+	"shaman":{"name":"재의 주술사","family":"monster","height":54,"stats":[90,9,230,75],"reach":230,"wind":1.4,"radius":85,"speed":70},
+	"sentinel":{"name":"황야 파수병","family":"monster","height":62,"stats":[185,16,95,72],"reach":95,"wind":1.2,"radius":105,"speed":70},
+	"cycle_guardian":{"name":"순환의 수호자","family":"monster","height":66,"stats":[220,18,100,70],"reach":100,"wind":1.25,"radius":115,"speed":68},
 	"guardian":{"name":"묘역 수호병","family":"undead","height":60,"stats":[170,16,85,75],"reach":80,"wind":0.95,"radius":90,"speed":75}}
 static func kinds(): return ORIGINAL+NEW.keys()
 static func starters(player_class): return STARTERS.get(player_class,[]).duplicate()
