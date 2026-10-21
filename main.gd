@@ -143,6 +143,9 @@ var interact_button: Button
 var dropdown: Control
 var town_hidden_labels=[]
 var party_buttons = []
+var auto_skill_button: Button
+var auto_companion_skills = false
+var auto_skill_check = 0.0
 var chosen_swap = -1
 var is_test = false
 var screenshot_mode = false
@@ -153,6 +156,7 @@ var boss_panel: Panel
 const GroveUI=preload("res://ui/grove_ui.gd")
 const CompanionCard=preload("res://ui/companion_card.gd")
 const SupportButton=preload("res://ui/support_button.gd")
+const PartyLineup=preload("res://ui/party_lineup.gd")
 var player_hp_bar: ProgressBar
 var boss_hp_bar: ProgressBar
 var interact_progress: ProgressBar
@@ -225,6 +229,9 @@ func build_ui():
 	toast_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	loot_result_button=button(hud,"새로운 인연 확인",Rect2(22,116,320,46),func(): show_loot_details(recent_capture_id))
 	town_hidden_labels.append(label(hud,"동료 스킬",Vector2(365,650),14))
+	auto_skill_button=button(hud,"자동 스킬  OFF",Rect2(805,626,180,42),toggle_auto_companion_skills)
+	auto_skill_button.name="AutoCompanionSkills"
+	town_hidden_labels.append(auto_skill_button)
 	for i in range(4):
 		var b=CompanionCard.new()
 		b.position=Vector2(363+i*158,676)
@@ -878,6 +885,11 @@ func update_game(dt):
 	in_combat=false
 	for e in enemies:
 		if e.hp>0 and e.active: in_combat=true
+	auto_skill_check=maxf(0,auto_skill_check-dt)
+	if auto_companion_skills and in_combat and auto_skill_check<=0:
+		auto_skill_check=0.2
+		for i in range(active_units().size()):
+			if should_auto_use_companion_skill(i): use_companion_skill(i)
 	if player.hp<=0:
 		finish(false)
 		return
@@ -1153,6 +1165,36 @@ func use_companion_skill(i):
 	Roles.add_metric(u,"skills",1)
 	u.skill=10.0*(1.0-Loot.bonus(u.data,"skill_haste"))*Special.haste(u.data)
 
+func should_auto_use_companion_skill(i):
+	if not can_act() or i>=active_units().size(): return false
+	var u=units[i]
+	if u.hp<=0 or u.skill>0 or u.has("assault") or u.has("special_action"): return false
+	if u.data.kind=="deer":
+		for ally in alive_allies():
+			if ally.hp<ally.maxhp*0.70 and ally.pos.distance_to(u.pos)<350*Special.radius(u.data): return true
+		return false
+	var target=Roles.target(u.data.kind,u.pos,combat_enemies(),player.pos,430)
+	if u.data.kind=="turtle":
+		var nearby=0
+		for e in combat_enemies():
+			if e.hp>0 and e.pos.distance_to(u.pos)<270:
+				nearby+=1
+				if e.boss or nearby>=2: return true
+		return false
+	return not target.is_empty()
+
+func toggle_auto_companion_skills():
+	var before=auto_companion_skills
+	auto_companion_skills=not before
+	auto_skill_check=0.0
+	if not save_game():
+		auto_companion_skills=before
+		notify("저장에 실패해 자동사용 설정을 바꾸지 않았습니다.")
+		return false
+	if auto_skill_button!=null: auto_skill_button.text="자동 스킬  ON" if auto_companion_skills else "자동 스킬  OFF"
+	notify("동료 스킬 자동사용을 켰습니다." if auto_companion_skills else "동료 스킬 자동사용을 껐습니다.")
+	return true
+
 func closest_down():
 	var best=85.0
 	var result=-1
@@ -1378,7 +1420,7 @@ func reset_roster_filters():
 func roster_filters(total,shown):
 	var species=OptionButton.new()
 	species.name="SpeciesFilter"
-	species.position=Vector2(215,215)
+	species.position=Vector2(215,330)
 	species.size=Vector2(170,44)
 	species.add_item("모든 종")
 	var kinds=STATS.keys()
@@ -1389,7 +1431,7 @@ func roster_filters(total,shown):
 	overlay.add_child(species)
 	var rarity=OptionButton.new()
 	rarity.name="GradeFilter"
-	rarity.position=Vector2(397,215)
+	rarity.position=Vector2(397,330)
 	rarity.size=Vector2(145,44)
 	rarity.add_item("모든 성급")
 	for i in Loot.GRADES.size():
@@ -1399,36 +1441,37 @@ func roster_filters(total,shown):
 	overlay.add_child(rarity)
 	var sorting=OptionButton.new()
 	sorting.name="RosterSort"
-	sorting.position=Vector2(554,215)
+	sorting.position=Vector2(554,330)
 	sorting.size=Vector2(180,44)
 	for caption in ["동행 순서","최근 인연순","높은 성급순","높은 레벨순"]: sorting.add_item(caption)
 	sorting.select(roster_sort)
 	sorting.item_selected.connect(func(index): roster_sort=index; open_roster())
 	overlay.add_child(sorting)
-	button(overlay,"즐겨찾기만 ✓" if roster_favorites_only else "즐겨찾기만",Rect2(746,215,150,44),func(): roster_favorites_only=not roster_favorites_only; open_roster())
-	button(overlay,"초기화",Rect2(908,215,90,44),reset_roster_filters)
-	label(overlay,"표시 %d / %d마리" % [shown,total],Vector2(1020,225),17)
+	button(overlay,"즐겨찾기만 ✓" if roster_favorites_only else "즐겨찾기만",Rect2(746,330,150,44),func(): roster_favorites_only=not roster_favorites_only; open_roster())
+	button(overlay,"초기화",Rect2(908,330,90,44),reset_roster_filters)
+	label(overlay,"표시 %d / %d마리" % [shown,total],Vector2(1020,340),17)
 
 func open_roster():
 	if mode=="camp": preparation_seen=true
 	if in_combat and mode=="stage": notify("전투 중에는 편성을 바꿀 수 없습니다."); return
 	if mode=="tutorial": notify("튜토리얼을 먼저 마쳐주세요."); return
 	var camp=mode=="camp"
-	modal("동료 관리  ·  출전 4 / 동행 6", "필터·정렬은 실제 편성을 바꾸지 않습니다. 두 동료의 이름을 눌러 동행 순서를 교체하세요.","companions",open_game_menu)
+	modal("동료 관리  ·  출전 4 / 대기 2", "위 6칸이 실제 동행 편성입니다. 두 칸을 차례로 눌러 출전·대기 위치를 교체하세요.","companions",open_game_menu)
 	chosen_swap=-1
 	var source=owned if camp else []
 	if not camp:
 		for id in squad:
 			var d=find_owned(id)
 			if not d.is_empty(): source.append(d)
+	PartyLineup.show(self,205)
 	var roster=Management.filtered(source,squad,roster_kind_filter,roster_grade_filter,roster_favorites_only,roster_sort)
 	roster_filters(source.size(),roster.size())
 	if roster.is_empty():
 		label(overlay,"조건에 맞는 동료가 없습니다. 필터를 초기화해 보세요." if not source.is_empty() else "아직 동료가 없습니다. 첫 인연을 만나보세요.",Vector2(235,325),21)
 	var scroll=ScrollContainer.new()
 	scroll.name="CompanionScroll"
-	scroll.position=Vector2(215,274)
-	scroll.size=Vector2(1010,306)
+	scroll.position=Vector2(215,390)
+	scroll.size=Vector2(1010,190)
 	overlay.add_child(scroll)
 	var rows=VBoxContainer.new()
 	rows.size_flags_horizontal=Control.SIZE_EXPAND_FILL
@@ -1655,8 +1698,8 @@ func select_swap(id):
 	if not squad.has(id): return
 	if chosen_swap<0:
 		chosen_swap=id
-		notify("교체할 다른 동료를 누르세요.")
-		label(overlay,"선택: "+NAMES[find_owned(id).kind]+" → 다른 동료를 눌러 교체",Vector2(230,650),18)
+		notify("이동할 다른 출전·대기 칸을 누르세요.")
+		PartyLineup.show(self,205)
 	else:
 		var a=squad.find(chosen_swap)
 		var b=squad.find(id)
@@ -1818,6 +1861,7 @@ func update_hud():
 		else:
 			b.configure(null,"빈자리","교감으로 합류",0,1,0)
 			b.disabled=true
+	if auto_skill_button!=null: auto_skill_button.text="자동 스킬  ON" if auto_companion_skills else "자동 스킬  OFF"
 	heal_button.full_cooldown=Hero.skill(hero,"heal").cooldown
 	buff_button.full_cooldown=Hero.skill(hero,"buff").cooldown
 	buff_button.description="공격력 +%d%%" % roundi(Hero.skill(hero,"buff").power*100)
@@ -1941,7 +1985,7 @@ func repair_party():
 	next_id = result.next_id
 
 func save_payload():
-	return {"hero":(hero_pending if not hero_pending.is_empty() else hero).duplicate(true),"version":2,"owned":owned,"squad":squad,"materials":materials,"tutorial_done":tutorial_done,"unlocked":unlocked,"next_id":next_id,"discovered":discovered,"cleared_stages":cleared_stages,"seen_species":seen_species,"campaign_progress":Routes.progress_for(self)}
+	return {"hero":(hero_pending if not hero_pending.is_empty() else hero).duplicate(true),"version":2,"owned":owned,"squad":squad,"materials":materials,"auto_companion_skills":auto_companion_skills,"tutorial_done":tutorial_done,"unlocked":unlocked,"next_id":next_id,"discovered":discovered,"cleared_stages":cleared_stages,"seen_species":seen_species,"campaign_progress":Routes.progress_for(self)}
 
 func persist_payload(data):
 	if save_blocked: return false
@@ -1986,6 +2030,7 @@ func load_game():
 	discovered=result.discovered
 	owned=result.owned
 	squad=result.squad
+	auto_companion_skills=d.get("auto_companion_skills",false) if d.get("auto_companion_skills",false) is bool else false
 	materials=SaveData.integer(d.get("materials",0),0)
 	tutorial_done=d.get("tutorial_done",false)
 	unlocked=d.get("unlocked",false)
@@ -2349,12 +2394,16 @@ func commit_synthesis(ids,main_id,preserve,expected):
 		elif not ids.has(d.id): next.append(d.duplicate(true))
 	var payload=save_payload().duplicate(true)
 	payload.owned=next
+	payload.squad=[]
+	for id in squad:
+		if id==main_id or not ids.has(id): payload.squad.append(id)
 	if not payload.discovered.has(kind): payload.discovered.append(kind)
 	if not persist_payload(payload):
 		loot_rng.state=old_rng
 		notify("저장에 실패해 합성을 취소했습니다. 동료는 소모되지 않았습니다.")
 		return false
 	owned=next
+	squad=payload.squad
 	discovered=payload.discovered
 	units.clear()
 	show_special_choice(main_id)

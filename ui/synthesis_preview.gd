@@ -3,16 +3,26 @@ extends RefCounted
 static func show_page(g,ids,main_id,preserve):
 	ids=ids.duplicate()
 	g.modal("4성 특수개체 합성 · 재료 선택","3성 Lv.40 세 마리 · 성공 100% · 추가 비용 없음 · 보조 두 마리는 소모됩니다.","synthesis",g.open_roster)
-	g.label(g.overlay,"주재료를 먼저 지정하세요. 동행·즐겨찾기 동료도 주재료로는 선택할 수 있습니다.",Vector2(230,215),18)
+	var ready=g.owned.filter(func(d): return int(d.get("star",0))==3 and int(d.get("level",0))==40 and g.Synthesis.EXISTING_SPECIAL_KINDS.has(d.kind))
+	var supports=ready.filter(func(d): return not d.get("favorite",false))
+	var summary=g.label(g.overlay,"합성 후보 %d마리 · 보조 가능 %d마리  |  주재료를 먼저 지정하세요." % [ready.size(),supports.size()],Vector2(230,205),18)
+	summary.name="SynthesisCandidateSummary"
+	var squad_notice=g.label(g.overlay,"동행 중 보조 재료는 합성 저장과 함께 동행에서 해제됩니다. 즐겨찾기는 보조로 소모할 수 없습니다.",Vector2(230,230),16)
+	squad_notice.name="SynthesisSquadNotice"
 	var scroll=ScrollContainer.new()
 	scroll.name="SynthesisScroll"
-	scroll.position=Vector2(230,250)
-	scroll.size=Vector2(980,280)
+	scroll.position=Vector2(230,260)
+	scroll.size=Vector2(980,270)
 	g.overlay.add_child(scroll)
 	var rows=VBoxContainer.new()
 	rows.size_flags_horizontal=Control.SIZE_EXPAND_FILL
 	scroll.add_child(rows)
-	for d in g.owned:
+	var ordered=g.owned.duplicate()
+	ordered.sort_custom(func(a,b):
+		var ar=int(a.get("star",0))==3 and int(a.get("level",0))==40
+		var br=int(b.get("star",0))==3 and int(b.get("level",0))==40
+		return ar and not br if ar!=br else int(a.id)<int(b.id))
+	for d in ordered:
 		var row=HBoxContainer.new()
 		row.custom_minimum_size=Vector2(950,65)
 		rows.add_child(row)
@@ -29,6 +39,7 @@ static func show_page(g,ids,main_id,preserve):
 		row.add_child(pick)
 		var name_label=Label.new()
 		var reason=g.Synthesis.material_error(d,g.squad,d.id==main_id)
+		if reason.is_empty() and g.squad.has(d.id) and d.id!=main_id: reason="동행 중 · 합성 시 해제"
 		name_label.text="%s %s Lv.%d · %s%s" % [g.Loot.title(d),g.NAMES[d.kind],d.level,d.trait," · "+reason if not reason.is_empty() else ""]
 		name_label.custom_minimum_size=Vector2(660,60)
 		name_label.vertical_alignment=VERTICAL_ALIGNMENT_CENTER
@@ -66,14 +77,18 @@ static func show_result(g,ids,main_id,preserve):
 	var names=PackedStringArray()
 	for kind in plan.pool: names.append(g.NAMES[kind]+" 특수개체")
 	g.label(g.overlay,"보존 방식: "+("종 보존" if preserve=="species" else "포지션 보존"),Vector2(235,225),22)
-	g.label(g.overlay,"기존 종 후보 · 각 %.1f%%\n%s" % [100.0/plan.pool.size()," / ".join(names)],Vector2(235,270),22)
+	var pool_list=g.label(g.overlay,"기존 종 후보 · 각 %.1f%%\n%s" % [100.0/plan.pool.size()," / ".join(names)],Vector2(235,270),22)
+	pool_list.name="SynthesisPoolList"
 	g.label(g.overlay,"예정 결과: 4성 Lv.1 · 주재료 %s #%d" % [g.NAMES[plan.main.kind],main_id],Vector2(235,350),22)
 	g.label(g.overlay,"주재료 ID·특성·즐겨찾기·편성·기존 옵션 계승\n종이 바뀌어도 기존 옵션 유지 · 종에 따라 효과가 없을 수 있습니다.\n신규 특수종 목록·확률은 미정이며 현재 후보에 포함되지 않습니다.",Vector2(235,400),19)
 	var parts=PackedStringArray()
 	for d in plan.materials:
 		if d.id!=main_id: parts.append("%s #%d" % [g.NAMES[d.kind],d.id])
 	g.label(g.overlay,"합성 시 소비될 보조 동료: "+" / ".join(parts),Vector2(235,510),20)
-	g.label(g.overlay,"4성 Lv.1 기본 체력·공격은 같은 종 3성 만렙의70% · 소환 후 속성/고유 능력 선택",Vector2(235,565),18)
+	if not plan.leaving_squad.is_empty():
+		var leaving_notice=g.label(g.overlay,"동행 자동 해제: %d마리 · 빈 동행 칸은 합성 후 다시 채울 수 있습니다." % plan.leaving_squad.size(),Vector2(235,535),17)
+		leaving_notice.name="SynthesisLeavingNotice"
+	g.label(g.overlay,"4성 Lv.1 기본 체력·공격은 같은 종 3성 만렙의70% · 소환 후 속성/고유 능력 선택",Vector2(235,575),18)
 	g.button(g.overlay,"합성 최종 확인",Rect2(850,640,360,55),func(): show_confirmation(g,ids,main_id,preserve))
 	g.button(g.overlay,"재료·보존 방식 다시 선택",Rect2(230,640,400,55),func(): g.show_synthesis(ids,main_id,preserve))
 
@@ -87,6 +102,9 @@ static func show_confirmation(g,ids,main_id,preserve):
 		y+=65
 	g.label(g.overlay,"결과: 4성 Lv.1 · 신규 랜덤 옵션2개 · 속성1개/고유 능력1개 선택
 주재료 ID·특성·즐겨찾기·편성·기존 옵션은 유지됩니다.",Vector2(240,480),20)
+	if not plan.leaving_squad.is_empty():
+		var leaving_notice=g.label(g.overlay,"보조 재료 %d마리는 합성과 동시에 동행에서 해제됩니다." % plan.leaving_squad.size(),Vector2(240,550),18)
+		leaving_notice.name="SynthesisLeavingNotice"
 	g.button(g.overlay,"취소 · 후보 확인",Rect2(240,630,350,60),func(): show_result(g,ids,main_id,preserve))
 	var b=g.button(g.overlay,"보조 두 마리로 합성",Rect2(850,630,350,60),func(): g.commit_synthesis(ids,main_id,preserve,plan.materials))
 	b.name="CommitSynthesis"

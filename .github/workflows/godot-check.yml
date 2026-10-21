@@ -81,9 +81,11 @@ jobs:
           grep -q 'SYNTHESIS PREVIEW PASS:' synthesis-preview.log
           timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_special_synthesis.gd 2>&1 | tee special-synthesis.log
           grep -q 'SPECIAL SYNTHESIS PASS:' special-synthesis.log
+          timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_party_controls.gd 2>&1 | tee party-controls.log
+          grep -q 'PARTY CONTROLS PASS:' party-controls.log
           timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_special_combat.gd 2>&1 | tee special-combat.log
           grep -q 'SPECIAL COMBAT PASS:' special-combat.log
-          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR:' synthesis-progression.log synthesis-preview.log special-synthesis.log special-combat.log; then exit 1; fi
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR:' synthesis-progression.log synthesis-preview.log special-synthesis.log party-controls.log special-combat.log; then exit 1; fi
       - name: Map progression and eight-stage valley
         shell: bash
         run: |

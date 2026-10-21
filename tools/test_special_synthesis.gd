@@ -22,7 +22,7 @@ func run():
 	game.owned[0].favorite=true
 	game.owned[0].legacy_options=true
 	game.owned[0].options=[{"key":"stun_hunter","value":20}]
-	game.squad=[ids[0]]
+	game.squad=ids.duplicate()
 	var old=game.owned.duplicate(true)
 	var expected=old.slice(0,3).duplicate(true)
 	check(game.save_game(),"baseline actual save")
@@ -39,7 +39,7 @@ func run():
 	check(game.commit_synthesis(ids,ids[0],"position",expected),"actual synthesis")
 	var result=game.find_owned(ids[0]).duplicate(true)
 	check(game.owned.size()==2 and game.find_owned(ids[1]).is_empty() and game.find_owned(ids[2]).is_empty(),"exactly two supports consumed")
-	check(result.star==4 and result.level==1 and result.id==old[0].id and result.favorite and result.trait==old[0].trait and result.options==old[0].options and game.squad==[ids[0]],"identity trait options favorite party preserved")
+	check(result.star==4 and result.level==1 and result.id==old[0].id and result.favorite and result.trait==old[0].trait and result.options==old[0].options and game.squad==[ids[0]],"identity trait options favorite party preserved and supports removed")
 	check(result.kind in ["boar","turtle"] and result.special.affixes.size()==2 and result.special.affixes[0].key!=result.special.affixes[1].key,"approved pool and two distinct affixes")
 	check(game.materials==77 and Special.pending(result),"no extra cost and pending selection")
 	check(not game.commit_synthesis(ids,ids[0],"position",expected),"double submit rejected")
