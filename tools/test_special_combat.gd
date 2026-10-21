@@ -86,7 +86,7 @@ func run():
 	u=prepare("boar","wind","barrier")
 	e=enemy(Vector2(1090,800))
 	g.use_companion_skill(0)
-	check(u.has("assault") and u.get("special_guard",0)==0 and u.special_barrier>0 and is_equal_approx(u.skill,9.0),"boar actual cast and wind cooldown")
+	check(u.has("assault") and u.get("special_guard",0)==0 and u.special_barrier>0 and is_equal_approx(u.skill,10.0),"boar actual cast and wind cooldown")
 	g.Assault.advance(g,u,0.25)
 	check(u.special_guard==3 and e.hp<e.maxhp,"boar guard after dash")
 	# Fox fixed delayed area, reach and exactly one echo.

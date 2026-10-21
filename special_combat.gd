@@ -46,6 +46,7 @@ static func cast(g,u,target):
 			target.hunt_time=5.0
 		"bat":
 			var center=target.pos
+			g.element_feedback.emit(d,u.pos,center,true,100)
 			g.hit_enemy(target,power*3.5,u.pos,u,true,true)
 			for e in g.combat_enemies():
 				if e!=target and e.hp>0 and e.pos.distance_to(center)<=100:
@@ -64,6 +65,7 @@ static func cast(g,u,target):
 			for ally in g.alive_allies():
 				if ally.pos.distance_to(u.pos)<=270: ally.team_guard=maxf(ally.get("team_guard",0.0),3.0)
 		"deer":
+			g.element_feedback.emit(d,u.pos,u.pos,true,350*Special.radius(d))
 			for ally in g.alive_allies():
 				if ally.pos.distance_to(u.pos)<350*Special.radius(d):
 					g.heal(ally,35*(1.25 if d.trait=="다정함" else 1.0),u.pos,u)

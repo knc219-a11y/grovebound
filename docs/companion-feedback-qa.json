@@ -1,0 +1,11 @@
+{
+	"basis": "7b5900b + 10fc00a + fcae89e + 9bcfc98",
+	"checks": 275,
+	"engine": "4.7.stable.official.5b4e0cb0f",
+	"failures": [],
+	"limits": [
+		"No human/mobile interaction assessment",
+		"Actual renders supplied by integration lead"
+	],
+	"user_save": "isolated res://.qa-data"
+}

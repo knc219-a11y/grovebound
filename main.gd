@@ -63,6 +63,11 @@ var roster_favorites_only=false
 var roster_sort=0
 var roster_selected_id=-1
 var roster_scroll=0
+var roster_click={}
+var party_formation="surround"
+var formation_forward=Vector2.RIGHT
+const Formation=preload("res://party_formation.gd")
+var element_feedback=preload("res://animation/element_feedback.gd").new()
 var loot_rng=RandomNumberGenerator.new()
 var recent_capture_id=-1
 var pending_loot_id=-1
@@ -520,6 +525,7 @@ func show_camp():
 	captures.clear()
 	effects.clear()
 	combat_feedback.clear()
+	element_feedback.clear()
 	clear_overlay()
 	save_game()
 	for d in owned:
@@ -653,6 +659,7 @@ func start_stage(tutorial,stage_id=1,route={}):
 	units.clear()
 	effects.clear()
 	combat_feedback.clear()
+	element_feedback.clear()
 	for i in range(squad.size()):
 		var unit = make_unit(find_owned(squad[i]),player.pos+Vector2(-65-i*25,40))
 		if not unit.is_empty(): units.append(unit)
@@ -740,6 +747,7 @@ func update_game(dt):
 	stage_time += dt
 	if mode=="stage": trail.update(self,dt)
 	combat_feedback.advance(dt)
+	element_feedback.advance(dt)
 	for a in [player]+units+enemies:
 		if not a.get("walk",false): a.move_speed=0.0
 		motion_actions.advance(a,dt)
@@ -776,6 +784,7 @@ func update_game(dt):
 		revive_progress=0.0
 		revive_target=-1
 		player["walk"]=motion.length()>0.1
+		if motion.length()>0.1: formation_forward=motion.normalized()
 		player.pos += motion.limit_length()*210.0*dt
 		player.pos=player.pos.clamp(Vector2(170,345),Vector2(2740,1130))
 		if absf(motion.x)>0.1: player.face=signf(motion.x)
@@ -806,11 +815,10 @@ func update_game(dt):
 		var speed=STATS[kind][3]*(1.2 if u.data.trait=="민첩함" else 1.0)*(1.0+Loot.bonus(u.data,"speed"))*Special.speed(u.data)
 		var target=Roles.target(kind,u.pos,combat_enemies(),player.pos,410)
 		if u.pos.distance_to(player.pos)>430 or (not target.is_empty() and target.pos.distance_to(player.pos)>550):
-			move_entity(u,player.pos,speed*1.7,dt,75)
+			move_entity(u,formation_anchor(i),speed*1.7,dt,30)
 			continue
 		if target.is_empty():
-			var offset=Vector2(-75+(i%2)*110,55+(i/2)*60)
-			move_entity(u,player.pos+offset,speed*1.3,dt,15)
+			move_entity(u,formation_anchor(i),speed*1.3,dt,15)
 		elif kind=="deer":
 			if u.pos.distance_to(target.pos)<155: move_entity(u,u.pos+(u.pos-target.pos).normalized()*70,speed,dt)
 			var injured=lowest_ally(player.pos,600)
@@ -819,7 +827,7 @@ func update_game(dt):
 			var a=lowest_ally(u.pos,300)
 			if u.cd<=0 and not a.is_empty() and a.hp<a.maxhp:
 				heal(a,12*(1.25 if u.data.trait=="다정함" else 1.0),u.pos,u)
-				u.cd=1.7
+				u.cd=1.7/Special.attack_speed(u.data)
 		else:
 			var reach=STATS[kind][2]
 			move_entity(u,target.pos,speed,dt,reach*0.85)
@@ -829,7 +837,7 @@ func update_game(dt):
 				if kind in ["boar","wolf","marten","fox"]:
 					begin_basic_attack(u,target,attack(u.data)*(1.0+u.get("buff_power",0.6) if u.buff>0 else 1.0))
 				else: hit_enemy(target,attack(u.data)*(1.0+u.get("buff_power",0.6) if u.buff>0 else 1.0),u.pos,u)
-				u.cd=0.85 if kind=="marten" else 1.2
+				u.cd=(0.85 if kind=="marten" else 1.2)/Special.attack_speed(u.data)
 	for a in active_units():
 		if a.hp<=0: continue
 		for b in active_units():
@@ -962,6 +970,7 @@ func advance_charge(e, dt):
 func damage_ally(a, damage, source):
 	if a.hp<=0: return
 	var incoming=damage
+	a["guard_feedback"]=maxf(0,a.get("guard_feedback",0.0))
 	if a.has("data"):
 		if a.data.trait=="단단함": damage*=0.85
 		damage*=1.0-Loot.bonus(a.data,"armor")
@@ -978,6 +987,9 @@ func damage_ally(a, damage, source):
 		var prevented=maxf(0,minf(a.hp,incoming)-taken)
 		Roles.add_metric(a,"mitigation",prevented)
 		if a.shield>0: Roles.signal_action(a,"방어 중")
+	if (a.get("shield",0.0)>0 or a.get("team_guard",0.0)>0 or absorbed>0) and incoming>damage and clock>=a.get("guard_feedback",0.0):
+		fx(a.pos,a.pos,Color("a7d9e8"),"보호 −%d" % roundi(incoming-damage),0.7)
+		a.guard_feedback=clock+0.5
 	a.hp=maxf(0,a.hp-damage)
 	a["hit"]=0.18
 	a["recoil"]=(a.pos-source).normalized()*6
@@ -1030,6 +1042,7 @@ func hit_enemy(e, damage, source,attacker={},animate=true,is_skill=false):
 	if e.get("cycle_guard",false) and e.get("cycle_open",0.0)<=0: damage=0.0
 	var dealt=minf(e.hp,damage)
 	if not attacker.is_empty() and attacker.has("data"):
+		element_feedback.emit(attacker.data,source,e.pos,is_skill)
 		Roles.add_metric(attacker,"damage",dealt)
 		if attacker.get("role_flash",0.0)<=0:
 			Roles.signal_action(attacker,"기절 집중" if attacker.data.kind=="marten" and e.get("stun",0.0)>0 else "추격 타격" if attacker.data.kind=="wolf" else "기본 공격")
@@ -1099,6 +1112,7 @@ func heal(a, amount, source,healer={}):
 	if restored>0 and not healer.is_empty() and healer.has("data"):
 		Roles.add_metric(healer,"healing",restored)
 		Roles.signal_action(healer,"회복 지원")
+	if restored>0 and not healer.is_empty() and healer.has("data"): element_feedback.emit(healer.data,source,a.pos)
 	if restored>0: combat_feedback.emit("heal",source,a.pos,restored,{"target_id":a.data.id if a.has("data") else -1,"height":sprite_height(a.data.kind) if a.has("data") else sprite_height("druid")})
 
 func cast_heal():
@@ -1135,7 +1149,10 @@ func use_companion_skill(i):
 	if u.hp<=0 or u.skill>0 or u.has("assault") or u.has("special_action"): return
 	var target=Roles.target(u.data.kind,u.pos,combat_enemies(),player.pos,430)
 	var skill_origin=u.pos
-	if SpecialCombat.cast(self,u,target): return
+	if SpecialCombat.cast(self,u,target):
+		if u.data.kind not in ["fox","deer"]:
+			element_feedback.emit(u.data,skill_origin,u.pos if target.is_empty() else target.pos,true)
+		return
 	match u.data.kind:
 		"deer":
 			for a in alive_allies():
@@ -1409,6 +1426,7 @@ func show_loot_details(id,compare_id=-1,animate=true,from_roster=false):
 	button(overlay,"확인 · 돌아가기",Rect2(925,620,285,55),return_from_details)
 
 func toggle_favorite(id,return_to_details=false,from_roster=true):
+	roster_click.clear()
 	var d=find_owned(id)
 	if d.is_empty() or save_blocked: return false
 	remember_roster_scroll()
@@ -1425,6 +1443,7 @@ func toggle_favorite(id,return_to_details=false,from_roster=true):
 	return true
 
 func reset_roster_filters():
+	roster_click.clear()
 	roster_scroll=0
 	roster_kind_filter=""
 	roster_grade_filter=""
@@ -1433,6 +1452,7 @@ func reset_roster_filters():
 	open_roster()
 
 func open_roster():
+	if menu_page!="companions": roster_click.clear()
 	if mode=="camp": preparation_seen=true
 	if in_combat and mode=="stage": notify("전투 중에는 편성을 바꿀 수 없습니다."); return
 	if mode=="tutorial": notify("튜토리얼을 먼저 마쳐주세요."); return
@@ -1444,18 +1464,42 @@ func remember_roster_scroll():
 	var scroll=overlay.get_node_or_null("CompanionScroll")
 	if scroll!=null: roster_scroll=scroll.scroll_vertical
 
+func roster_double_click(surface,id):
+	var now=Time.get_ticks_msec()
+	var twice=roster_click.get("surface","")==surface and roster_click.get("id",-1)==id and now-int(roster_click.get("time",-1000))<=450
+	roster_click={} if twice else {"surface":surface,"id":id,"time":now}
+	return twice
+
 func roster_select(id):
 	if mode not in ["camp","stage"] or (mode=="stage" and in_combat): return
 	if find_owned(id).is_empty() or (mode=="stage" and not squad.has(id)): return
 	remember_roster_scroll()
+	if roster_double_click("left",id):
+		if mode!="camp": notify("탐험 중에는 동행을 추가하거나 해제할 수 없습니다."); return
+		if squad.has(id): roster_remove(id)
+		elif squad.size()<6:
+			var next=squad.duplicate()
+			next.append(id)
+			if commit_roster(next):
+				roster_selected_id=-1
+				open_roster()
+		else: notify("동행 6마리가 가득 찼습니다. 오른쪽 칸을 눌러 교체하세요.")
+		return
 	roster_selected_id=id
 	open_roster()
 
 func roster_assign(index):
 	if mode not in ["camp","stage"] or (mode=="stage" and in_combat) or index<0 or index>=6: return false
+	var clicked_id=squad[index] if index<squad.size() else -1
+	if clicked_id>0 and roster_double_click("right_"+str(index),clicked_id):
+		if mode!="camp": notify("탐험 중에는 동행을 해제할 수 없습니다."); return false
+		return roster_remove(clicked_id)
 	var selected=find_owned(roster_selected_id)
 	if selected.is_empty():
-		if index<squad.size(): roster_select(squad[index])
+		if index<squad.size():
+			remember_roster_scroll()
+			roster_selected_id=squad[index]
+			open_roster()
 		else: notify("왼쪽 목록에서 배치할 동료를 먼저 선택하세요.")
 		return false
 	var current=squad.find(selected.id)
@@ -1476,6 +1520,7 @@ func roster_assign(index):
 	remember_roster_scroll()
 	if not commit_roster(next): return false
 	roster_selected_id=-1
+	roster_click.clear()
 	open_roster()
 	if index>=squad.size(): notify("앞쪽 빈 출전 칸부터 순서대로 편성했습니다.")
 	return true
@@ -1486,6 +1531,8 @@ func roster_remove(id):
 	next.erase(id)
 	remember_roster_scroll()
 	if not commit_roster(next): return false
+	roster_selected_id=-1
+	roster_click.clear()
 	open_roster()
 	return true
 
@@ -1514,6 +1561,28 @@ func commit_roster(next):
 		for unit in active_units(): unit.pos=player.pos+Vector2(0,50)
 	return true
 
+func formation_anchor(index):
+	var order=[]
+	for unit in active_units(): order.append(unit)
+	if party_formation=="front":
+		order.sort_custom(func(a,b): return Formation.priority(a.data.kind)<Formation.priority(b.data.kind))
+	var rank=index
+	if index<active_units().size(): rank=order.find(active_units()[index])
+	return (player.pos+Formation.offset(party_formation,rank,formation_forward)).clamp(Vector2(170,345),Vector2(2740,1130))
+
+func set_party_formation(value):
+	if value not in Formation.KEYS or save_blocked or mode not in ["camp","stage"] or (mode=="stage" and in_combat): return false
+	var payload=save_payload().duplicate(true)
+	payload.party_formation=value
+	if not persist_payload(payload):
+		notify("저장에 실패해 진형을 유지했습니다.")
+		return false
+	party_formation=value
+	if not hero_pending.is_empty(): publish_hero(payload.hero)
+	roster_click.clear()
+	open_roster()
+	return true
+
 func growth_card(d,x,caption):
 	var card=panel(overlay,Rect2(x,265,465,305),Color("202823"))
 	card.add_theme_stylebox_override("panel",GroveUI.frame(Color("202823"),Loot.color(d),2))
@@ -1527,6 +1596,8 @@ func growth_card(d,x,caption):
 	label(overlay,preload("res://ui/growth_guidance.gd").level_status(d),Vector2(x+20,531),17)
 
 func show_training(id,result={}):
+	roster_selected_id=-1
+	roster_click.clear()
 	if mode!="camp": notify("육성은 캠프에서 할 수 있습니다."); return
 	var d=find_owned(id)
 	if d.is_empty(): return
@@ -1938,7 +2009,7 @@ func repair_party():
 	next_id = result.next_id
 
 func save_payload():
-	return {"hero":(hero_pending if not hero_pending.is_empty() else hero).duplicate(true),"version":2,"owned":owned,"squad":squad,"materials":materials,"auto_companion_skills":auto_companion_skills,"tutorial_done":tutorial_done,"unlocked":unlocked,"next_id":next_id,"discovered":discovered,"cleared_stages":cleared_stages,"seen_species":seen_species,"campaign_progress":Routes.progress_for(self)}
+	return {"hero":(hero_pending if not hero_pending.is_empty() else hero).duplicate(true),"version":2,"owned":owned,"squad":squad,"materials":materials,"auto_companion_skills":auto_companion_skills,"party_formation":party_formation,"tutorial_done":tutorial_done,"unlocked":unlocked,"next_id":next_id,"discovered":discovered,"cleared_stages":cleared_stages,"seen_species":seen_species,"campaign_progress":Routes.progress_for(self)}
 
 func persist_payload(data):
 	if save_blocked: return false
@@ -1983,6 +2054,7 @@ func load_game():
 	discovered=result.discovered
 	owned=result.owned
 	squad=result.squad
+	party_formation=Formation.normalize(d.get("party_formation"))
 	auto_companion_skills=d.get("auto_companion_skills",false) if d.get("auto_companion_skills",false) is bool else false
 	materials=SaveData.integer(d.get("materials",0),0)
 	tutorial_done=d.get("tutorial_done",false)
@@ -2002,7 +2074,11 @@ func _draw():
 	draw_rect(Rect2(0,0,1440,810),Color("282a2b"))
 	draw_texture_rect(stage_background if stage_background!=null else textures["valley"],Rect2(-cam.round(),WORLD_SIZE),false)
 	if mode=="stage": trail.draw(self)
-	for e in enemies: combat_feedback.draw_tell(self,e,cam)
+	for e in enemies:
+		combat_feedback.draw_tell(self,e,cam)
+		if e.hp>0 and e.get("taunt_time",0.0)>0 and not e.get("taunt",{}).is_empty() and e.taunt.hp>0:
+			var direction=(e.taunt.pos-e.pos).normalized()
+			draw_line(e.pos-cam,e.pos-cam+direction*24,Color("9dc7cf"),2,false)
 	var nearest_cap=closest_capture()
 	for i in captures.size():
 		var c=captures[i]
@@ -2072,7 +2148,10 @@ func _draw():
 		if a.hp<=0 and a.ally: text_at("소생 필요",p+Vector2(-33,20),14,Color("f4d89b"))
 		if a.has("unit"):
 			if a.unit.buff>0: draw_arc(p,33,0,TAU,24,Color("ffd478"),2,true)
-			if a.unit.shield>0: draw_arc(p-Vector2(0,25),40,0,TAU,24,Color("a9e5e5"),3,true)
+			if a.unit.shield>0:
+				draw_arc(p-Vector2(0,25),40,0,TAU,24,Color("a9e5e5"),3,true)
+				text_at("도발 · 방어",p+Vector2(-29,25),13,Color("a9e5e5"))
+			elif a.unit.get("team_guard",0.0)>0: text_at("보호",p+Vector2(-13,22),13,Color("a9e5e5"))
 	if not overlay.visible and (mode=="stage" or mode=="tutorial"):
 		var heal_target=lowest_ally(player.pos,430)
 		if not heal_target.is_empty() and heal_target.hp<heal_target.maxhp:
@@ -2086,6 +2165,7 @@ func _draw():
 		else:
 			text_at(f.text,f.b-cam+Vector2(-15,-70-elapsed*32),20,col)
 	if not overlay.visible:
+		element_feedback.draw(self,cam)
 		combat_feedback.draw(self,cam,heading_font)
 		if player.get("channeling",false) and revive_target>=0:
 			combat_feedback.draw_channel(self,player.pos,units[revive_target].pos,revive_progress,cam)
@@ -2406,7 +2486,10 @@ func commit_evolution_choice(id,ability,expected):
 	if Loot.star(d)!=5 or owned.filter(func(record): return record.get("id")==id).size()!=1 or not Special.evolution_pending(d) or not Special.ready(d) or not Special.equivalent(d,expected) or not Special.evolution_choices(d.kind).has(ability): return false
 	var next=owned.duplicate(true)
 	for record in next:
-		if record.id==id: record.special.evolution={"version":1,"state":"ready","ability":ability}
+		if record.id==id:
+			record.special.evolution.version=1
+			record.special.evolution.state="ready"
+			record.special.evolution.ability=ability
 	var payload=save_payload().duplicate(true)
 	payload.owned=next
 	if not persist_payload(payload): notify("저장에 실패했습니다. 선택을 다시 확인하세요."); return false
