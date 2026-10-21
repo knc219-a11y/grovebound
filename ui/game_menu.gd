@@ -16,7 +16,7 @@ static func show_menu(g):
 		g.label(g.overlay,descriptions[i],p+Vector2(20,72),18)
 		var b=g.button(g.overlay,"열기",Rect2(p+Vector2(20,145),Vector2(270,46)),callbacks[i])
 		if i==1: b.disabled=(g.in_combat and g.mode=="stage") or g.mode=="tutorial"
-	g.label(g.overlay,"여정 기록",Vector2(235,464),20)
+	g.button(g.overlay,"주인공 · 능력치 / 장비 / 스킬",Rect2(230,455,620,44),g.open_hero)
 	if g.mode=="camp": g.button(g.overlay,"사냥길 선택",Rect2(925,475,285,48),g.open_stage_select)
 	var normal_clears=g.Routes.progress_for(g).cleared.filter(func(c): return c.difficulty=="normal").size()
 	g.label(g.overlay,"첫 인연  "+("완료" if g.tutorial_done else "마을에서 첫 동료를 만나세요.")+"     /     일반 탐험 %d/40" % normal_clears,Vector2(235,505),18)

@@ -9,7 +9,7 @@ func run():
 	for kinds in [["boar","fox","wolf","deer"],["boar","marten","wolf","bat"]]:
 		for scenario in ["mixed","three","four_boar","four_fox"]:
 			if scenario=="four_fox" and "fox" not in kinds: continue
-			for level in [24,30]:
+			for level in ([24,30,40] if "--hero-max" in args else [24,30]):
 				for assisted in [false,true]:
 					for theme in [4,5]:
 						var g=Game.new(); root.add_child(g); g.set_process(false)
@@ -21,6 +21,12 @@ func run():
 								d.star=4; d.level=15; d.grade="special"
 								d.special={"version":1,"state":"ready","element":"earth" if i==0 else "fire","unique":"guard" if i==0 else "potency","affixes":[{"key":"skill_haste","value":8},{"key":"power","value":6}]}
 							g.squad.append(d.id)
+						if "--hero-max" in args:
+							g.hero.level=30
+							for key in g.Hero.SKILLS: g.hero.skills[key]=5
+							for pair in [["grove_staff","weapon"],["guardian_robe","armor"],["wind_charm","charm1"],["stream_charm","charm2"]]:
+								var item=g.Hero.add_item(g.hero,pair[0]); item.enhance=5; g.hero.equipped[pair[1]]=item.id
+							g.sync_hero()
 						g.start_stage(false,theme,R.coordinate(theme,8)); g.clear_overlay()
 						# Boss arena only: previous packs are marked clear without granting XP/rewards.
 						for e in g.enemies:
@@ -43,6 +49,7 @@ func run():
 									var wounded=g.lowest_ally(g.player.pos,430)
 									if not wounded.is_empty() and wounded.hp/wounded.maxhp<0.8: g.cast_heal(); heals+=1
 								if g.buff_cd<=0: g.cast_buff()
+								if "--hero-max" in args: g.cast_barrier()
 								for i in 4:
 									if g.units[i].hp>0 and g.units[i].skill<=0:
 										g.use_companion_skill(i)
@@ -61,10 +68,10 @@ func run():
 							var down_count=g.active_units().filter(func(u): return u.hp<=0).size()
 							downs+=maxi(0,down_count-previous_down); previous_down=down_count
 						var won=g.enemies.all(func(e): return not e.boss or e.hp<=0)
-						var row={"party":kinds,"scenario":scenario,"stars":g.owned.map(func(d): return d.star),"level":level,"theme":theme,"assisted":assisted,"win":won,"seconds":snappedf(elapsed,0.1),"minimum_player_hp":snappedf(low,0.1),"downs":downs,"skills":skills,"heals":heals,"ally_hp":g.units.map(func(u): return snappedf(u.hp/u.maxhp,0.01))}
+						var row={"hero_max":"--hero-max" in args,"party":kinds,"scenario":scenario,"stars":g.owned.map(func(d): return d.star),"level":level,"theme":theme,"assisted":assisted,"win":won,"seconds":snappedf(elapsed,0.1),"minimum_player_hp":snappedf(low,0.1),"downs":downs,"skills":skills,"heals":heals,"ally_hp":g.units.map(func(u): return snappedf(u.hp/u.maxhp,0.01))}
 						rows.append(row); print("PRESSURE ",JSON.stringify(row)); g.free()
 	var out=args[args.find("--out")+1] if "--out" in args else "res://docs/normal-pressure-after.json"
-	var f=FileAccess.open(out,FileAccess.WRITE); f.store_string(JSON.stringify({"configuration":"original boss settings" if "--baseline" in args else "adjusted boss settings","method":"Prepared mixed 2/2/3/2 or all-3-star parties at Lv24/30, or one 4-star Lv15 boar/fox with 3-star Lv24/30 allies; isolated final boss arenas; passive=no movement/support/skills, assisted=Q/E/skills/revive and fixed-tell avoidance; deterministic not human success rate","runs":rows},"\t")+"\n"); f.close()
+	var f=FileAccess.open(out,FileAccess.WRITE); f.store_string(JSON.stringify({"configuration":"original boss settings" if "--baseline" in args else "adjusted boss settings","hero_configuration":"Lv30, all hero skills rank5, grove staff/guardian robe/wind charm/stream charm all +5" if "--hero-max" in args else "Lv1, no equipment, starting skills", "method":"Prepared mixed 2/2/3/2 or all-3-star parties at Lv24/30 (also Lv40 with --hero-max; normalized to each star cap), or one 4-star Lv15 boar/fox with 3-star Lv24/30 allies; isolated final boss arenas; passive=no movement/support/skills, assisted=Q/E/skills/revive and fixed-tell avoidance; deterministic not human success rate","runs":rows},"\t")+"\n"); f.close()
 	var assisted=rows.filter(func(r): return r.assisted)
 	var passive=rows.filter(func(r): return not r.assisted)
 	var final_four=rows.filter(func(r): return r.theme==5 and r.assisted and r.scenario.begins_with("four_"))

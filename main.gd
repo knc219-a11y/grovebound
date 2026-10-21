@@ -1,5 +1,11 @@
 extends Node2D
 # A self-contained, data-driven playable slice. All gameplay positions are world coordinates.
+const Hero=preload("res://hero_progression.gd")
+const HeroUI=preload("res://ui/hero_menu.gd")
+var hero=Hero.fresh()
+var hero_pending={}
+var barrier_cd=0.0
+var barrier_button:Button
 const Trail=preload("res://trail.gd")
 const Campaign=preload("res://campaign.gd")
 const Routes=preload("res://campaign_routes.gd")
@@ -241,6 +247,7 @@ func build_ui():
 	buff_button.focus_mode=Control.FOCUS_NONE
 	buff_button.pressed.connect(cast_buff)
 	hud.add_child(buff_button)
+	barrier_button=button(hud,"숲의 보호 [R]",Rect2(1080,512,300,48),cast_barrier)
 	interact_button=button(hud,"",Rect2(1080,574,300,80),interact)
 	interact_button.button_down.connect(func(): holding_revive=true)
 	interact_button.button_up.connect(func(): holding_revive=false)
@@ -355,6 +362,42 @@ func navigate_back():
 	elif mode=="camp": clear_overlay()
 	elif mode in ["stage","tutorial"]: clear_overlay()
 
+func open_hero(page=0):
+	HeroUI.show_page(self,page)
+
+func sync_hero():
+	var values=Hero.stats(hero)
+	player.maxhp=values.hp
+	player.hp=values.hp if mode=="camp" else minf(player.hp,values.hp)
+
+func publish_hero(profile):
+	hero=profile.duplicate(true)
+	hero_pending.clear()
+	sync_hero()
+
+func commit_hero_action(action,arg,expected):
+	if mode!="camp" or save_blocked or not hero_pending.is_empty() or not Special.equivalent(hero,expected):
+		notify("현재 정보와 다릅니다. 캠프에서 다시 확인하세요.")
+		return false
+	var plan=Hero.plan(hero,action,arg)
+	if not plan.error.is_empty(): notify(plan.error); return false
+	var payload=save_payload().duplicate(true)
+	payload.hero=plan.after
+	if not persist_payload(payload): notify("저장에 실패해 변경을 취소했습니다. 골드와 장비는 유지됩니다."); return false
+	publish_hero(plan.after)
+	return true
+
+func cast_barrier():
+	if not can_act() or player.hp<=0 or barrier_cd>0 or hero.skills.barrier==0: return false
+	var skill=Hero.skill(hero,"barrier")
+	for ally in alive_allies():
+		if ally.pos.distance_to(player.pos)<=350:
+			SpecialCombat.barrier(ally,skill.ratio,skill.seconds)
+			combat_feedback.emit("buff",player.pos,ally.pos)
+	motion_actions.start(player,"druid","support")
+	barrier_cd=skill.cooldown
+	return true
+
 func open_game_menu():
 	MenuUI.show_menu(self)
 
@@ -392,10 +435,12 @@ func finish_route(success):
 	payload.cleared_stages=legacy
 	payload.unlocked=unlocked or 1 in legacy
 	payload.materials=materials+(Routes.rewards(current_route,growth_replay).bonus if success else 0)
+	if success: payload.hero.gold=mini(2000000000,payload.hero.gold+30+20*int(current_route.theme))
 	if not persist_payload(payload):
 		notify("탐험 결과 저장에 실패했습니다. 길 잇기를 다시 눌러 주세요.")
 		return false
 	campaign_progress=progress; cleared_stages=legacy; unlocked=payload.unlocked; materials=payload.materials
+	publish_hero(payload.hero)
 	mode="result"; run_success=success
 	for u in units:
 		u.erase("assault"); u.erase("special_action")
@@ -424,7 +469,7 @@ func return_from_details():
 
 func open_controls():
 	modal("조작 안내","탐험과 동료 지원을 위한 기본 조작입니다.","controls",open_game_menu)
-	label(overlay,"이동  WASD / 방향키 · 터치 이동 스틱\n회복  Q · 야성 강화  E\n동료 스킬  1~4 · 하단 동료 초상 터치\n교감  F · 쓰러진 동료 소생은 F 길게 누르기\n가방  I · 편성  Tab · 메뉴 / 뒤로  Esc",Vector2(245,250),24)
+	label(overlay,"이동  WASD / 방향키 · 터치 이동 스틱\n회복  Q · 야성 강화  E · 숲의 보호  R\n동료 스킬  1~4 · 하단 동료 초상 터치\n교감  F · 쓰러진 동료 소생은 F 길게 누르기\n주인공  C · 가방  I · 편성  Tab · 메뉴 / 뒤로  Esc",Vector2(245,250),24)
 	label(overlay,"메뉴를 열면 탐험이 일시정지됩니다. 편성은 비전투 중, 육성은 캠프에서 가능합니다.",Vector2(245,530),18)
 	label(overlay,"동료 초상의 강·용·단·민·정은 상시 특성입니다. 가방의 상세 화면에서 효과를 확인하세요.",Vector2(245,575),16)
 	button(overlay,"메뉴로",Rect2(925,630,285,55),open_game_menu)
@@ -473,6 +518,9 @@ func show_camp():
 	if show_recap: show_run_report()
 
 func show_run_report():
+	if not expedition.report.is_empty() and expedition.baseline.has("hero") and not expedition.report.has("hero_growth"):
+		var before=expedition.baseline.hero
+		expedition.report.hero_growth="골드 +%d G · 드루이드 Lv.%d → %d · 장비 +%d" % [hero.gold-before.gold,before.level,hero.level,hero.items.size()-before.items.size()]
 	preload("res://ui/expedition_report.gd").show_report(self)
 
 func update_town(dt):
@@ -564,6 +612,7 @@ func start_stage(tutorial,stage_id=1,route={}):
 	trail.reset()
 	report_contributions=false
 	expedition.begin(owned,materials,tutorial)
+	expedition.baseline.hero=hero.duplicate(true)
 	expedition.baseline.stage_id=current_stage
 	expedition.baseline.route=current_route.duplicate(true)
 	bond_hint_seen=false
@@ -583,6 +632,8 @@ func start_stage(tutorial,stage_id=1,route={}):
 	stick = Vector2.ZERO
 	heal_cd = 0.0
 	buff_cd = 0.0
+	barrier_cd = 0.0
+	sync_hero()
 	revive_progress = 0.0
 	enemies.clear()
 	captures.clear()
@@ -686,6 +737,7 @@ func update_game(dt):
 		a["walk"]=false
 	heal_cd = maxf(0,heal_cd-dt)
 	buff_cd = maxf(0,buff_cd-dt)
+	barrier_cd = maxf(0,barrier_cd-dt)
 	for i in range(effects.size()-1,-1,-1):
 		effects[i].time -= dt
 		if effects[i].time<=0: effects.remove_at(i)
@@ -699,8 +751,8 @@ func update_game(dt):
 		if revive_target!=down: revive_progress=0.0
 		revive_target=down
 		revive_progress += dt
-		if revive_progress>=3.0:
-			units[down].hp=units[down].maxhp*0.3
+		if revive_progress>=Hero.skill(hero,"revive").seconds:
+			units[down].hp=units[down].maxhp*Hero.skill(hero,"revive").ratio
 			combat_feedback.emit("revive",player.pos,units[down].pos)
 			combat_feedback.emit("skill_druid_revive",player.pos,units[down].pos)
 			fx(units[down].pos,units[down].pos,Color("a8f79b"),"소생!",0.8)
@@ -722,7 +774,7 @@ func update_game(dt):
 			face_player_target(target.pos)
 			DruidAttack.start(player,player.cd)
 		if not target.is_empty() and player.cd<=0:
-			hit_enemy(target,6.0,player.pos,player)
+			hit_enemy(target,Hero.stats(hero).attack,player.pos,player)
 			player.cd=0.85
 	for i in range(units.size()):
 		var u=units[i]
@@ -762,8 +814,8 @@ func update_game(dt):
 				move_entity(u,u.pos+(u.pos-target.pos).normalized()*100,speed,dt)
 			if u.pos.distance_to(target.pos)<=reach and u.cd<=0:
 				if kind in ["boar","wolf","marten","fox"]:
-					begin_basic_attack(u,target,attack(u.data)*(1.6 if u.buff>0 else 1.0))
-				else: hit_enemy(target,attack(u.data)*(1.6 if u.buff>0 else 1.0),u.pos,u)
+					begin_basic_attack(u,target,attack(u.data)*(1.0+u.get("buff_power",0.6) if u.buff>0 else 1.0))
+				else: hit_enemy(target,attack(u.data)*(1.0+u.get("buff_power",0.6) if u.buff>0 else 1.0),u.pos,u)
 				u.cd=0.85 if kind=="marten" else 1.2
 	for a in active_units():
 		if a.hp<=0: continue
@@ -897,6 +949,7 @@ func damage_ally(a, damage, source):
 		damage*=1.0-Loot.bonus(a.data,"armor")
 		damage*=Special.armor(a.data)
 		damage*=0.75 if a.get("special_guard",0.0)>0 else 1.0
+	if not a.has("data"): damage*=100.0/(100.0+Hero.stats(hero).defense)
 	damage*=0.85 if a.get("team_guard",0.0)>0 else 1.0
 	if a.has("data") and a.shield>0: damage*=0.4
 	var absorbed=minf(damage,a.get("special_barrier",0.0))
@@ -956,7 +1009,7 @@ func hit_enemy(e, damage, source,attacker={},animate=true,is_skill=false):
 	if not attacker.is_empty() and attacker.has("data"):
 		damage*=Special.damage(attacker.data,is_skill,e)
 		if e.get("hunt_owner",-1)==attacker.data.id and e.get("hunt_time",0.0)>0: damage*=1.20
-	if e.get("cycle_guard",false) and e.get("cycle_open",0.0)<=0: damage*=0.30
+	if e.get("cycle_guard",false) and e.get("cycle_open",0.0)<=0: damage=0.0
 	var dealt=minf(e.hp,damage)
 	if not attacker.is_empty() and attacker.has("data"):
 		Roles.add_metric(attacker,"damage",dealt)
@@ -978,6 +1031,8 @@ func hit_enemy(e, damage, source,attacker={},animate=true,is_skill=false):
 	if e.hp<=0:
 		e["death"]=0.32
 		kills+=1
+		if mode=="stage" and not e.get("swarm",false):
+			hero_pending=Hero.reward(hero_pending if not hero_pending.is_empty() else hero,int(e.level),e.boss)
 		materials+=(0 if e.get("swarm",false) else (1 if not e.boss else 5))*(3 if growth_replay else 1)
 		if not e.get("swarm",false):
 			for u in units: gain_xp(u.data,(12+int(e.level)*4)*(12 if growth_replay else 1))
@@ -990,7 +1045,7 @@ func hit_enemy(e, damage, source,attacker={},animate=true,is_skill=false):
 				notify("경계를 푼 야수가 쉬고 있습니다. 가까이에서 교감 [F / 화면 버튼]으로 인연을 맺으세요.")
 			if Loot.grade(candidate)!="common": play_loot_sound(Loot.grade(candidate))
 			e.death=0.0 # The resting capture pose replaces the fading corpse.
-		save_game()
+		if not save_game(): notify("보상 저장이 지연됐습니다. 저장 경로를 확인한 뒤 다시 저장하세요.")
 
 func gain_xp(d, amount):
 	var old_level=d.level
@@ -1032,9 +1087,9 @@ func cast_heal():
 	if not can_act() or heal_cd>0: return
 	var a=lowest_ally(player.pos,430)
 	if not a.is_empty() and a.hp<a.maxhp:
-		heal(a,55,player.pos,player)
+		heal(a,Hero.skill(hero,"heal").amount,player.pos,player)
 		combat_feedback.emit("skill_druid_heal",player.pos,a.pos)
-		heal_cd=8.0
+		heal_cd=Hero.skill(hero,"heal").cooldown
 
 func cast_buff():
 	if not can_act() or buff_cd>0: return
@@ -1046,11 +1101,12 @@ func cast_buff():
 			power=attack(u.data)
 	if not best.is_empty():
 		motion_actions.start(player,"druid","support")
-		best.buff=7.0
-		buff_cd=14.0
+		best.buff=Hero.skill(hero,"buff").duration
+		best.buff_power=Hero.skill(hero,"buff").power
+		buff_cd=Hero.skill(hero,"buff").cooldown
 		combat_feedback.emit("buff",player.pos,best.pos)
 		combat_feedback.emit("skill_druid_buff",player.pos,best.pos)
-		fx(player.pos,best.pos,Color("ffce6a"),"야성 +60%",0.9)
+		fx(player.pos,best.pos,Color("ffce6a"),"야성 +%d%%" % roundi(best.buff_power*100),0.9)
 
 func can_act():
 	return (mode=="stage" or mode=="tutorial") and not overlay.visible and not dropdown.popup.visible and revive_target<0
@@ -1085,7 +1141,7 @@ func use_companion_skill(i):
 		_:
 			if target.is_empty(): return
 			u.erase("pending_basic")
-			var multiplier=1.6 if u.buff>0 else 1.0
+			var multiplier=1.0+u.get("buff_power",0.6) if u.buff>0 else 1.0
 			if u.data.kind=="boar":
 				Assault.begin_dash(self,u,target,attack(u.data)*3.5*multiplier)
 			elif u.data.kind=="fox":
@@ -1186,6 +1242,8 @@ func finish(success):
 	reset_player_visual_state()
 	if success:
 		materials+=10
+		hero_pending=(hero_pending if not hero_pending.is_empty() else hero).duplicate(true)
+		hero_pending.gold=mini(2000000000,hero_pending.gold+30+20*current_stage)
 		run_success=true
 		if current_stage not in cleared_stages: cleared_stages.append(current_stage)
 		if current_stage==1: unlocked=true
@@ -1695,7 +1753,7 @@ func confirm_return():
 
 func confirm_reset():
 	modal("새 여정 시작", "이 기기의 프로토타입 저장 데이터를 초기화합니다.","",show_camp)
-	button(overlay,"초기화",Rect2(300,500,350,65),func(): expedition.clear(); preparation_seen=false; owned.clear(); squad.clear(); units.clear(); discovered.clear(); cleared_stages.clear(); campaign_progress.clear(); current_route.clear(); seen_species.clear(); materials=0; tutorial_done=false; unlocked=false; next_id=1; show_camp())
+	button(overlay,"초기화",Rect2(300,500,350,65),func(): expedition.clear(); preparation_seen=false; owned.clear(); squad.clear(); units.clear(); discovered.clear(); cleared_stages.clear(); campaign_progress.clear(); current_route.clear(); seen_species.clear(); materials=0; hero=Hero.fresh(); hero_pending.clear(); sync_hero(); tutorial_done=false; unlocked=false; next_id=1; show_camp())
 	button(overlay,"취소",Rect2(750,500,350,65),show_camp)
 
 func update_hud():
@@ -1704,8 +1762,11 @@ func update_hud():
 	for b in party_buttons+town_hidden_labels: b.visible=mode!="camp"
 	heal_button.visible=mode!="camp"
 	buff_button.visible=mode!="camp"
+	barrier_button.visible=mode in ["stage","tutorial"] and hero.skills.barrier>0
+	barrier_button.disabled=barrier_cd>0 or revive_target>=0
+	barrier_button.text="숲의 보호 [R] · %.1f초" % barrier_cd if barrier_cd>0 else "숲의 보호 [R] · 사용 가능"
 	if mode=="camp":
-		status_label.text="잎그늘 쉼터 · 안전 지대"
+		status_label.text="드루이드 Lv.%d · %d G" % [hero.level,hero.gold]
 		player_hp_bar.value=player_hp_bar.max_value
 		quest_label.text="동료 쉼터 · 편성 / 육성    →    동쪽 사냥길\nWASD / 이동 스틱 · 가까이에서 F / 상호작용"
 		if not tutorial_done: quest_label.text="첫 걸음  ·  동쪽 사냥길 → 첫 인연 만나기\nWASD / 왼쪽 이동 스틱 · 가까이에서 F / 화면 버튼"
@@ -1723,7 +1784,7 @@ func update_hud():
 	loot_result_button.visible=recent_capture_id>0 and not find_owned(recent_capture_id).is_empty()
 	loot_result_button.disabled=in_combat or mode=="tutorial"
 	if loot_result_button.visible: loot_result_button.text="새로운 인연 · "+Loot.title(find_owned(recent_capture_id))+" / 상세 확인"
-	status_label.text="드루이드  ·  %d / %d" % [player.hp,player.maxhp]
+	status_label.text="Lv.%d · %d/%d · %d G" % [hero.level,player.hp,player.maxhp,hero.gold]
 	player_hp_bar.max_value=player.maxhp
 	player_hp_bar.value=player.hp
 	quest_label.text=("첫 인연 · 쉬는 야수에게 교감 [F / 화면 버튼]" if not captures.is_empty() else "동료와 협동 연습 · Q 회복 / E 강화 / 동료 초상" if tutorial_species=="practice" else "첫 인연 · 야수에게 다가가 경계를 누그러뜨리세요") if mode=="tutorial" else (trail.area(player.pos)+" · "+trail.progress_text(enemies)+" · 동행 "+str(squad.size())+"/6\n%s · 제압 %d · %02d:%02d") % [trail.objective(enemies,player.pos),kills,int(stage_time)/60,int(stage_time)%60]
@@ -1742,7 +1803,7 @@ func update_hud():
 			else: boss_label.text+="\n공격 기회"
 			if e.get("cycle_guard",false):
 				boss_panel.size.y=108; boss_hp_bar.position.y=204
-				boss_label.text+="\n갑주 해제 %.1f초 · 집중 공격" % e.cycle_open if e.get("cycle_open",0.0)>0 else "\n순환 갑주 70% · 4성 강화 스킬로 해제"
+				boss_label.text+="\n갑주 해제 %.1f초 · 집중 공격" % e.cycle_open if e.get("cycle_open",0.0)>0 else "\n순환 갑주 · 피해 차단 · 4성 스킬로 해제"
 			break
 	boss_panel.visible=not boss_label.text.is_empty()
 	boss_hp_bar.visible=boss_panel.visible
@@ -1757,6 +1818,9 @@ func update_hud():
 		else:
 			b.configure(null,"빈자리","교감으로 합류",0,1,0)
 			b.disabled=true
+	heal_button.full_cooldown=Hero.skill(hero,"heal").cooldown
+	buff_button.full_cooldown=Hero.skill(hero,"buff").cooldown
+	buff_button.description="공격력 +%d%%" % roundi(Hero.skill(hero,"buff").power*100)
 	heal_button.refresh(heal_cd)
 	buff_button.refresh(buff_cd)
 	heal_button.disabled=heal_cd>0 or revive_target>=0
@@ -1765,9 +1829,10 @@ func update_hud():
 	var cap=closest_capture()
 	interact_button.visible=down>=0 or cap>=0 or (mode=="stage" and not in_combat and trail.near_rest(player.pos)) or route_can_exit()
 	interact_progress.visible=down>=0
+	interact_progress.max_value=Hero.skill(hero,"revive").seconds
 	interact_progress.value=revive_progress
 	if down>=0:
-		interact_button.text="길게 눌러 소생 [F]\n%.1f / 3초" % revive_progress
+		interact_button.text="길게 눌러 소생 [F]\n%.1f / %.1f초" % [revive_progress,Hero.skill(hero,"revive").seconds]
 	elif cap>=0: interact_button.text=NAMES[captures[cap].kind]+" 교감 [F]"
 	else: interact_button.text="쉼터 · 편성 점검 [F]"
 	if mode=="tutorial" and tutorial_species=="practice" and not overlay.visible and not dropdown.popup.visible:
@@ -1815,6 +1880,8 @@ func _unhandled_input(event):
 	if event is InputEventKey and event.pressed and not event.echo:
 		match event.physical_keycode:
 			KEY_Q: cast_heal()
+			KEY_R: cast_barrier()
+			KEY_C: open_hero()
 			KEY_E: cast_buff()
 			KEY_1: use_companion_skill(0)
 			KEY_2: use_companion_skill(1)
@@ -1874,7 +1941,7 @@ func repair_party():
 	next_id = result.next_id
 
 func save_payload():
-	return {"version":2,"owned":owned,"squad":squad,"materials":materials,"tutorial_done":tutorial_done,"unlocked":unlocked,"next_id":next_id,"discovered":discovered,"cleared_stages":cleared_stages,"seen_species":seen_species,"campaign_progress":Routes.progress_for(self)}
+	return {"hero":(hero_pending if not hero_pending.is_empty() else hero).duplicate(true),"version":2,"owned":owned,"squad":squad,"materials":materials,"tutorial_done":tutorial_done,"unlocked":unlocked,"next_id":next_id,"discovered":discovered,"cleared_stages":cleared_stages,"seen_species":seen_species,"campaign_progress":Routes.progress_for(self)}
 
 func persist_payload(data):
 	if save_blocked: return false
@@ -1890,7 +1957,10 @@ func persist_payload(data):
 	return DirAccess.rename_absolute(ProjectSettings.globalize_path(temporary),ProjectSettings.globalize_path(save_path))==OK
 
 func save_game():
-	return persist_payload(save_payload())
+	var payload=save_payload()
+	if not persist_payload(payload): return false
+	if not hero_pending.is_empty(): publish_hero(payload.hero)
+	return true
 
 func load_game():
 	if not FileAccess.file_exists(save_path): return
@@ -1899,13 +1969,19 @@ func load_game():
 		save_blocked = true
 		save_notice = "저장 데이터를 읽을 수 없어 원본을 유지하고 자동 저장을 중지했습니다."
 		return
+	if d.has("hero") and not Hero.valid(d.hero):
+		save_blocked=true
+		save_notice="알 수 없는 주인공 성장 정보입니다. 원본을 유지하고 자동 저장을 중지했습니다."
+		return
 	var result = SaveData.normalize(d,STATS.keys())
 	if d.has("campaign_progress") and (not d.campaign_progress is Dictionary or SaveData.id_value(d.campaign_progress.get("version",0))!=1):
 		save_blocked=true
 		save_notice="알 수 없는 탐험 진행 형식입니다. 원본을 유지하고 자동 저장을 중지했습니다."
 		return
-	if result.repaired or not d.has("campaign_progress"):
+	if result.repaired or not d.has("campaign_progress") or not d.has("hero"):
 		if backup_save(): save_notice = "저장 정보를 새 기능에 맞게 정리했습니다. 원본은 백업했습니다."
+	hero=d.get("hero",Hero.fresh()).duplicate(true)
+	sync_hero()
 	campaign_progress=Routes.normalize(d)
 	discovered=result.discovered
 	owned=result.owned
@@ -2021,7 +2097,7 @@ func _draw():
 	if revive_target>=0:
 		var p=player.pos-cam+Vector2(-42,20)
 		draw_rect(Rect2(p,Vector2(84,9)),Color("213f32"))
-		draw_rect(Rect2(p,Vector2(84*revive_progress/3.0,9)),Color("bcf3b1"))
+		draw_rect(Rect2(p,Vector2(84*revive_progress/Hero.skill(hero,"revive").seconds,9)),Color("bcf3b1"))
 	if mode=="stage" and hud.visible and not overlay.visible: trail.draw_guidance(self)
 
 func draw_minimap():

@@ -49,6 +49,10 @@ func open():
 	margin.add_child(grid)
 	var entries=[
 		["inventory","가방",game.open_inventory],
+		["druid","주인공",game.open_hero],
+		["equipment","장비",func(): game.open_hero(1)],
+		["skills","지원 스킬",func(): game.open_hero(2)],
+		["shop","장비 상점",func(): game.open_hero(3)],
 		["companions","동료",game.open_roster],
 		["collection","도감",game.open_collection],
 		["menu","여정",game.open_game_menu],

@@ -91,6 +91,7 @@ func play_route(g,theme,stage,starter,seed_value):
 			var wounded=g.lowest_ally(g.player.pos,430)
 			if not wounded.is_empty() and wounded.hp/wounded.maxhp<0.75 and g.heal_cd<=0: g.cast_heal(); heals+=1
 			if g.buff_cd<=0: g.cast_buff()
+			if g.hero.skills.barrier>0: g.cast_barrier()
 			for i in g.active_units().size():
 				var u=g.units[i]
 				if u.hp>0 and u.skill<=0:

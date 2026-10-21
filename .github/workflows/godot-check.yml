@@ -143,6 +143,9 @@ jobs:
           python3 tools/audit_suite.py --godot "$(command -v Godot_v4.7-stable_linux.x86_64)" --out docs/normal-review-tests.json
           timeout 90s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/audit_normal_pressure.gd -- --check 2>&1 | tee normal-pressure.log
           grep -q 'PRESSURE PASS:' normal-pressure.log
+          timeout 150s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/audit_normal_pressure.gd -- --hero-max --check --out res://docs/hero-pressure-max.json 2>&1 | tee hero-pressure.log
+          grep -q 'PRESSURE PASS:' hero-pressure.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR:' hero-pressure.log; then exit 1; fi
           if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR:' normal-pressure.log; then exit 1; fi
   windows-launcher:
     runs-on: windows-latest

@@ -20,6 +20,18 @@ func _draw():
 		"collection":
 			for x in [-13,1]: draw_rect(Rect2(p+Vector2(x,-10),Vector2(12,25)),c,false,2)
 			draw_line(p+Vector2(0,-7),p+Vector2(0,17),c,2)
+		"druid":
+			draw_circle(p+Vector2(0,-7),6,c)
+			draw_arc(p+Vector2(0,13),12,PI,TAU,12,c,3)
+		"equipment":
+			draw_polyline(PackedVector2Array([p+Vector2(-12,-12),p+Vector2(0,-6),p+Vector2(12,-12),p+Vector2(9,9),p+Vector2(0,16),p+Vector2(-9,9),p+Vector2(-12,-12)]),c,2)
+		"skills":
+			draw_line(p+Vector2(-9,14),p+Vector2(7,-12),c,3)
+			draw_circle(p+Vector2(7,-12),5,c,false,2)
+		"shop":
+			draw_circle(p,14,c,false,2)
+			draw_line(p+Vector2(0,-9),p+Vector2(0,9),c,3)
+			draw_arc(p,6,-PI/2,PI/2,8,c,2)
 		"controls":
 			draw_rect(Rect2(p+Vector2(-15,-8),Vector2(30,20)),c,false,2)
 			draw_line(p+Vector2(-11,2),p+Vector2(-3,2),c,2)

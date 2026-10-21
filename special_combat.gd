@@ -35,7 +35,7 @@ static func cast(g,u,target):
 	if not Special.ready(d): return false
 	if d.kind not in ["deer","turtle"] and target.is_empty(): return false
 	u.erase("pending_basic")
-	var power=g.attack(d)*(1.6 if u.buff>0 else 1.0)
+	var power=g.attack(d)*(1.0+u.get("buff_power",0.6) if u.buff>0 else 1.0)
 	match d.kind:
 		"boar": g.Assault.begin_dash(g,u,target,power*3.5)
 		"fox": g.Assault.begin_blast(g,u,target,power*2.5)

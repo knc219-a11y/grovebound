@@ -8,6 +8,7 @@ static func show_report(g):
 	for i in 3:
 		g.panel(g.overlay,Rect2(230+i*330,215,310,58),Color("202823"))
 		g.label(g.overlay,values[i],Vector2(248+i*330,232),21)
+	if r.has("hero_growth"): g.label(g.overlay,r.hero_growth,Vector2(235,276),15)
 	if g.report_contributions:
 		show_graphs(g,r,leave)
 		return
