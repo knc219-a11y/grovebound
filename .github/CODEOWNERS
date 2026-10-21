@@ -1,0 +1,10 @@
+# GitHub 사용자는 최종 승인자이며, 역할별 파일 소유권은 docs/MULTI_AGENT_DEVELOPMENT.md를 따른다.
+/main.gd @knc219-a11y
+/main.tscn @knc219-a11y
+/project.godot @knc219-a11y
+/save_data.gd @knc219-a11y
+/AGENTS.md @knc219-a11y
+/docs/PROJECT_SETTINGS.md @knc219-a11y
+/STATUS.md @knc219-a11y
+/docs/NEXT_SESSION.md @knc219-a11y
+/docs/contracts/ @knc219-a11y

@@ -9,6 +9,12 @@
 - 실제 Godot 능력치/장비/스킬/상점 PNG와5초 지원 전투 GIF/MP4를 생성·확인했다. 사용자 저장 격리, 기존 지팡이/모션 재사용. 보고서 HERO_PROGRESSION.md, hero-progression-tests.json/hero-pressure-max.json, 갱신 normal-preparation-journeys/first-four-journey/normal-pressure-after.json. 이전 NORMAL_REVIEW의70%갑주/45개 회귀는 이력이다.
 - 다음: 사람 플레이로 주인공 성장 속도·골드 소비/장비 관리·최종4성 해제 안내를 확인하고 초기 경제 수치를 조정한다. 입장 재화의 대상/일일량/회복/비용은 별도 합의 후 심층 설계를 재개한다. 야생2/3성 분포·심층/도전 콘텐츠·종류별 장비 외형은 미구현이다. 재실행/제약은 HERO_PROGRESSION.md.
 
+## 최신: 병렬 멀티 에이전트 운영 기반 (2026-10-21 한국)
+- 사용자 승인에 따라 통합 리드 단독 보호 파일, 역할별 소유권, worktree/branch/PR, Godot 장면 충돌 회피, 독립 QA와 계약 선행 규칙을 문서화했다. 게임 코드·수치·세이브 스키마·에셋은 변경하지 않았다.
+- 기준은 `docs/MULTI_AGENT_DEVELOPMENT.md`, 공통 경계는 `docs/contracts/`, PR 인계는 `.github/pull_request_template.md`, 최종 GitHub 승인자는 `.github/CODEOWNERS`다.
+- `main.gd`, `main.tscn`, `project.godot`, `save_data.gd`와 공통 인계 문서는 통합 리드 전용이다. 다른 역할은 독립 모듈/테스트와 통합 요청을 제출한다.
+- 첫 파일럿은 입장 재화다. 대상 전투·일일량·회복·비용은 아직 미정이며 사용자 승인 전 구현하거나 저장 필드를 추가하지 않는다. 새 골드·주인공 성장·장비·지원 스킬 구현과 root v2 + hero v1 저장을 기준 상태로 보존한다. 심층 구현은 계속 보류한다.
+- 이번 변경은 문서/검사 기반만 추가하므로 게임 회귀와 실제 Godot QA 대상이 아니다. handoff 검사와 변경 범위 검사를 실행한다.
 
 ## 최신: 일반 검토 수정·첫4성 목표 (2026-10-21 한국)
 - 사용자피드백:2성3+3성1로일반5-8무개입완료. 최종보스는첫4성목표,앞스테이지반복육성2번과첫4성까지후반재탐험15~20회승인. 특정전투입장재화로일일이용량제한은후속계획이며미구현. 심층구현보류.
