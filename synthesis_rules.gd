@@ -36,7 +36,6 @@ static func material_error(record,squad,is_main=false):
 		return "3성 Lv.40 필요"
 	if not EXISTING_SPECIAL_KINDS.has(record.get("kind","")): return "지원하지 않는 종"
 	if not is_main:
-		if squad.has(record.get("id")): return "동행 중 · 보조 불가"
 		if record.get("favorite",false): return "즐겨찾기 · 보조 불가"
 	return ""
 
@@ -58,6 +57,9 @@ static func preview(records,squad,ids,main_id,preserve):
 	var pool=existing_pool(preserve,main.kind)
 	if pool.is_empty(): return {"error":"보존 방식을 선택하세요."}
 	# A plan contains snapshots only, never an instantiated or rolled result.
-	return {"error":"","main":main.duplicate(true),"materials":selected,"pool":pool,
+	var leaving=[]
+	for d in selected:
+		if d.id!=main_id and squad.has(d.id): leaving.append(d.id)
+	return {"error":"","main":main.duplicate(true),"materials":selected,"pool":pool,"leaving_squad":leaving,
 		"preserve":preserve,"result_star":RESULT_STAR,"result_level":RESULT_LEVEL,
 		"success_percent":SUCCESS_PERCENT,"extra_cost":EXTRA_COST}
