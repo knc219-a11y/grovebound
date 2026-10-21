@@ -14,6 +14,8 @@ required = [
     "docs/NEXT_SESSION.md",
     "docs/MULTI_AGENT_DEVELOPMENT.md",
     "docs/contracts/README.md",
+    "docs/agents/GAME_DESIGNER.md",
+    "docs/WORK_PROMPT.md",
 ]
 failures = []
 for name in required:
@@ -22,6 +24,9 @@ for name in required:
         failures.append(f"Missing or empty handoff document: {name}")
 agents = (root / "AGENTS.md").read_text(encoding="utf-8")
 for name in required[1:4]:
+    if name not in agents:
+        failures.append(f"AGENTS.md must link {name}")
+for name in ["docs/MULTI_AGENT_DEVELOPMENT.md", "docs/agents/GAME_DESIGNER.md", "docs/WORK_PROMPT.md"]:
     if name not in agents:
         failures.append(f"AGENTS.md must link {name}")
 next_session = (root / "docs/NEXT_SESSION.md").read_text(encoding="utf-8")
