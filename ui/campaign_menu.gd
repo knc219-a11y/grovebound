@@ -33,12 +33,12 @@ static func stages(g):
 			var label=g.label(g.overlay,R.THEMES[id],pos+Vector2(-65,44),17)
 			label.mouse_filter=Control.MOUSE_FILTER_IGNORE
 			g.label(g.overlay,"%d/8" % count if R.implemented(R.coordinate(id,1,difficulty)) else "준비 중",pos+Vector2(-28,70),14)
-		g.label(g.overlay,"순환을 잇는 여정",Vector2(930,282),22)
-		wrapped(g,"일반 · 5개 테마\n테마마다 8개 스테이지\n4번 중간보스\n8번 테마 보스",Vector2(930,330),260,19)
-		wrapped(g,"일반 5-8 → 심층\n심층 5-8 → 도전\n일반 40개 스테이지를 탐험할 수 있습니다.",Vector2(930,440),260,17)
-		var available=Campaign.tamable_kinds(1,g.PLAYER_CLASS)
-		var bonds=g.label(g.overlay,"계곡 · 교감 가능 %d종" % available.size(),Vector2(930,548),16)
-		bonds.tooltip_text="\n".join(available.map(func(kind): return Species.name_of(kind)))
+		var guidance=preload("res://ui/growth_guidance.gd").model(g)
+		wrapped(g,guidance.goal,Vector2(930,280),260,21)
+		wrapped(g,guidance.detail,Vector2(930,345),260,18)
+		wrapped(g,guidance.route_text+"\nXP: 동행 각각 / 본선 기준",Vector2(930,430),260,16)
+		var recommended=g.button(g.overlay,"추천 탐험 확인",Rect2(925,540,270,44),func(): preload("res://ui/growth_guidance.gd").open_recommended(g))
+		recommended.disabled=guidance.route.is_empty() or difficulty!="normal"
 		if difficulty!="normal": wrapped(g,"이 난이도는 아직 준비 중입니다. 완료한 일반 탐험은 다시 플레이할 수 있습니다.",Vector2(255,275),450,17)
 	else:
 		map.points=[Vector2(70,100),Vector2(230,85),Vector2(390,110),Vector2(555,90),Vector2(555,245),Vector2(390,225),Vector2(230,250),Vector2(70,230)]
@@ -58,10 +58,10 @@ static func stages(g):
 		g.label(g.overlay,"%d-%d · %s" % [theme,g.map_stage,"중간보스" if g.map_stage==4 else "테마 보스" if g.map_stage==8 else "탐험"],Vector2(930,280),21)
 		if not data.is_empty():
 			wrapped(g,data.name,Vector2(930,318),260,22)
-			wrapped(g,data.story,Vector2(930,355),260,17)
+			wrapped(g,"갑주는 피해 차단. 가까이서 선택 완료 4성+ 스킬로 6초 해제. 공격 예고는 회피." if theme==5 and g.map_stage==8 else data.story,Vector2(930,355),260,16)
 			var replay=R.growth_replay(selected,progress)
 			var reward=R.rewards(selected,replay)
-			var reward_label=wrapped(g,("재탐험 · 적 Lv.%d · 활동4/준비6" if replay else "적 Lv.%d · 활동4 / 준비6")+"\n본선 전투 XP %d / 동행 각각\n재료 %d · 옆길 보상 별도\n야수 교감 15%% · 1성",Vector2(930,433),260,16,[data.level,reward.xp,reward.materials])
+			var reward_label=wrapped(g,("재탐험 · 적 Lv.%d" if replay else "적 Lv.%d")+"\n본선 XP %d / 동행 각각\n재료 %d · 옆길 별도\n야수 교감 15%% · 1성",Vector2(930,450 if theme==5 and g.map_stage==8 else 433),260,16,[data.level,reward.xp,reward.materials])
 			reward_label.tooltip_text="완료한 황야·성채의 재탐험: 전투 XP ×12, 성장 재료 ×3. 추가 약한 무리는 무보상이며 교감 확률과 성급은 유지합니다." if replay else "첫 클리어 보상"
 			var available=R.available(selected,progress)
 			var b=g.button(g.overlay,"선택한 스테이지 출발" if available else "이전 테마 완료 필요" if g.map_stage==1 and theme>1 else "앞 스테이지 완료 필요",Rect2(925,548,270,42),func(): g.depart_route(selected))
@@ -76,7 +76,11 @@ static func stages(g):
 				if b.disabled: b.tooltip_text="앞 테마의 우두머리를 제압하세요."
 			else: wrapped(g,"앞 테마 완료 후 순서대로 해금됩니다. 아직 출발할 수 없습니다.",Vector2(930,440),260,17)
 	map.queue_redraw()
-	g.label(g.overlay,"지역을 고른 뒤 스테이지를 선택하고 출발하세요. 완료한 길은 다시 탐험할 수 있습니다.",Vector2(235,618),16)
+	var hint=preload("res://ui/growth_guidance.gd").model(g)
+	var footer=hint.detail if theme==5 and g.map_stage==8 else "완료한 황야·성채: 성장 재탐험 · 동료 관리: 육성/합성"
+	if theme==0: footer="계곡 · 교감 가능 %d종 / " % Campaign.tamable_kinds(1,g.PLAYER_CLASS).size()+footer
+	wrapped(g,footer,Vector2(235,612),960,16)
+	if theme not in [2,3] or difficulty!="normal": g.button(g.overlay,"동료 육성 · 편성",Rect2(500,655,300,45),g.open_roster)
 	if theme>0: g.button(g.overlay,"세계 지도",Rect2(230,655,250,45),func(): g.map_theme=0; stages(g))
 	if theme in [2,3] and difficulty=="normal":
 		var legacy=g.button(g.overlay,"기존 사냥터 탐험",Rect2(500,655,300,45),func(): g.depart_stage(theme))

@@ -5,7 +5,8 @@ static func show_page(g,ids,main_id,preserve):
 	g.modal("4성 특수개체 합성 · 재료 선택","3성 Lv.40 세 마리 · 성공 100% · 추가 비용 없음 · 보조 두 마리는 소모됩니다.","synthesis",g.open_roster)
 	var ready=g.owned.filter(func(d): return int(d.get("star",0))==3 and int(d.get("level",0))==40 and g.Synthesis.EXISTING_SPECIAL_KINDS.has(d.kind))
 	var supports=ready.filter(func(d): return not d.get("favorite",false))
-	var summary=g.label(g.overlay,"합성 후보 %d마리 · 보조 가능 %d마리  |  주재료를 먼저 지정하세요." % [ready.size(),supports.size()],Vector2(230,205),18)
+	var possible=not preload("res://ui/growth_guidance.gd").synthesis_plan(g.owned,g.squad).is_empty()
+	var summary=g.label(g.overlay,"합성 후보 %d마리 · 보조 가능 %d마리 | %s" % [ready.size(),supports.size(),"합성 가능 · 주재료를 선택하세요." if possible else "조건 부족 · 3성 Lv.40 세 마리 필요"],Vector2(230,205),18)
 	summary.name="SynthesisCandidateSummary"
 	var squad_notice=g.label(g.overlay,"동행 중 보조 재료는 합성 저장과 함께 동행에서 해제됩니다. 즐겨찾기는 보조로 소모할 수 없습니다.",Vector2(230,230),16)
 	squad_notice.name="SynthesisSquadNotice"
