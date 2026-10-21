@@ -61,6 +61,8 @@ var roster_kind_filter=""
 var roster_grade_filter=""
 var roster_favorites_only=false
 var roster_sort=0
+var roster_selected_id=-1
+var roster_scroll=0
 var loot_rng=RandomNumberGenerator.new()
 var recent_capture_id=-1
 var pending_loot_id=-1
@@ -1404,158 +1406,109 @@ func show_loot_details(id,compare_id=-1,animate=true,from_roster=false):
 
 func toggle_favorite(id,return_to_details=false,from_roster=true):
 	var d=find_owned(id)
-	if d.is_empty(): return
+	if d.is_empty() or save_blocked: return false
+	remember_roster_scroll()
+	var payload=save_payload().duplicate(true)
+	for record in payload.owned:
+		if record.id==id: record.favorite=not d.get("favorite",false)
+	if not persist_payload(payload):
+		notify("저장에 실패해 즐겨찾기를 유지했습니다. 다시 시도해 주세요.")
+		return false
 	d.favorite=not d.get("favorite",false)
-	save_game()
+	if not hero_pending.is_empty(): publish_hero(payload.hero)
 	if return_to_details: show_loot_details(id,-1,false,from_roster)
 	else: open_roster()
+	return true
 
 func reset_roster_filters():
+	roster_scroll=0
 	roster_kind_filter=""
 	roster_grade_filter=""
 	roster_favorites_only=false
 	roster_sort=0
 	open_roster()
 
-func roster_filters(total,shown):
-	var species=OptionButton.new()
-	species.name="SpeciesFilter"
-	species.position=Vector2(215,330)
-	species.size=Vector2(170,44)
-	species.add_item("모든 종")
-	var kinds=STATS.keys()
-	for i in kinds.size():
-		species.add_item(NAMES[kinds[i]])
-		if roster_kind_filter==kinds[i]: species.select(i+1)
-	species.item_selected.connect(func(index): roster_kind_filter="" if index==0 else kinds[index-1]; open_roster())
-	overlay.add_child(species)
-	var rarity=OptionButton.new()
-	rarity.name="GradeFilter"
-	rarity.position=Vector2(397,330)
-	rarity.size=Vector2(145,44)
-	rarity.add_item("모든 성급")
-	for i in Loot.GRADES.size():
-		rarity.add_item(Loot.NAMES[Loot.GRADES[i]])
-		if roster_grade_filter==Loot.GRADES[i]: rarity.select(i+1)
-	rarity.item_selected.connect(func(index): roster_grade_filter="" if index==0 else Loot.GRADES[index-1]; open_roster())
-	overlay.add_child(rarity)
-	var sorting=OptionButton.new()
-	sorting.name="RosterSort"
-	sorting.position=Vector2(554,330)
-	sorting.size=Vector2(180,44)
-	for caption in ["동행 순서","최근 인연순","높은 성급순","높은 레벨순"]: sorting.add_item(caption)
-	sorting.select(roster_sort)
-	sorting.item_selected.connect(func(index): roster_sort=index; open_roster())
-	overlay.add_child(sorting)
-	button(overlay,"즐겨찾기만 ✓" if roster_favorites_only else "즐겨찾기만",Rect2(746,330,150,44),func(): roster_favorites_only=not roster_favorites_only; open_roster())
-	button(overlay,"초기화",Rect2(908,330,90,44),reset_roster_filters)
-	label(overlay,"표시 %d / %d마리" % [shown,total],Vector2(1020,340),17)
-
 func open_roster():
 	if mode=="camp": preparation_seen=true
 	if in_combat and mode=="stage": notify("전투 중에는 편성을 바꿀 수 없습니다."); return
 	if mode=="tutorial": notify("튜토리얼을 먼저 마쳐주세요."); return
-	var camp=mode=="camp"
-	modal("동료 관리  ·  출전 4 / 대기 2", "위 6칸이 실제 동행 편성입니다. 두 칸을 차례로 눌러 출전·대기 위치를 교체하세요.","companions",open_game_menu)
 	chosen_swap=-1
-	var source=owned if camp else []
-	if not camp:
-		for id in squad:
-			var d=find_owned(id)
-			if not d.is_empty(): source.append(d)
-	PartyLineup.show(self,205)
-	var roster=Management.filtered(source,squad,roster_kind_filter,roster_grade_filter,roster_favorites_only,roster_sort)
-	roster_filters(source.size(),roster.size())
-	if roster.is_empty():
-		label(overlay,"조건에 맞는 동료가 없습니다. 필터를 초기화해 보세요." if not source.is_empty() else "아직 동료가 없습니다. 첫 인연을 만나보세요.",Vector2(235,325),21)
-	var scroll=ScrollContainer.new()
-	scroll.name="CompanionScroll"
-	scroll.position=Vector2(215,390)
-	scroll.size=Vector2(1010,190)
-	overlay.add_child(scroll)
-	var rows=VBoxContainer.new()
-	rows.size_flags_horizontal=Control.SIZE_EXPAND_FILL
-	rows.add_theme_constant_override("separation",8)
-	scroll.add_child(rows)
-	for d in roster:
-		var row=preload("res://ui/roster_row.gd").new()
-		row.accent=Loot.color(d)
-		row.name="Companion_"+str(d.id)
-		row.custom_minimum_size=Vector2(970,90)
-		rows.add_child(row)
-		var idx=squad.find(d.id)
-		var desc="[%s] %s  Lv.%d\n%s · %s" % [Loot.title(d),NAMES[d.kind],d.level,Roles.LABELS[d.kind],d.trait]
-		if idx>=0: desc=("[출전 %d] " % (idx+1) if idx<4 else "[대기 %d] " % (idx-3))+desc
-		else: desc="[보관] "+desc
-		var portrait=TextureRect.new()
-		portrait.texture=textures[d.kind]
-		portrait.custom_minimum_size=Vector2(56,82)
-		portrait.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
-		portrait.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		portrait.mouse_filter=Control.MOUSE_FILTER_IGNORE
-		row.add_child(portrait)
-		var body=VBoxContainer.new()
-		body.custom_minimum_size.x=330
-		row.add_child(body)
-		var b=Button.new()
-		b.text=desc
-		b.custom_minimum_size=Vector2(330,52)
-		b.add_theme_font_size_override("font_size",17)
-		b.add_theme_color_override("font_color",Loot.color(d))
-		GroveUI.quiet(b,Loot.color(d))
-		b.tooltip_text=Roles.describe(d,Loot)+"\n"+"\n".join(Loot.lines(d))
-		b.clip_text=true
-		b.alignment=HORIZONTAL_ALIGNMENT_LEFT
-		b.pressed.connect(func(): select_swap(d.id))
-		body.add_child(b)
-		var progress=health_bar(body,Rect2(0,0,330,6))
-		progress.custom_minimum_size=Vector2(330,6)
-		progress.max_value=maxi(1,Management.needed_xp(d))
-		progress.value=0 if Loot.is_max_level(d) else d.xp
-		var xp=Label.new()
-		xp.text="최대 레벨 · 승급 준비" if Loot.is_max_level(d) and Loot.star(d)<3 else ("최대 레벨" if Loot.is_max_level(d) else "경험치 %d / %d · 다음 레벨까지 %d" % [d.xp,Management.needed_xp(d),maxi(0,Management.needed_xp(d)-d.xp)])
-		xp.add_theme_font_size_override("font_size",14)
-		body.add_child(xp)
-		var favorite=Button.new()
-		favorite.text="잠금 ✓" if d.get("favorite",false) else "즐겨찾기"
-		favorite.add_theme_color_override("font_color",GroveUI.GREEN if d.get("favorite",false) else GroveUI.MUTED)
-		favorite.custom_minimum_size=Vector2(86,64)
-		GroveUI.quiet(favorite,GroveUI.GREEN)
-		favorite.pressed.connect(func(): toggle_favorite(d.id))
-		row.add_child(favorite)
-		var detail=Button.new()
-		detail.text="상세·비교"
-		detail.custom_minimum_size=Vector2(100,64)
-		GroveUI.quiet(detail)
-		detail.pressed.connect(func(): show_loot_details(d.id,-1,false,true))
-		row.add_child(detail)
-		if camp:
-			var equip=Button.new()
-			equip.text="동행 해제" if idx>=0 else "동행 추가"
-			equip.custom_minimum_size=Vector2(108,64)
-			GroveUI.quiet(equip)
-			equip.pressed.connect(func(): toggle_squad(d.id); open_roster())
-			row.add_child(equip)
-			var grow=Button.new()
-			grow.text="능력 선택" if Special.pending(d) else "육성 미리보기"
-			grow.custom_minimum_size=Vector2(126,64)
-			grow.size_flags_vertical=Control.SIZE_SHRINK_CENTER
-			GroveUI.emphasize(grow)
-			grow.pressed.connect(func(): show_training(d.id))
-			row.add_child(grow)
-			var release=Button.new()
-			release.text="작별"
-			release.tooltip_text="자연으로 보내기"
-			release.custom_minimum_size=Vector2(68,64)
-			GroveUI.quiet(release,Color("ad816d"))
-			release.disabled=not Management.can_release(d,squad)
-			release.pressed.connect(func(): confirm_release(d.id))
-			row.add_child(release)
-	label(overlay,"성장 재료 %d · 육성 3개 → 경험치 +40 · 즐겨찾기는 자연으로 보낼 수 없습니다." % materials,Vector2(230,600),17)
-	if camp:
-		button(overlay,"일괄 작별",Rect2(230,630,220,55),func(): show_bulk_release(true))
-		button(overlay,"특수개체 합성",Rect2(480,630,380,55),func(): show_synthesis())
-	button(overlay,"완료",Rect2(1000,630,210,55),func(): save_game(); show_camp() if camp else clear_overlay())
+	if find_owned(roster_selected_id).is_empty() or (mode!="camp" and not squad.has(roster_selected_id)): roster_selected_id=-1
+	preload("res://ui/companion_roster.gd").show(self)
+
+func remember_roster_scroll():
+	var scroll=overlay.get_node_or_null("CompanionScroll")
+	if scroll!=null: roster_scroll=scroll.scroll_vertical
+
+func roster_select(id):
+	if mode not in ["camp","stage"] or (mode=="stage" and in_combat): return
+	if find_owned(id).is_empty() or (mode=="stage" and not squad.has(id)): return
+	remember_roster_scroll()
+	roster_selected_id=id
+	open_roster()
+
+func roster_assign(index):
+	if mode not in ["camp","stage"] or (mode=="stage" and in_combat) or index<0 or index>=6: return false
+	var selected=find_owned(roster_selected_id)
+	if selected.is_empty():
+		if index<squad.size(): roster_select(squad[index])
+		else: notify("왼쪽 목록에서 배치할 동료를 먼저 선택하세요.")
+		return false
+	var current=squad.find(selected.id)
+	if mode=="stage" and (current<0 or index>=squad.size()): return false
+	var next=squad.duplicate()
+	if current>=0:
+		if index>=squad.size() or current==index:
+			roster_selected_id=-1
+			open_roster()
+			return false
+		var other=next[index]
+		next[index]=selected.id
+		next[current]=other
+	else:
+		if index<squad.size(): next[index]=selected.id
+		elif next.size()<6: next.append(selected.id)
+		else: return false
+	remember_roster_scroll()
+	if not commit_roster(next): return false
+	roster_selected_id=-1
+	open_roster()
+	if index>=squad.size(): notify("앞쪽 빈 출전 칸부터 순서대로 편성했습니다.")
+	return true
+
+func roster_remove(id):
+	if mode!="camp" or not squad.has(id): return false
+	var next=squad.duplicate()
+	next.erase(id)
+	remember_roster_scroll()
+	if not commit_roster(next): return false
+	open_roster()
+	return true
+
+func commit_roster(next):
+	if save_blocked or mode not in ["camp","stage"] or (mode=="stage" and in_combat) or next.size()>6: return false
+	var seen=[]
+	for id in next:
+		if seen.has(id) or find_owned(id).is_empty(): return false
+		seen.append(id)
+	var next_units=[]
+	if mode=="stage":
+		if next.size()!=squad.size() or units.size()!=squad.size(): return false
+		for id in next:
+			var previous=squad.find(id)
+			if previous<0: return false
+			next_units.append(units[previous])
+	var payload=save_payload().duplicate(true)
+	payload.squad=next.duplicate()
+	if not persist_payload(payload):
+		notify("저장에 실패해 편성을 유지했습니다. 다시 시도해 주세요.")
+		return false
+	squad=next
+	if not hero_pending.is_empty(): publish_hero(payload.hero)
+	if mode=="stage":
+		units=next_units
+		for unit in active_units(): unit.pos=player.pos+Vector2(0,50)
+	return true
 
 func growth_card(d,x,caption):
 	var card=panel(overlay,Rect2(x,265,465,305),Color("202823"))
@@ -1695,29 +1648,22 @@ func train_companion(id):
 	return true
 
 func select_swap(id):
-	if not squad.has(id): return
+	# Compatibility entry point for existing callers; use the same atomic commands.
+	if not squad.has(id) or mode not in ["camp","stage"] or (mode=="stage" and in_combat): return
 	if chosen_swap<0:
+		roster_select(id)
 		chosen_swap=id
-		notify("이동할 다른 출전·대기 칸을 누르세요.")
-		PartyLineup.show(self,205)
 	else:
-		var a=squad.find(chosen_swap)
-		var b=squad.find(id)
-		var temp=squad[a]
-		squad[a]=squad[b]
-		squad[b]=temp
-		if mode!="camp" and a<units.size() and b<units.size():
-			var u=units[a]
-			units[a]=units[b]
-			units[b]=u
-			for x in active_units(): x.pos=player.pos+Vector2(rng.randf_range(-60,60),50)
-		save_game()
-		open_roster()
+		roster_selected_id=chosen_swap
+		roster_assign(squad.find(id))
+		chosen_swap=-1
 
 func toggle_squad(id):
-	if squad.has(id): squad.erase(id)
-	elif squad.size()<6: squad.append(id)
-	save_game()
+	if mode!="camp" or find_owned(id).is_empty(): return false
+	if squad.has(id): return roster_remove(id)
+	if squad.size()>=6: return false
+	roster_selected_id=id
+	return roster_assign(squad.size())
 
 func show_bulk_release(reset=false):
 	if mode!="camp": return
