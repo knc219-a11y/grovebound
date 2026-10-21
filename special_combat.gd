@@ -58,8 +58,9 @@ static func cast(g,u,target):
 					e.active=true
 					e.taunt=u
 					e.taunt_time=5.0
-					e.aim=u.pos
-					e.pos=e.pos.move_toward(u.pos,35)
+					if e.wind<=0 and e.get("dash",0.0)<=0:
+						e.aim=u.pos
+						e.pos=e.pos.move_toward(u.pos,35)
 			for ally in g.alive_allies():
 				if ally.pos.distance_to(u.pos)<=270: ally.team_guard=maxf(ally.get("team_guard",0.0),3.0)
 		"deer":
@@ -67,6 +68,10 @@ static func cast(g,u,target):
 				if ally.pos.distance_to(u.pos)<350*Special.radius(d):
 					g.heal(ally,35*(1.25 if d.trait=="다정함" else 1.0),u.pos,u)
 					barrier(ally,0.05,4.0)
+	# Every completed 4+ star role can open the guardian's armor, including support.
+	for e in g.combat_enemies():
+		if e.hp>0 and e.get("cycle_guard",false) and e.get("active",false) and e.pos.distance_to(u.pos)<=600:
+			e.cycle_open=6.0
 	if d.kind not in ["boar","fox"]: g.combat_feedback.emit("skill_"+d.kind,u.pos,u.pos if target.is_empty() else target.pos)
 	if Special.unique(d)=="barrier": barrier(u,0.10,4.0)
 	if Special.evolution(d)=="barrier": barrier(u,Special.evolution_value(d,"barrier"),Special.evolution_values(d).barrier_seconds)

@@ -5,10 +5,11 @@ func _initialize(): call_deferred("run")
 func run():
 	var runs=[]
 	var growth=[]
+	var final_states=[]
 	var through_quarry="--through-quarry" in OS.get_cmdline_user_args()
 	var through_graveyard="--through-graveyard" in OS.get_cmdline_user_args()
 	var through_normal="--through-normal" in OS.get_cmdline_user_args()
-	var stage_count=40 if through_normal else 24 if through_graveyard else 16 if through_quarry else 8
+	var stage_count=38 if "--before-preparation" in OS.get_cmdline_user_args() else 40 if through_normal else 24 if through_graveyard else 16 if through_quarry else 8
 	for starter in ["boar","marten","fox"]:
 		for seed_value in [10417,20261020]:
 			var g=Game.new(); root.add_child(g); g.set_process(false)
@@ -32,52 +33,24 @@ func run():
 					assert(g.train_to_level(first.id,15,first.duplicate(true)))
 					growth.append({"starter":starter,"seed":seed_value,"stage":"before 4-1","before":before,"after":first.duplicate(true),"materials_before":earned,"materials_after":g.materials})
 					g.clear_overlay()
+				if through_normal and ordinal==39:
+					var second=g.find_owned(g.squad[1]); var promoted=g.Management.promotion_preview(second)
+					if not promoted.is_empty():
+						var cost=g.Management.target_plan(promoted,15).cost
+						var repeats=0; var earned=g.materials
+						while g.materials<cost:
+							assert(g.depart_route(R.coordinate(4,1)))
+							var farm=play_route(g,4,1,starter,seed_value); assert(farm.success)
+							g.show_camp(); g.clear_overlay(); repeats+=1
+						assert(g.promote_companion(second.id,second.duplicate(true)))
+						second=g.find_owned(second.id)
+						assert(g.train_to_level(second.id,15,second.duplicate(true)))
+						growth.append({"starter":starter,"seed":seed_value,"stage":"before 5-7","materials_before":earned,"replays_4_1":repeats,"after":second.duplicate(true),"materials_after":g.materials})
+						g.clear_overlay()
 				if not g.depart_route(R.coordinate(theme,stage)):
 					runs.append({"starter":starter,"seed":seed_value,"theme":theme,"stage":stage,"success":false,"reason":"departure blocked"})
 					break
-				var elapsed=0.0; var minimum=g.player.hp; var casts=0; var heals=0; var downs=0; var old_down=0; var bonds=0
-				var baseline=g.owned.duplicate(true)
-				while g.mode=="stage" and elapsed<420:
-					var target=g.trail.next_stop(g.enemies).pos
-					var distance=g.player.pos.distance_to(target)
-					g.stick=(target-g.player.pos).normalized() if distance>(55 if g.trail.ready_to_clear(g.enemies) else 105) else Vector2.ZERO
-					g.holding_revive=false
-					if g.in_combat:
-						var wounded=g.lowest_ally(g.player.pos,430)
-						if not wounded.is_empty() and wounded.hp/wounded.maxhp<0.75 and g.heal_cd<=0: g.cast_heal(); heals+=1
-						if g.buff_cd<=0: g.cast_buff()
-						for i in g.active_units().size():
-							var u=g.units[i]
-							if u.hp>0 and u.skill<=0:
-								g.use_companion_skill(i)
-								if u.skill>0: casts+=1
-						for u in g.active_units():
-							if u.hp<=0:
-								g.stick=(u.pos-g.player.pos).normalized() if g.player.pos.distance_to(u.pos)>65 else Vector2.ZERO
-								g.holding_revive=g.player.pos.distance_to(u.pos)<=65
-								break
-						for e in g.enemies:
-							if e.hp<=0 or e.wind<=0: continue
-							if e.attack_kind=="cone" and g.EnemyPatterns.contains(e,g.player.pos):
-								g.stick=e.cone_direction.orthogonal()
-							elif e.attack_kind in ["slam","hex"] and g.player.pos.distance_to(e.aim)<e.tell_radius+35:
-								g.stick=(g.player.pos-e.aim).normalized(); g.holding_revive=false
-								if g.stick.length()<0.1: g.stick=Vector2.LEFT
-							elif e.attack_kind=="stomp" and g.player.pos.distance_to(e.aim)<165:
-								g.stick=(g.player.pos-e.aim).normalized(); g.holding_revive=false
-							elif e.attack_kind=="charge":
-								var near=Geometry2D.get_closest_point_to_segment(g.player.pos,e.origin,e.aim)
-								if g.player.pos.distance_to(near)<85: g.stick=(e.aim-e.origin).normalized().orthogonal(); g.holding_revive=false
-					g.update_game(0.05); elapsed+=0.05
-					minimum=minf(minimum,g.player.hp)
-					var down=g.active_units().filter(func(u): return u.hp<=0).size()
-					downs+=maxi(0,down-old_down); old_down=down
-					if g.mode!="stage": break
-					# Real nearby bonds are collected; no injected companions or training materials.
-					if not g.in_combat and g.closest_capture()>=0:
-						var before=g.owned.size(); g.interact(); g.resume_game(); bonds+=g.owned.size()-before
-					if g.route_can_exit(): g.interact()
-				var result={"starter":starter,"seed":seed_value,"theme":theme,"stage":stage,"success":g.mode=="result" and g.run_success,"seconds":snappedf(elapsed,0.1),"minimum_hp":snappedf(minimum,0.1),"down_events":downs,"skills":casts,"heals":heals,"bonds":bonds,"kills":g.kills,"before":baseline,"after":g.owned.duplicate(true),"report":g.expedition.report.duplicate(true),"progress":g.trail.core_progress(g.enemies)}
+				var result=play_route(g,theme,stage,starter,seed_value)
 				runs.append(result)
 				print("VALLEY JOURNEY ",starter," ",seed_value," ",theme,"-",stage," ",result.success," ",result.seconds,"s")
 				if not result.success: break
@@ -95,12 +68,63 @@ func run():
 				var probe={"starter":starter,"seed":seed_value,"before":before,"materials_before":materials,"trained":trained,"capped":capped,"promoted":promoted,"after":d.duplicate(true),"materials_after":g.materials,"recovered":recovered and g.max_hp(d)>=hp and g.attack(d)>=attack,"hp_before":hp,"hp_after":g.max_hp(d),"attack_before":attack,"attack_after":g.attack(d)}
 				assert(d.id==before.id and d.kind==before.kind and d.trait==before.trait and d.options==before.options)
 				growth.append(probe)
-			if through_normal and g.run_success: assert(R.difficulty_unlocked("depth",g.campaign_progress))
+			if through_normal and stage_count==40 and g.run_success: assert(R.difficulty_unlocked("depth",g.campaign_progress))
+			final_states.append(g.save_payload().duplicate(true))
 			g.free()
-	var output={"method":"Six deterministic continuous first-invitation runs through "+("5-8" if through_normal else "3-8" if through_graveyard else "2-8" if through_quarry else "1-8")+"; tutorial kills fast-forwarded, then real update_game dt=.05, nearby bonds/Q/E/skills/revive/dodge/exit. No synthetic high-level team/materials in combat. Graveyard post-run growth probes spend earned materials through real training/promotion functions; normal full runs spend the same earned materials before 4-1 on first companion 1-star20 to 2-star15. Bot timing is not human clear time or success rate.","runs":runs,"growth_probes":growth}
-	var f=FileAccess.open("res://docs/normal-campaign-journeys.json" if through_normal else "res://docs/graveyard-route-journeys.json" if through_graveyard else "res://docs/quarry-route-journeys.json" if through_quarry else "res://docs/campaign-map-journeys.json",FileAccess.WRITE); f.store_string(JSON.stringify(output,"\t")+"\n"); f.close()
+	var output={"method":"Six deterministic continuous first-invitation runs through "+("5-6 (preparation for 5-7 and final boss excluded)" if stage_count==38 else "5-8" if through_normal else "3-8" if through_graveyard else "2-8" if through_quarry else "1-8")+"; tutorial kills fast-forwarded, then real update_game dt=.05, nearby bonds/Q/E/skills/revive/dodge/exit. No synthetic high-level team/materials in combat. Graveyard post-run growth probes spend earned materials through real training/promotion functions; normal full runs spend the same earned materials before 4-1 on first companion 1-star20 to 2-star15. Bot timing is not human clear time or success rate.","runs":runs,"growth_probes":growth,"final_states":final_states}
+	var f=FileAccess.open("res://docs/normal-preparation-journeys.json" if "--before-preparation" in OS.get_cmdline_user_args() else "res://docs/normal-campaign-journeys.json" if through_normal else "res://docs/graveyard-route-journeys.json" if through_graveyard else "res://docs/quarry-route-journeys.json" if through_quarry else "res://docs/campaign-map-journeys.json",FileAccess.WRITE); f.store_string(JSON.stringify(output,"\t")+"\n"); f.close()
 	var total=stage_count*6
 	var passed=runs.size()==total and runs.all(func(r): return r.success)
 	if through_graveyard: passed=passed and growth.size()==6 and growth.all(func(p): return p.trained and p.promoted and p.recovered)
 	print("NORMAL CAMPAIGN " if through_normal else "GRAVEYARD JOURNEY " if through_graveyard else "QUARRY JOURNEY " if through_quarry else "VALLEY JOURNEY ","PASS" if passed else "FAIL"," ",runs.filter(func(r): return r.success).size(),"/",total)
 	quit(0 if passed else 1)
+
+func play_route(g,theme,stage,starter,seed_value):
+	var elapsed=0.0; var minimum=g.player.hp; var casts=0; var heals=0; var downs=0; var old_down=0; var bonds=0
+	var baseline=g.owned.duplicate(true)
+	while g.mode=="stage" and elapsed<420:
+		var target=g.trail.next_stop(g.enemies).pos
+		var distance=g.player.pos.distance_to(target)
+		g.stick=(target-g.player.pos).normalized() if distance>(55 if g.trail.ready_to_clear(g.enemies) else 105) else Vector2.ZERO
+		g.holding_revive=false
+		if g.in_combat:
+			var wounded=g.lowest_ally(g.player.pos,430)
+			if not wounded.is_empty() and wounded.hp/wounded.maxhp<0.75 and g.heal_cd<=0: g.cast_heal(); heals+=1
+			if g.buff_cd<=0: g.cast_buff()
+			for i in g.active_units().size():
+				var u=g.units[i]
+				if u.hp>0 and u.skill<=0:
+					g.use_companion_skill(i)
+					if u.skill>0: casts+=1
+			for u in g.active_units():
+				if u.hp<=0:
+					g.stick=(u.pos-g.player.pos).normalized() if g.player.pos.distance_to(u.pos)>65 else Vector2.ZERO
+					g.holding_revive=g.player.pos.distance_to(u.pos)<=65
+					break
+			for e in g.enemies:
+				if e.hp<=0 or e.wind<=0: continue
+				if e.attack_kind=="cone" and g.EnemyPatterns.contains(e,g.player.pos):
+					g.stick=e.cone_direction.orthogonal()
+				elif e.attack_kind in ["slam","hex"] and g.player.pos.distance_to(e.aim)<e.tell_radius+35:
+					g.stick=(g.player.pos-e.aim).normalized(); g.holding_revive=false
+					if g.stick.length()<0.1: g.stick=Vector2.LEFT
+				elif e.attack_kind=="stomp" and g.player.pos.distance_to(e.aim)<165:
+					g.stick=(g.player.pos-e.aim).normalized(); g.holding_revive=false
+				elif e.attack_kind=="charge":
+					var near=Geometry2D.get_closest_point_to_segment(g.player.pos,e.origin,e.aim)
+					if g.player.pos.distance_to(near)<85: g.stick=(e.aim-e.origin).normalized().orthogonal(); g.holding_revive=false
+				for aim in e.get("extra_aims",[]):
+					if g.player.pos.distance_to(aim)<e.get("extra_radius",90.0)+35:
+						g.stick=(g.player.pos-aim).normalized(); g.holding_revive=false
+						if g.stick.length()<0.1: g.stick=Vector2.LEFT
+		g.update_game(0.05); elapsed+=0.05
+		minimum=minf(minimum,g.player.hp)
+		var down=g.active_units().filter(func(u): return u.hp<=0).size()
+		downs+=maxi(0,down-old_down); old_down=down
+		if g.mode!="stage": break
+		# Real nearby bonds are collected; no injected companions or training materials.
+		if not g.in_combat and g.closest_capture()>=0:
+			var before=g.owned.size(); g.interact(); g.resume_game(); bonds+=g.owned.size()-before
+		if g.route_can_exit(): g.interact()
+	var result={"starter":starter,"seed":seed_value,"theme":theme,"stage":stage,"success":g.mode=="result" and g.run_success,"seconds":snappedf(elapsed,0.1),"minimum_hp":snappedf(minimum,0.1),"down_events":downs,"skills":casts,"heals":heals,"bonds":bonds,"kills":g.kills,"before":baseline,"after":g.owned.duplicate(true),"report":g.expedition.report.duplicate(true),"progress":g.trail.core_progress(g.enemies)}
+	return result

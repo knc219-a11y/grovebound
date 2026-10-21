@@ -6,6 +6,7 @@ const Routes=preload("res://campaign_routes.gd")
 const ValleyTrail=preload("res://valley_trail.gd")
 var campaign_progress={}
 var current_route={}
+var growth_replay=false
 var map_theme=0
 var map_stage=1
 var map_difficulty="normal"
@@ -390,7 +391,7 @@ func finish_route(success):
 	payload.campaign_progress=progress
 	payload.cleared_stages=legacy
 	payload.unlocked=unlocked or 1 in legacy
-	payload.materials=materials+(10 if success else 0)
+	payload.materials=materials+(Routes.rewards(current_route,growth_replay).bonus if success else 0)
 	if not persist_payload(payload):
 		notify("탐험 결과 저장에 실패했습니다. 길 잇기를 다시 눌러 주세요.")
 		return false
@@ -550,6 +551,7 @@ func start_stage(tutorial,stage_id=1,route={}):
 			return
 	current_stage=stage_id if Campaign.STAGES.has(stage_id) and not tutorial else 1
 	current_route=route.duplicate(true) if Routes.implemented(route) and not tutorial else {}
+	growth_replay=not current_route.is_empty() and Routes.growth_replay(current_route,Routes.progress_for(self))
 	if not current_route.is_empty(): current_stage=int(current_route.theme)
 	stage_background=load(Routes.profile(current_route).get("background",Campaign.STAGES.get(current_stage,Campaign.STAGES[1]).background) if not current_route.is_empty() else Campaign.STAGES[current_stage].background)
 	run_success=false
@@ -771,6 +773,7 @@ func update_game(dt):
 			if gap.length()<35 and gap.length()>0.01:
 				a.pos+=gap.normalized()*24*dt
 	for e in enemies:
+		e["cycle_open"]=maxf(0,e.get("cycle_open",0.0)-dt)
 		e["hunt_time"]=maxf(0,e.get("hunt_time",0.0)-dt)
 		if e.hp<=0 or (mode=="stage" and not trail.engageable(e)): continue
 		e.stun=maxf(0,e.stun-dt)
@@ -835,7 +838,7 @@ func update_game(dt):
 
 func begin_boss_attack(e, target):
 	if Species.NEW.has(e.kind):
-		EnemyPatterns.boss(e,target)
+		EnemyPatterns.boss(e,target,player)
 		return
 	e.attack_kind="stomp" if e.get("route_mid",false) or e.pattern%2==0 else "charge"
 	e.pattern+=1
@@ -953,6 +956,7 @@ func hit_enemy(e, damage, source,attacker={},animate=true,is_skill=false):
 	if not attacker.is_empty() and attacker.has("data"):
 		damage*=Special.damage(attacker.data,is_skill,e)
 		if e.get("hunt_owner",-1)==attacker.data.id and e.get("hunt_time",0.0)>0: damage*=1.20
+	if e.get("cycle_guard",false) and e.get("cycle_open",0.0)<=0: damage*=0.30
 	var dealt=minf(e.hp,damage)
 	if not attacker.is_empty() and attacker.has("data"):
 		Roles.add_metric(attacker,"damage",dealt)
@@ -974,9 +978,9 @@ func hit_enemy(e, damage, source,attacker={},animate=true,is_skill=false):
 	if e.hp<=0:
 		e["death"]=0.32
 		kills+=1
-		materials+=(0 if e.get("swarm",false) else (1 if not e.boss else 5))
+		materials+=(0 if e.get("swarm",false) else (1 if not e.boss else 5))*(3 if growth_replay else 1)
 		if not e.get("swarm",false):
-			for u in units: gain_xp(u.data,12+int(e.level)*4)
+			for u in units: gain_xp(u.data,(12+int(e.level)*4)*(12 if growth_replay else 1))
 		if not e.boss and not e.get("swarm",false) and Species.can_tame(e.kind,PLAYER_CLASS) and (e.guaranteed or rng.randf()<CAPTURE_CHANCE):
 			var candidate=Loot.roll(e.kind,e.level,loot_rng,Campaign.wild_star(current_stage,loot_rng))
 			candidate.pos=e.pos
@@ -1071,8 +1075,10 @@ func use_companion_skill(i):
 					e.active=true
 					e["taunt"]=u
 					e["taunt_time"]=5.0
-					e.aim=u.pos
-					e.pos=e.pos.move_toward(u.pos,35)
+					# A tell/dash already in progress keeps its committed geometry.
+					if e.wind<=0 and e.get("dash",0.0)<=0:
+						e.aim=u.pos
+						e.pos=e.pos.move_toward(u.pos,35)
 			combat_feedback.emit("guard",u.pos,u.pos)
 			combat_feedback.emit("skill_turtle",u.pos,u.pos)
 			fx(u.pos,u.pos,Color("a7d9e8"),"도발 · 방어",1)
@@ -1529,25 +1535,35 @@ func show_promotion(id):
 	button(overlay,"%d성으로 승급" % Loot.star(after),Rect2(230,630,350,55),func(): promote_companion(id,d.duplicate(true)))
 	button(overlay,"취소 · 육성으로",Rect2(925,630,285,55),func(): show_training(id))
 
+# Publish camp growth only after the complete candidate save has reached disk.
+func commit_growth(id,after,cost=0):
+	var d=find_owned(id)
+	if mode!="camp" or d.is_empty() or materials<cost: return false
+	var payload=save_payload().duplicate(true)
+	for record in payload.owned:
+		if record.id==id: record.assign(after)
+	payload.materials=materials-cost
+	if not persist_payload(payload):
+		notify("저장에 실패했습니다. 동료와 재료는 변경되지 않았습니다. 다시 시도하세요.")
+		return false
+	d.assign(after)
+	materials=payload.materials
+	for u in units:
+		if u.data.id==id:
+			u.maxhp=max_hp(d)
+			u.hp=minf(u.hp,u.maxhp)
+	return true
+
 func promote_companion(id,expected):
 	if mode!="camp": return false
 	var d=find_owned(id)
-	if d.is_empty() or int(d.get("star",1))!=int(expected.get("star",-1)) or int(d.level)!=int(expected.get("level",-1)) or int(d.xp)!=int(expected.get("xp",-1)):
+	if d.is_empty() or not Special.equivalent(d,expected):
 		notify("동료의 성장 정보가 바뀌었습니다. 승급 결과를 다시 확인하세요.")
 		return false
 	var promoted=Management.promotion_preview(d)
 	if promoted.is_empty(): return false
 	var before_star=Loot.star(d)
-	d.star=promoted.star
-	d.grade=promoted.grade
-	d.level=promoted.level
-	d.xp=promoted.xp
-	d.erase("legacy_overcap")
-	for u in units:
-		if u.data.id==id:
-			u.maxhp=max_hp(d)
-			u.hp=minf(u.hp,u.maxhp)
-	save_game()
+	if not commit_growth(id,promoted): return false
 	show_training(id)
 	notify("%d성 → %d성 승급 · Lv.1부터 다시 성장합니다." % [before_star,Loot.star(d)])
 	return true
@@ -1556,19 +1572,14 @@ func train_to_level(id,target,expected):
 	if mode!="camp": return false
 	var d=find_owned(id)
 	if d.is_empty(): return false
-	if int(d.level)!=int(expected.level) or int(d.xp)!=int(expected.xp):
+	if not Special.equivalent(d,expected):
 		notify("동료의 성장 정보가 바뀌었습니다. 결과를 다시 확인하세요.")
 		show_target_training(id)
 		return false
 	var plan=Management.target_plan(d,target)
 	if Special.pending(d) or plan.is_empty() or materials<plan.cost: return false
-	materials-=plan.cost
 	var old_level=d.level
-	d.level=plan.after.level
-	d.xp=plan.after.xp
-	for u in units:
-		if u.data.id==id: u.maxhp=max_hp(d)
-	save_game()
+	if not commit_growth(id,plan.after,plan.cost): return false
 	show_training(id,{"before":plan.before,"after":d.duplicate(true)})
 	notify("Lv.%d → %d · 재료 %d개 사용 · 경험치 +%d" % [old_level,d.level,plan.cost,plan.xp])
 	return true
@@ -1578,9 +1589,7 @@ func train_companion(id):
 	var d=find_owned(id)
 	if d.is_empty() or Special.pending(d) or Loot.is_max_level(d): return false
 	var before=d.duplicate(true)
-	materials-=3
-	gain_xp(d,40)
-	save_game()
+	if not commit_growth(id,Management.project(d,40),3): return false
 	show_training(id,{"before":before,"after":d.duplicate(true)})
 	return true
 
@@ -1640,10 +1649,15 @@ func commit_bulk_release(ids):
 		selected.append(id)
 	var reward=0
 	for id in selected: reward+=Management.farewell_reward(find_owned(id))
-	owned=owned.filter(func(d): return not selected.has(d.id))
-	materials+=reward
+	var payload=save_payload().duplicate(true)
+	payload.owned=payload.owned.filter(func(d): return not selected.has(d.id))
+	payload.materials=materials+reward
+	if not persist_payload(payload):
+		notify("저장에 실패했습니다. 동료와 재료는 변경되지 않았습니다.")
+		return false
+	owned=payload.owned
+	materials=payload.materials
 	bulk_selection.clear()
-	save_game()
 	open_roster()
 	notify("%d마리와 작별했습니다. 함께한 인연으로 성장 재료 %d개가 남았습니다." % [selected.size(),reward])
 	return true
@@ -1652,9 +1666,14 @@ func release_companion(id):
 	var d=find_owned(id)
 	if mode!="camp" or not Management.can_release(d,squad): return false
 	var reward=Management.farewell_reward(d)
-	owned.erase(d)
-	materials+=reward
-	save_game()
+	var payload=save_payload().duplicate(true)
+	payload.owned=payload.owned.filter(func(record): return record.id!=id)
+	payload.materials=materials+reward
+	if not persist_payload(payload):
+		notify("저장에 실패했습니다. 동료와 재료는 변경되지 않았습니다.")
+		return false
+	owned=payload.owned
+	materials=payload.materials
 	open_roster()
 	return true
 
@@ -1710,6 +1729,8 @@ func update_hud():
 	quest_label.text=("첫 인연 · 쉬는 야수에게 교감 [F / 화면 버튼]" if not captures.is_empty() else "동료와 협동 연습 · Q 회복 / E 강화 / 동료 초상" if tutorial_species=="practice" else "첫 인연 · 야수에게 다가가 경계를 누그러뜨리세요") if mode=="tutorial" else (trail.area(player.pos)+" · "+trail.progress_text(enemies)+" · 동행 "+str(squad.size())+"/6\n%s · 제압 %d · %02d:%02d") % [trail.objective(enemies,player.pos),kills,int(stage_time)/60,int(stage_time)%60]
 	toast_label.text=message if message_time>0 else ""
 	boss_label.text=""
+	boss_panel.size.y=82
+	boss_hp_bar.position.y=178
 	for e in enemies:
 		if e.boss and e.hp>0 and e.active:
 			boss_label.text=(Campaign.STAGES[current_stage].boss if current_route.is_empty() else Routes.profile(current_route).get("boss","정예"))+"  ·  %d / %d" % [e.hp,e.maxhp]
@@ -1719,6 +1740,9 @@ func update_hud():
 			elif e.wind>0: boss_label.text+="\n"+("가시 공격! 부채꼴 밖으로 이동" if e.attack_kind=="cone" else "지면 강타! 원 밖으로 이동" if Species.NEW.has(e.kind) and e.attack_kind=="slam" else "표적 공격! 표시된 원을 피하세요" if Species.NEW.has(e.kind) else "발구르기! 원 밖으로 이동" if e.attack_kind=="stomp" else "돌진! 옆으로 피하세요")
 			elif e.get("dash",0.0)>0: boss_label.text+="\n돌진 중!"
 			else: boss_label.text+="\n공격 기회"
+			if e.get("cycle_guard",false):
+				boss_panel.size.y=108; boss_hp_bar.position.y=204
+				boss_label.text+="\n갑주 해제 %.1f초 · 집중 공격" % e.cycle_open if e.get("cycle_open",0.0)>0 else "\n순환 갑주 70% · 4성 강화 스킬로 해제"
 			break
 	boss_panel.visible=not boss_label.text.is_empty()
 	boss_hp_bar.visible=boss_panel.visible

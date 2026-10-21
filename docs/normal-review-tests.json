@@ -1,0 +1,494 @@
+[
+  {
+    "test": "test_action_events.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.71,
+    "summary": [
+      "ACTION EVENTS PASS: native frame variation/bounds, damage owner, fox cast, deer heal, druid heal/buff, turtle guard, channel/interrupt/skill block, expiry/death"
+    ],
+    "warnings": [
+      "WARNING: 10 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ]
+  },
+  {
+    "test": "test_art_type.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.25,
+    "summary": [
+      "ART TYPE PASS: packaged fonts, full Hangul syllables, UI symbols, text shaping, background dimensions/visibility"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_attack_timing.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.71,
+    "summary": [
+      "ATTACK TIMING PASS: no early/double/dead/remote hit, dedicated four-species art, exact .14 second impact"
+    ],
+    "warnings": [
+      "WARNING: 8 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ]
+  },
+  {
+    "test": "test_boar_cutout.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.34,
+    "summary": [
+      "CUTOUT CHECK: reach error=0.00000213248063 bone error=0.0000040435791 opaque folds=0 stance slip=0.00000038146973"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_boar_gait.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.25,
+    "summary": [
+      "BOAR GAIT PASS: distance cadence, boss scale, hysteresis, stop/windup/death, 12 unclipped frames, support contact"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_boss_action.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.71,
+    "summary": [
+      "BOSS ACTION PASS: six poses, native bounds, stomp/charge timers and damage unchanged, one swept hit, recovery/death priority"
+    ],
+    "warnings": [
+      "WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ]
+  },
+  {
+    "test": "test_bulk_and_trail.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 1.27,
+    "summary": [
+      "PASS bulk/font/trail: protected/atomic/dedup/camp-only, exact reward and discovery, popup font, encounter budget/core progress, boss intro safety, rest isolation, warning, tutorial"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_campaign.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.99,
+    "summary": [
+      "CAMPAIGN PASS: ordered unlock/legacy save, stage2/3 encounters, duplicate reward guard, family-based future taming policy, no incompatible bonds, bat identity/collection/save roundtrip, dodgeable wraith, ten four-pose sheets"
+    ],
+    "warnings": [
+      "WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ]
+  },
+  {
+    "test": "test_campaign_routes.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 1.37,
+    "summary": [
+      "CAMPAIGN ROUTES PASS: 5x8x3 identifiers, map callbacks, locked/unimplemented gates, eight exact reward ledgers and reserve XP, middle/theme bosses, explicit exit, failed-write rollback, duplicate completion, legacy backup/migration/idempotence and future-save protection"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_capture.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.72,
+    "summary": [
+      "CAPTURE PASS: 15 percent, no stage guarantees, tutorial guaranteed, boss excluded, six low poses"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_combat_audio.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.43,
+    "summary": [
+      "COMBAT AUDIO PASS: deterministic distinct PCM, six voices, cooldown, priority, mute, actual feedback routing"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_combat_feedback.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.61,
+    "summary": [
+      "COMBAT FEEDBACK PASS: aggregation, identity, number lanes, limits/cleanup, instant fox hit, actual healing, shield damage, tell countdown, stage clear"
+    ],
+    "warnings": [
+      "WARNING: 16 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ]
+  },
+  {
+    "test": "test_companion_assault.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.81,
+    "summary": [
+      "COMPANION ASSAULT PASS: swept multi-hit dash, one hit per enemy, outside lane, left facing, death cancel, delayed fixed-center blast/radius, cooldown, reward-neutral followers, result cancel, isolated tutorial"
+    ],
+    "warnings": [
+      "WARNING: 8 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ]
+  },
+  {
+    "test": "test_companion_loot.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.95,
+    "summary": [
+      "COMPANION LOOT PASS: explicit wild stars, no new low-star affixes, immutable acquisition/JSON, legacy migration, real affix effects, details, chimes"
+    ],
+    "warnings": [
+      "WARNING: 6 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ]
+  },
+  {
+    "test": "test_companion_management.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 1.27,
+    "summary": [
+      "MANAGEMENT PASS: combined filters/stable sorting, favorite persistence/protection, XP projection/training costs, metadata preservation, active growth feedback"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_companion_roles.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.8,
+    "summary": [
+      "PASS companion roles: target priorities/ranges, exact damage/healing/mitigation, skill timing, immutable recap, future trait fit and legacy retention"
+    ],
+    "warnings": [
+      "WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ]
+  },
+  {
+    "test": "test_druid_attack.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.61,
+    "summary": [
+      "DRUID ATTACK PASS: six new sequential poses + exact idle endpoints, grounded58..60px body, pre-hit no damage, original6 damage/.85s cooldown, impact frame, hand routing, movement/death/support priority, lost target cancels windup"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_druid_support.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.62,
+    "summary": [
+      "DRUID SUPPORT PASS: body/weapon routing, original60px standing body/center across automatic attack and recovery, Q55/8s, E14s, actual 3s/30% revive, interrupt"
+    ],
+    "warnings": [
+      "WARNING: 6 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ]
+  },
+  {
+    "test": "test_druid_transitions.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 1.18,
+    "summary": [
+      "DRUID TRANSITIONS PASS: target direction including crossing, unchanged damage, attack/heal/support/revive/down return, idle weapon, town position, fresh departure and result cleanup"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_eight_improvements.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.8,
+    "summary": [
+      "PASS eight improvements: contribution graph, scalable farewell, target training, rarity aura resource, four-leg deer/turtle gait, independent weapon layers and stronger actions"
+    ],
+    "warnings": [
+      "WARNING: Loaded resource as image file, this will not work on export: 'res://assets/party-pixel/druid.png'. Instead, import the image file as an Image resource and load it normally as a resource.",
+      "WARNING: Loaded resource as image file, this will not work on export: 'res://assets/party-pixel/druid-body-v2.png'. Instead, import the image file as an Image resource and load it normally as a resource.",
+      "WARNING: Loaded resource as image file, this will not work on export: 'res://assets/party-pixel/druid-staff-v2.png'. Instead, import the image file as an Image resource and load it normally as a resource."
+    ]
+  },
+  {
+    "test": "test_evolution.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 1.28,
+    "summary": [
+      "EVOLUTION PASS: actual UI and file roundtrip, exact materials/protection/stale/double submit, atomic failure rollback, identity and all options, no RNG, pending recovery and departure gate, permanent choice,110/130 growth, cap and enabled6"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_evolution_combat.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.71,
+    "summary": [
+      "EVOLUTION COMBAT PASS: all9 abilities actual damage/heal/cooldown/radius/shield and HP, multiplicative composition, thresholds, nonstack/expiry, echo once, all7 upgraded skills retained"
+    ],
+    "warnings": [
+      "WARNING: 18 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ]
+  },
+  {
+    "test": "test_evolution_six.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.8,
+    "summary": [
+      "EVOLUTION SIX PASS: UI transaction, exact materials, protection, stale and duplicate submission, atomic failure rollback, identity/options/selection and squad preserved, no RNG/cost, real file roundtrip, XP70 and110/130 growth"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_evolution_six_combat.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.71,
+    "summary": [
+      "EVOLUTION SIX COMBAT PASS: all9 abilities actual damage/heal/cooldown/radius/shield and HP, multiplicative composition, thresholds, nonstack/expiry, echo once, all7 upgraded skills retained"
+    ],
+    "warnings": [
+      "WARNING: 18 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ]
+  },
+  {
+    "test": "test_expedition.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.89,
+    "summary": [
+      "PASS expedition: independent snapshots, XP, new bonds, retreat/clear/defeat, idempotent rewards, tutorial, same-position dismissal"
+    ],
+    "warnings": [
+      "WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ]
+  },
+  {
+    "test": "test_frontier_routes.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 2.75,
+    "summary": [
+      "FRONTIER ROUTES PASS: sixteen sequential gates, unique backgrounds, six companion exact rewards, cone radius/angle/frozen direction and damage, delayed targets, three-pattern final boss, atomic completion, normal ending and persistent depth unlock"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_game_menu.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 1.55,
+    "summary": [
+      "GAME MENU PASS: five-column dropdown/wrapping, outside dismissal, real bag contents, navigation/back, pause/resume position, keyboard, combat restrictions, persistent discovery history, empty states"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_graveyard_routes.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 1.92,
+    "summary": [
+      "GRAVEYARD ROUTES PASS: eight gates, rear support, exact six companion rewards, beast-only bonds, fixed-target midboss and alternating guardian, atomic completion retry, legacy preservation"
+    ],
+    "warnings": [
+      "WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ]
+  },
+  {
+    "test": "test_growth_replay.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.9,
+    "summary": [
+      "GROWTH REPLAY PASS: first-clear preserved, six travelers exact XP x12/materials x3, optional rewards, weak mobs excluded, atomic bonus failure/retry, map policy, legacy isolated"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_mixed_stages.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 1.08,
+    "summary": [
+      "MIXED STAGES PASS: 7/2/2 reward families, 28/30/30 totals, main-path bonds, rear wraith, unchanged reward/15% policy, class-aware conditions, original guaranteed starters, production selector/collection"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_normal_pressure.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.81,
+    "summary": [
+      "NORMAL PRESSURE PASS: locked player tells, 1.2s warning, inside/outside damage, overlap once, recovery, route-only pressure and untouched legacy"
+    ],
+    "warnings": [
+      "WARNING: 16 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ]
+  },
+  {
+    "test": "test_pixel_actor.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.24,
+    "summary": [
+      "PIXEL ACTOR PASS: distinct frames, bounds, wrap, distance cadence, teleport, stop, down/revive, run cadence, gait hysteresis, support contact"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_quarry_routes.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 2.11,
+    "summary": [
+      "QUARRY ROUTES PASS: eight stage gates, valley handoff, map callbacks/background, exact main/reserve XP/materials, beast-only bonds, boss warning/collision boundaries, atomic completion retry, legacy graveyard unlock and unchanged quarry revisit"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_review_fixes.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 1.27,
+    "summary": [
+      "REVIEW FIXES PASS: real disk failure/blocked save rollback, retry and stale guards, exact consumption/identity, cap XP equivalence, 40-stage menu, ordinary/special taunt frozen tells and charge paths"
+    ],
+    "warnings": [
+      "WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ]
+  },
+  {
+    "test": "test_save_repair.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.46,
+    "summary": [
+      "SAVE REPAIR PASS: orphan IDs, JSON/legacy IDs, duplicates, progress retention, exact backup, unit validation, save roundtrip"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_skill_visual.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.72,
+    "summary": [
+      "SKILL VISUAL PASS: six successful casts each emit one distinct cue, failed cooldown silent, single-target damage/healing/cooldown preserved, assault resolved at impact"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_special_combat.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.71,
+    "summary": [
+      "SPECIAL COMBAT PASS: curve70/100.8/177.8, four-element catalog, actual attribute/unique effects, all seven upgraded skills, barrier nonstack/expiry, primary splash exclusion, echo delay and death cancellation"
+    ],
+    "warnings": [
+      "WARNING: 20 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ]
+  },
+  {
+    "test": "test_special_synthesis.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 1.27,
+    "summary": [
+      "SPECIAL SYNTHESIS PASS: atomic write failure rollback, exact consumption, stale and duplicate submits, identity and inherited options, pending/ready actual save roundtrip, no reroll, choice callbacks, approved water selectable and saved"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_stage_pacing.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.71,
+    "summary": [
+      "STAGE PACING PASS: distinct formations, unchanged28/12 budget, remaining count, one-time clear banner, notice/reward preservation, optional rest suggestion, boss entrance isolation, fresh run reset"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_synthesis_preview.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 1.27,
+    "summary": [
+      "SYNTHESIS PREVIEW PASS: protection, exact materials, distinct IDs, snapshots, candidate pools, actual UI callbacks, stale-state revalidation, no consumption or rerolls, camp-only"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_synthesis_progression.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.43,
+    "summary": [
+      "SYNTHESIS PROGRESSION PASS: caps, XP stop, reset-and-recover promotion curve, identity preservation, legacy migration, early-stage stars, preservation pools, extensible special catalog"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_town.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 1.28,
+    "summary": [
+      "PASS town movement/collision/menu/tutorial/departure/return/combat isolation"
+    ],
+    "warnings": []
+  },
+  {
+    "test": "test_ui.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 1.0,
+    "summary": [
+      "UI PASS: health/card state, thin bars, main touch bounds, no overlap, skill ownership, heal callback, roster layout/portraits, camp navigation, empty slots"
+    ],
+    "warnings": [
+      "WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ]
+  },
+  {
+    "test": "test_wave_progression.gd",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.92,
+    "summary": [
+      "WAVE PROGRESSION PASS: 5/2/7/9 main waves, unchanged12 reward targets, optional clearings excluded from targeting/AoE until player entry, independent unlock/reset, tutorial preserved"
+    ],
+    "warnings": [
+      "WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ]
+  },
+  {
+    "test": "main --self-test",
+    "pass": true,
+    "exit": 0,
+    "seconds": 0.91,
+    "summary": [
+      "SELF TEST PASS: party limits, reserve XP, overflow capture, wild level, revive, failure retention, fixed traits, tutorial flow, boss tells/dodge/swept charge, touch release"
+    ],
+    "warnings": [
+      "WARNING: 8 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ]
+  }
+]

@@ -59,8 +59,10 @@ static func stages(g):
 		if not data.is_empty():
 			wrapped(g,data.name,Vector2(930,318),260,22)
 			wrapped(g,data.story,Vector2(930,355),260,17)
-			var reward=R.rewards(selected)
-			wrapped(g,"적 Lv.%d · 활동4 / 준비6\n본선 전투 XP %d / 동행 각각\n재료 %d · 옆길 보상 별도\n야수 교감 15%% · 1성",Vector2(930,433),260,16,[data.level,reward.xp,reward.materials])
+			var replay=R.growth_replay(selected,progress)
+			var reward=R.rewards(selected,replay)
+			var reward_label=wrapped(g,("재탐험 · 적 Lv.%d · 활동4/준비6" if replay else "적 Lv.%d · 활동4 / 준비6")+"\n본선 전투 XP %d / 동행 각각\n재료 %d · 옆길 보상 별도\n야수 교감 15%% · 1성",Vector2(930,433),260,16,[data.level,reward.xp,reward.materials])
+			reward_label.tooltip_text="완료한 황야·성채의 재탐험: 전투 XP ×12, 성장 재료 ×3. 추가 약한 무리는 무보상이며 교감 확률과 성급은 유지합니다." if replay else "첫 클리어 보상"
 			var available=R.available(selected,progress)
 			var b=g.button(g.overlay,"선택한 스테이지 출발" if available else "이전 테마 완료 필요" if g.map_stage==1 and theme>1 else "앞 스테이지 완료 필요",Rect2(925,548,270,42),func(): g.depart_route(selected))
 			b.name="DepartRoute"; b.disabled=not available or g.squad.is_empty()

@@ -178,6 +178,12 @@ func draw_tell(canvas,enemy,cam):
 	var ratio=clampf(1.0-enemy.wind/maxf(0.001,duration),0,1)
 	var fill=Color(0.72,0.22,0.14,0.16+ratio*0.12)
 	var edge=Color("f0c08a") if enemy.wind>0.2 else Color("f3e4bc")
+	for aim in enemy.get("extra_aims",[]):
+		var center=aim-cam
+		var radius=enemy.get("extra_radius",90.0)
+		canvas.draw_circle(center,radius,fill)
+		canvas.draw_arc(center,radius,0,TAU,48,edge,2,false)
+		canvas.draw_arc(center,radius*ratio,0,TAU,48,edge,2,false)
 	var p=enemy.aim-cam
 	if enemy.attack_kind=="cone":
 		var origin=enemy.origin-cam

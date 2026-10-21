@@ -62,4 +62,8 @@ func _process(dt):
 			elif e.attack_kind=="charge":
 				var near=Geometry2D.get_closest_point_to_segment(player.pos,e.origin,e.aim)
 				if player.pos.distance_to(near)<85: stick=(e.aim-e.origin).normalized().orthogonal()
+			for aim in e.get("extra_aims",[]):
+				if player.pos.distance_to(aim)<e.get("extra_radius",90.0)+35:
+					stick=(player.pos-aim).normalized()
+					if stick.length()<0.1: stick=Vector2.LEFT
 	super(dt)

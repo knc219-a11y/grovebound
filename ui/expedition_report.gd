@@ -58,6 +58,8 @@ static func show_report(g):
 			rows.add_child(line)
 	g.label(g.overlay,"다음 준비",Vector2(235,530),20)
 	var tip="동료 쉼터에서 역할을 비교하고 편성을 준비하세요.\n육성은 재료 3개로 경험치 40 · 동쪽 사냥길에서 다시 출발합니다."
+	var promotable=g.owned.filter(func(d): return g.Loot.star(d)<3 and g.Loot.is_max_level(d)).size()
+	if promotable>0: tip="승급 대기 %d마리 · 만렙에서는 경험치를 더 받지 못합니다.\n마을 동료 관리 → 육성에서 승급과 재성장을 준비하세요." % promotable
 	if g.owned.is_empty(): tip="동쪽 사냥길에서 첫 인연을 만나보세요.\n전투 뒤 쉬는 야수에게 다가가 교감할 수 있습니다."
 	g.label(g.overlay,tip,Vector2(235,566),18)
 	if g.report_contributions: g.label(g.overlay,"막대는 항목별 최대 동료 대비 비율 · 숫자는 실제 적용량입니다.",Vector2(235,613),14)

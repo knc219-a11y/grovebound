@@ -81,9 +81,11 @@ static func populate(g,c):
 			var terminal=p.has("boss") and pack==p.packs.size()-1
 			g.spawn_enemy(p.packs[pack][index],p.points[pack]+(Vector2(145,-65) if p.get("rear_support",false) and p.packs[pack][index] in ["wraith","shaman"] and index>0 else Vector2(index*65,index*30)),boss_level(p) if terminal else p.level,terminal)
 			var e=g.enemies[-1]
+			if not terminal:
+				e.hp*=p.get("enemy_hp_scale",1.0); e.maxhp=e.hp
 			e.pack=pack; e.damage_scale=p.get("damage_scale",0.8) if not terminal else 0.8 if p.get("midboss",false) else 1.0
 			if terminal:
-				e.hp=p.boss_hp; e.maxhp=e.hp; e.stage_entry=true; e.route_mid=p.get("midboss",false); e.boss_pattern=p.get("boss_pattern",""); e.boss_damage=p.get("boss_damage",26.0)
+				e.hp=p.boss_hp; e.maxhp=e.hp; e.stage_entry=true; e.route_mid=p.get("midboss",false); e.boss_pattern=p.get("boss_pattern",""); e.boss_damage=p.get("boss_damage",26.0); e.boss_pressure=p.get("boss_pressure",false); e.cycle_guard=p.get("cycle_guard",false)
 		for index in p.crowds[pack]:
 			g.spawn_enemy(p.get("swarm_kind","wolf" if int(c.stage)>=3 else "boar"),p.points[pack]+Vector2(-65+index*38,45 if index%2 else -45),p.level)
 			var e=g.enemies[-1]
@@ -93,7 +95,10 @@ static func populate(g,c):
 	for index in 2:
 		g.spawn_enemy(p.get("side_kinds",["deer","turtle"])[index],g.trail.side+Vector2(index*65,25*index),p.level)
 		g.enemies[-1].pack=8; g.enemies[-1].damage_scale=p.get("damage_scale",0.8)
-static func rewards(c):
+		g.enemies[-1].hp*=p.get("enemy_hp_scale",1.0); g.enemies[-1].maxhp=g.enemies[-1].hp
+static func growth_replay(c,progress):
+	return implemented(c) and int(c.theme)>=4 and contains(progress,c)
+static func rewards(c,replay=false):
 	var p=profile(c)
 	if p.is_empty(): return {}
 	var xp=0
@@ -103,7 +108,9 @@ static func rewards(c):
 		for kind in p.packs[pack]:
 			xp+=12+(boss_level(p) if boss else p.level)*4
 			materials+=5 if boss else 1
-	return {"xp":xp,"materials":materials+10,"bonus":10,"optional_xp":2*(12+p.level*4),"optional_materials":2}
+	var xp_scale=12 if replay and int(c.theme)>=4 else 1
+	var material_scale=3 if replay and int(c.theme)>=4 else 1
+	return {"xp":xp*xp_scale,"materials":(materials+10)*material_scale,"bonus":10*material_scale,"optional_xp":2*(12+p.level*4)*xp_scale,"optional_materials":2*material_scale}
 static func habitats(kind):
 	var result=Legacy.habitats(kind)
 	for theme in [4,5]:
