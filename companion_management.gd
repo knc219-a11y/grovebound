@@ -61,5 +61,5 @@ static func target_plan(record,target):
 	if charges<=0: return {}
 	var projected=record.duplicate(true)
 	projected.level=target
-	projected.xp=int(current+charges*40-total)
+	projected.xp=0 if Loot.is_max_level(projected) else int(current+charges*40-total)
 	return {"target":target,"charges":charges,"cost":charges*3,"xp":charges*40,"before":record.duplicate(true),"after":projected}

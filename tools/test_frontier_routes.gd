@@ -56,7 +56,7 @@ func check():
 					g.resolve_enemy_attack(e); assert(g.player.hp==hp and e.aim==aim)
 				if theme==5 and stage==8:
 					g.begin_boss_attack(e,g.player); assert(e.attack_kind=="slam")
-					e.hp=e.maxhp*0.4; g.begin_boss_attack(e,g.player); assert(e.attack_kind=="cone" and is_equal_approx(e.wind,1.15))
+					e.hp=e.maxhp*0.4; g.begin_boss_attack(e,g.player); assert(e.attack_kind=="cone" and is_equal_approx(e.wind,1.2))
 				g.hit_enemy(e,999999,g.player.pos,g.player)
 			assert(g.trail.ready_to_clear(g.enemies))
 			g.player.pos=p.exit; g.in_combat=false; g.captures.clear()

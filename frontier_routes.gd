@@ -19,10 +19,21 @@ const STAGES={
 }
 static func profile(theme,stage):
 	var p=STAGES["%d:%d" % [theme,stage]].duplicate(true)
-	p.swarm_kind="slime" if theme==4 else "skeleton"; p.damage_scale=0.9; p.swarm_damage_scale=0.8; p.rear_support=true
+	p.swarm_kind="slime" if theme==4 else "skeleton"; p.damage_scale=0.95; p.swarm_damage_scale=0.8; p.rear_support=true
+	p.enemy_hp_scale=1.1 if theme==4 else 1.15
+	if p.has("boss"):
+		p.boss_hp*=2.0
+		p.boss_damage=60.0 if theme==4 else 75.0
+		p.boss_pressure=true
+		if theme==5 and stage==8:
+			p.boss_hp=24000.0
+			p.boss_damage=95.0
+			p.cycle_guard=true
+			p.story="4성 강화 스킬로 순환 갑주를 6초 해제하고, 정면과 발밑 예고를 피하세요."
+	if theme==5 and stage==7: p.story="막히면 황야·성채를 재탐험해 승급·합성을 준비하세요."
 	p.side_kinds=["wolf","slime"] if theme==4 else ["bat","skeleton"]
 	p.rest_name="바람막이 쉼터" if theme==4 else "성채 안뜰 쉼터"
 	p.exit_name="바람길 표식" if theme==4 else "순환의 표식"; p.side_name="선택 옆길"
 	p.background="res://assets/campaign/wasteland-v1.webp" if theme==4 else "res://assets/campaign/citadel-v1.webp"
-	p.boss_hint="정면 부채꼴과 주변 강타, 고정된 표적을 구분하세요."
+	p.boss_hint="정면과 지면 예고를 피하세요. 번갈아 드루이드 발밑도 겨눕니다."
 	return p

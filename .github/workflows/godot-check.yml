@@ -111,14 +111,17 @@ jobs:
           timeout 120s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/audit_valley_routes.gd -- --through-graveyard 2>&1 | tee graveyard-journey.log
           grep -q 'GRAVEYARD JOURNEY PASS 144/144' graveyard-journey.log
           if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR:' graveyard-routes.log graveyard-journey.log; then exit 1; fi
-      - name: Wasteland, citadel and full normal campaign
+      - name: Wasteland, citadel and continuous path to final preparation
         shell: bash
         run: |
           set -euo pipefail
           timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_frontier_routes.gd 2>&1 | tee frontier-routes.log
           grep -q 'FRONTIER ROUTES PASS:' frontier-routes.log
-          timeout 180s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/audit_valley_routes.gd -- --through-normal 2>&1 | tee normal-campaign.log
-          grep -q 'NORMAL CAMPAIGN PASS 240/240' normal-campaign.log
+          timeout 180s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/audit_valley_routes.gd -- --through-normal --before-preparation 2>&1 | tee normal-campaign.log
+          grep -q 'NORMAL CAMPAIGN PASS 228/228' normal-campaign.log
+          timeout 120s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/audit_first_four.gd 2>&1 | tee first-four.log
+          grep -q 'FIRST FOUR PASS:' first-four.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR:' first-four.log; then exit 1; fi
           if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR:' frontier-routes.log normal-campaign.log; then exit 1; fi
       - name: Companion evolution transaction and combat
         shell: bash
@@ -133,6 +136,14 @@ jobs:
           timeout 60s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/test_evolution_six_combat.gd 2>&1 | tee evolution-six-combat.log
           grep -q 'EVOLUTION SIX COMBAT PASS:' evolution-six-combat.log
           if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR:' evolution.log evolution-combat.log evolution-six.log evolution-six-combat.log; then exit 1; fi
+      - name: Full regression and passive versus assisted boss pressure
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/audit_suite.py --godot "$(command -v Godot_v4.7-stable_linux.x86_64)" --out docs/normal-review-tests.json
+          timeout 90s Godot_v4.7-stable_linux.x86_64 --headless --path . --script res://tools/audit_normal_pressure.gd -- --check 2>&1 | tee normal-pressure.log
+          grep -q 'PRESSURE PASS:' normal-pressure.log
+          if grep -E 'SCRIPT ERROR:|Parse Error:|ERROR:' normal-pressure.log; then exit 1; fi
   windows-launcher:
     runs-on: windows-latest
     timeout-minutes: 10

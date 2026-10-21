@@ -1,0 +1,2131 @@
+{
+	"approach": {
+		"after": [
+			{
+				"favorite": false,
+				"grade": "special",
+				"id": 5,
+				"kind": "boar",
+				"level": 16,
+				"options": [],
+				"special": {
+					"affixes": [
+						{
+							"key": "armor",
+							"value": 9
+						},
+						{
+							"key": "vitality",
+							"value": 13
+						}
+					],
+					"element": "earth",
+					"state": "ready",
+					"unique": "guard",
+					"version": 1
+				},
+				"star": 4,
+				"trait": "용맹함",
+				"xp": 184
+			},
+			{
+				"favorite": false,
+				"grade": "epic",
+				"id": 6,
+				"kind": "boar",
+				"level": 40,
+				"options": [],
+				"star": 3,
+				"trait": "용맹함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "epic",
+				"id": 7,
+				"kind": "boar",
+				"level": 40,
+				"options": [],
+				"star": 3,
+				"trait": "민첩함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "epic",
+				"id": 8,
+				"kind": "fox",
+				"level": 40,
+				"options": [],
+				"star": 3,
+				"trait": "강인함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 11,
+				"kind": "bat",
+				"level": 5,
+				"options": [],
+				"star": 1,
+				"trait": "단단함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 12,
+				"kind": "bat",
+				"level": 6,
+				"options": [],
+				"star": 1,
+				"trait": "민첩함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 13,
+				"kind": "bat",
+				"level": 7,
+				"options": [],
+				"star": 1,
+				"trait": "강인함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 14,
+				"kind": "bat",
+				"level": 14,
+				"options": [],
+				"star": 1,
+				"trait": "용맹함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 15,
+				"kind": "wolf",
+				"level": 12,
+				"options": [],
+				"star": 1,
+				"trait": "용맹함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 16,
+				"kind": "wolf",
+				"level": 12,
+				"options": [],
+				"star": 1,
+				"trait": "용맹함",
+				"xp": 0
+			}
+		],
+		"before": [
+			{
+				"favorite": false,
+				"grade": "special",
+				"id": 5,
+				"kind": "boar",
+				"level": 15,
+				"options": [],
+				"special": {
+					"affixes": [
+						{
+							"key": "armor",
+							"value": 9
+						},
+						{
+							"key": "vitality",
+							"value": 13
+						}
+					],
+					"element": "earth",
+					"state": "ready",
+					"unique": "guard",
+					"version": 1
+				},
+				"star": 4,
+				"trait": "용맹함",
+				"xp": 5
+			},
+			{
+				"favorite": false,
+				"grade": "epic",
+				"id": 6,
+				"kind": "boar",
+				"level": 40,
+				"options": [],
+				"star": 3,
+				"trait": "용맹함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "epic",
+				"id": 7,
+				"kind": "boar",
+				"level": 40,
+				"options": [],
+				"star": 3,
+				"trait": "민첩함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "epic",
+				"id": 8,
+				"kind": "fox",
+				"level": 40,
+				"options": [],
+				"star": 3,
+				"trait": "강인함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 11,
+				"kind": "bat",
+				"level": 5,
+				"options": [],
+				"star": 1,
+				"trait": "단단함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 12,
+				"kind": "bat",
+				"level": 6,
+				"options": [],
+				"star": 1,
+				"trait": "민첩함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 13,
+				"kind": "bat",
+				"level": 7,
+				"options": [],
+				"star": 1,
+				"trait": "강인함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 14,
+				"kind": "bat",
+				"level": 14,
+				"options": [],
+				"star": 1,
+				"trait": "용맹함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 15,
+				"kind": "wolf",
+				"level": 12,
+				"options": [],
+				"star": 1,
+				"trait": "용맹함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 16,
+				"kind": "wolf",
+				"level": 12,
+				"options": [],
+				"star": 1,
+				"trait": "용맹함",
+				"xp": 0
+			}
+		],
+		"bonds": 0,
+		"down_events": 0,
+		"heals": 1,
+		"kills": 14,
+		"minimum_hp": 118.8,
+		"progress": {
+			"cleared": 4,
+			"total": 4
+		},
+		"report": {
+			"contributions": [
+				{
+					"id": 5,
+					"kind": "boar",
+					"trait": "용맹함",
+					"values": {
+						"damage": 667.1196928,
+						"mitigation": 8.45757449999999,
+						"skills": 2.0
+					}
+				},
+				{
+					"id": 6,
+					"kind": "boar",
+					"trait": "용맹함",
+					"values": {
+						"damage": 55.312,
+						"skills": 2.0
+					}
+				},
+				{
+					"id": 7,
+					"kind": "boar",
+					"trait": "민첩함",
+					"values": {
+						"damage": 1048.7163072,
+						"skills": 2.0
+					}
+				},
+				{
+					"id": 8,
+					"kind": "fox",
+					"trait": "강인함",
+					"values": {
+						"damage": 830.784,
+						"skills": 2.0
+					}
+				}
+			],
+			"growth": [
+				{
+					"from": 15,
+					"id": 5,
+					"kind": "boar",
+					"to": 16,
+					"xp": 704
+				}
+			],
+			"kills": 14,
+			"materials": 18,
+			"newcomers": [],
+			"outcome": "수호자는 말합니다. 흐름을 놓으면 다시 잃게 된다고.",
+			"route": {
+				"difficulty": "normal",
+				"stage": 7,
+				"theme": 5
+			},
+			"seconds": 16,
+			"stage_id": 5,
+			"tutorial": false
+		},
+		"seconds": 17.0,
+		"seed": 10417,
+		"skills": 8,
+		"stage": 7,
+		"starter": "boar",
+		"success": true,
+		"theme": 5
+	},
+	"final": {
+		"after": [
+			{
+				"favorite": false,
+				"grade": "special",
+				"id": 5,
+				"kind": "boar",
+				"level": 17,
+				"options": [],
+				"special": {
+					"affixes": [
+						{
+							"key": "armor",
+							"value": 9
+						},
+						{
+							"key": "vitality",
+							"value": 13
+						}
+					],
+					"element": "earth",
+					"state": "ready",
+					"unique": "guard",
+					"version": 1
+				},
+				"star": 4,
+				"trait": "용맹함",
+				"xp": 68
+			},
+			{
+				"favorite": false,
+				"grade": "epic",
+				"id": 6,
+				"kind": "boar",
+				"level": 40,
+				"options": [],
+				"star": 3,
+				"trait": "용맹함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "epic",
+				"id": 7,
+				"kind": "boar",
+				"level": 40,
+				"options": [],
+				"star": 3,
+				"trait": "민첩함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "epic",
+				"id": 8,
+				"kind": "fox",
+				"level": 40,
+				"options": [],
+				"star": 3,
+				"trait": "강인함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 11,
+				"kind": "bat",
+				"level": 5,
+				"options": [],
+				"star": 1,
+				"trait": "단단함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 12,
+				"kind": "bat",
+				"level": 6,
+				"options": [],
+				"star": 1,
+				"trait": "민첩함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 13,
+				"kind": "bat",
+				"level": 7,
+				"options": [],
+				"star": 1,
+				"trait": "강인함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 14,
+				"kind": "bat",
+				"level": 14,
+				"options": [],
+				"star": 1,
+				"trait": "용맹함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 15,
+				"kind": "wolf",
+				"level": 12,
+				"options": [],
+				"star": 1,
+				"trait": "용맹함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 16,
+				"kind": "wolf",
+				"level": 12,
+				"options": [],
+				"star": 1,
+				"trait": "용맹함",
+				"xp": 0
+			}
+		],
+		"before": [
+			{
+				"favorite": false,
+				"grade": "special",
+				"id": 5,
+				"kind": "boar",
+				"level": 16,
+				"options": [],
+				"special": {
+					"affixes": [
+						{
+							"key": "armor",
+							"value": 9
+						},
+						{
+							"key": "vitality",
+							"value": 13
+						}
+					],
+					"element": "earth",
+					"state": "ready",
+					"unique": "guard",
+					"version": 1
+				},
+				"star": 4,
+				"trait": "용맹함",
+				"xp": 184
+			},
+			{
+				"favorite": false,
+				"grade": "epic",
+				"id": 6,
+				"kind": "boar",
+				"level": 40,
+				"options": [],
+				"star": 3,
+				"trait": "용맹함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "epic",
+				"id": 7,
+				"kind": "boar",
+				"level": 40,
+				"options": [],
+				"star": 3,
+				"trait": "민첩함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "epic",
+				"id": 8,
+				"kind": "fox",
+				"level": 40,
+				"options": [],
+				"star": 3,
+				"trait": "강인함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 11,
+				"kind": "bat",
+				"level": 5,
+				"options": [],
+				"star": 1,
+				"trait": "단단함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 12,
+				"kind": "bat",
+				"level": 6,
+				"options": [],
+				"star": 1,
+				"trait": "민첩함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 13,
+				"kind": "bat",
+				"level": 7,
+				"options": [],
+				"star": 1,
+				"trait": "강인함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 14,
+				"kind": "bat",
+				"level": 14,
+				"options": [],
+				"star": 1,
+				"trait": "용맹함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 15,
+				"kind": "wolf",
+				"level": 12,
+				"options": [],
+				"star": 1,
+				"trait": "용맹함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 16,
+				"kind": "wolf",
+				"level": 12,
+				"options": [],
+				"star": 1,
+				"trait": "용맹함",
+				"xp": 0
+			}
+		],
+		"bonds": 0,
+		"down_events": 0,
+		"heals": 5,
+		"kills": 8,
+		"minimum_hp": 180.0,
+		"progress": {
+			"cleared": 3,
+			"total": 3
+		},
+		"report": {
+			"contributions": [
+				{
+					"id": 5,
+					"kind": "boar",
+					"trait": "용맹함",
+					"values": {
+						"damage": 8997.48993935999,
+						"mitigation": 278.3820625,
+						"skills": 6.0
+					}
+				},
+				{
+					"id": 6,
+					"kind": "boar",
+					"trait": "용맹함",
+					"values": {
+						"damage": 5757.56528,
+						"skills": 7.0
+					}
+				},
+				{
+					"id": 7,
+					"kind": "boar",
+					"trait": "민첩함",
+					"values": {
+						"damage": 4987.84278063998,
+						"skills": 7.0
+					}
+				},
+				{
+					"id": 8,
+					"kind": "fox",
+					"trait": "강인함",
+					"values": {
+						"damage": 5390.158,
+						"skills": 7.0
+					}
+				}
+			],
+			"growth": [
+				{
+					"from": 16,
+					"id": 5,
+					"kind": "boar",
+					"to": 17,
+					"xp": 444
+				}
+			],
+			"kills": 8,
+			"materials": 19,
+			"newcomers": [],
+			"outcome": "장치가 멎고 물과 영혼이 다시 흐릅니다. 회복된 길 너머, 심층에 남은 뿌리를 찾아갑니다.",
+			"route": {
+				"difficulty": "normal",
+				"stage": 8,
+				"theme": 5
+			},
+			"seconds": 63,
+			"stage_id": 5,
+			"tutorial": false
+		},
+		"seconds": 63.1,
+		"seed": 10417,
+		"skills": 27,
+		"stage": 8,
+		"starter": "boar",
+		"success": true,
+		"theme": 5
+	},
+	"initial": {
+		"campaign_progress": {
+			"cleared": [
+				{
+					"difficulty": "normal",
+					"stage": 1,
+					"theme": 1
+				},
+				{
+					"difficulty": "normal",
+					"stage": 2,
+					"theme": 1
+				},
+				{
+					"difficulty": "normal",
+					"stage": 3,
+					"theme": 1
+				},
+				{
+					"difficulty": "normal",
+					"stage": 4,
+					"theme": 1
+				},
+				{
+					"difficulty": "normal",
+					"stage": 5,
+					"theme": 1
+				},
+				{
+					"difficulty": "normal",
+					"stage": 6,
+					"theme": 1
+				},
+				{
+					"difficulty": "normal",
+					"stage": 7,
+					"theme": 1
+				},
+				{
+					"difficulty": "normal",
+					"stage": 8,
+					"theme": 1
+				},
+				{
+					"difficulty": "normal",
+					"stage": 1,
+					"theme": 2
+				},
+				{
+					"difficulty": "normal",
+					"stage": 2,
+					"theme": 2
+				},
+				{
+					"difficulty": "normal",
+					"stage": 3,
+					"theme": 2
+				},
+				{
+					"difficulty": "normal",
+					"stage": 4,
+					"theme": 2
+				},
+				{
+					"difficulty": "normal",
+					"stage": 5,
+					"theme": 2
+				},
+				{
+					"difficulty": "normal",
+					"stage": 6,
+					"theme": 2
+				},
+				{
+					"difficulty": "normal",
+					"stage": 7,
+					"theme": 2
+				},
+				{
+					"difficulty": "normal",
+					"stage": 8,
+					"theme": 2
+				},
+				{
+					"difficulty": "normal",
+					"stage": 1,
+					"theme": 3
+				},
+				{
+					"difficulty": "normal",
+					"stage": 2,
+					"theme": 3
+				},
+				{
+					"difficulty": "normal",
+					"stage": 3,
+					"theme": 3
+				},
+				{
+					"difficulty": "normal",
+					"stage": 4,
+					"theme": 3
+				},
+				{
+					"difficulty": "normal",
+					"stage": 5,
+					"theme": 3
+				},
+				{
+					"difficulty": "normal",
+					"stage": 6,
+					"theme": 3
+				},
+				{
+					"difficulty": "normal",
+					"stage": 7,
+					"theme": 3
+				},
+				{
+					"difficulty": "normal",
+					"stage": 8,
+					"theme": 3
+				},
+				{
+					"difficulty": "normal",
+					"stage": 1,
+					"theme": 4
+				},
+				{
+					"difficulty": "normal",
+					"stage": 2,
+					"theme": 4
+				},
+				{
+					"difficulty": "normal",
+					"stage": 3,
+					"theme": 4
+				},
+				{
+					"difficulty": "normal",
+					"stage": 4,
+					"theme": 4
+				},
+				{
+					"difficulty": "normal",
+					"stage": 5,
+					"theme": 4
+				},
+				{
+					"difficulty": "normal",
+					"stage": 6,
+					"theme": 4
+				},
+				{
+					"difficulty": "normal",
+					"stage": 7,
+					"theme": 4
+				},
+				{
+					"difficulty": "normal",
+					"stage": 8,
+					"theme": 4
+				},
+				{
+					"difficulty": "normal",
+					"stage": 1,
+					"theme": 5
+				},
+				{
+					"difficulty": "normal",
+					"stage": 2,
+					"theme": 5
+				},
+				{
+					"difficulty": "normal",
+					"stage": 3,
+					"theme": 5
+				},
+				{
+					"difficulty": "normal",
+					"stage": 4,
+					"theme": 5
+				},
+				{
+					"difficulty": "normal",
+					"stage": 5,
+					"theme": 5
+				},
+				{
+					"difficulty": "normal",
+					"stage": 6,
+					"theme": 5
+				}
+			],
+			"version": 1
+		},
+		"cleared_stages": [
+			1,
+			2,
+			3
+		],
+		"discovered": [
+			"boar",
+			"fox",
+			"wolf",
+			"bat"
+		],
+		"materials": 242,
+		"next_id": 15,
+		"owned": [
+			{
+				"favorite": false,
+				"grade": "rare",
+				"id": 5,
+				"kind": "boar",
+				"level": 23,
+				"options": [],
+				"star": 2,
+				"trait": "용맹함",
+				"xp": 245
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 6,
+				"kind": "boar",
+				"level": 20,
+				"options": [],
+				"star": 1,
+				"trait": "용맹함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 7,
+				"kind": "boar",
+				"level": 20,
+				"options": [],
+				"star": 1,
+				"trait": "민첩함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 8,
+				"kind": "fox",
+				"level": 20,
+				"options": [],
+				"star": 1,
+				"trait": "강인함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 9,
+				"kind": "fox",
+				"level": 20,
+				"options": [],
+				"star": 1,
+				"trait": "용맹함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 10,
+				"kind": "wolf",
+				"level": 20,
+				"options": [],
+				"star": 1,
+				"trait": "용맹함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 11,
+				"kind": "bat",
+				"level": 5,
+				"options": [],
+				"star": 1,
+				"trait": "단단함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 12,
+				"kind": "bat",
+				"level": 6,
+				"options": [],
+				"star": 1,
+				"trait": "민첩함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 13,
+				"kind": "bat",
+				"level": 7,
+				"options": [],
+				"star": 1,
+				"trait": "강인함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 14,
+				"kind": "bat",
+				"level": 14,
+				"options": [],
+				"star": 1,
+				"trait": "용맹함",
+				"xp": 0
+			}
+		],
+		"seen_species": [],
+		"squad": [
+			5,
+			6,
+			7,
+			8,
+			9,
+			10
+		],
+		"tutorial_done": false,
+		"unlocked": true,
+		"version": 2
+	},
+	"method": "Continues the real first-invitation boar/10417 path after 5-6; repeats actual 4-1 fights, spends only earned materials, promotes six travelers at cap, synthesizes three real 3-star40 records, selects earth/guard and trains 4-star15 before the final. No XP/material/companion injection.",
+	"prepared": {
+		"campaign_progress": {
+			"cleared": [
+				{
+					"difficulty": "normal",
+					"stage": 1,
+					"theme": 1
+				},
+				{
+					"difficulty": "normal",
+					"stage": 2,
+					"theme": 1
+				},
+				{
+					"difficulty": "normal",
+					"stage": 3,
+					"theme": 1
+				},
+				{
+					"difficulty": "normal",
+					"stage": 4,
+					"theme": 1
+				},
+				{
+					"difficulty": "normal",
+					"stage": 5,
+					"theme": 1
+				},
+				{
+					"difficulty": "normal",
+					"stage": 6,
+					"theme": 1
+				},
+				{
+					"difficulty": "normal",
+					"stage": 7,
+					"theme": 1
+				},
+				{
+					"difficulty": "normal",
+					"stage": 8,
+					"theme": 1
+				},
+				{
+					"difficulty": "normal",
+					"stage": 1,
+					"theme": 2
+				},
+				{
+					"difficulty": "normal",
+					"stage": 2,
+					"theme": 2
+				},
+				{
+					"difficulty": "normal",
+					"stage": 3,
+					"theme": 2
+				},
+				{
+					"difficulty": "normal",
+					"stage": 4,
+					"theme": 2
+				},
+				{
+					"difficulty": "normal",
+					"stage": 5,
+					"theme": 2
+				},
+				{
+					"difficulty": "normal",
+					"stage": 6,
+					"theme": 2
+				},
+				{
+					"difficulty": "normal",
+					"stage": 7,
+					"theme": 2
+				},
+				{
+					"difficulty": "normal",
+					"stage": 8,
+					"theme": 2
+				},
+				{
+					"difficulty": "normal",
+					"stage": 1,
+					"theme": 3
+				},
+				{
+					"difficulty": "normal",
+					"stage": 2,
+					"theme": 3
+				},
+				{
+					"difficulty": "normal",
+					"stage": 3,
+					"theme": 3
+				},
+				{
+					"difficulty": "normal",
+					"stage": 4,
+					"theme": 3
+				},
+				{
+					"difficulty": "normal",
+					"stage": 5,
+					"theme": 3
+				},
+				{
+					"difficulty": "normal",
+					"stage": 6,
+					"theme": 3
+				},
+				{
+					"difficulty": "normal",
+					"stage": 7,
+					"theme": 3
+				},
+				{
+					"difficulty": "normal",
+					"stage": 8,
+					"theme": 3
+				},
+				{
+					"difficulty": "normal",
+					"stage": 1,
+					"theme": 4
+				},
+				{
+					"difficulty": "normal",
+					"stage": 2,
+					"theme": 4
+				},
+				{
+					"difficulty": "normal",
+					"stage": 3,
+					"theme": 4
+				},
+				{
+					"difficulty": "normal",
+					"stage": 4,
+					"theme": 4
+				},
+				{
+					"difficulty": "normal",
+					"stage": 5,
+					"theme": 4
+				},
+				{
+					"difficulty": "normal",
+					"stage": 6,
+					"theme": 4
+				},
+				{
+					"difficulty": "normal",
+					"stage": 7,
+					"theme": 4
+				},
+				{
+					"difficulty": "normal",
+					"stage": 8,
+					"theme": 4
+				},
+				{
+					"difficulty": "normal",
+					"stage": 1,
+					"theme": 5
+				},
+				{
+					"difficulty": "normal",
+					"stage": 2,
+					"theme": 5
+				},
+				{
+					"difficulty": "normal",
+					"stage": 3,
+					"theme": 5
+				},
+				{
+					"difficulty": "normal",
+					"stage": 4,
+					"theme": 5
+				},
+				{
+					"difficulty": "normal",
+					"stage": 5,
+					"theme": 5
+				},
+				{
+					"difficulty": "normal",
+					"stage": 6,
+					"theme": 5
+				}
+			],
+			"version": 1
+		},
+		"cleared_stages": [
+			1,
+			2,
+			3
+		],
+		"discovered": [
+			"boar",
+			"fox",
+			"wolf",
+			"bat"
+		],
+		"materials": 137,
+		"next_id": 17,
+		"owned": [
+			{
+				"favorite": false,
+				"grade": "special",
+				"id": 5,
+				"kind": "boar",
+				"level": 15,
+				"options": [],
+				"special": {
+					"affixes": [
+						{
+							"key": "armor",
+							"value": 9
+						},
+						{
+							"key": "vitality",
+							"value": 13
+						}
+					],
+					"element": "earth",
+					"state": "ready",
+					"unique": "guard",
+					"version": 1
+				},
+				"star": 4,
+				"trait": "용맹함",
+				"xp": 5
+			},
+			{
+				"favorite": false,
+				"grade": "epic",
+				"id": 6,
+				"kind": "boar",
+				"level": 40,
+				"options": [],
+				"star": 3,
+				"trait": "용맹함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "epic",
+				"id": 7,
+				"kind": "boar",
+				"level": 40,
+				"options": [],
+				"star": 3,
+				"trait": "민첩함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "epic",
+				"id": 8,
+				"kind": "fox",
+				"level": 40,
+				"options": [],
+				"star": 3,
+				"trait": "강인함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 11,
+				"kind": "bat",
+				"level": 5,
+				"options": [],
+				"star": 1,
+				"trait": "단단함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 12,
+				"kind": "bat",
+				"level": 6,
+				"options": [],
+				"star": 1,
+				"trait": "민첩함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 13,
+				"kind": "bat",
+				"level": 7,
+				"options": [],
+				"star": 1,
+				"trait": "강인함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 14,
+				"kind": "bat",
+				"level": 14,
+				"options": [],
+				"star": 1,
+				"trait": "용맹함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 15,
+				"kind": "wolf",
+				"level": 12,
+				"options": [],
+				"star": 1,
+				"trait": "용맹함",
+				"xp": 0
+			},
+			{
+				"favorite": false,
+				"grade": "common",
+				"id": 16,
+				"kind": "wolf",
+				"level": 12,
+				"options": [],
+				"star": 1,
+				"trait": "용맹함",
+				"xp": 0
+			}
+		],
+		"seen_species": [
+			"slime",
+			"thornling",
+			"wolf",
+			"skeleton"
+		],
+		"squad": [
+			5,
+			6,
+			7,
+			8
+		],
+		"tutorial_done": false,
+		"unlocked": true,
+		"version": 2
+	},
+	"promotions": [
+		{
+			"id": 6,
+			"level": 1,
+			"materials": 242,
+			"replay": 0,
+			"star": 2
+		},
+		{
+			"id": 7,
+			"level": 1,
+			"materials": 242,
+			"replay": 0,
+			"star": 2
+		},
+		{
+			"id": 8,
+			"level": 1,
+			"materials": 242,
+			"replay": 0,
+			"star": 2
+		},
+		{
+			"id": 9,
+			"level": 1,
+			"materials": 242,
+			"replay": 0,
+			"star": 2
+		},
+		{
+			"id": 10,
+			"level": 1,
+			"materials": 242,
+			"replay": 0,
+			"star": 2
+		},
+		{
+			"id": 6,
+			"level": 1,
+			"materials": 494,
+			"replay": 6,
+			"star": 3
+		},
+		{
+			"id": 7,
+			"level": 1,
+			"materials": 494,
+			"replay": 6,
+			"star": 3
+		},
+		{
+			"id": 8,
+			"level": 1,
+			"materials": 494,
+			"replay": 6,
+			"star": 3
+		},
+		{
+			"id": 9,
+			"level": 1,
+			"materials": 494,
+			"replay": 6,
+			"star": 3
+		},
+		{
+			"id": 10,
+			"level": 1,
+			"materials": 494,
+			"replay": 6,
+			"star": 3
+		},
+		{
+			"id": 5,
+			"level": 20,
+			"materials": 35,
+			"replay": 7,
+			"star": 3
+		}
+	],
+	"repeats": [
+		{
+			"materials": 284,
+			"number": 1,
+			"party": [
+				{
+					"id": 5,
+					"level": 26,
+					"star": 2,
+					"xp": 605
+				},
+				{
+					"id": 6,
+					"level": 13,
+					"star": 2,
+					"xp": 150
+				},
+				{
+					"id": 7,
+					"level": 13,
+					"star": 2,
+					"xp": 150
+				},
+				{
+					"id": 8,
+					"level": 13,
+					"star": 2,
+					"xp": 150
+				},
+				{
+					"id": 9,
+					"level": 13,
+					"star": 2,
+					"xp": 150
+				},
+				{
+					"id": 10,
+					"level": 13,
+					"star": 2,
+					"xp": 150
+				}
+			],
+			"seconds": 11.5
+		},
+		{
+			"materials": 326,
+			"number": 2,
+			"party": [
+				{
+					"id": 5,
+					"level": 29,
+					"star": 2,
+					"xp": 650
+				},
+				{
+					"id": 6,
+					"level": 18,
+					"star": 2,
+					"xp": 405
+				},
+				{
+					"id": 7,
+					"level": 18,
+					"star": 2,
+					"xp": 405
+				},
+				{
+					"id": 8,
+					"level": 18,
+					"star": 2,
+					"xp": 405
+				},
+				{
+					"id": 9,
+					"level": 18,
+					"star": 2,
+					"xp": 405
+				},
+				{
+					"id": 10,
+					"level": 18,
+					"star": 2,
+					"xp": 405
+				}
+			],
+			"seconds": 11.5
+		},
+		{
+			"materials": 368,
+			"number": 3,
+			"party": [
+				{
+					"id": 5,
+					"level": 30,
+					"star": 2,
+					"xp": 0
+				},
+				{
+					"id": 6,
+					"level": 22,
+					"star": 2,
+					"xp": 555
+				},
+				{
+					"id": 7,
+					"level": 22,
+					"star": 2,
+					"xp": 555
+				},
+				{
+					"id": 8,
+					"level": 22,
+					"star": 2,
+					"xp": 555
+				},
+				{
+					"id": 9,
+					"level": 22,
+					"star": 2,
+					"xp": 555
+				},
+				{
+					"id": 10,
+					"level": 22,
+					"star": 2,
+					"xp": 555
+				}
+			],
+			"seconds": 10.8
+		},
+		{
+			"materials": 410,
+			"number": 4,
+			"party": [
+				{
+					"id": 5,
+					"level": 30,
+					"star": 2,
+					"xp": 0
+				},
+				{
+					"id": 6,
+					"level": 26,
+					"star": 2,
+					"xp": 145
+				},
+				{
+					"id": 7,
+					"level": 26,
+					"star": 2,
+					"xp": 145
+				},
+				{
+					"id": 8,
+					"level": 26,
+					"star": 2,
+					"xp": 145
+				},
+				{
+					"id": 9,
+					"level": 26,
+					"star": 2,
+					"xp": 145
+				},
+				{
+					"id": 10,
+					"level": 26,
+					"star": 2,
+					"xp": 145
+				}
+			],
+			"seconds": 10.2
+		},
+		{
+			"materials": 452,
+			"number": 5,
+			"party": [
+				{
+					"id": 5,
+					"level": 30,
+					"star": 2,
+					"xp": 0
+				},
+				{
+					"id": 6,
+					"level": 29,
+					"star": 2,
+					"xp": 190
+				},
+				{
+					"id": 7,
+					"level": 29,
+					"star": 2,
+					"xp": 190
+				},
+				{
+					"id": 8,
+					"level": 29,
+					"star": 2,
+					"xp": 190
+				},
+				{
+					"id": 9,
+					"level": 29,
+					"star": 2,
+					"xp": 190
+				},
+				{
+					"id": 10,
+					"level": 29,
+					"star": 2,
+					"xp": 190
+				}
+			],
+			"seconds": 9.4
+		},
+		{
+			"materials": 494,
+			"number": 6,
+			"party": [
+				{
+					"id": 5,
+					"level": 30,
+					"star": 2,
+					"xp": 0
+				},
+				{
+					"id": 6,
+					"level": 30,
+					"star": 2,
+					"xp": 0
+				},
+				{
+					"id": 7,
+					"level": 30,
+					"star": 2,
+					"xp": 0
+				},
+				{
+					"id": 8,
+					"level": 30,
+					"star": 2,
+					"xp": 0
+				},
+				{
+					"id": 9,
+					"level": 30,
+					"star": 2,
+					"xp": 0
+				},
+				{
+					"id": 10,
+					"level": 30,
+					"star": 2,
+					"xp": 0
+				}
+			],
+			"seconds": 9.4
+		},
+		{
+			"materials": 536,
+			"number": 7,
+			"party": [
+				{
+					"id": 5,
+					"level": 30,
+					"star": 2,
+					"xp": 0
+				},
+				{
+					"id": 6,
+					"level": 13,
+					"star": 3,
+					"xp": 150
+				},
+				{
+					"id": 7,
+					"level": 13,
+					"star": 3,
+					"xp": 150
+				},
+				{
+					"id": 8,
+					"level": 13,
+					"star": 3,
+					"xp": 150
+				},
+				{
+					"id": 9,
+					"level": 13,
+					"star": 3,
+					"xp": 150
+				},
+				{
+					"id": 10,
+					"level": 13,
+					"star": 3,
+					"xp": 150
+				}
+			],
+			"seconds": 11.5
+		},
+		{
+			"materials": 77,
+			"number": 8,
+			"party": [
+				{
+					"id": 5,
+					"level": 23,
+					"star": 3,
+					"xp": 705
+				},
+				{
+					"id": 6,
+					"level": 18,
+					"star": 3,
+					"xp": 405
+				},
+				{
+					"id": 7,
+					"level": 18,
+					"star": 3,
+					"xp": 405
+				},
+				{
+					"id": 8,
+					"level": 18,
+					"star": 3,
+					"xp": 405
+				},
+				{
+					"id": 9,
+					"level": 18,
+					"star": 3,
+					"xp": 405
+				},
+				{
+					"id": 10,
+					"level": 18,
+					"star": 3,
+					"xp": 405
+				}
+			],
+			"seconds": 10.2
+		},
+		{
+			"materials": 119,
+			"number": 9,
+			"party": [
+				{
+					"id": 5,
+					"level": 27,
+					"star": 3,
+					"xp": 155
+				},
+				{
+					"id": 6,
+					"level": 22,
+					"star": 3,
+					"xp": 555
+				},
+				{
+					"id": 7,
+					"level": 22,
+					"star": 3,
+					"xp": 555
+				},
+				{
+					"id": 8,
+					"level": 22,
+					"star": 3,
+					"xp": 555
+				},
+				{
+					"id": 9,
+					"level": 22,
+					"star": 3,
+					"xp": 555
+				},
+				{
+					"id": 10,
+					"level": 22,
+					"star": 3,
+					"xp": 555
+				}
+			],
+			"seconds": 9.4
+		},
+		{
+			"materials": 161,
+			"number": 10,
+			"party": [
+				{
+					"id": 5,
+					"level": 30,
+					"star": 3,
+					"xp": 95
+				},
+				{
+					"id": 6,
+					"level": 26,
+					"star": 3,
+					"xp": 145
+				},
+				{
+					"id": 7,
+					"level": 26,
+					"star": 3,
+					"xp": 145
+				},
+				{
+					"id": 8,
+					"level": 26,
+					"star": 3,
+					"xp": 145
+				},
+				{
+					"id": 9,
+					"level": 26,
+					"star": 3,
+					"xp": 145
+				},
+				{
+					"id": 10,
+					"level": 26,
+					"star": 3,
+					"xp": 145
+				}
+			],
+			"seconds": 8.8
+		},
+		{
+			"materials": 203,
+			"number": 11,
+			"party": [
+				{
+					"id": 5,
+					"level": 32,
+					"star": 3,
+					"xp": 840
+				},
+				{
+					"id": 6,
+					"level": 29,
+					"star": 3,
+					"xp": 190
+				},
+				{
+					"id": 7,
+					"level": 29,
+					"star": 3,
+					"xp": 190
+				},
+				{
+					"id": 8,
+					"level": 29,
+					"star": 3,
+					"xp": 190
+				},
+				{
+					"id": 9,
+					"level": 29,
+					"star": 3,
+					"xp": 190
+				},
+				{
+					"id": 10,
+					"level": 29,
+					"star": 3,
+					"xp": 190
+				}
+			],
+			"seconds": 8.8
+		},
+		{
+			"materials": 245,
+			"number": 12,
+			"party": [
+				{
+					"id": 5,
+					"level": 35,
+					"star": 3,
+					"xp": 255
+				},
+				{
+					"id": 6,
+					"level": 31,
+					"star": 3,
+					"xp": 1005
+				},
+				{
+					"id": 7,
+					"level": 31,
+					"star": 3,
+					"xp": 1005
+				},
+				{
+					"id": 8,
+					"level": 31,
+					"star": 3,
+					"xp": 1005
+				},
+				{
+					"id": 9,
+					"level": 31,
+					"star": 3,
+					"xp": 1005
+				},
+				{
+					"id": 10,
+					"level": 31,
+					"star": 3,
+					"xp": 1005
+				}
+			],
+			"seconds": 8.8
+		},
+		{
+			"materials": 287,
+			"number": 13,
+			"party": [
+				{
+					"id": 5,
+					"level": 37,
+					"star": 3,
+					"xp": 650
+				},
+				{
+					"id": 6,
+					"level": 34,
+					"star": 3,
+					"xp": 525
+				},
+				{
+					"id": 7,
+					"level": 34,
+					"star": 3,
+					"xp": 525
+				},
+				{
+					"id": 8,
+					"level": 34,
+					"star": 3,
+					"xp": 525
+				},
+				{
+					"id": 9,
+					"level": 34,
+					"star": 3,
+					"xp": 525
+				},
+				{
+					"id": 10,
+					"level": 34,
+					"star": 3,
+					"xp": 525
+				}
+			],
+			"seconds": 8.8
+		},
+		{
+			"materials": 329,
+			"number": 14,
+			"party": [
+				{
+					"id": 5,
+					"level": 39,
+					"star": 3,
+					"xp": 905
+				},
+				{
+					"id": 6,
+					"level": 36,
+					"star": 3,
+					"xp": 990
+				},
+				{
+					"id": 7,
+					"level": 36,
+					"star": 3,
+					"xp": 990
+				},
+				{
+					"id": 8,
+					"level": 36,
+					"star": 3,
+					"xp": 990
+				},
+				{
+					"id": 9,
+					"level": 36,
+					"star": 3,
+					"xp": 990
+				},
+				{
+					"id": 10,
+					"level": 36,
+					"star": 3,
+					"xp": 990
+				}
+			],
+			"seconds": 8.8
+		},
+		{
+			"materials": 371,
+			"number": 15,
+			"party": [
+				{
+					"id": 5,
+					"level": 40,
+					"star": 3,
+					"xp": 0
+				},
+				{
+					"id": 6,
+					"level": 38,
+					"star": 3,
+					"xp": 1315
+				},
+				{
+					"id": 7,
+					"level": 38,
+					"star": 3,
+					"xp": 1315
+				},
+				{
+					"id": 8,
+					"level": 38,
+					"star": 3,
+					"xp": 1315
+				},
+				{
+					"id": 9,
+					"level": 38,
+					"star": 3,
+					"xp": 1315
+				},
+				{
+					"id": 10,
+					"level": 38,
+					"star": 3,
+					"xp": 1315
+				}
+			],
+			"seconds": 8.8
+		},
+		{
+			"materials": 413,
+			"number": 16,
+			"party": [
+				{
+					"id": 5,
+					"level": 40,
+					"star": 3,
+					"xp": 0
+				},
+				{
+					"id": 6,
+					"level": 40,
+					"star": 3,
+					"xp": 0
+				},
+				{
+					"id": 7,
+					"level": 40,
+					"star": 3,
+					"xp": 0
+				},
+				{
+					"id": 8,
+					"level": 40,
+					"star": 3,
+					"xp": 0
+				},
+				{
+					"id": 9,
+					"level": 40,
+					"star": 3,
+					"xp": 0
+				},
+				{
+					"id": 10,
+					"level": 40,
+					"star": 3,
+					"xp": 0
+				}
+			],
+			"seconds": 8.8
+		}
+	]
+}

@@ -18,8 +18,10 @@ static func show_menu(g):
 		if i==1: b.disabled=(g.in_combat and g.mode=="stage") or g.mode=="tutorial"
 	g.label(g.overlay,"여정 기록",Vector2(235,464),20)
 	if g.mode=="camp": g.button(g.overlay,"사냥길 선택",Rect2(925,475,285,48),g.open_stage_select)
-	g.label(g.overlay,"첫 인연  "+("완료" if g.tutorial_done else "마을에서 첫 동료를 만나세요.")+"     /     지역 제압 %d/3" % g.cleared_stages.size(),Vector2(235,505),18)
-	g.label(g.overlay,"동료와 성장 재료는 자동 저장됩니다. 탐험을 다시 시작하면 입구에서 출발합니다.",Vector2(235,550),16)
+	var normal_clears=g.Routes.progress_for(g).cleared.filter(func(c): return c.difficulty=="normal").size()
+	g.label(g.overlay,"첫 인연  "+("완료" if g.tutorial_done else "마을에서 첫 동료를 만나세요.")+"     /     일반 탐험 %d/40" % normal_clears,Vector2(235,505),18)
+	var promotable=g.owned.filter(func(d): return g.Loot.star(d)<3 and g.Loot.is_max_level(d)).size()
+	g.label(g.overlay,"승급 대기 %d마리 · 만렙 동료는 승급 전까지 경험치를 받지 못합니다." % promotable if promotable>0 else "동료와 성장 재료는 자동 저장됩니다. 탐험을 다시 시작하면 입구에서 출발합니다.",Vector2(235,550),16)
 	var resume=g.button(g.overlay,"캠프로" if g.mode=="camp" else "탐험 계속하기",Rect2(230,630,310,55),g.resume_game)
 	UI.emphasize(resume)
 	if g.mode in ["stage","tutorial"]: g.button(g.overlay,"캠프로 귀환",Rect2(565,630,310,55),g.confirm_return)
