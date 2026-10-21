@@ -72,6 +72,8 @@ func run():
 	game.auto_companion_skills=true
 	game.load_game()
 	if game.auto_companion_skills: failures.append("invalid auto skill setting defaults off")
+	game.mode="camp"
+	game.clear_overlay()
 	game.show_synthesis([game.owned[0].id,game.owned[1].id,game.owned[2].id],game.owned[0].id,"species")
 	var support=game.overlay.find_child("SynthesisSelect_"+str(game.owned[1].id),true,false)
 	if support==null or support.disabled: failures.append("squad support candidate selectable")
