@@ -35,7 +35,7 @@ func run():
 	var squad=g.squad.duplicate()
 	var rng=g.loot_rng.state
 	var plan=Evolution.preview(g.owned,g.squad,main_id,support_id)
-	check(plan.error.is_empty() and plan.result.star==5 and plan.result.level==50 and Special.evolution_pending(plan.result),"valid cross-species preview")
+	check(plan.error.is_empty() and plan.result.star==5 and plan.result.level==1 and Special.evolution_pending(plan.result),"valid cross-species preview")
 	check(g.owned==before and g.loot_rng.state==rng,"preview is read-only")
 	for invalid in [-1,main_id]: check(not Evolution.preview(g.owned,g.squad,main_id,invalid).error.is_empty(),"invalid/duplicate material")
 	var dup=before.duplicate(true)
@@ -77,6 +77,7 @@ func run():
 	check(g.owned.size()==2 and g.find_owned(support_id).is_empty() and g.squad==squad and g.materials==77 and g.loot_rng.state==rng,"one support consumed no extra cost or RNG")
 	var identity=result.duplicate(true)
 	identity.star=4
+	identity.level=50
 	identity.special.erase("evolution")
 	check(identity==before[0],"all existing identity metadata options element unique preserved")
 	check(is_equal_approx(g.attack(result)/g.attack(before[0]),1.10) and is_equal_approx(g.max_hp(result)/g.max_hp(before[0]),1.10),"immediate raw110 percent")

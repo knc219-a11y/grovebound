@@ -4,7 +4,7 @@ const ELEMENTS={
 	"fire":{"name":"불꽃","color":"edaa69","description":"공격종 피해 +10% · 사슴 회복 +15% · 거북 방어 +1초"},
 	"water":{"name":"물","color":"78bee5","description":"스킬 재사용 대기시간 15% 감소"},
 	"earth":{"name":"대지","color":"d9bd76","description":"최대 체력 +12% · 받는 피해 5% 감소"},
-	"wind":{"name":"바람","color":"83dbc7","description":"이동 속도 +8% · 스킬 대기시간 10% 감소"}
+	"wind":{"name":"바람","color":"83dbc7","description":"이동 속도 +8% · 공격 속도 +10%"}
 }
 const UNIQUES={
 	"frontline":{
@@ -70,7 +70,12 @@ static func evolution_description(d):
 	return info.replace("+20%","+30%").replace("8%","12%").replace("15% 보호막 · 5초","20% 보호막 · 6초").replace("10% 감소","15% 감소")
 static func growth(d):
 	var level=int(d.level)
-	if int(d.star)==5: return (0.70+0.022*49)*(EVOLUTION_START+EVOLUTION_PER_LEVEL*(level-50))
+	if int(d.star)==5:
+		# New evolutions restart at Lv.1. Existing saves retain the original
+		# Lv.50-60 curve and their exact accumulated level/XP/strength.
+		if d.special.get("evolution",{}).get("growth_version",1)==2:
+			return (0.70+0.022*49)*(EVOLUTION_START+0.20*(level-1)/59.0)
+		return (0.70+0.022*49)*(EVOLUTION_START+EVOLUTION_PER_LEVEL*(level-50))
 	if int(d.star)==6: return (0.70+0.022*49)*1.30*(EVOLUTION_START+EVOLUTION_PER_LEVEL*(level-60))
 	return 0.70+0.022*(level-1)
 static func choices(kind): return UNIQUES.get(Rules.position_of(kind),{})
@@ -82,8 +87,10 @@ static func attack_scale(d):
 	return (1.0+39*0.22)*growth(d)
 static func hp_bonus(d): return (0.12 if element(d)=="earth" else 0.0)+(0.15 if unique(d)=="vital" else 0.0)+evolution_value(d,"vital")
 static func armor(d): return (0.95 if element(d)=="earth" else 1.0)*(0.92 if unique(d)=="guard" else 1.0)*(1.0-evolution_value(d,"guard"))
-static func haste(d): return (0.85 if element(d)=="water" else 0.9 if element(d)=="wind" else 1.0)*(0.88 if unique(d)=="haste" else 1.0)*(1.0-evolution_value(d,"haste"))
+static func haste(d): return (0.85 if element(d)=="water" else 1.0)*(0.88 if unique(d)=="haste" else 1.0)*(1.0-evolution_value(d,"haste"))
 static func speed(d): return 1.08 if element(d)=="wind" else 1.0
+# Basic action rate; callers divide attack/recovery intervals by this factor.
+static func attack_speed(d): return 1.10 if element(d)=="wind" else 1.0
 static func radius(d): return (1.2 if unique(d)=="reach" else 1.0)*(1.0+evolution_value(d,"reach"))
 static func healing(d): return (1.15 if element(d)=="fire" else 1.0)*(1.15 if unique(d)=="potency" else 1.0)*(1.0+evolution_value(d,"potency"))
 static func damage(d,is_skill,target):
@@ -109,6 +116,7 @@ static func normalize(d):
 		var e=s.get("evolution",{})
 		if not e is Dictionary: e={}
 		e.version=1
+		if e.get("growth_version",1)==2: e.growth_version=2
 		var chosen=e.get("ability","")
 		e.state="ready" if e.get("state")=="ready" and evolution_choices(d.kind).has(chosen) else "pending"
 		e.ability=chosen if e.state=="ready" else ""

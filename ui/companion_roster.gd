@@ -7,7 +7,7 @@ const Roles=preload("res://companion_roles.gd")
 
 static func show(g):
 	var camp=g.mode=="camp"
-	g.modal("동료 관리", "① 왼쪽에서 동료 선택   ② 오른쪽 출전·대기 칸에 배치", "companions",g.open_game_menu)
+	g.modal("동료 관리", "한 번: 동료 선택 · 왼쪽 같은 동료 두 번: 동행/보관 · 오른쪽 같은 동료 두 번: 해제" if camp else "왼쪽에서 선택 후 오른쪽 칸으로 교체 · 탐험 중 동행 해제 불가", "companions",g.open_game_menu)
 	var source=[]
 	for d in g.owned:
 		if camp or g.squad.has(d.id): source.append(d.duplicate(true))
@@ -39,8 +39,22 @@ static func show(g):
 	if camp:
 		g.button(g.overlay,"일괄 작별",Rect2(215,665,145,44),func(): g.show_bulk_release(true))
 		g.button(g.overlay,"특수개체 합성",Rect2(370,665,198,44),func(): g.show_synthesis())
+	formation(g)
 	var done=g.button(g.overlay,"완료",Rect2(1067,665,158,44),func(): g.show_camp() if camp else g.clear_overlay())
 	done.name="RosterDone"
+
+static func formation(g):
+	var title=small_label(g.overlay,"집결 진형 · 주인공 이동 방향 기준",Rect2(585,635,460,25),16,UI.MUTED)
+	title.name="FormationHint"
+	var keys=["front","rear","surround"]
+	var names=["앞","뒤","둘러싸기"]
+	for i in keys.size():
+		var key=keys[i]
+		var selected=g.party_formation==key
+		var b=g.button(g.overlay,("✓ " if selected else "")+names[i],Rect2(585+i*154,665,146,44),func(): g.set_party_formation(key))
+		b.name="Formation_"+key
+		b.tooltip_text="교전 전 집결 위치를 정합니다. 교전하면 동료가 사거리와 역할에 따라 움직입니다."
+		if selected: b.add_theme_stylebox_override("normal",UI.frame(Color("344633"),Color("9ed5a2"),2))
 
 static func filters(g,total,shown):
 	g.label(g.overlay,"보유 동료",Vector2(215,207),21)
@@ -55,7 +69,7 @@ static func filters(g,total,shown):
 	for i in kinds.size():
 		species.add_item(g.NAMES[kinds[i]])
 		if g.roster_kind_filter==kinds[i]: species.select(i+1)
-	species.item_selected.connect(func(index): g.roster_kind_filter="" if index==0 else kinds[index-1]; g.roster_scroll=0; g.open_roster())
+	species.item_selected.connect(func(index): g.roster_kind_filter="" if index==0 else kinds[index-1]; g.roster_scroll=0; g.roster_click.clear(); g.open_roster())
 	g.overlay.add_child(species)
 	var rarity=OptionButton.new()
 	rarity.name="GradeFilter"
@@ -65,7 +79,7 @@ static func filters(g,total,shown):
 	for star in range(1,7):
 		rarity.add_item(str(star)+"성")
 		if g.roster_grade_filter==str(star) or (star<=3 and g.roster_grade_filter==Loot.GRADES[star-1]): rarity.select(star)
-	rarity.item_selected.connect(func(index): g.roster_grade_filter="" if index==0 else str(index); g.roster_scroll=0; g.open_roster())
+	rarity.item_selected.connect(func(index): g.roster_grade_filter="" if index==0 else str(index); g.roster_scroll=0; g.roster_click.clear(); g.open_roster())
 	g.overlay.add_child(rarity)
 	var sorting=OptionButton.new()
 	sorting.name="RosterSort"
@@ -73,9 +87,9 @@ static func filters(g,total,shown):
 	sorting.size=Vector2(168,44)
 	for caption in ["동행 순서","최근 인연순","높은 성급순","높은 레벨순"]: sorting.add_item(caption)
 	sorting.select(g.roster_sort)
-	sorting.item_selected.connect(func(index): g.roster_sort=index; g.roster_scroll=0; g.open_roster())
+	sorting.item_selected.connect(func(index): g.roster_sort=index; g.roster_scroll=0; g.roster_click.clear(); g.open_roster())
 	g.overlay.add_child(sorting)
-	var favorite=g.button(g.overlay,"잠금만 ✓" if g.roster_favorites_only else "잠금만",Rect2(689,246,92,44),func(): g.roster_favorites_only=not g.roster_favorites_only; g.roster_scroll=0; g.open_roster())
+	var favorite=g.button(g.overlay,"잠금만 ✓" if g.roster_favorites_only else "잠금만",Rect2(689,246,92,44),func(): g.roster_favorites_only=not g.roster_favorites_only; g.roster_scroll=0; g.roster_click.clear(); g.open_roster())
 	favorite.name="FavoritesFilter"
 	g.button(g.overlay,"초기화",Rect2(789,246,84,44),g.reset_roster_filters)
 
@@ -86,7 +100,7 @@ static func add_card(g,parent,d):
 	card.custom_minimum_size=Vector2(208,100)
 	card.size_flags_horizontal=Control.SIZE_EXPAND_FILL
 	card.clip_contents=true
-	card.tooltip_text="%s · %s\n%s\n%s" % [g.NAMES[d.kind],Roles.LABELS[d.kind],d.trait,"\n".join(Loot.lines(d))]
+	card.tooltip_text="#%d %s · %s\n%s\n%s\n한 번: 선택 · 같은 카드 두 번: 동행/보관 전환" % [d.id,g.NAMES[d.kind],Roles.LABELS[d.kind],d.trait,"\n".join(Loot.lines(d))]
 	card.add_theme_stylebox_override("normal",UI.frame(Color("344633") if selected else Color("202b27"),Loot.color(d) if selected else Color("58604b"),2 if selected else 1))
 	card.pressed.connect(g.roster_select.bind(d.id))
 	parent.add_child(card)
@@ -147,7 +161,7 @@ static func party_slot(g,parent,index,rect):
 		small_label(slot,caption+" · "+g.NAMES[d.kind],Rect2(49,6,106,22),15,accent)
 		small_label(slot,"★%d · Lv.%d" % [Loot.star(d),d.level],Rect2(49,31,106,22),13,Loot.color(d))
 	if d.is_empty(): slot.tooltip_text="왼쪽 동료를 선택한 뒤 이 칸을 누르면 배치합니다.\n앞쪽 빈 출전 칸부터 편성하며 출전 4마리 다음에 대기 칸을 채웁니다."
-	else: slot.tooltip_text="동료를 선택한 뒤 이 칸을 눌러 교체합니다. 선택이 없으면 이 동료를 선택합니다."
+	else: slot.tooltip_text="#%d %s\n한 번: 선택/배치 · 같은 칸 두 번: 동행 해제(캠프)" % [d.id,g.NAMES[d.kind]]
 
 static func selection(g,camp):
 	var box=Control.new()

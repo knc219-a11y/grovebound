@@ -23,9 +23,9 @@ static func preview(records,squad,main_id,support_id):
 		selected.append(d.duplicate(true))
 	var result=selected[0].duplicate(true)
 	result.star=source_star+1
-	result.level=source_star*10+10
+	result.level=1 if source_star==4 else 60
 	result.xp=0
 	result.erase("legacy_overcap")
-	if source_star==4: result.special.evolution={"version":1,"state":"pending","ability":""}
+	if source_star==4: result.special.evolution={"version":1,"state":"pending","ability":"","growth_version":2}
 	else: result.special.evolution.enhanced=true
 	return {"error":"","materials":selected,"result":result}

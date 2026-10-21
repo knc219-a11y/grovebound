@@ -46,6 +46,7 @@ static func advance(g,u,dt):
 		u.walk=false
 		if action.elapsed>=BLAST_DELAY:
 			g.combat_feedback.emit("skill_fox",action.from,action.to,0,{"radius":action.get("radius",BLAST_RADIUS)})
+			g.element_feedback.emit(u.data,action.from,action.to,true,action.get("radius",BLAST_RADIUS))
 			for e in g.combat_enemies():
 				if e.hp>0 and e.pos.distance_to(action.to)<=action.get("radius",BLAST_RADIUS):
 					g.hit_enemy(e,action.damage,action.from,u,false,true)
